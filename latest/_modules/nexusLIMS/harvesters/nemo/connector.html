@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 11, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 12, 2026"/>
   </head>
   
   
@@ -828,7 +828,7 @@ window.addEventListener("load", load);
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_qs</span><span class="p">,</span> <span class="n">urljoin</span><span class="p">,</span> <span class="n">urlparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_qs</span><span class="p">,</span> <span class="n">quote</span><span class="p">,</span> <span class="n">urlencode</span><span class="p">,</span> <span class="n">urljoin</span><span class="p">,</span> <span class="n">urlparse</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pytz</span><span class="w"> </span><span class="kn">import</span> <span class="n">timezone</span> <span class="k">as</span> <span class="n">pytz_timezone</span>
 
@@ -1113,6 +1113,10 @@ window.addEventListener("load", load);
 <span class="sd">            Raised if the request to the API did not go through correctly</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Check if user_id is None - return all users</span>
+        <span class="k">if</span> <span class="n">user_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_users_helper</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
 
         <span class="c1"># list of user ids</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
@@ -1411,23 +1415,28 @@ window.addEventListener("load", load);
         <span class="c1"># there were no tools for this connector in our DB, or the tools</span>
         <span class="c1"># specified were not found in the DB, so we know there are no</span>
         <span class="c1"># usage_events of interest</span>
-        <span class="n">this_connectors_tools</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_known_tool_ids</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">tool_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># by default (no tool_id specified), we should fetch events from</span>
-            <span class="c1"># only the tools known to the NexusLIMS DB for this connector</span>
-            <span class="n">tool_id</span> <span class="o">=</span> <span class="n">this_connectors_tools</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tool_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="c1"># coerce tool_id to list to make subsequent processing easier</span>
-            <span class="n">tool_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">tool_id</span><span class="p">]</span>
+        <span class="c1">#</span>
+        <span class="c1"># NOTE: Skip tool_id filtering if event_id is specified, since an event ID</span>
+        <span class="c1"># uniquely identifies an event and adding tool_id__in causes NEMO API</span>
+        <span class="c1"># to reject the request with 400 Bad Request</span>
+        <span class="k">if</span> <span class="n">event_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">this_connectors_tools</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_known_tool_ids</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">tool_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># by default (no tool_id specified), we should fetch events from</span>
+                <span class="c1"># only the tools known to the NexusLIMS DB for this connector</span>
+                <span class="n">tool_id</span> <span class="o">=</span> <span class="n">this_connectors_tools</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tool_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="c1"># coerce tool_id to list to make subsequent processing easier</span>
+                <span class="n">tool_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">tool_id</span><span class="p">]</span>
 
-        <span class="c1"># limit tool_id to values that are present in this_connectors_tools</span>
-        <span class="n">tool_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tool_id</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">this_connectors_tools</span><span class="p">]</span>
+            <span class="c1"># limit tool_id to values that are present in this_connectors_tools</span>
+            <span class="n">tool_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tool_id</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">this_connectors_tools</span><span class="p">]</span>
 
-        <span class="c1"># if tool_id is empty, we should just return</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">tool_id</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">[]</span>
+            <span class="c1"># if tool_id is empty, we should just return</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">tool_id</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[]</span>
 
-        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;tool_id__in&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tool_id</span><span class="p">])})</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;tool_id__in&quot;</span><span class="p">:</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tool_id</span><span class="p">])})</span>
 
         <span class="n">usage_events</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_api_caller</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;usage_events/&quot;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
 
@@ -1643,6 +1652,66 @@ window.addEventListener("load", load);
 
         <span class="k">return</span> <span class="n">users</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_url_with_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build URL with query string, preserving unencoded commas for __in filters.</span>
+
+<span class="sd">        Django&#39;s ORM expects __in filter syntax like: ?tool_id__in=1,3,10,999</span>
+<span class="sd">        The requests library would encode this as: ?tool_id__in=1%2C3%2C10%2C999</span>
+<span class="sd">        which breaks Django&#39;s queryset filtering because Django splits on commas:</span>
+<span class="sd">        ``queryset.filter(tool_id__in=request.GET.get(&#39;tool_id__in&#39;).split(&#39;,&#39;))``</span>
+
+<span class="sd">        This method manually constructs the query string to keep commas unencoded</span>
+<span class="sd">        in __in filter values while still properly encoding other special characters.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        base_url</span>
+<span class="sd">            The base URL without query parameters</span>
+<span class="sd">        params</span>
+<span class="sd">            Dictionary of query parameters. Keys ending with &#39;__in&#39; will have</span>
+<span class="sd">            their comma-separated values preserved without encoding the commas.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Complete URL with properly encoded query string</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; connector._build_url_with_params(</span>
+<span class="sd">        ...     &quot;http://api.example.com/events/&quot;,</span>
+<span class="sd">        ...     {&quot;tool_id__in&quot;: &quot;1,3,10&quot;, &quot;start&quot;: &quot;2025-01-01T00:00:00&quot;}</span>
+<span class="sd">        ... )</span>
+<span class="sd">        &#39;http://api.example.com/events/?start=2025-01-01T00%3A00%3A00&amp;tool_id__in=1,3,10&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">base_url</span>
+
+        <span class="c1"># Separate __in parameters from regular parameters</span>
+        <span class="n">in_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;__in&quot;</span><span class="p">)}</span>
+        <span class="n">regular_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;__in&quot;</span><span class="p">)}</span>
+
+        <span class="c1"># Build query string components</span>
+        <span class="n">query_parts</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Add regular params (URL-encoded via urlencode)</span>
+        <span class="k">if</span> <span class="n">regular_params</span><span class="p">:</span>
+            <span class="n">query_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">urlencode</span><span class="p">(</span><span class="n">regular_params</span><span class="p">))</span>
+
+        <span class="c1"># Add __in params (manually constructed with unencoded commas)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">in_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c1"># Quote the key and value but preserve commas in the value</span>
+            <span class="n">encoded_key</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">safe</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="c1"># safe=&#39;,&#39; tells quote() to not encode commas</span>
+            <span class="n">encoded_value</span> <span class="o">=</span> <span class="n">quote</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">safe</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+            <span class="n">query_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">encoded_key</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">encoded_value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Combine base URL with query string</span>
+        <span class="n">query_string</span> <span class="o">=</span> <span class="s2">&quot;&amp;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">query_parts</span><span class="p">)</span>
+        <span class="n">separator</span> <span class="o">=</span> <span class="s2">&quot;&amp;&quot;</span> <span class="k">if</span> <span class="s2">&quot;?&quot;</span> <span class="ow">in</span> <span class="n">base_url</span> <span class="k">else</span> <span class="s2">&quot;?&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}{</span><span class="n">separator</span><span class="si">}{</span><span class="n">query_string</span><span class="si">}</span><span class="s2">&quot;</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_api_caller</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">verb</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -1676,13 +1745,15 @@ window.addEventListener("load", load);
 <span class="sd">        results</span>
 <span class="sd">            The API response, formatted as a list of dict objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;base_url&quot;</span><span class="p">],</span> <span class="n">endpoint</span><span class="p">)</span>
-        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;getting data from </span><span class="si">%s</span><span class="s2"> with parameters </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">base_url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;base_url&quot;</span><span class="p">],</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="c1"># Build complete URL with custom encoding for __in filters</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_url_with_params</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;getting data from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span>
             <span class="n">url</span><span class="p">,</span>
             <span class="n">verb</span><span class="p">,</span>
             <span class="n">token_auth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">],</span>
-            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>  <span class="c1"># Already included in URL</span>
             <span class="n">retries</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;retries&quot;</span><span class="p">],</span>
         <span class="p">)</span>
         <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
