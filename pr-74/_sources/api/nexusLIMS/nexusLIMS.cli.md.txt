@@ -14,8 +14,8 @@
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.cli.manage_instruments
 nexusLIMS.cli.process_records
-nexusLIMS.cli.migrate
 nexusLIMS.cli.config
+nexusLIMS.cli.manage_instruments
+nexusLIMS.cli.migrate
 ```

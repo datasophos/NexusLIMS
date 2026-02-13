@@ -62,11 +62,11 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="nexusLIMS.harvesters.nemo" href="nexusLIMS.harvesters.nemo.html" />
-    <link rel="prev" title="nexusLIMS.cli.config" href="nexusLIMS.cli.config.html" />
+    <link rel="prev" title="nexusLIMS.cli.migrate" href="nexusLIMS.cli.migrate.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-74" />
-    <meta name="docbuild:last-update" content="Feb, 12, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 13, 2026"/>
   </head>
   
   
@@ -413,21 +413,21 @@
 <li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">NexusLIMS API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.tui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
 <li class="toctree-l3 current active has-children"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.harvesters.nemo.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters.nemo</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.harvesters.reservation_event.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters.reservation_event</span></code></a></li>
 </ul>
 </details></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.tui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.exporters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 </ul>
 </details></li>
 </ul>
@@ -510,9 +510,9 @@ a class to represent a Reservation Event</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="nexusLIMS.harvesters.nemo.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters.nemo</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nexusLIMS.harvesters.nemo.connector.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters.nemo.connector</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="nexusLIMS.harvesters.nemo.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters.nemo.utils</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="nexusLIMS.harvesters.nemo.exceptions.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters.nemo.exceptions</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="nexusLIMS.harvesters.nemo.connector.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters.nemo.connector</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -528,15 +528,15 @@ a class to represent a Reservation Event</p>
 </section>
 <section id="package-contents">
 <h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading">#</a></h2>
-<section id="data">
-<h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.harvesters.CA_BUNDLE_PATH" title="nexusLIMS.harvesters.CA_BUNDLE_PATH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CA_BUNDLE_PATH</span></code></a></p></td>
-<td><p>Path to the certificate authority bundle file for HTTPS verification.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.harvesters.get_ca_bundle_path" title="nexusLIMS.harvesters.get_ca_bundle_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ca_bundle_path</span></code></a></p></td>
+<td><p>Get the path to the custom CA bundle file, if configured.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.harvesters.CA_BUNDLE_CONTENT" title="nexusLIMS.harvesters.CA_BUNDLE_CONTENT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CA_BUNDLE_CONTENT</span></code></a></p></td>
-<td><p>Certificate authority bundle content as a list of byte strings.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.harvesters.get_ca_bundle_content" title="nexusLIMS.harvesters.get_ca_bundle_content"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ca_bundle_content</span></code></a></p></td>
+<td><p>Get the content of the custom CA bundle, if configured.</p></td>
 </tr>
 </tbody>
 </table>
@@ -544,18 +544,36 @@ a class to represent a Reservation Event</p>
 </section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
-<dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.harvesters.CA_BUNDLE_PATH">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.harvesters.</span></span><span class="sig-name descname"><span class="pre">CA_BUNDLE_PATH</span></span><a class="headerlink" href="#nexusLIMS.harvesters.CA_BUNDLE_PATH" title="Link to this definition">#</a></dt>
-<dd><p>Path to the certificate authority bundle file for HTTPS verification.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.harvesters.get_ca_bundle_path">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.harvesters.</span></span><span class="sig-name descname"><span class="pre">get_ca_bundle_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters.html#get_ca_bundle_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.get_ca_bundle_path" title="Link to this definition">#</a></dt>
+<dd><p>Get the path to the custom CA bundle file, if configured.</p>
 <p>Loaded from the <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code> configuration setting.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path to the certificate authority bundle file, or None if not configured.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Path | <em>None</em></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.harvesters.CA_BUNDLE_CONTENT">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.harvesters.</span></span><span class="sig-name descname"><span class="pre">CA_BUNDLE_CONTENT</span></span><a class="headerlink" href="#nexusLIMS.harvesters.CA_BUNDLE_CONTENT" title="Link to this definition">#</a></dt>
-<dd><p>Certificate authority bundle content as a list of byte strings.</p>
-<p>Loaded from <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE</span></code> configuration or reads <code class="docutils literal notranslate"><span class="pre">CA_BUNDLE_PATH</span></code> if not provided.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.harvesters.get_ca_bundle_content">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.harvesters.</span></span><span class="sig-name descname"><span class="pre">get_ca_bundle_content</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#bytes" title="(in Python v3.11)"><span class="pre">bytes</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/harvesters.html#get_ca_bundle_content"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.harvesters.get_ca_bundle_content" title="Link to this definition">#</a></dt>
+<dd><p>Get the content of the custom CA bundle, if configured.</p>
+<p>Loaded from <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE</span></code> configuration or reads the file at
+<code class="docutils literal notranslate"><span class="pre">get_ca_bundle_path()</span></code> if not provided.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Certificate authority bundle content as a list of byte strings,
+or None if not configured.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#bytes" title="(in Python v3.11)"><em>bytes</em></a>] | <em>None</em></p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -573,12 +591,12 @@ a class to represent a Reservation Event</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="nexusLIMS.cli.config.html"
+       href="nexusLIMS.cli.migrate.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.migrate</span></code></p>
       </div>
     </a>
     <a class="right-next"
@@ -612,10 +630,10 @@ a class to represent a Reservation Event</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#package-contents">Package Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.CA_BUNDLE_PATH"><code class="docutils literal notranslate"><span class="pre">CA_BUNDLE_PATH</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.CA_BUNDLE_CONTENT"><code class="docutils literal notranslate"><span class="pre">CA_BUNDLE_CONTENT</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.get_ca_bundle_path"><code class="docutils literal notranslate"><span class="pre">get_ca_bundle_path()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.harvesters.get_ca_bundle_content"><code class="docutils literal notranslate"><span class="pre">get_ca_bundle_content()</span></code></a></li>
 </ul>
 </li>
 </ul>

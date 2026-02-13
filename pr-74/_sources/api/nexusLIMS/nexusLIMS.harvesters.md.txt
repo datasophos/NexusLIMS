@@ -28,19 +28,19 @@ nexusLIMS.harvesters.reservation_event
 
 ## Package Contents
 
-### Data
+### Functions
 
 ````{list-table}
 :class: autosummary longtable
 :align: left
 
-* - {py:obj}`CA_BUNDLE_PATH <nexusLIMS.harvesters.CA_BUNDLE_PATH>`
-  - ```{autodoc2-docstring} nexusLIMS.harvesters.CA_BUNDLE_PATH
+* - {py:obj}`get_ca_bundle_path <nexusLIMS.harvesters.get_ca_bundle_path>`
+  - ```{autodoc2-docstring} nexusLIMS.harvesters.get_ca_bundle_path
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
-* - {py:obj}`CA_BUNDLE_CONTENT <nexusLIMS.harvesters.CA_BUNDLE_CONTENT>`
-  - ```{autodoc2-docstring} nexusLIMS.harvesters.CA_BUNDLE_CONTENT
+* - {py:obj}`get_ca_bundle_content <nexusLIMS.harvesters.get_ca_bundle_content>`
+  - ```{autodoc2-docstring} nexusLIMS.harvesters.get_ca_bundle_content
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
@@ -48,20 +48,18 @@ nexusLIMS.harvesters.reservation_event
 
 ### API
 
-````{py:data} CA_BUNDLE_PATH
-:canonical: nexusLIMS.harvesters.CA_BUNDLE_PATH
+````{py:function} get_ca_bundle_path() -> pathlib.Path | None
+:canonical: nexusLIMS.harvesters.get_ca_bundle_path
 
-```{autodoc2-docstring} nexusLIMS.harvesters.CA_BUNDLE_PATH
+```{autodoc2-docstring} nexusLIMS.harvesters.get_ca_bundle_path
 :parser: autodoc2_docstrings_parser
 ```
-
 ````
 
-````{py:data} CA_BUNDLE_CONTENT
-:canonical: nexusLIMS.harvesters.CA_BUNDLE_CONTENT
+````{py:function} get_ca_bundle_content() -> list[bytes] | None
+:canonical: nexusLIMS.harvesters.get_ca_bundle_content
 
-```{autodoc2-docstring} nexusLIMS.harvesters.CA_BUNDLE_CONTENT
+```{autodoc2-docstring} nexusLIMS.harvesters.get_ca_bundle_content
 :parser: autodoc2_docstrings_parser
 ```
-
 ````
