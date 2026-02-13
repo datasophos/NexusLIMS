@@ -10,7 +10,7 @@ from requests import Session
 from requests.adapters import HTTPAdapter
 
 from nexusLIMS.config import settings
-from nexusLIMS.harvesters import CA_BUNDLE_CONTENT
+from nexusLIMS.harvesters import get_ca_bundle_content
 
 _logger = logging.getLogger(__name__)
 _ssl_warning_logged = False
@@ -83,11 +83,11 @@ def nexus_req(
             _ssl_warning_logged = True
 
     with tempfile.NamedTemporaryFile() as tmp:
-        if verify_arg is not False and CA_BUNDLE_CONTENT:
+        if verify_arg is not False and (ca_bundle_content := get_ca_bundle_content()):
             with Path(certifi.where()).open(mode="rb") as sys_cert:
                 lines = sys_cert.readlines()
             tmp.writelines(lines)
-            tmp.writelines(CA_BUNDLE_CONTENT)
+            tmp.writelines(ca_bundle_content)
             tmp.seek(0)
             verify_arg = tmp.name
 

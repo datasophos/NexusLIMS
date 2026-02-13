@@ -67,14 +67,14 @@ class SingletonResetter:
         """
         Clear the instrument database cache and initialization flag.
 
-        This resets both `nexusLIMS.instruments._instrument_db_cache` and
+        This clears `nexusLIMS.instruments.instrument_db` and resets
         `nexusLIMS.instruments._instrument_db_initialized` to ensure
         instruments are reloaded from the database on next access.
         """
         try:
             from nexusLIMS import instruments
 
-            instruments._instrument_db_cache = {}
+            instruments.instrument_db.clear()
             instruments._instrument_db_initialized = False
             logger.debug("Reset instrument cache")
         except ImportError:

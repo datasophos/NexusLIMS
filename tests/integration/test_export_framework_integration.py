@@ -33,8 +33,8 @@ def db_session(test_database):
     # This ensures export_records() uses the same database as the test
     from nexusLIMS.db import engine as engine_module
 
-    original_engine = engine_module.engine
-    engine_module.engine = engine
+    original_engine = engine_module._engine
+    engine_module._engine = engine
 
     try:
         # Create session
@@ -42,7 +42,7 @@ def db_session(test_database):
             yield session
     finally:
         # Restore original engine
-        engine_module.engine = original_engine
+        engine_module._engine = original_engine
 
 
 @pytest.fixture

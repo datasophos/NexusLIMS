@@ -62,7 +62,7 @@ class TestDatabaseFactory:
         """Test creating database with instruments and sessions."""
         from sqlmodel import Session, select
 
-        from nexusLIMS.db.engine import engine
+        from nexusLIMS.db.engine import get_engine
         from nexusLIMS.db.models import SessionLog
         from nexusLIMS.instruments import instrument_db
 
@@ -70,7 +70,7 @@ class TestDatabaseFactory:
         assert "FEI-Titan-TEM" in instrument_db
 
         # Verify sessions were created
-        with Session(engine) as session:
+        with Session(get_engine()) as session:
             logs = session.exec(select(SessionLog)).all()
             # Should have START and END events for FEI-Titan-TEM
             assert len(logs) >= 2

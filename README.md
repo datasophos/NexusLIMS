@@ -54,9 +54,12 @@ pip install nexusLIMS
 
 # Or using uv (faster)
 uv pip install nexusLIMS
+
+# Create configuration interactively
+nexuslims-config edit
 ```
 
-**Note**: When installing from PyPI, you'll need to manually create a `.env` file in your working directory or set environment variables for configuration. See the [Configuration Documentation](https://datasophos.github.io/NexusLIMS/stable/user_guide/configuration.html) for required settings.
+After installation, use `nexuslims-config edit` to create your `.env` configuration file through an interactive terminal interface. See the [Configuration Documentation](https://datasophos.github.io/NexusLIMS/stable/user_guide/configuration.html) for details on configuration options.
 
 #### Option 2: Install from Source (Recommended for Development)
 

@@ -10,7 +10,11 @@ from pytz import timezone as pytz_timezone
 from nexusLIMS.db.enums import EventType, RecordStatus
 from nexusLIMS.db.models import SessionLog
 from nexusLIMS.db.session_handler import Session
-from nexusLIMS.instruments import get_instr_from_api_url, instrument_db
+from nexusLIMS.instruments import (
+    _ensure_instrument_db_loaded,
+    get_instr_from_api_url,
+    instrument_db,
+)
 from nexusLIMS.utils.network import nexus_req
 
 _logger = logging.getLogger(__name__)
@@ -758,6 +762,7 @@ class NemoConnector:
             The list of tool ID numbers known to NexusLIMS for this harvester
         """
         tool_ids = []
+        _ensure_instrument_db_loaded()
 
         for _, v in instrument_db.items():
             if self.config["base_url"] in v.api_url:

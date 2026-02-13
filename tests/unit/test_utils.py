@@ -528,14 +528,16 @@ class TestUtils:
     @responses.activate
     def test_nexus_req_ca_bundle_content_written(self, monkeypatch, tmp_path):
         """
-        Test that CA_BUNDLE_CONTENT is written to temp file and used for verification.
+        Test get_ca_bundle_content() written to temp file for verification.
 
-        This tests utils.py where CA_BUNDLE_CONTENT is
+        This tests utils.py where get_ca_bundle_content() is
         concatenated with system certificates.
         """
-        # Mock CA_BUNDLE_CONTENT with test certificate data
+        # Mock get_ca_bundle_content with test certificate data
         mock_ca_bundle = [b"-----BEGIN CERTIFICATE-----\n", b"TESTDATA\n"]
-        monkeypatch.setattr("nexusLIMS.utils.network.CA_BUNDLE_CONTENT", mock_ca_bundle)
+        monkeypatch.setattr(
+            "nexusLIMS.utils.network.get_ca_bundle_content", lambda: mock_ca_bundle
+        )
 
         # Create fake system cert file for mocking
         fake_sys_cert = tmp_path / "sys_cert.pem"
@@ -560,9 +562,11 @@ class TestUtils:
 
     @responses.activate
     def test_nexus_req_no_ca_bundle_content(self, monkeypatch):
-        """Test nexus_req when CA_BUNDLE_CONTENT is empty/None."""
-        # Mock CA_BUNDLE_CONTENT as empty
-        monkeypatch.setattr("nexusLIMS.utils.network.CA_BUNDLE_CONTENT", None)
+        """Test nexus_req when get_ca_bundle_content() is None."""
+        # Mock get_ca_bundle_content to return None
+        monkeypatch.setattr(
+            "nexusLIMS.utils.network.get_ca_bundle_content", lambda: None
+        )
 
         # Mock the response
         responses.add(
@@ -580,13 +584,15 @@ class TestUtils:
     def test_nexus_req_ca_bundle_combined_with_system_certs(
         self, monkeypatch, tmp_path
     ):
-        """Test that CA_BUNDLE_CONTENT is properly combined with system certificates."""
+        """Test get_ca_bundle_content() combined with system certs."""
         # Create test certificates
         custom_cert = b"CUSTOM CERTIFICATE\n"
         system_cert = b"SYSTEM CERTIFICATE\n"
 
         mock_ca_bundle = [custom_cert]
-        monkeypatch.setattr("nexusLIMS.utils.network.CA_BUNDLE_CONTENT", mock_ca_bundle)
+        monkeypatch.setattr(
+            "nexusLIMS.utils.network.get_ca_bundle_content", lambda: mock_ca_bundle
+        )
 
         # Create fake system cert file
         fake_sys_cert = tmp_path / "sys_cert.pem"
