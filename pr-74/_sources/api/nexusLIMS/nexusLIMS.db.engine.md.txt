@@ -23,31 +23,7 @@
     ```
 ````
 
-### Data
-
-````{list-table}
-:class: autosummary longtable
-:align: left
-
-* - {py:obj}`engine <nexusLIMS.db.engine.engine>`
-  - ```{autodoc2-docstring} nexusLIMS.db.engine.engine
-    :parser: autodoc2_docstrings_parser
-    :summary:
-    ```
-````
-
 ### API
-
-````{py:data} engine
-:canonical: nexusLIMS.db.engine.engine
-:value: >
-   'create_engine(...)'
-
-```{autodoc2-docstring} nexusLIMS.db.engine.engine
-:parser: autodoc2_docstrings_parser
-```
-
-````
 
 ````{py:function} get_engine() -> sqlalchemy.engine.base.Engine
 :canonical: nexusLIMS.db.engine.get_engine

@@ -828,26 +828,19 @@ window.addEventListener("load", load);
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
-
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.engine.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Engine</span>
 
-<span class="c1"># Create SQLite engine (connects to NexusLIMS database)</span>
-<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
-    <span class="sa">f</span><span class="s2">&quot;sqlite:///</span><span class="si">{</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_DB_PATH</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-    <span class="n">connect_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;check_same_thread&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>  <span class="c1"># Allow multi-thread access</span>
-    <span class="n">echo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># Set to True for SQL debug logging</span>
-<span class="p">)</span>
+<span class="c1"># Lazy singleton — created on first call to get_engine().</span>
+<span class="c1"># Reset to None by SingletonResetter.reset_db_engine() between tests.</span>
+<span class="n">_engine</span><span class="p">:</span> <span class="s2">&quot;Engine | None&quot;</span> <span class="o">=</span> <span class="kc">None</span>
 
 
 <div class="viewcode-block" id="get_engine">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.engine.html#nexusLIMS.db.engine.get_engine">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_engine</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="s2">&quot;Engine&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the database engine.</span>
+<span class="sd">    Get the database engine, creating it lazily on first access.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -860,7 +853,18 @@ window.addEventListener("load", load);
 <span class="sd">    &gt;&gt;&gt; engine = get_engine()</span>
 <span class="sd">    &gt;&gt;&gt; # Use engine for advanced operations</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">engine</span></div>
+    <span class="k">global</span> <span class="n">_engine</span>  <span class="c1"># noqa: PLW0603</span>
+    <span class="k">if</span> <span class="n">_engine</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span>  <span class="c1"># noqa: PLC0415</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>  <span class="c1"># noqa: PLC0415</span>
+
+        <span class="n">_engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;sqlite:///</span><span class="si">{</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_DB_PATH</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">connect_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;check_same_thread&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="n">echo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">_engine</span></div>
 
 </pre></div>
 

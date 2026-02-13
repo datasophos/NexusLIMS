@@ -838,7 +838,11 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">EventType</span><span class="p">,</span> <span class="n">RecordStatus</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">SessionLog</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.session_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_instr_from_api_url</span><span class="p">,</span> <span class="n">instrument_db</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.instruments</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_ensure_instrument_db_loaded</span><span class="p">,</span>
+    <span class="n">get_instr_from_api_url</span><span class="p">,</span>
+    <span class="n">instrument_db</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils.network</span><span class="w"> </span><span class="kn">import</span> <span class="n">nexus_req</span>
 
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -1620,6 +1624,7 @@ window.addEventListener("load", load);
 <span class="sd">            The list of tool ID numbers known to NexusLIMS for this harvester</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tool_ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">_ensure_instrument_db_loaded</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">instrument_db</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;base_url&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">api_url</span><span class="p">:</span>
