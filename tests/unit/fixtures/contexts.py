@@ -99,9 +99,10 @@ def db_context(request, db_factory, monkeypatch):
 
     instruments.instrument_db.clear()
     instruments.instrument_db.update(instruments._get_instrument_db(db_path=db_path))
+    instruments._instrument_db_initialized = True
 
     # Recreate the engine to point to new database
-    # The engine module creates a singleton at import time, so we need to patch it
+    # The engine module uses a lazy _engine singleton, so we set it directly
     from sqlmodel import create_engine
 
     import nexusLIMS.db.engine
@@ -111,10 +112,7 @@ def db_context(request, db_factory, monkeypatch):
         connect_args={"check_same_thread": False},
         echo=False,
     )
-    monkeypatch.setattr(nexusLIMS.db.engine, "engine", new_engine)
-    # Patch get_engine() function to return our test engine
-    # This ensures all code using get_engine() gets the test database
-    monkeypatch.setattr(nexusLIMS.db.engine, "get_engine", lambda: new_engine)
+    nexusLIMS.db.engine._engine = new_engine
 
     return db_path
 

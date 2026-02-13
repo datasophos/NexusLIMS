@@ -18,13 +18,27 @@ from sqlmodel import Session as DBSession
 from sqlmodel import create_engine, select
 
 from nexusLIMS.config import settings
-from nexusLIMS.db.engine import engine as default_engine
+from nexusLIMS.db.engine import get_engine
 from nexusLIMS.db.models import Instrument
 from nexusLIMS.utils.paths import is_subpath
 
 logging.basicConfig()
 _logger = logging.getLogger(__name__)
 _logger.setLevel(logging.INFO)
+
+# Lazy-loaded instrument cache.  Populated on first access via
+# _ensure_instrument_db_loaded().  Reset between tests by
+# SingletonResetter.reset_instrument_cache().
+instrument_db: dict = {}
+_instrument_db_initialized = False
+
+
+def _ensure_instrument_db_loaded():
+    """Populate ``instrument_db`` from the database on first call."""
+    global _instrument_db_initialized  # noqa: PLW0603
+    if not _instrument_db_initialized:
+        _instrument_db_initialized = True
+        instrument_db.update(_get_instrument_db())
 
 
 def _get_instrument_db(db_path: Path | str | None = None):
@@ -51,7 +65,7 @@ def _get_instrument_db(db_path: Path | str | None = None):
     if db_path is not None:
         temp_engine = create_engine(f"sqlite:///{_db_path}")
     else:
-        temp_engine = default_engine
+        temp_engine = get_engine()
 
     try:
         with DBSession(temp_engine) as session:
@@ -64,15 +78,6 @@ def _get_instrument_db(db_path: Path | str | None = None):
             e,
         )
         return {}
-
-
-instrument_db = _get_instrument_db()
-"""dict[str, Instrument]: Module-level cache of all instruments from the database.
-
-Keys are instrument PIDs (str), values are
-:class:`~nexusLIMS.db.models.Instrument` instances.
-Populated once at module import time from the NexusLIMS database.
-"""
 
 
 def get_instr_from_filepath(path: Path) -> Instrument | None:
@@ -97,6 +102,7 @@ def get_instr_from_filepath(path: Path) -> Instrument | None:
     >>> str(inst)
     'FEI-Titan-TEM-012345 in Bldg 1/Room A'
     """
+    _ensure_instrument_db_loaded()
     for _, v in instrument_db.items():
         if is_subpath(
             path,
@@ -129,6 +135,7 @@ def get_instr_from_calendar_name(cal_name):
     >>> str(inst)
     'FEI-Titan-TEM-012345 in Bldg 1/Room A'
     """
+    _ensure_instrument_db_loaded()
     for _, v in instrument_db.items():
         if cal_name in v.api_url:
             return v
@@ -158,6 +165,7 @@ def get_instr_from_api_url(api_url: str) -> Instrument | None:
     >>> str(inst)
     'FEI-Titan-STEM-012345 in Bldg 1/Room A'
     """
+    _ensure_instrument_db_loaded()
     for _, v in instrument_db.items():
         if api_url == v.api_url:
             return v
