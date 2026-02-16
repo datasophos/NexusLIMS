@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-74" />
-    <meta name="docbuild:last-update" content="Feb, 13, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 16, 2026"/>
   </head>
   
   
@@ -801,6 +801,9 @@ window.addEventListener("load", load);
     </li>
     
     <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../cli.html" class="nav-link">nexusLIMS.cli</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.cli.process_records</span></li>
   </ul>
@@ -1406,53 +1409,58 @@ window.addEventListener("load", load);
 <span class="sd">    By default, only sessions from the last week are processed. Use --from=none</span>
 <span class="sd">    to process all sessions, or specify custom date ranges with --from and --to.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Setup logging</span>
-    <span class="n">log_level</span> <span class="o">=</span> <span class="n">_get_log_level</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-    <span class="n">log_file</span><span class="p">,</span> <span class="n">file_handler</span> <span class="o">=</span> <span class="n">_setup_logging</span><span class="p">(</span><span class="n">log_level</span><span class="p">,</span> <span class="n">dry_run</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">handle_config_error</span>  <span class="c1"># noqa: PLC0415</span>
 
-    <span class="c1"># Parse date arguments from raw string parameters</span>
-    <span class="n">dt_from</span> <span class="o">=</span> <span class="n">_parse_date_argument</span><span class="p">(</span><span class="n">from_arg</span><span class="p">)</span>
-    <span class="n">dt_to</span> <span class="o">=</span> <span class="n">_parse_date_argument</span><span class="p">(</span><span class="n">to_arg</span><span class="p">,</span> <span class="n">inclusive_end</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">handle_config_error</span><span class="p">():</span>
+        <span class="c1"># Setup logging (accesses settings for log directory path)</span>
+        <span class="n">log_level</span> <span class="o">=</span> <span class="n">_get_log_level</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">log_file</span><span class="p">,</span> <span class="n">file_handler</span> <span class="o">=</span> <span class="n">_setup_logging</span><span class="p">(</span><span class="n">log_level</span><span class="p">,</span> <span class="n">dry_run</span><span class="p">)</span>
 
-    <span class="c1"># Apply default: fetch last week if no --from was provided</span>
-    <span class="c1"># (Don&#39;t apply if user explicitly passed --from=none)</span>
-    <span class="k">if</span> <span class="n">from_arg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_system_tz</span>  <span class="c1"># noqa: PLC0415</span>
+        <span class="c1"># Parse date arguments from raw string parameters</span>
+        <span class="n">dt_from</span> <span class="o">=</span> <span class="n">_parse_date_argument</span><span class="p">(</span><span class="n">from_arg</span><span class="p">)</span>
+        <span class="n">dt_to</span> <span class="o">=</span> <span class="n">_parse_date_argument</span><span class="p">(</span><span class="n">to_arg</span><span class="p">,</span> <span class="n">inclusive_end</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="n">dt_from</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">current_system_tz</span><span class="p">())</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">weeks</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># Apply default: fetch last week if no --from was provided</span>
+        <span class="c1"># (Don&#39;t apply if user explicitly passed --from=none)</span>
+        <span class="k">if</span> <span class="n">from_arg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils.time</span><span class="w"> </span><span class="kn">import</span> <span class="n">current_system_tz</span>  <span class="c1"># noqa: PLC0415</span>
 
-    <span class="c1"># Log startup information</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting NexusLIMS record processor&quot;</span><span class="p">)</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Dry run: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dry_run</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dt_from</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fetching sessions from: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dt_from</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fetching sessions from: (no lower bound)&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dt_to</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fetching sessions to: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dt_to</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fetching sessions to: (no upper bound)&quot;</span><span class="p">)</span>
+            <span class="n">dt_from</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">tz</span><span class="o">=</span><span class="n">current_system_tz</span><span class="p">())</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">weeks</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="c1"># Dump sanitized effective configuration when verbose</span>
-    <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.cli.config</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>  <span class="c1"># noqa: PLC0415</span>
-            <span class="n">_build_config_dict</span><span class="p">,</span>
-            <span class="n">_sanitize_config</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>  <span class="c1"># noqa: PLC0415</span>
+        <span class="c1"># Log startup information</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting NexusLIMS record processor&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Dry run: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dry_run</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dt_from</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fetching sessions from: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dt_from</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fetching sessions from: (no lower bound)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dt_to</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fetching sessions to: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">dt_to</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Fetching sessions to: (no upper bound)&quot;</span><span class="p">)</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-            <span class="s2">&quot;Effective configuration:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
-                <span class="n">_sanitize_config</span><span class="p">(</span><span class="n">_build_config_dict</span><span class="p">(</span><span class="n">settings</span><span class="p">)),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="nb">str</span>
-            <span class="p">),</span>
-        <span class="p">)</span>
+        <span class="c1"># Dump sanitized effective configuration when verbose</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.cli.config</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>  <span class="c1"># noqa: PLC0415</span>
+                <span class="n">_build_config_dict</span><span class="p">,</span>
+                <span class="n">_sanitize_config</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>  <span class="c1"># noqa: PLC0415</span>
 
-    <span class="c1"># Run record builder with file locking</span>
-    <span class="n">_run_with_lock</span><span class="p">(</span><span class="n">dry_run</span><span class="p">,</span> <span class="n">dt_from</span><span class="p">,</span> <span class="n">dt_to</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;Effective configuration:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+                    <span class="n">_sanitize_config</span><span class="p">(</span><span class="n">_build_config_dict</span><span class="p">(</span><span class="n">settings</span><span class="p">)),</span>
+                    <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="n">default</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
 
-    <span class="c1"># Handle error notifications and cleanup</span>
-    <span class="n">_handle_error_notification</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="n">file_handler</span><span class="p">)</span>
+        <span class="c1"># Run record builder with file locking</span>
+        <span class="n">_run_with_lock</span><span class="p">(</span><span class="n">dry_run</span><span class="p">,</span> <span class="n">dt_from</span><span class="p">,</span> <span class="n">dt_to</span><span class="p">)</span>
+
+        <span class="c1"># Handle error notifications and cleanup</span>
+        <span class="n">_handle_error_notification</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="n">file_handler</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>

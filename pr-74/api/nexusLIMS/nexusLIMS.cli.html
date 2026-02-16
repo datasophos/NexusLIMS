@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-74" />
-    <meta name="docbuild:last-update" content="Feb, 13, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 16, 2026"/>
   </head>
   
   
@@ -516,6 +516,41 @@
 </ul>
 </div>
 </section>
+<section id="package-contents">
+<h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading">#</a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.handle_config_error" title="nexusLIMS.cli.handle_config_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle_config_error</span></code></a></p></td>
+<td><p>Context manager that catches config <code class="docutils literal notranslate"><span class="pre">ValidationError</span></code> and exits cleanly.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="api">
+<h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.cli.handle_config_error">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.</span></span><span class="sig-name descname"><span class="pre">handle_config_error</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.11)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli.html#handle_config_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.handle_config_error" title="Link to this definition">#</a></dt>
+<dd><p>Context manager that catches config <code class="docutils literal notranslate"><span class="pre">ValidationError</span></code> and exits cleanly.</p>
+<p>Instead of dumping a raw Pydantic traceback, this prints a short,
+actionable message directing the user to <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">edit</span></code>
+and the online documentation.</p>
+<section id="usage">
+<h4>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h4>
+<p>::</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>with handle_config_error():
+    from nexusLIMS.config import settings
+    settings.NX_DATA_PATH  # may raise ValidationError
+</pre></div>
+</div>
+</section>
+</dd></dl>
+
+</section>
+</section>
 </section>
 
 
@@ -566,6 +601,14 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#package-contents">Package Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.handle_config_error"><code class="docutils literal notranslate"><span class="pre">handle_config_error()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

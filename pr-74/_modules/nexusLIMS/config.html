@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-74" />
-    <meta name="docbuild:last-update" content="Feb, 13, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 16, 2026"/>
   </head>
   
   
@@ -1775,9 +1775,11 @@ window.addEventListener("load", load);
             <span class="n">doc_version</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\.dev.*$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">__version__</span><span class="p">)</span>
             <span class="n">help_msg</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;NexusLIMS configuration validation failed.</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;See https://datasophos.github.io/NexusLIMS/</span><span class="si">{</span><span class="n">doc_version</span><span class="si">}</span><span class="s2">/user_guide/configuration.html</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;for complete environment variable reference.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span>
+                <span class="s2">&quot;NexusLIMS configuration validation failed.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Quick fix:  Run &#39;nexuslims-config edit&#39; to interactively</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;            configure NexusLIMS in a terminal UI.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Reference:  https://datasophos.github.io/NexusLIMS/&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">doc_version</span><span class="si">}</span><span class="s2">/user_guide/configuration.html</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;add_note&quot;</span><span class="p">):</span>
                 <span class="n">e</span><span class="o">.</span><span class="n">add_note</span><span class="p">(</span><span class="n">help_msg</span><span class="p">)</span>
