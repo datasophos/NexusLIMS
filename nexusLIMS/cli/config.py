@@ -308,26 +308,31 @@ def dump(output: str | None) -> None:
     secret.  Use ``load`` to import a previously dumped file back into a
     ``.env``.
     """
-    from nexusLIMS.config import settings  # noqa: PLC0415
+    from nexusLIMS.cli import handle_config_error  # noqa: PLC0415
 
-    click.echo(
-        "WARNING: The output will contain live credentials "
-        "(API tokens, passwords, certificates).  "
-        "Handle it with the same care as your .env file.",
-        err=True,
-    )
+    with handle_config_error():
+        from nexusLIMS.config import settings  # noqa: PLC0415
 
-    config = _build_config_dict(settings)
-    json_output = json.dumps(config, indent=2, default=str)
+        # Accessing settings attributes triggers validation; the context
+        # manager turns any ValidationError into a friendly message.
+        config_dict = _build_config_dict(settings)
 
-    if output is None:
-        # Print to stdout
-        click.echo(json_output)
-    else:
-        # Write to file
-        output_path = Path(output)
-        output_path.write_text(json_output + "\n")
-        click.echo(f"Configuration dumped to {output_path}", err=True)
+        click.echo(
+            "WARNING: The output will contain live credentials "
+            "(API tokens, passwords, certificates).  "
+            "Handle it with the same care as your .env file.",
+            err=True,
+        )
+        json_output = json.dumps(config_dict, indent=2, default=str)
+
+        if output is None:
+            # Print to stdout
+            click.echo(json_output)
+        else:
+            # Write to file
+            output_path = Path(output)
+            output_path.write_text(json_output + "\n")
+            click.echo(f"Configuration dumped to {output_path}", err=True)
 
 
 @main.command()

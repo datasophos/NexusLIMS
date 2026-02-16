@@ -389,9 +389,7 @@ def _cli():  # noqa: PLR0915
             from alembic.runtime.migration import MigrationContext
             from sqlalchemy import create_engine
 
-            from nexusLIMS.config import settings
-
-            engine = create_engine(f"sqlite:///{settings.NX_DB_PATH}")
+            engine = create_engine(f"sqlite:///{db_path}")
             with engine.connect() as connection:
                 context = MigrationContext.configure(connection)
                 current_rev = context.get_current_revision()

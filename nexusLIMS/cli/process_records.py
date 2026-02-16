@@ -575,53 +575,58 @@ def main(
     By default, only sessions from the last week are processed. Use --from=none
     to process all sessions, or specify custom date ranges with --from and --to.
     """
-    # Setup logging
-    log_level = _get_log_level(verbose)
-    log_file, file_handler = _setup_logging(log_level, dry_run)
+    from nexusLIMS.cli import handle_config_error  # noqa: PLC0415
 
-    # Parse date arguments from raw string parameters
-    dt_from = _parse_date_argument(from_arg)
-    dt_to = _parse_date_argument(to_arg, inclusive_end=True)
+    with handle_config_error():
+        # Setup logging (accesses settings for log directory path)
+        log_level = _get_log_level(verbose)
+        log_file, file_handler = _setup_logging(log_level, dry_run)
 
-    # Apply default: fetch last week if no --from was provided
-    # (Don't apply if user explicitly passed --from=none)
-    if from_arg is None:
-        from nexusLIMS.utils.time import current_system_tz  # noqa: PLC0415
+        # Parse date arguments from raw string parameters
+        dt_from = _parse_date_argument(from_arg)
+        dt_to = _parse_date_argument(to_arg, inclusive_end=True)
 
-        dt_from = datetime.now(tz=current_system_tz()) - timedelta(weeks=1)
+        # Apply default: fetch last week if no --from was provided
+        # (Don't apply if user explicitly passed --from=none)
+        if from_arg is None:
+            from nexusLIMS.utils.time import current_system_tz  # noqa: PLC0415
 
-    # Log startup information
-    logger.info("Starting NexusLIMS record processor")
-    logger.info("Dry run: %s", dry_run)
-    if dt_from is not None:
-        logger.info("Fetching sessions from: %s", dt_from.isoformat())
-    else:
-        logger.info("Fetching sessions from: (no lower bound)")
-    if dt_to is not None:
-        logger.info("Fetching sessions to: %s", dt_to.isoformat())
-    else:
-        logger.info("Fetching sessions to: (no upper bound)")
+            dt_from = datetime.now(tz=current_system_tz()) - timedelta(weeks=1)
 
-    # Dump sanitized effective configuration when verbose
-    if verbose >= 1:
-        from nexusLIMS.cli.config import (  # noqa: PLC0415
-            _build_config_dict,
-            _sanitize_config,
-        )
-        from nexusLIMS.config import settings  # noqa: PLC0415
+        # Log startup information
+        logger.info("Starting NexusLIMS record processor")
+        logger.info("Dry run: %s", dry_run)
+        if dt_from is not None:
+            logger.info("Fetching sessions from: %s", dt_from.isoformat())
+        else:
+            logger.info("Fetching sessions from: (no lower bound)")
+        if dt_to is not None:
+            logger.info("Fetching sessions to: %s", dt_to.isoformat())
+        else:
+            logger.info("Fetching sessions to: (no upper bound)")
 
-        logger.info(
-            "Effective configuration:\n%s",
-            json.dumps(
-                _sanitize_config(_build_config_dict(settings)), indent=2, default=str
-            ),
-        )
+        # Dump sanitized effective configuration when verbose
+        if verbose >= 1:
+            from nexusLIMS.cli.config import (  # noqa: PLC0415
+                _build_config_dict,
+                _sanitize_config,
+            )
+            from nexusLIMS.config import settings  # noqa: PLC0415
 
-    # Run record builder with file locking
-    _run_with_lock(dry_run, dt_from, dt_to)
+            logger.info(
+                "Effective configuration:\n%s",
+                json.dumps(
+                    _sanitize_config(_build_config_dict(settings)),
+                    indent=2,
+                    default=str,
+                ),
+            )
 
-    # Handle error notifications and cleanup
-    _handle_error_notification(log_file, file_handler)
+        # Run record builder with file locking
+        _run_with_lock(dry_run, dt_from, dt_to)
+
+        # Handle error notifications and cleanup
+        _handle_error_notification(log_file, file_handler)
 
 
 if __name__ == "__main__":  # pragma: no cover

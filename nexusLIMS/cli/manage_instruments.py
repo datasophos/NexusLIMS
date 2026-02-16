@@ -149,9 +149,13 @@ def main():
     # Import here after database initialization
     from nexusLIMS.tui.apps.instruments import InstrumentManagerApp  # noqa: PLC0415
 
+    # Pass db_path explicitly so the TUI app doesn't need to access
+    # config.settings (which would require all settings to be valid)
+    db_path = Path(os.getenv("NX_DB_PATH"))
+
     # Launch the TUI app
     try:
-        app = InstrumentManagerApp()
+        app = InstrumentManagerApp(db_path=db_path)
         app.run()
     except KeyboardInterrupt:
         # Clean exit on Ctrl+C
