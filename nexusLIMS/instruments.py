@@ -24,7 +24,6 @@ from nexusLIMS.utils.paths import is_subpath
 
 logging.basicConfig()
 _logger = logging.getLogger(__name__)
-_logger.setLevel(logging.INFO)
 
 # Lazy-loaded instrument cache.  Populated on first access via
 # _ensure_instrument_db_loaded().  Reset between tests by

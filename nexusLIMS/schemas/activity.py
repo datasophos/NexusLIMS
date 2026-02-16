@@ -30,7 +30,6 @@ from nexusLIMS.schemas import em_glossary
 from nexusLIMS.utils.time import current_system_tz
 
 _logger = logging.getLogger(__name__)
-_logger.setLevel(logging.INFO)
 
 
 def cluster_filelist_mtimes(filelist: List[str]) -> List[float]:

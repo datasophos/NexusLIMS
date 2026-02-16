@@ -46,20 +46,22 @@ def _ensure_database_initialized() -> None:
     automatically initializes it using the migration system.
     """
     # Load .env file if it exists (before checking environment variables)
-    from dotenv import load_dotenv  # noqa: PLC0415
+    from dotenv import find_dotenv, load_dotenv  # noqa: PLC0415
 
-    load_dotenv()
+    load_dotenv(find_dotenv(usecwd=True))
 
     # Get DB path from environment variable
     db_path_str = os.getenv("NX_DB_PATH")
     if not db_path_str:
         click.secho(
-            "Error: NX_DB_PATH environment variable is not set",
+            "Error: NX_DB_PATH environment variable is not set.",
             fg="red",
             err=True,
         )
-        click.echo("Set it to the desired database location, e.g.:", err=True)
-        click.echo("  export NX_DB_PATH=/path/to/database.db", err=True)
+        click.echo("\nSet it via the interactive configurator:\n", err=True)
+        click.echo("    nexuslims-config edit\n", err=True)
+        click.echo("Or set it directly, e.g.:\n", err=True)
+        click.echo("    export NX_DB_PATH=/path/to/database.db", err=True)
         raise click.Abort
 
     db_path = Path(db_path_str)

@@ -39,7 +39,6 @@ the standard INI metadata.
 """
 
 _logger = logging.getLogger(__name__)
-_logger.setLevel(logging.INFO)
 
 
 class QuantaTiffExtractor:

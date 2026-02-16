@@ -278,7 +278,7 @@ class TestRecordBuilder:
         # and a warning should be logged
         found_files = record_builder.dry_run_file_find(s)
         assert found_files == []
-        assert re.search(r"\nWARNING.*No files found for this session", caplog.text)
+        assert re.search(r"WARNING.*No files found for this session", caplog.text)
 
     @pytest.mark.usefixtures("mock_nemo_reservation")
     def test_process_new_records_dry_run(self, test_record_files):
