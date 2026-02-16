@@ -996,9 +996,9 @@ window.addEventListener("load", load);
 <span class="sd">        access the full Alembic CLI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Load .env file if it exists (before any commands run)</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_dotenv</span><span class="p">,</span> <span class="n">load_dotenv</span>
 
-        <span class="n">load_dotenv</span><span class="p">()</span>
+        <span class="n">load_dotenv</span><span class="p">(</span><span class="n">find_dotenv</span><span class="p">(</span><span class="n">usecwd</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">version</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>

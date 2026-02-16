@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_45e5d5f65ba83479_migrate_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2026-02-16 15:38 +0000
+            created at 2026-02-16 15:58 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -128,9 +128,9 @@
     <p class="pln"><span class="n"><a id="t46" href="#t46">46</a></span><span class="t"><span class="str">    automatically initializes it using the migration system.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t47" href="#t47">47</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t48" href="#t48">48</a></span><span class="t">    <span class="com"># Load .env file if it exists (before checking environment variables)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t49" href="#t49">49</a></span><span class="t">    <span class="key">from</span> <span class="nam">dotenv</span> <span class="key">import</span> <span class="nam">load_dotenv</span>  <span class="com"># noqa: PLC0415</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t49" href="#t49">49</a></span><span class="t">    <span class="key">from</span> <span class="nam">dotenv</span> <span class="key">import</span> <span class="nam">find_dotenv</span><span class="op">,</span> <span class="nam">load_dotenv</span>  <span class="com"># noqa: PLC0415</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t50" href="#t50">50</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t51" href="#t51">51</a></span><span class="t">    <span class="nam">load_dotenv</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t51" href="#t51">51</a></span><span class="t">    <span class="nam">load_dotenv</span><span class="op">(</span><span class="nam">find_dotenv</span><span class="op">(</span><span class="nam">usecwd</span><span class="op">=</span><span class="key">True</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t52" href="#t52">52</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t53" href="#t53">53</a></span><span class="t">    <span class="com"># Get DB path from environment variable</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t54" href="#t54">54</a></span><span class="t">    <span class="nam">db_path_str</span> <span class="op">=</span> <span class="nam">os</span><span class="op">.</span><span class="nam">getenv</span><span class="op">(</span><span class="str">"NX_DB_PATH"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -262,7 +262,7 @@
             <a class="nav" href="z_45e5d5f65ba83479_migrate_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2026-02-16 15:38 +0000
+            created at 2026-02-16 15:58 +0000
         </p>
     </div>
 </footer>
