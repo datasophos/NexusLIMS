@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-74" />
-    <meta name="docbuild:last-update" content="Feb, 16, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 17, 2026"/>
   </head>
   
   
@@ -488,48 +488,10 @@
 <div class="toctree-wrapper compound">
 </div>
 <p>Welcome to NexusLIMS! This guide will help you get up and running quickly.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>Upgrading from v1.x?</strong> See the <a class="reference internal" href="../migration_guide.html#migration"><span class="std std-ref">Migration Guide</span></a> guide for step-by-step instructions on migrating from NexusLIMS v1.4.3 to v2.0+.</p>
+<div class="note admonition">
+<p class="admonition-title">Upgrading from v1.x?</p>
+<p>See the <a class="reference internal" href="../migration_guide.html#migration"><span class="std std-ref">Migration Guide</span></a> guide for step-by-step instructions on migrating from NexusLIMS v1.4.3 to v2.0+.</p>
 </div>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p><strong>🆕 What’s New in v2.0+?</strong></p>
-<p>End users will not notice significant changes, but the infrastructure powering NexusLIMS has received major upgrades, including:</p>
-<ul class="simple">
-<li><p><strong>Pydantic Metadata Schemas</strong>: All metadata is validated internally using type-specific schemas</p></li>
-<li><p><strong>EM Glossary v2.0</strong>: NexusLIMS uses standardized field names from the emerging <a class="reference external" href="https://emglossary.helmholtz-metadaten.de/">community ontology</a></p></li>
-<li><p><strong>Pint Unit Integration</strong>: Type-safe quantity handling with automatic unit conversion (with future connection to the <a class="reference external" href="https://qudt.org/">QUDT unit ontology</a> planned)</p></li>
-<li><p><strong>Better Validation</strong>: Strict schema validation catches errors before record building</p></li>
-<li><p><strong>Improved system administration</strong>: Tools to help manage NexusLIMS installations have been drastically improved</p></li>
-<li><p><strong>Multi-destination record export</strong>: Records can now be uploaded to other ELN systems, in addition to the default CDCS.</p></li>
-</ul>
-<p>See <a class="reference internal" href="../dev_guide/nexuslims_internal_schema.html"><span class="std std-doc">NexusLIMS Internal Schema</span></a> for more details on how NexusLIMS handles data internally.</p>
-</div>
-<section id="what-is-nexuslims">
-<h2>What is NexusLIMS?<a class="headerlink" href="#what-is-nexuslims" title="Link to this heading">#</a></h2>
-<p>NexusLIMS is an electron microscopy Laboratory Information Management System (LIMS) that automatically generates experimental records by:</p>
-<ul class="simple">
-<li><p>Extracting metadata from microscopy data files</p></li>
-<li><p>Harvesting information from reservation calendar systems (like <a class="reference external" href="https://github.com/usnistgov/NEMO">NEMO</a>)</p></li>
-<li><p>Building structured XML records conforming to the <a class="reference external" href="https://doi.org/10.18434/M32245">Nexus Experiment schema</a></p></li>
-<li><p>Uploading records to a <a class="reference external" href="https://github.com/datasophos/nexuslims-cdcs/">CDCS</a> (Configurable Data Curation System) frontend</p></li>
-</ul>
-<p>Originally developed at NIST, NexusLIMS is now maintained by <a class="reference external" href="https://datasophos.co">datasophos</a>.</p>
-<section id="key-features">
-<h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p><strong>Automatic Record Generation</strong>: Creates comprehensive experimental records without manual data entry</p></li>
-<li><p><strong>Multiple File Format Support</strong>: Reads metadata from <code class="docutils literal notranslate"><span class="pre">.dm3/.dm4</span></code>, <code class="docutils literal notranslate"><span class="pre">.tif</span></code>, <code class="docutils literal notranslate"><span class="pre">.ser/.emi</span></code>, <code class="docutils literal notranslate"><span class="pre">.spc/.msa</span></code> files</p></li>
-<li><p><strong>Standardized Metadata</strong> <em>(New in v2.2.0)</em>: Uses EM Glossary ontology for field names and units</p></li>
-<li><p><strong>Schema Validation</strong> <em>(New in v2.2.0)</em>: Pydantic schemas ensure metadata quality before record building</p></li>
-<li><p><strong>Calendar Integration</strong>: Connects with NEMO lab management systems</p></li>
-<li><p><strong>Temporal File Clustering</strong>: Intelligently groups files into acquisition activities using KDE</p></li>
-<li><p><strong>CDCS Integration</strong>: Publishes records to web-accessible data repositories</p></li>
-<li><p><strong>Extensible Architecture</strong>: Plugin-based extractors and instrument profiles for customization</p></li>
-</ul>
-</section>
-</section>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
 <section id="prerequisites">
@@ -537,54 +499,153 @@
 <ul class="simple">
 <li><p>Python 3.11 or 3.12</p></li>
 <li><p>Linux or macOS (Windows is not officially supported)</p></li>
-<li><p><a class="reference external" href="https://docs.astral.sh/uv/">uv</a> package manager (recommended) or pip</p></li>
+<li><p><a class="reference external" href="https://docs.astral.sh/uv/#installation">uv</a> (recommended) or pip</p></li>
 </ul>
+<p>Throughout the following sections, instructions are given for using <code class="docutils literal notranslate"><span class="pre">uv</span></code>,
+<code class="docutils literal notranslate"><span class="pre">pip</span></code>, and for a “from source” development installation. Most users will
+want to use the <code class="docutils literal notranslate"><span class="pre">uv</span></code> approach, as it will automatically use the correct
+python version and provides the most system integration and ease of use.</p>
 </section>
 <section id="install-nexuslims">
 <h3>Install NexusLIMS<a class="headerlink" href="#install-nexuslims" title="Link to this heading">#</a></h3>
-<p>Using uv (recommended):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datasophos/NexusLIMS.git
-<span class="nb">cd</span><span class="w"> </span>NexusLIMS
-
-<span class="c1"># Install with uv</span>
-uv<span class="w"> </span>sync
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-0">
+uv (Recommended)</label><div class="sd-tab-content docutils">
+<p>Using <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">tool</span></code>, you can install NexusLIMS as an isolated command-line tool:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>nexuslims
 </pre></div>
 </div>
-<p>Using pip:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository</span>
-git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datasophos/NexusLIMS.git
-<span class="nb">cd</span><span class="w"> </span>NexusLIMS
+<p>This will install the following NexusLIMS command line tools directly onto your path,
+meaning they can be run from your terminal without needing to activate
+a virtual environment: <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span></code>, <code class="docutils literal notranslate"><span class="pre">nexuslims-manage-instruments</span></code>,
+<code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span></code>, and <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code></p>
+<p>For more information on tools in uv, please see their
+<a class="reference external" href="https://docs.astral.sh/uv/guides/tools/">documentation</a>.</p>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-1">
+pip</label><div class="sd-tab-content docutils">
+<p>NexusLIMS can also be installed using the traditional <code class="docutils literal notranslate"><span class="pre">pip</span></code> approach.
+If using this method, it is recommended to install in an isolated
+virtual enviroment:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># 1. create a new virtual environment
+python -m venv nexuslims-venv
 
-<span class="c1"># Create virtual environment</span>
-python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
-<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+# 2. activate the environment
+source nexuslims-venv/bin/activate
 
-<span class="c1"># Install</span>
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+# 3. install NexusLIMS:
+pip install nexuslims
 </pre></div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Using virtual environments</p>
+<p>If you use the virtual environment approach, you will need to
+“source” the environment every time (step 2, above) before you will be able to run
+any NexusLIMS command line tools.</p>
+</div>
+</div>
+<input id="sd-tab-item-2" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-2">
+From source</label><div class="sd-tab-content docutils">
+<p>For contributors who want to modify NexusLIMS source code:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Clone the repository
+git clone https://github.com/datasophos/NexusLIMS.git
+cd NexusLIMS
+
+# Install with uv (includes dev dependencies)
+uv sync
+</pre></div>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Using <em>uv run</em></p>
+<p>For development installs, you will need to prefix all NexusLIMS commands with <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span></code>,
+from the project directory, since they will not be installed onto the path by default
+(e.g. <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">nexuslims-config</span> <span class="pre">edit</span></code>).</p>
+</div>
+</div>
 </div>
 </section>
 <section id="verify-installation">
 <h3>Verify Installation<a class="headerlink" href="#verify-installation" title="Link to this heading">#</a></h3>
 <p>Check that NexusLIMS is installed correctly:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import nexusLIMS; print(nexusLIMS.version.__version__)&quot;</span>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-3">
+uv (Recommended)</label><div class="sd-tab-content docutils">
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-config<span class="w"> </span>--help
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-4" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-4">
+pip</label><div class="sd-tab-content docutils">
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>source nexuslims-venv/bin/activate
+nexuslims-config --help
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-5">
+From source</label><div class="sd-tab-content docutils">
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>cd NexusLIMS
+uv run nexuslims-config --help
+</pre></div>
+</div>
+</div>
+</div>
+<p>You should see the help output for the NexusLIMS configuration management tool:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: nexuslims-config [OPTIONS] COMMAND [ARGS]...
+
+  Manage NexusLIMS configuration files.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  dump  Dump the current effective configuration to JSON.
+  edit  Interactively edit the NexusLIMS configuration in a terminal UI.
+  load  Load a previously dumped JSON config into a .env file.
 </pre></div>
 </div>
 </section>
 </section>
 <section id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
-<p>NexusLIMS requires configuration through environment variables, typically stored in a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In all of the following examples, commands like <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span></code> and
+<code class="docutils literal notranslate"><span class="pre">nexuslims-manage-instruments</span></code> are installed as part of the NexusLIMS package.
+How you invoke them depends on your installation type:</p>
+<ul class="simple">
+<li><p><strong>uv tool install</strong>: you can use the commands as written, since uv
+puts them on your executable path during installation</p></li>
+<li><p><strong>pip install</strong>: activate your virtual environment first
+(<code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">.venv/bin/activate</span></code>), then run commands directly (e.g.
+<code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">edit</span></code>)</p></li>
+<li><p><strong>uv source install</strong>: run the commands from the cloned NexusLIMS directory
+and prefix each command with <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">nexuslims-config</span> <span class="pre">edit</span></code>)</p></li>
+</ul>
+</div>
+<p>NexusLIMS requires configuration through environment variables, which are typically stored in a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.</p>
 <section id="quick-start">
 <h3>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h3>
 <ol class="arabic">
-<li><p>Copy the example configuration file:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+<li><p>Launch the interactive configuration editor, which provides an interactive
+way to customize your configuration, and will automatically save a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file
+with your selected values:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-config<span class="w"> </span>edit
 </pre></div>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>For development installs from source, you can also copy the example file directly:
+<code class="docutils literal notranslate"><span class="pre">cp</span> <span class="pre">.env.example</span> <span class="pre">.env</span></code> and then edit it manually.</p>
+</div>
 </li>
-<li><p>Edit <code class="docutils literal notranslate"><span class="pre">.env</span></code> with your settings. At minimum, you’ll need to set:</p>
+<li><p>At minimum, you’ll need to set:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code> - Path to instrument data</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code> - Path for NexusLIMS data</p></li>
@@ -612,61 +673,44 @@ nexuslims-config<span class="w"> </span>dump
 <h2>Database Setup<a class="headerlink" href="#database-setup" title="Link to this heading">#</a></h2>
 <section id="initialize-the-database">
 <h3>Initialize the Database<a class="headerlink" href="#initialize-the-database" title="Link to this heading">#</a></h3>
-<p>NexusLIMS uses SQLite to track instruments and sessions. Initialize the database:</p>
+<p>NexusLIMS uses a managed SQLite databse to track instruments, sessions, and users.
+Before running the NexusLIMS record builder, you will need to initialize the
+database and add some instruments. The database tool will use whatever value
+you have set in the <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> varuable as the active database:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize new database with schema and migrations</span>
 nexuslims-migrate<span class="w"> </span>init
 </pre></div>
 </div>
 <p>This creates an appropriately-formatted database file at <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code>.
-It will not have any instruments configured, but will have the correct</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p><strong>Check database status:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>current<span class="w">  </span><span class="c1"># Show current version</span>
-nexuslims-migrate<span class="w"> </span>check<span class="w">    </span><span class="c1"># Check for pending migrations</span>
-</pre></div>
-</div>
-<p><strong>Apply updates after upgrading NexusLIMS:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>upgrade<span class="w">  </span><span class="c1"># Apply pending migrations</span>
+It will not have any instruments configured, but will have the correct
+structure.</p>
+<div class="tip admonition">
+<p class="admonition-title">Using a custom database path</p>
+<p>If for some reason you would like to use a different database file than specified
+in your .env, you can do so by setting the <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> environment variable
+directly on the command line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nv">NX_DB_PATH</span><span class="o">=</span>/path/to/other/database.db<span class="w"> </span>nexuslims-migrate<span class="w"> </span>init
 </pre></div>
 </div>
 </div>
 </section>
 <section id="configure-instruments">
 <h3>Configure Instruments<a class="headerlink" href="#configure-instruments" title="Link to this heading">#</a></h3>
-<p>Add your instruments to the database. Each instrument requires:</p>
-<ul class="simple">
-<li><p><strong>instrument_pid</strong>: Unique instrument identifier (e.g., “FEI-Titan-TEM-12345”)</p></li>
-<li><p><strong>harvester</strong>: “nemo” (SharePoint harvester is deprecated)</p></li>
-<li><p><strong>filestore_path</strong>: Path relative to <code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code></p></li>
-<li><p><strong>timezone</strong>: Timezone for datetime handling (IANA format like “America/New_York”)</p></li>
-<li><p><strong>api_url</strong>: NEMO API URL (for NEMO harvester) – Should be of the format <code class="docutils literal notranslate"><span class="pre">https://&lt;nemo_address&gt;/api/tools/?id=&lt;tool_id_in_NEMO&gt;</span></code></p></li>
-<li><p><strong>display_name</strong>: Human-readable name for the Nexus Microscopy schema</p></li>
-<li><p><strong>location</strong>: Physical location of the instrument</p></li>
-<li><p><strong>property_tag</strong>: Unique numeric identifier (for reference)</p></li>
-</ul>
-<p>See <a class="reference internal" href="../dev_guide/database.html#instr-table"><span class="std std-ref">the instruments table documentation</span></a> for all available columns.</p>
-<p>Example SQL:</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">instruments</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="n">instrument_pid</span><span class="p">,</span><span class="w"> </span><span class="n">harvester</span><span class="p">,</span><span class="w"> </span><span class="n">filestore_path</span><span class="p">,</span><span class="w"> </span><span class="n">timezone</span><span class="p">,</span>
-<span class="w">    </span><span class="n">api_url</span><span class="p">,</span><span class="w"> </span><span class="n">display_name</span><span class="p">,</span><span class="w"> </span><span class="k">location</span><span class="p">,</span><span class="w"> </span><span class="n">property_tag</span>
-<span class="p">)</span>
-<span class="k">VALUES</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="s1">&#39;FEI-Titan-TEM-12345&#39;</span><span class="p">,</span>
-<span class="w">    </span><span class="s1">&#39;nemo&#39;</span><span class="p">,</span>
-<span class="w">    </span><span class="s1">&#39;Titan_data&#39;</span><span class="p">,</span>
-<span class="w">    </span><span class="s1">&#39;America/New_York&#39;</span><span class="p">,</span>
-<span class="w">    </span><span class="s1">&#39;https://nemo.example.com/api/tools/?id=10&#39;</span><span class="p">,</span>
-<span class="w">    </span><span class="s1">&#39;FEI Titan TEM&#39;</span><span class="p">,</span>
-<span class="w">    </span><span class="s1">&#39;Building 1, Room 101&#39;</span><span class="p">,</span>
-<span class="w">    </span><span class="s1">&#39;12345&#39;</span>
-<span class="p">);</span>
+<p>For NexusLIMS to start building records, it needs to know about
+your instruments and where their data is stored. This is information
+is kept in the database created in the previous step.</p>
+<p>To add, edit, and delete instruments, use the NexusLIMS interactive
+instrument manager:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-manage-instruments
 </pre></div>
 </div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>You can use a SQLite database browser like <a class="reference external" href="https://sqlitebrowser.org/">DB Browser for SQLite</a>
-to manage instruments graphically instead of writing SQL.</p>
+<p>This launches a terminal UI with a table of all/any configured
+instruments. Use arrow keys to navigate, and the <code class="docutils literal notranslate"><span class="pre">a</span></code> key to add an
+instrument by filling out the interactive form.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For complete documentation on configuring instruments, see
+the <a class="reference internal" href="instrument_manager.html#instrument-manager"><span class="std std-ref">Instrument Management</span></a> guide.</p>
 </div>
 </section>
 </section>
@@ -687,65 +731,58 @@ nexuslims-process-records<span class="w"> </span>-n
 nexuslims-process-records<span class="w"> </span>-vv
 </pre></div>
 </div>
+<p>For a detailed explanation of the record building workflow and session states,
+see <a class="reference internal" href="record_building.html"><span class="doc">Record building workflow</span></a> and <a class="reference internal" href="../dev_guide/database.html"><span class="doc">NexusLIMS Database</span></a>.</p>
 </section>
-<section id="understanding-the-workflow">
-<h3>Understanding the Workflow<a class="headerlink" href="#understanding-the-workflow" title="Link to this heading">#</a></h3>
-<p>NexusLIMS follows this process:</p>
-<ol class="arabic simple">
-<li><p><strong>Harvest</strong>: NEMO harvester checks API for new/ended reservations</p></li>
-<li><p><strong>Track</strong>: Creates <code class="docutils literal notranslate"><span class="pre">session_log</span></code> entries with START/END events</p></li>
-<li><p><strong>Find Files</strong>: Locates files modified during session window</p></li>
-<li><p><strong>Cluster</strong>: Groups files into Acquisition Activities by temporal analysis</p></li>
-<li><p><strong>Extract</strong>: Reads metadata from each file using format-specific extractors</p></li>
-<li><p><strong>Validate</strong>: Validates record metadata matches expected format</p></li>
-<li><p><strong>Build</strong>: Generates XML record conforming to Nexus Experiment schema</p></li>
-<li><p><strong>Upload</strong>: Publishes record to CDCS</p></li>
-</ol>
-<p>The validation step (6) ensures all metadata meets quality standards before record generation. Invalid metadata causes extraction to fail with detailed error messages, preventing bad data from entering the system.</p>
 </section>
-<section id="session-states">
-<h3>Session States<a class="headerlink" href="#session-states" title="Link to this heading">#</a></h3>
-<p>NexusLIMS tracks your sessions through several states:</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<thead>
-<tr class="row-odd"><th class="head"><p>Status</p></th>
-<th class="head"><p>Meaning</p></th>
-<th class="head"><p>Action Required</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">WAITING_FOR_END</span></code></p></td>
-<td><p>Session in progress</p></td>
-<td><p>Continue using instrument normally</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TO_BE_BUILT</span></code></p></td>
-<td><p>Session ended, record pending</p></td>
-<td><p>Wait for automated processing</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code></p></td>
-<td><p>Record successfully created</p></td>
-<td><p>View record in CDCS</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NO_FILES_FOUND</span></code></p></td>
-<td><p>No data files detected</p></td>
-<td><p>Check if files were saved to correct location</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ERROR</span></code></p></td>
-<td><p>Record generation failed</p></td>
-<td><p>Contact facility administrator</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NO_CONSENT</span></code></p></td>
-<td><p>A user did not consent to have their data harvested for the session</p></td>
-<td><p>Provide consent by clicking “Agree” in NEMO questions (post-run, pre-run, or reservation)</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NO_RESERVATION</span></code></p></td>
-<td><p>There was no matching reservation found for this session</p></td>
-<td><p>Make sure you made a reservation for your usage event</p></td>
-</tr>
-</tbody>
-</table>
+<section id="updating-nexuslims">
+<h2>Updating NexusLIMS<a class="headerlink" href="#updating-nexuslims" title="Link to this heading">#</a></h2>
+<div class="tip admonition">
+<p class="admonition-title">Release notifications</p>
+<p>To be notified of new NexusLIMS releases, watch the repository on GitHub
+(requires a GitHub account): go to <a class="reference external" href="https://github.com/datasophos/NexusLIMS">github.com/datasophos/NexusLIMS</a>,
+click <strong>Watch</strong> → <strong>Custom</strong>, and enable <strong>Releases</strong>.</p>
 </div>
-</section>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-6">
+uv (Recommended)</label><div class="sd-tab-content docutils">
+<p>Upgrade to the latest version with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>tool<span class="w"> </span>upgrade<span class="w"> </span>nexuslims
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-7" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-7">
+pip</label><div class="sd-tab-content docutils">
+<p>Activate your virtual environment, then upgrade with pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>nexuslims-venv/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>nexuslims
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-8" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" for="sd-tab-item-8">
+From source</label><div class="sd-tab-content docutils">
+<p>Pull the latest changes with <code class="docutils literal notranslate"><span class="pre">git</span></code> and sync dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>NexusLIMS
+git<span class="w"> </span>pull
+uv<span class="w"> </span>sync
+</pre></div>
+</div>
+</div>
+</div>
+<p>After upgrading, you may need to upgrade the database structure (check each
+version’s release notes for details). If necessary, run the folllowing to
+apply any pending database migrations to make your database compatible with
+the new version:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>upgrade
+</pre></div>
+</div>
+<p>To check whether migrations are needed without applying them, use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>check
+</pre></div>
+</div>
 </section>
 <section id="getting-help">
 <h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading">#</a></h2>
@@ -804,10 +841,6 @@ nexuslims-process-records<span class="w"> </span>-vv
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-nexuslims">What is NexusLIMS?</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-features">Key Features</a></li>
-</ul>
-</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#install-nexuslims">Install NexusLIMS</a></li>
@@ -825,10 +858,9 @@ nexuslims-process-records<span class="w"> </span>-vv
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Quick Start</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-the-record-builder">Run the Record Builder</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-the-workflow">Understanding the Workflow</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#session-states">Session States</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#updating-nexuslims">Updating NexusLIMS</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-help">Getting Help</a></li>
 </ul>
   </nav></div>

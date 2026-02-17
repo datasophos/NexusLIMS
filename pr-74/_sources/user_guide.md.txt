@@ -3,6 +3,12 @@
 
 Welcome to the NexusLIMS User Guide! This guide helps you understand how NexusLIMS works, what to expect from the system, and how to interact with your experimental records.
 
+```{admonition} Want to jump right in?
+:class: tip
+See the {ref}`getting_started` page for quick-start
+installation and configuration instructions.
+```
+
 ## About This Guide
 
 This user guide is for:
@@ -13,6 +19,29 @@ This user guide is for:
 **For developers** extending NexusLIMS with new extractors or profiles, see the [Developer Guide](dev_guide.md).
 
 ---
+
+## What is NexusLIMS?
+
+NexusLIMS is an electron microscopy Laboratory Information Management System (LIMS) that automatically generates experimental records by:
+
+- Extracting metadata from microscopy data files
+- Harvesting information from reservation calendar systems (like [NEMO](https://github.com/usnistgov/NEMO))
+- Building structured XML records conforming to the [Nexus Experiment schema](https://doi.org/10.18434/M32245)
+- Uploading records to a [CDCS](https://github.com/datasophos/nexuslims-cdcs/) (Configurable Data Curation System) frontend
+
+Originally developed at NIST, NexusLIMS is now maintained by [datasophos](https://datasophos.co).
+
+### Key Features
+
+- **Automatic Record Generation**: Creates comprehensive experimental records without manual data entry
+- **Multiple File Format Support**: Reads metadata from `.dm3/.dm4`, `.tif`, `.ser/.emi`, `.spc/.msa` files
+- **Standardized Metadata** *(New in v2.2.0)*: Uses EM Glossary ontology for field names and units
+- **Schema Validation** *(New in v2.2.0)*: Pydantic schemas ensure metadata quality before record building
+- **Calendar Integration**: Connects with NEMO lab management systems
+- **Temporal File Clustering**: Intelligently groups files into acquisition activities using KDE
+- **CDCS Integration**: Publishes records to web-accessible data repositories
+- **Extensible Architecture**: Plugin-based extractors and instrument profiles for customization
+
 
 ## Understanding NexusLIMS Records
 

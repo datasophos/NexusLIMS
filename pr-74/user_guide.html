@@ -66,7 +66,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-74" />
-    <meta name="docbuild:last-update" content="Feb, 16, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 17, 2026"/>
   </head>
   
   
@@ -480,6 +480,11 @@
   <section id="user-guide">
 <span id="id1"></span><h1>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading">#</a></h1>
 <p>Welcome to the NexusLIMS User Guide! This guide helps you understand how NexusLIMS works, what to expect from the system, and how to interact with your experimental records.</p>
+<div class="tip admonition">
+<p class="admonition-title">Want to jump right in?</p>
+<p>See the <a class="reference internal" href="user_guide/getting_started.html#getting-started"><span class="std std-ref">Getting Started</span></a> page for quick-start
+installation and configuration instructions.</p>
+</div>
 <section id="about-this-guide">
 <h2>About This Guide<a class="headerlink" href="#about-this-guide" title="Link to this heading">#</a></h2>
 <p>This user guide is for:</p>
@@ -491,6 +496,30 @@
 <p><strong>For developers</strong> extending NexusLIMS with new extractors or profiles, see the <a class="reference internal" href="dev_guide.html"><span class="std std-doc">Developer Guide</span></a>.</p>
 </section>
 <hr class="docutils" />
+<section id="what-is-nexuslims">
+<h2>What is NexusLIMS?<a class="headerlink" href="#what-is-nexuslims" title="Link to this heading">#</a></h2>
+<p>NexusLIMS is an electron microscopy Laboratory Information Management System (LIMS) that automatically generates experimental records by:</p>
+<ul class="simple">
+<li><p>Extracting metadata from microscopy data files</p></li>
+<li><p>Harvesting information from reservation calendar systems (like <a class="reference external" href="https://github.com/usnistgov/NEMO">NEMO</a>)</p></li>
+<li><p>Building structured XML records conforming to the <a class="reference external" href="https://doi.org/10.18434/M32245">Nexus Experiment schema</a></p></li>
+<li><p>Uploading records to a <a class="reference external" href="https://github.com/datasophos/nexuslims-cdcs/">CDCS</a> (Configurable Data Curation System) frontend</p></li>
+</ul>
+<p>Originally developed at NIST, NexusLIMS is now maintained by <a class="reference external" href="https://datasophos.co">datasophos</a>.</p>
+<section id="key-features">
+<h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Automatic Record Generation</strong>: Creates comprehensive experimental records without manual data entry</p></li>
+<li><p><strong>Multiple File Format Support</strong>: Reads metadata from <code class="docutils literal notranslate"><span class="pre">.dm3/.dm4</span></code>, <code class="docutils literal notranslate"><span class="pre">.tif</span></code>, <code class="docutils literal notranslate"><span class="pre">.ser/.emi</span></code>, <code class="docutils literal notranslate"><span class="pre">.spc/.msa</span></code> files</p></li>
+<li><p><strong>Standardized Metadata</strong> <em>(New in v2.2.0)</em>: Uses EM Glossary ontology for field names and units</p></li>
+<li><p><strong>Schema Validation</strong> <em>(New in v2.2.0)</em>: Pydantic schemas ensure metadata quality before record building</p></li>
+<li><p><strong>Calendar Integration</strong>: Connects with NEMO lab management systems</p></li>
+<li><p><strong>Temporal File Clustering</strong>: Intelligently groups files into acquisition activities using KDE</p></li>
+<li><p><strong>CDCS Integration</strong>: Publishes records to web-accessible data repositories</p></li>
+<li><p><strong>Extensible Architecture</strong>: Plugin-based extractors and instrument profiles for customization</p></li>
+</ul>
+</section>
+</section>
 <section id="understanding-nexuslims-records">
 <h2>Understanding NexusLIMS Records<a class="headerlink" href="#understanding-nexuslims-records" title="Link to this heading">#</a></h2>
 <p>NexusLIMS automatically creates <strong>experimental records</strong> that document your microscopy sessions. Each record is a structured XML document that captures:</p>
@@ -773,6 +802,10 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#about-this-guide">About This Guide</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-nexuslims">What is NexusLIMS?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-features">Key Features</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-nexuslims-records">Understanding NexusLIMS Records</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#record-structure">Record Structure</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-record">Example Record</a></li>
