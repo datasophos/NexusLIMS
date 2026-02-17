@@ -19,7 +19,7 @@ def get_ca_bundle_path() -> Path | None:
 
     Returns
     -------
-    Path | None
+    pathlib.Path | None
         Path to the certificate authority bundle file, or None if not configured.
     """
     return settings.NX_CERT_BUNDLE_FILE

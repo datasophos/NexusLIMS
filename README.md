@@ -20,23 +20,17 @@
 
 Originally developed by the NIST Office of Data and Informatics, NexusLIMS transforms raw microscopy data into structured, searchable experimental records without requiring manual data entry. By combining file metadata extraction with reservation calendar information, NexusLIMS creates comprehensive documentation of microscopy sessions automatically.
 
-### Key Features
+### What it does
 
-- **🔄 Automated Record Generation** - Builds XML experimental records conforming to the "[Nexus Experiment](https://doi.org/10.18434/M32245)" schema
-- **📊 Multi-Format Metadata Extraction** - Supports `.dm3/.dm4` (DigitalMicrograph), `.tif` (FEI/Thermo), `.ser/.emi` (FEI TIA), and more
-- **📅 Calendar Integration** - Harvests experimental context from [NEMO](https://github.com/usnistgov/NEMO) laboratory management system
-- **🔍 Intelligent File Clustering** - Groups files into logical acquisition activities using temporal analysis
-- **🖼️ Preview Generation** - Automatically creates thumbnail images for quick visual reference
-- **🌐 Web Interface** - Integrates with [NexusLIMS CDCS](https://github.com/datasophos/NexusLIMS-CDCS) frontend for browsing and searching records
+- Reads metadata from `.dm3/.dm4` (DigitalMicrograph), `.tif` (FEI/Thermo), `.ser/.emi` (FEI TIA), and other microscopy formats
+- Pulls reservation and usage context from [NEMO](https://github.com/usnistgov/NEMO) to associate files with the right session and user
+- Groups files from the same session into logical acquisition activities using temporal clustering
+- Generates thumbnail previews alongside the extracted metadata
+- Builds XML records conforming to the "[Nexus Experiment](https://doi.org/10.18434/M32245)" schema and uploads them to the [NexusLIMS CDCS](https://github.com/datasophos/NexusLIMS-CDCS) web frontend
 
-### How It Works
+### How it works
 
-1. **Harvest** - Monitor NEMO for new/ended instrument reservations
-2. **Discover** - Find data files created during reservation windows
-3. **Extract** - Pull metadata from various microscopy file formats
-4. **Cluster** - Group files into logical acquisition activities
-5. **Build** - Generate structured XML records
-6. **Publish** - Upload to searchable web frontend
+When an instrument session ends in NEMO, NexusLIMS finds all data files saved during the reservation window, extracts their metadata, and assembles everything into a structured record — no manual data entry required. Records are uploaded to a searchable web interface where users can browse and retrieve their experimental data.
 
 For more details, see the [Record Building Workflow](https://datasophos.github.io/NexusLIMS/stable/user_guide/record_building.html) documentation.
 
@@ -44,71 +38,66 @@ For more details, see the [Record Building Workflow](https://datasophos.github.i
 
 ### Installation
 
-NexusLIMS can be installed in two ways:
+#### Option 1: `uv tool install` (Recommended)
 
-#### Option 1: Install from PyPI (Recommended for Users)
+The easiest way to install NexusLIMS is as an isolated command-line tool using [uv](https://docs.astral.sh/uv/) (requires [installing uv](https://docs.astral.sh/uv/#installation) first):
 
 ```bash
-# Install using pip
-pip install nexusLIMS
-
-# Or using uv (faster)
-uv pip install nexusLIMS
-
-# Create configuration interactively
-nexuslims-config edit
+uv tool install nexuslims
 ```
 
-After installation, use `nexuslims-config edit` to create your `.env` configuration file through an interactive terminal interface. See the [Configuration Documentation](https://datasophos.github.io/NexusLIMS/stable/user_guide/configuration.html) for details on configuration options.
+#### Option 2: `pip` (virtual environment)
 
-#### Option 2: Install from Source (Recommended for Development)
-
-First, install [uv](https://docs.astral.sh/uv/) package manager:
+Install in a user-managed virtual environment:
 
 ```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
+python -m venv nexuslims-venv
+source nexuslims-venv/bin/activate
+pip install nexuslims
 ```
 
-Then clone and install:
+#### Option 3: Development install (from source)
+
+For contributors or developers who want to modify NexusLIMS source code:
 
 ```bash
-# Clone the repository
 git clone https://github.com/datasophos/NexusLIMS.git
 cd NexusLIMS
-
-# Install dependencies (includes .env.example)
 uv sync
 ```
 
+> **Note:** For development installs, you will need to prefix NexusLIMS commands with `uv run` (e.g. `uv run nexuslims-config edit`).
+
 ### Configuration
 
-1. Copy the example environment file:
-   ```bash
-   cp .env.example .env
-   ```
+Run `nexuslims-config edit` to interactively configure your installation. You'll need to set:
+- CDCS frontend credentials and URL
+- File paths for data storage
+- NEMO API credentials (if using)
+- Database path
 
-2. Edit `.env` with your settings:
-   - CDCS frontend credentials and URL
-   - File paths for data storage
-   - NEMO API credentials (if using)
-   - Database path
+> **Note:** For development installs from source, you can also `cp .env.example .env` and edit it manually.
 
 See [Configuration Documentation](https://datasophos.github.io/NexusLIMS/stable/user_guide/configuration.html) for details.
 
 ### Initialize Database
 
 ```bash
-# create database using NexusLIMS database migration tool:
-uv run nexuslims-migrate init
+nexuslims-migrate init
 ```
 
-Then add your instruments to the `instruments` table (see [Database Documentation](https://datasophos.github.io/NexusLIMS/stable/dev_guide/database.html)).
+Then add your instruments using the interactive instrument manager:
+
+```bash
+nexuslims-manage-instruments
+```
+
+See the [Getting Started Guide](https://datasophos.github.io/NexusLIMS/stable/user_guide/getting_started.html) for more details.
 
 ### Build Records
 
 ```bash
-# Run the record builder
-uv run nexuslims-process-records
+nexuslims-process-records
 ```
 
 ## Documentation
@@ -130,15 +119,15 @@ uv run nexuslims-process-records
 
 ## Current Limitations
 
-NexusLIMS was originally developed for internal NIST use. While we're actively working on generalization:
+NexusLIMS is under active development, but there are some limitations:
 
-- **File Format Support**: Currently supports specific electron microscopy formats. Custom extractors needed for other instruments.
-- **Calendar Integration**: Designed for NEMO. Other systems require custom harvester implementation.
-- **Platform Support**: Linux/macOS only. Windows support would require development effort.
+- **File Format Support**: Currently supports a subset of common electron microscopy formats (see [extractor documentation](https://datasophos.github.io/NexusLIMS/stable/user_guide/extractors.html) for details). If you have different isntrumentation at your institution, custom extractors will be needed.
+- **Calendar Integration**: NexusLIMS is designed to inteface with the [NEMO](https://github.com/usnistgov/NEMO) laboratory facility management system. Other systems would require custom harvester implementation.
+- **Platform Support**: The NexusLIMS backend is intended to be run on in a server environment, and thus supports Linux or macOS only (theoretically WSL2 on Windows as well, though this is untested). Full Windows support would require additional development effort.
 
-**Need help deploying at your institution?** Datasophos offers professional services for NexusLIMS deployment, customization, and support. Contact us at [josh@datasophos.co](mailto:josh@datasophos.co).
+**Need help adding features or deploying at your institution?** Datasophos offers professional services for NexusLIMS deployment, customization, and support. Contact us at [josh@datasophos.co](mailto:josh@datasophos.co).
 
-## Development
+## Development Quick Start
 
 ```bash
 # Install development dependencies
@@ -170,7 +159,8 @@ We welcome contributions! Please:
 3. Make your changes with tests (100% coverage required)
 4. Submit a pull request to `main`
 
-See [Contributing Guidelines](https://datasophos.github.io/NexusLIMS/stable/dev_guide/development.html#contributing) for more details.
+See [Contributing Guidelines](https://datasophos.github.io/NexusLIMS/stable/dev_guide/development.html#contributing) for more details, including our
+AI contribution policy.
 
 ## About the Logo
 
@@ -182,20 +172,12 @@ We chose Shechtman's [first published](https://journals.aps.org/prl/pdf/10.1103/
 
 See [LICENSE](LICENSE) for details.
 
-## Support & Professional Services
+## Support
 
-💼 **Need help with NexusLIMS?** Datasophos offers:
-
-- 🚀 **Deployment & Integration** - Expert configuration for your lab environment
-- 🔧 **Custom Development** - Custom extractors, harvesters, and workflow extensions
-- 🎓 **Training & Support** - Team onboarding and ongoing technical support
-
-**Contact**: [josh@datasophos.co](mailto:josh@datasophos.co) | [datasophos.co](https://datasophos.co)
+[Datasophos](https://datasophos.co) offers deployment assistance, custom extractor and harvester development, and training for teams adopting NexusLIMS. Get in touch at [josh@datasophos.co](mailto:josh@datasophos.co).
 
 ---
 
-**Links:**
-- 📖 [Documentation](https://datasophos.github.io/NexusLIMS/stable/)
-- 🐛 [Issue Tracker](https://github.com/datasophos/NexusLIMS/issues)
-- 🏢 [Datasophos](https://datasophos.co)
-- 📜 [Original NIST Repository](https://github.com/usnistgov/NexusLIMS)
+- [Documentation](https://datasophos.github.io/NexusLIMS/stable/)
+- [Issue Tracker](https://github.com/datasophos/NexusLIMS/issues)
+- [Original Upstream NIST Repository](https://github.com/usnistgov/NexusLIMS)

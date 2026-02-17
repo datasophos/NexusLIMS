@@ -255,6 +255,23 @@ metadata from the file.
 
 ## Contributing
 
+### AI Policy
+
+AI-assisted development is allowed and used extensively in NexusLIMS itself.
+We find it a useful tool when applied with care and judgment. That said, a few
+expectations apply to AI-assisted contributions:
+
+- **Disclose AI use** in your pull request description. A brief note is fine —
+  just be honest about which parts were AI-assisted.
+- **You are responsible for the code you submit.** AI output must be reviewed,
+  understood, and tested by you before submitting. The same code review
+  standards apply regardless of how the code was written.
+- **Automated contributions are not accepted.** Pull requests generated and
+  submitted by an AI agent without meaningful human involvement will be closed.
+  A human must be the author and must stand behind the contribution.
+
+### How to contribute
+
 To contribute, please fork the repository, develop your addition on a
 [feature branch](https://www.atlassian.com/git/tutorials/comparing-workflows/feature-branch-workflow)
 within your forked repo, and submit a pull request to the `main`
