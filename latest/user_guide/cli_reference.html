@@ -489,6 +489,56 @@ management. In all the examples below, if you are running NexusLIMS from a
 command.</p>
 <p>Every command (and any subcommands) also support the <code class="docutils literal notranslate"><span class="pre">--help</span></code> flag that can be
 used to get interactive assistance for any operation.</p>
+<section id="shell-completion">
+<h2>Shell Completion<a class="headerlink" href="#shell-completion" title="Link to this heading">#</a></h2>
+<p>NexusLIMS supports tab completion for subcommands, sub-subcommands, and option
+flags in bash, zsh, and fish. Run <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">completion</span></code> to get the setup
+line for your current shell:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>completion
+</pre></div>
+</div>
+<p>Or specify a shell explicitly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>completion<span class="w"> </span>--shell<span class="w"> </span>zsh
+nexuslims<span class="w"> </span>completion<span class="w"> </span>--shell<span class="w"> </span>bash
+nexuslims<span class="w"> </span>completion<span class="w"> </span>--shell<span class="w"> </span>fish
+</pre></div>
+</div>
+<p>Add the printed line to your shell’s rc file and restart your shell (or
+<code class="docutils literal notranslate"><span class="pre">source</span></code> the rc file). For example, for zsh:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># ~/.zshrc</span>
+<span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nv">_NEXUSLIMS_COMPLETE</span><span class="o">=</span>zsh_source<span class="w"> </span>nexuslims<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>For bash:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># ~/.bashrc</span>
+<span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nv">_NEXUSLIMS_COMPLETE</span><span class="o">=</span>bash_source<span class="w"> </span>nexuslims<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>For fish:</p>
+<div class="highlight-fish notranslate"><div class="highlight"><pre><span></span><span class="c"># ~/.config/fish/config.fish</span>
+<span class="nv">_NEXUSLIMS_COMPLETE</span><span class="o">=</span>fish_source nexuslims <span class="o">|</span> <span class="nb">source</span>
+</pre></div>
+</div>
+<p>Once enabled, pressing <code class="docutils literal notranslate"><span class="pre">Tab</span></code> after any partial command or <code class="docutils literal notranslate"><span class="pre">--</span></code> completes
+subcommands, flags, and <code class="docutils literal notranslate"><span class="pre">click.Path</span></code> arguments:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ nexuslims &lt;Tab&gt;
+build-records  completion  config  db  instruments
+
+$ nexuslims build-records --&lt;Tab&gt;
+--dry-run  --from  --help  --to  --verbose  --version
+
+$ nexuslims config &lt;Tab&gt;
+dump  edit  load
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Completion only works when <code class="docutils literal notranslate"><span class="pre">nexuslims</span></code> is on your <code class="docutils literal notranslate"><span class="pre">PATH</span></code> — i.e. when your
+virtual environment is activated, or when the package is installed globally
+with <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">tool</span> <span class="pre">install</span> <span class="pre">nexuslims</span></code>. It does <strong>not</strong> work when invoked via
+<code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">nexuslims</span></code>.</p>
+</div>
+</section>
 <section id="top-level-usage">
 <h2>Top-Level Usage<a class="headerlink" href="#top-level-usage" title="Link to this heading">#</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>--help
@@ -506,9 +556,10 @@ Options:
 
 Commands:
   build-records  Process new NexusLIMS records with logging and email...
+  completion     Print shell completion setup instructions.
   config         Manage NexusLIMS configuration files.
-  instruments    Manage NexusLIMS instruments.
   db             Manage NexusLIMS database.
+  instruments    Manage NexusLIMS instruments.
 </pre></div>
 </div>
 </section>
@@ -1338,6 +1389,7 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shell-completion">Shell Completion</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#top-level-usage">Top-Level Usage</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-build-records"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-usage">Basic Usage</a></li>

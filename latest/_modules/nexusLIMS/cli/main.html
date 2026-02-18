@@ -844,6 +844,8 @@ window.addEventListener("load", load);
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">click</span>
 
 <span class="c1"># Maps command name -&gt; (module_path, attr_name)</span>
@@ -960,6 +962,7 @@ window.addEventListener("load", load);
 <span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">(</span>
     <span class="bp">cls</span><span class="o">=</span><span class="n">LazyGroup</span><span class="p">,</span>
     <span class="n">lazy_commands</span><span class="o">=</span><span class="n">_LAZY_COMMANDS</span><span class="p">,</span>
+    <span class="n">epilog</span><span class="o">=</span><span class="s2">&quot;Tip: run &#39;nexuslims completion&#39; to set up shell tab completion.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">version_option</span><span class="p">(</span>
     <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -973,8 +976,59 @@ window.addEventListener("load", load);
 
 
 
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--shell&quot;</span><span class="p">,</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;bash&quot;</span><span class="p">,</span> <span class="s2">&quot;zsh&quot;</span><span class="p">,</span> <span class="s2">&quot;fish&quot;</span><span class="p">]),</span>
+    <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Shell type. Detected automatically from $SHELL if omitted.&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_completion_command</span><span class="p">(</span><span class="n">shell</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print shell completion setup instructions.</span>
+
+<span class="sd">    Add the printed line to your shell&#39;s rc file to enable tab completion</span>
+<span class="sd">    for nexuslims commands, subcommands, and options.</span>
+
+<span class="sd">    \b</span>
+<span class="sd">    Examples:</span>
+<span class="sd">        nexuslims completion            # auto-detect shell</span>
+<span class="sd">        nexuslims completion --shell zsh</span>
+<span class="sd">        nexuslims completion --shell bash</span>
+<span class="sd">        nexuslims completion --shell fish</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: D301</span>
+    <span class="k">if</span> <span class="n">shell</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">shell_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;SHELL&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;zsh&quot;</span> <span class="ow">in</span> <span class="n">shell_path</span><span class="p">:</span>
+            <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;zsh&quot;</span>
+        <span class="k">elif</span> <span class="s2">&quot;fish&quot;</span> <span class="ow">in</span> <span class="n">shell_path</span><span class="p">:</span>
+            <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;fish&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">shell</span> <span class="o">=</span> <span class="s2">&quot;bash&quot;</span>
+
+    <span class="n">env_var</span> <span class="o">=</span> <span class="s2">&quot;_NEXUSLIMS_COMPLETE&quot;</span>
+
+    <span class="k">if</span> <span class="n">shell</span> <span class="o">==</span> <span class="s2">&quot;fish&quot;</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">env_var</span><span class="si">}</span><span class="s2">=fish_source nexuslims | source&quot;</span>
+        <span class="n">rc_file</span> <span class="o">=</span> <span class="s2">&quot;~/.config/fish/config.fish&quot;</span>
+    <span class="k">elif</span> <span class="n">shell</span> <span class="o">==</span> <span class="s2">&quot;zsh&quot;</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;eval &quot;$(</span><span class="si">{</span><span class="n">env_var</span><span class="si">}</span><span class="s1">=zsh_source nexuslims)&quot;&#39;</span>
+        <span class="n">rc_file</span> <span class="o">=</span> <span class="s2">&quot;~/.zshrc&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;eval &quot;$(</span><span class="si">{</span><span class="n">env_var</span><span class="si">}</span><span class="s1">=bash_source nexuslims)&quot;&#39;</span>
+        <span class="n">rc_file</span> <span class="o">=</span> <span class="s2">&quot;~/.bashrc&quot;</span>
+
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Add this line to </span><span class="si">{</span><span class="n">rc_file</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">()</span>
+    <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span>
+        <span class="s2">&quot;# Note: nexuslims must be on your PATH (e.g. via an activated venv or &quot;</span>
+        <span class="s2">&quot;`uv tool install nexuslims`).&quot;</span>
+    <span class="p">)</span>
+
+
 <span class="c1"># Register non-lazy subcommands</span>
 <span class="n">main</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">_build_instruments_group</span><span class="p">(),</span> <span class="s2">&quot;instruments&quot;</span><span class="p">)</span>
+<span class="n">main</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="n">_completion_command</span><span class="p">,</span> <span class="s2">&quot;completion&quot;</span><span class="p">)</span>
 
 
 <span class="c1"># Register db as a lazy command via a callback</span>

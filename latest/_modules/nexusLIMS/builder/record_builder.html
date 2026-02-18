@@ -1401,7 +1401,7 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="process_new_records">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.process_new_records">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">process_new_records</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_new_records</span><span class="p">(</span>  <span class="c1"># noqa: PLR0912</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">dt_from</span><span class="p">:</span> <span class="n">dt</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1446,7 +1446,22 @@ window.addEventListener("load", load);
             <span class="c1"># at this point, sessions can be from any type of harvester</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="n">get_reservation_event</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">get_reservation_event</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">nemo</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">NoDataConsentError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;User requested this session not be harvested, &quot;</span>
+                    <span class="s2">&quot;skipping dry run for this session. </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">e</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">except</span> <span class="n">nemo</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">NoMatchingReservationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;No matching reservation found for this session, &quot;</span>
+                    <span class="s2">&quot;skipping dry run for this session. </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="n">e</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="k">continue</span>
             <span class="n">dry_run_file_find</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">nemo_utils</span><span class="o">.</span><span class="n">add_all_usage_events_to_db</span><span class="p">(</span><span class="n">dt_from</span><span class="o">=</span><span class="n">dt_from</span><span class="p">,</span> <span class="n">dt_to</span><span class="o">=</span><span class="n">dt_to</span><span class="p">)</span>
