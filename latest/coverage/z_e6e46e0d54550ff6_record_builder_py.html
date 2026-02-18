@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage for nexusLIMS/builder/record_builder.py: 97%</title>
+    <title>Coverage for nexusLIMS/builder/record_builder.py: 100%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_58284776.png">
     <link rel="stylesheet" href="style_cb_a37fa487.css" type="text/css">
     <script src="coverage_html_cb_cadff66e.js" defer></script>
@@ -12,7 +12,7 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>nexusLIMS/builder/record_builder.py</b>:
-            <span class="pc_cov">97%</span>
+            <span class="pc_cov">100%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -55,8 +55,8 @@
         </aside>
         <h2>
             <span class="text">227 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">221<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">6<span class="text"> missing</span></button>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">227<span class="text"> run</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">0<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">19<span class="text"> excluded</span></button>
         </h2>
         <p class="text">
@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_45e5d5f65ba83479___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2026-02-18 06:25 +0000
+            created at 2026-02-18 16:13 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -685,20 +685,20 @@
     <p class="run"><span class="n"><a id="t603" href="#t603">603</a></span><span class="t">            <span class="nam">_logger</span><span class="op">.</span><span class="nam">info</span><span class="op">(</span><span class="str">""</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t604" href="#t604">604</a></span><span class="t">            <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t605" href="#t605">605</a></span><span class="t">                <span class="nam">get_reservation_event</span><span class="op">(</span><span class="nam">s</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t606" href="#t606">606</a></span><span class="t">            <span class="key">except</span> <span class="nam">nemo</span><span class="op">.</span><span class="nam">exceptions</span><span class="op">.</span><span class="nam">NoDataConsentError</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t607" href="#t607">607</a></span><span class="t">                <span class="nam">_logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis mis2 show_mis"><span class="n"><a id="t608" href="#t608">608</a></span><span class="t">                    <span class="str">"User requested this session not be harvested, "</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis mis2 show_mis"><span class="n"><a id="t609" href="#t609">609</a></span><span class="t">                    <span class="str">"skipping dry run for this session. %s"</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis mis2 show_mis"><span class="n"><a id="t610" href="#t610">610</a></span><span class="t">                    <span class="nam">e</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis mis2 show_mis"><span class="n"><a id="t611" href="#t611">611</a></span><span class="t">                <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t612" href="#t612">612</a></span><span class="t">                <span class="key">continue</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t613" href="#t613">613</a></span><span class="t">            <span class="key">except</span> <span class="nam">nemo</span><span class="op">.</span><span class="nam">exceptions</span><span class="op">.</span><span class="nam">NoMatchingReservationError</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t614" href="#t614">614</a></span><span class="t">                <span class="nam">_logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis mis2 show_mis"><span class="n"><a id="t615" href="#t615">615</a></span><span class="t">                    <span class="str">"No matching reservation found for this session, "</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis mis2 show_mis"><span class="n"><a id="t616" href="#t616">616</a></span><span class="t">                    <span class="str">"skipping dry run for this session. %s"</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis mis2 show_mis"><span class="n"><a id="t617" href="#t617">617</a></span><span class="t">                    <span class="nam">e</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis mis2 show_mis"><span class="n"><a id="t618" href="#t618">618</a></span><span class="t">                <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="mis show_mis"><span class="n"><a id="t619" href="#t619">619</a></span><span class="t">                <span class="key">continue</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t606" href="#t606">606</a></span><span class="t">            <span class="key">except</span> <span class="nam">nemo</span><span class="op">.</span><span class="nam">exceptions</span><span class="op">.</span><span class="nam">NoDataConsentError</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t607" href="#t607">607</a></span><span class="t">                <span class="nam">_logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t608" href="#t608">608</a></span><span class="t">                    <span class="str">"User requested this session not be harvested, "</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t609" href="#t609">609</a></span><span class="t">                    <span class="str">"skipping dry run for this session. %s"</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t610" href="#t610">610</a></span><span class="t">                    <span class="nam">e</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t611" href="#t611">611</a></span><span class="t">                <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t612" href="#t612">612</a></span><span class="t">                <span class="key">continue</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t613" href="#t613">613</a></span><span class="t">            <span class="key">except</span> <span class="nam">nemo</span><span class="op">.</span><span class="nam">exceptions</span><span class="op">.</span><span class="nam">NoMatchingReservationError</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t614" href="#t614">614</a></span><span class="t">                <span class="nam">_logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t615" href="#t615">615</a></span><span class="t">                    <span class="str">"No matching reservation found for this session, "</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t616" href="#t616">616</a></span><span class="t">                    <span class="str">"skipping dry run for this session. %s"</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t617" href="#t617">617</a></span><span class="t">                    <span class="nam">e</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t618" href="#t618">618</a></span><span class="t">                <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t619" href="#t619">619</a></span><span class="t">                <span class="key">continue</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t620" href="#t620">620</a></span><span class="t">            <span class="nam">dry_run_file_find</span><span class="op">(</span><span class="nam">s</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t621" href="#t621">621</a></span><span class="t">    <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t622" href="#t622">622</a></span><span class="t">        <span class="nam">nemo_utils</span><span class="op">.</span><span class="nam">add_all_usage_events_to_db</span><span class="op">(</span><span class="nam">dt_from</span><span class="op">=</span><span class="nam">dt_from</span><span class="op">,</span> <span class="nam">dt_to</span><span class="op">=</span><span class="nam">dt_to</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -845,7 +845,7 @@
             <a class="nav" href="z_45e5d5f65ba83479___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2026-02-18 06:25 +0000
+            created at 2026-02-18 16:13 +0000
         </p>
     </div>
 </footer>
