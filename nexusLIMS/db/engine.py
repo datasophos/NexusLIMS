@@ -6,24 +6,17 @@ for database operations, replacing the manual sqlite3 connection management.
 
 from typing import TYPE_CHECKING
 
-from sqlmodel import create_engine
-
-from nexusLIMS.config import settings
-
 if TYPE_CHECKING:
     from sqlalchemy.engine.base import Engine
 
-# Create SQLite engine (connects to NexusLIMS database)
-engine = create_engine(
-    f"sqlite:///{settings.NX_DB_PATH}",
-    connect_args={"check_same_thread": False},  # Allow multi-thread access
-    echo=False,  # Set to True for SQL debug logging
-)
+# Lazy singleton — created on first call to get_engine().
+# Reset to None by SingletonResetter.reset_db_engine() between tests.
+_engine: "Engine | None" = None
 
 
 def get_engine() -> "Engine":
     """
-    Get the database engine.
+    Get the database engine, creating it lazily on first access.
 
     Returns
     -------
@@ -36,4 +29,15 @@ def get_engine() -> "Engine":
     >>> engine = get_engine()
     >>> # Use engine for advanced operations
     """
-    return engine
+    global _engine  # noqa: PLW0603
+    if _engine is None:
+        from sqlmodel import create_engine  # noqa: PLC0415
+
+        from nexusLIMS.config import settings  # noqa: PLC0415
+
+        _engine = create_engine(
+            f"sqlite:///{settings.NX_DB_PATH}",
+            connect_args={"check_same_thread": False},
+            echo=False,
+        )
+    return _engine

@@ -173,6 +173,7 @@ class TestInitCommand:
 
         assert result.exit_code == 1
         assert "NX_DB_PATH environment variable is not set" in result.output
+        assert "nexuslims-config edit" in result.output
 
     def test_init_fails_if_exists(self, cli_runner, temp_db):
         """Test that init command fails if database already exists."""

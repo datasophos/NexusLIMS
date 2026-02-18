@@ -44,6 +44,7 @@ class SingletonResetter:
         cls.reset_emg_cache()
         cls.reset_pint_registry()
         cls.reset_hyperspy()
+        cls.reset_logger_levels()
 
     @classmethod
     def reset_db_engine(cls):
@@ -67,14 +68,14 @@ class SingletonResetter:
         """
         Clear the instrument database cache and initialization flag.
 
-        This resets both `nexusLIMS.instruments._instrument_db_cache` and
+        This clears `nexusLIMS.instruments.instrument_db` and resets
         `nexusLIMS.instruments._instrument_db_initialized` to ensure
         instruments are reloaded from the database on next access.
         """
         try:
             from nexusLIMS import instruments
 
-            instruments._instrument_db_cache = {}
+            instruments.instrument_db.clear()
             instruments._instrument_db_initialized = False
             logger.debug("Reset instrument cache")
         except ImportError:
@@ -161,6 +162,30 @@ class SingletonResetter:
             # HyperSpy state is mostly per-Signal, not global
             # This is a placeholder for any future global state cleanup
             logger.debug("Attempted best-effort HyperSpy reset")
+
+    @classmethod
+    def reset_logger_levels(cls):
+        """
+        Reset all nexusLIMS logger levels to NOTSET.
+
+        ``setup_loggers()`` (called by CLI entry points) explicitly sets the
+        level on every ``nexusLIMS.*`` logger.  Once set, these levels persist
+        for the lifetime of the process and prevent ``caplog`` from capturing
+        messages at lower levels.  Resetting to ``NOTSET`` makes them inherit
+        from the root logger again, which is what ``caplog`` controls.
+        """
+        for name in list(logging.root.manager.loggerDict):
+            if "nexusLIMS" not in name:
+                continue
+            log_obj = logging.root.manager.loggerDict[name]
+            if isinstance(log_obj, logging.Logger) and log_obj.level != logging.NOTSET:
+                log_obj.setLevel(logging.NOTSET)
+        # Also remove any FileHandlers that tests may have added to root
+        for handler in logging.root.handlers[:]:
+            if isinstance(handler, logging.FileHandler):
+                logging.root.removeHandler(handler)
+                handler.close()
+        logger.debug("Reset nexusLIMS logger levels")
 
 
 @contextmanager

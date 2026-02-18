@@ -5,6 +5,36 @@ from pathlib import Path
 from click.testing import CliRunner
 
 
+def test_init_reads_db_path_from_dotenv_in_cwd(tmp_path, monkeypatch):
+    """Test that 'nexuslims-migrate init' finds .env in the user's cwd.
+
+    When NexusLIMS is installed as a package the calling file lives
+    inside site-packages.  ``find_dotenv(usecwd=True)`` ensures the
+    search starts from the user's cwd, not the package directory.
+    """
+    from unittest.mock import patch
+
+    from nexusLIMS.cli.migrate import _cli
+
+    # Create a .env with NX_DB_PATH in a temp directory
+    db_path = tmp_path / "test.db"
+    env_file = tmp_path / ".env"
+    env_file.write_text(f"NX_DB_PATH={db_path}\n")
+
+    # Clear NX_DB_PATH from the real environment
+    monkeypatch.delenv("NX_DB_PATH", raising=False)
+    # Run from the temp directory so find_dotenv(usecwd=True) finds .env
+    monkeypatch.chdir(tmp_path)
+
+    runner = CliRunner()
+    # Mock Alembic so we don't actually run migrations
+    with patch("nexusLIMS.cli.migrate._run_alembic_command"):
+        result = runner.invoke(_cli(), ["init"])
+
+    assert result.exit_code == 0
+    assert "Initializing database" in result.output
+
+
 def test_get_migrations_dir_returns_valid_path():
     """Test that _get_migrations_dir() returns a valid directory path."""
     from nexusLIMS.cli.migrate import _get_migrations_dir

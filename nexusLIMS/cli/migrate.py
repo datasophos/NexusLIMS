@@ -171,9 +171,9 @@ def _cli():  # noqa: PLR0915
         access the full Alembic CLI.
         """
         # Load .env file if it exists (before any commands run)
-        from dotenv import load_dotenv
+        from dotenv import find_dotenv, load_dotenv
 
-        load_dotenv()
+        load_dotenv(find_dotenv(usecwd=True))
 
         if version:
             from nexusLIMS import __version__
@@ -207,10 +207,12 @@ def _cli():  # noqa: PLR0915
         db_path_str = os.getenv("NX_DB_PATH")
         if not db_path_str:
             click.secho(
-                "Error: NX_DB_PATH environment variable is not set", fg="red", err=True
+                "Error: NX_DB_PATH environment variable is not set.", fg="red", err=True
             )
-            click.echo("Set it to the desired database location, e.g.:", err=True)
-            click.echo("  export NX_DB_PATH=/path/to/database.db", err=True)
+            click.echo("\nSet it via the interactive configurator:\n", err=True)
+            click.echo("    nexuslims-config edit\n", err=True)
+            click.echo("Or set it directly, e.g.:\n", err=True)
+            click.echo("    export NX_DB_PATH=/path/to/database.db", err=True)
             sys.exit(1)
 
         db_path = Path(db_path_str)
@@ -389,9 +391,7 @@ def _cli():  # noqa: PLR0915
             from alembic.runtime.migration import MigrationContext
             from sqlalchemy import create_engine
 
-            from nexusLIMS.config import settings
-
-            engine = create_engine(f"sqlite:///{settings.NX_DB_PATH}")
+            engine = create_engine(f"sqlite:///{db_path}")
             with engine.connect() as connection:
                 context = MigrationContext.configure(connection)
                 current_rev = context.get_current_revision()

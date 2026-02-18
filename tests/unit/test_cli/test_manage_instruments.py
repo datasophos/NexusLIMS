@@ -27,6 +27,29 @@ class TestEnsureDatabaseInitialized:
             # Should raise click.Abort
             _ensure_database_initialized()
 
+    def test_reads_db_path_from_dotenv_in_cwd(self, tmp_path, monkeypatch):
+        """Test that .env in the current working directory is found.
+
+        When NexusLIMS is installed as a package the calling file lives
+        inside site-packages.  ``find_dotenv(usecwd=True)`` ensures the
+        search starts from the user's cwd, not the package directory.
+        """
+        # Create a .env with NX_DB_PATH in a temp directory
+        db_path = tmp_path / "test.db"
+        db_path.touch()
+        env_file = tmp_path / ".env"
+        env_file.write_text(f"NX_DB_PATH={db_path}\n")
+
+        # Clear NX_DB_PATH from the real environment
+        monkeypatch.delenv("NX_DB_PATH", raising=False)
+        # Run from the temp directory so find_dotenv(usecwd=True) finds .env
+        monkeypatch.chdir(tmp_path)
+
+        # Should succeed without raising — .env provides NX_DB_PATH
+        _ensure_database_initialized()
+
+        assert db_path.exists()
+
     def test_no_initialization_when_db_exists(self, tmp_path, monkeypatch):
         """Test that no initialization occurs when database exists."""
         # Create a temporary database file

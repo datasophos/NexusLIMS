@@ -860,6 +860,7 @@ def nemo_connector(
     # This is necessary because the connector imports instrument_db at module level
     monkeypatch.setattr(connector, "instrument_db", test_instrument_db)
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
+    monkeypatch.setattr(instruments, "_instrument_db_initialized", True)
 
     return connector.NemoConnector(
         base_url=nemo_client["url"],
@@ -1535,20 +1536,18 @@ def populated_test_database(docker_services, mock_tools_data):
     conn.close()
 
     # CRITICAL: Recreate the database engine to point to the integration test database
-    # The engine is created at module import time, so we need to replace it everywhere
+    # The engine uses a lazy _engine singleton, so we set it directly
     from sqlmodel import create_engine
 
     from nexusLIMS.db import engine as engine_module
-    from nexusLIMS.db import session_handler
 
     new_engine = create_engine(
         f"sqlite:///{db_path}",
         connect_args={"check_same_thread": False},
         echo=False,
     )
-    # Update the engine in both modules (session_handler imports it directly)
-    engine_module.engine = new_engine
-    session_handler.engine = new_engine
+    # Update the lazy engine singleton so get_engine() returns the test engine
+    engine_module._engine = new_engine
 
     # Reload the instrument_db cache to pick up the newly inserted instruments
     # This is necessary because instrument_db is loaded at module import time
@@ -1560,6 +1559,7 @@ def populated_test_database(docker_services, mock_tools_data):
     instruments_module.instrument_db.update(
         instruments_module._get_instrument_db(db_path=db_path)
     )
+    instruments_module._instrument_db_initialized = True
 
     return Path(db_path)
 
@@ -1853,6 +1853,7 @@ def test_environment_setup(  # noqa: PLR0913
     # Patch the instrument_db to use test database
     test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
+    monkeypatch.setattr(instruments, "_instrument_db_initialized", True)
 
     # Configure eLabFTW export destination
     monkeypatch.setenv("NX_ELABFTW_URL", ELABFTW_URL)
@@ -2218,6 +2219,7 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     # Patch the instrument_db to use test database
     test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
+    monkeypatch.setattr(instruments, "_instrument_db_initialized", True)
 
     # Get the test instrument from database
     instrument = test_instrument_db.get("TEST-TOOL")
