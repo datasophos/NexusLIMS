@@ -1,0 +1,67 @@
+# {py:mod}`nexusLIMS.exporters`
+
+```{py:module} nexusLIMS.exporters
+```
+
+```{autodoc2-docstring} nexusLIMS.exporters
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Subpackages
+
+```{toctree}
+:titlesonly:
+:maxdepth: 3
+
+nexusLIMS.exporters.destinations
+```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.exporters.base
+nexusLIMS.exporters.strategies
+nexusLIMS.exporters.registry
+```
+
+## Package Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`export_records <nexusLIMS.exporters.export_records>`
+  - ```{autodoc2-docstring} nexusLIMS.exporters.export_records
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`was_successfully_exported <nexusLIMS.exporters.was_successfully_exported>`
+  - ```{autodoc2-docstring} nexusLIMS.exporters.was_successfully_exported
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} export_records(xml_files: list[pathlib.Path], sessions: list[nexusLIMS.db.session_handler.Session]) -> dict[pathlib.Path, list[nexusLIMS.exporters.base.ExportResult]]
+:canonical: nexusLIMS.exporters.export_records
+
+```{autodoc2-docstring} nexusLIMS.exporters.export_records
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} was_successfully_exported(xml_file: pathlib.Path, results: dict[pathlib.Path, list[nexusLIMS.exporters.base.ExportResult]]) -> bool
+:canonical: nexusLIMS.exporters.was_successfully_exported
+
+```{autodoc2-docstring} nexusLIMS.exporters.was_successfully_exported
+:parser: autodoc2_docstrings_parser
+```
+````

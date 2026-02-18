@@ -1,0 +1,123 @@
+# {py:mod}`nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers`
+
+```{py:module} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers
+```
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`upgrade <nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.upgrade>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.upgrade
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`downgrade <nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.downgrade>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.downgrade
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`revision <nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.revision>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.revision
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`down_revision <nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.down_revision>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.down_revision
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`branch_labels <nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.branch_labels>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.branch_labels
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`depends_on <nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.depends_on>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.depends_on
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} revision
+:canonical: nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.revision
+:value: >
+   'v2_5_0a'
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.revision
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} down_revision
+:canonical: nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.down_revision
+:value: >
+   'v2_4_0b'
+
+**Type:** typing.Union[str, typing.Sequence[str], None]
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.down_revision
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} branch_labels
+:canonical: nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.branch_labels
+
+**Type:** typing.Union[str, typing.Sequence[str], None]
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.branch_labels
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} depends_on
+:canonical: nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.depends_on
+
+**Type:** typing.Union[str, typing.Sequence[str], None]
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.depends_on
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:function} upgrade() -> None
+:canonical: nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.upgrade
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.upgrade
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} downgrade() -> None
+:canonical: nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.downgrade
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers.downgrade
+:parser: autodoc2_docstrings_parser
+```
+````
