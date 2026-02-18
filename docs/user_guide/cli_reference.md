@@ -9,6 +9,67 @@ command.
 Every command (and any subcommands) also support the `--help` flag that can be
 used to get interactive assistance for any operation.
 
+## Shell Completion
+
+NexusLIMS supports tab completion for subcommands, sub-subcommands, and option
+flags in bash, zsh, and fish. Run `nexuslims completion` to get the setup
+line for your current shell:
+
+```bash
+nexuslims completion
+```
+
+Or specify a shell explicitly:
+
+```bash
+nexuslims completion --shell zsh
+nexuslims completion --shell bash
+nexuslims completion --shell fish
+```
+
+Add the printed line to your shell's rc file and restart your shell (or
+`source` the rc file). For example, for zsh:
+
+```bash
+# ~/.zshrc
+eval "$(_NEXUSLIMS_COMPLETE=zsh_source nexuslims)"
+```
+
+For bash:
+
+```bash
+# ~/.bashrc
+eval "$(_NEXUSLIMS_COMPLETE=bash_source nexuslims)"
+```
+
+For fish:
+
+```fish
+# ~/.config/fish/config.fish
+_NEXUSLIMS_COMPLETE=fish_source nexuslims | source
+```
+
+Once enabled, pressing `Tab` after any partial command or `--` completes
+subcommands, flags, and `click.Path` arguments:
+
+```text
+$ nexuslims <Tab>
+build-records  completion  config  db  instruments
+
+$ nexuslims build-records --<Tab>
+--dry-run  --from  --help  --to  --verbose  --version
+
+$ nexuslims config <Tab>
+dump  edit  load
+```
+
+```{note}
+Completion only works when `nexuslims` is on your `PATH` — i.e. when your
+virtual environment is activated, or when the package is installed globally
+with `uv tool install nexuslims`. It does **not** work when invoked via
+`uv run nexuslims`.
+```
+
 ## Top-Level Usage
 
 ```bash
@@ -28,9 +89,10 @@ Options:
 
 Commands:
   build-records  Process new NexusLIMS records with logging and email...
+  completion     Print shell completion setup instructions.
   config         Manage NexusLIMS configuration files.
-  instruments    Manage NexusLIMS instruments.
   db             Manage NexusLIMS database.
+  instruments    Manage NexusLIMS instruments.
 ```
 
 ## `nexuslims build-records`
