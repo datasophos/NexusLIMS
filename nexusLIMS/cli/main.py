@@ -19,6 +19,8 @@ Usage
 
 from __future__ import annotations
 
+import os
+
 import click
 
 # Maps command name -> (module_path, attr_name)
@@ -124,6 +126,7 @@ def _format_version(prog_name: str) -> str:
 @click.group(
     cls=LazyGroup,
     lazy_commands=_LAZY_COMMANDS,
+    epilog="Tip: run 'nexuslims completion' to set up shell tab completion.",
 )
 @click.version_option(
     version=None,
@@ -136,8 +139,59 @@ def main() -> None:
     """
 
 
+@click.command()
+@click.option(
+    "--shell",
+    type=click.Choice(["bash", "zsh", "fish"]),
+    default=None,
+    help="Shell type. Detected automatically from $SHELL if omitted.",
+)
+def _completion_command(shell: str | None) -> None:
+    """Print shell completion setup instructions.
+
+    Add the printed line to your shell's rc file to enable tab completion
+    for nexuslims commands, subcommands, and options.
+
+    \b
+    Examples:
+        nexuslims completion            # auto-detect shell
+        nexuslims completion --shell zsh
+        nexuslims completion --shell bash
+        nexuslims completion --shell fish
+    """  # noqa: D301
+    if shell is None:
+        shell_path = os.environ.get("SHELL", "")
+        if "zsh" in shell_path:
+            shell = "zsh"
+        elif "fish" in shell_path:
+            shell = "fish"
+        else:
+            shell = "bash"
+
+    env_var = "_NEXUSLIMS_COMPLETE"
+
+    if shell == "fish":
+        line = f"{env_var}=fish_source nexuslims | source"
+        rc_file = "~/.config/fish/config.fish"
+    elif shell == "zsh":
+        line = f'eval "$({env_var}=zsh_source nexuslims)"'
+        rc_file = "~/.zshrc"
+    else:
+        line = f'eval "$({env_var}=bash_source nexuslims)"'
+        rc_file = "~/.bashrc"
+
+    click.echo(f"# Add this line to {rc_file}:")
+    click.echo(line)
+    click.echo()
+    click.echo(
+        "# Note: nexuslims must be on your PATH (e.g. via an activated venv or "
+        "`uv tool install nexuslims`)."
+    )
+
+
 # Register non-lazy subcommands
 main.add_command(_build_instruments_group(), "instruments")
+main.add_command(_completion_command, "completion")
 
 
 # Register db as a lazy command via a callback
