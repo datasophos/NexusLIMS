@@ -226,7 +226,7 @@ NEMO harvester) with a status of
 {py:mod}`~nexusLIMS.builder.record_builder` module directly via:
 
 ```bash
-$ uv run nexuslims-process-records
+$ uv run nexuslims build-records
 ```
 
 This command will find any records that need to be built, build their .xml

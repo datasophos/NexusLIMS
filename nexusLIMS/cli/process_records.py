@@ -9,28 +9,22 @@ It replaces the functionality previously provided by process_new_records.sh.
 Usage
 -----
 
-```bash
-uv run python -m nexusLIMS.cli.process_records [OPTIONS]
-```
+.. code-block:: bash
 
-or
-
-```bash
-uv run nexuslims-process-records [OPTIONS]
-```
+    nexuslims build-records [OPTIONS]
 
 Options
 -------
 
-```bash
--n, --dry-run   : Dry run mode (find files without building records)
--v, --verbose   : Increase verbosity (-v for INFO, -vv for DEBUG)
---from <date>   : Start date for filtering (ISO format). Defaults to 1 week ago.
-                  Use "none" to disable lower bound.
---to <date>     : End date for filtering (ISO format). Omit to disable upper bound.
---version       : Show version and exit
---help          : Show help message and exit
-```
+.. code-block:: bash
+
+    -n, --dry-run   : Dry run mode (find files without building records)
+    -v, --verbose   : Increase verbosity (-v for INFO, -vv for DEBUG)
+    --from <date>   : Start date for filtering (ISO format). Defaults to 1 week ago.
+                      Use "none" to disable lower bound.
+    --to <date>     : End date for filtering (ISO format). Omit to disable upper bound.
+    --version       : Show version and exit
+    --help          : Show help message and exit
 """
 
 import json
@@ -47,22 +41,13 @@ from filelock import FileLock, Timeout
 from rich.console import Console
 from rich.logging import RichHandler
 
+from nexusLIMS.cli import _format_version
+
 # Heavy NexusLIMS imports are lazy-loaded inside functions to speed up --help/--version
 # See: setup_file_logging(), send_error_notification(), and main()
 
 logger = logging.getLogger(__name__)
 console = Console()
-
-
-def _format_version(prog_name: str) -> str:
-    """Format version string with release date if available."""
-    from nexusLIMS.version import __release_date__, __version__  # noqa: PLC0415
-
-    version_str = f"{prog_name} (NexusLIMS {__version__}"
-    if __release_date__:
-        version_str += f", released {__release_date__}"
-    version_str += ")"
-    return version_str
 
 
 # Error patterns to search for in log files
@@ -508,27 +493,27 @@ Examples:
 
   \b
   # Normal run (process records from last week)
-  $ nexuslims-process-records
+  $ nexuslims build-records
 
   \b
   # Process all sessions (no date filtering)
-  $ nexuslims-process-records --from=none
+  $ nexuslims build-records --from=none
 
   \b
   # Process sessions since a specific date
-  $ nexuslims-process-records --from=2025-01-01
+  $ nexuslims build-records --from=2025-01-01
 
   \b
   # Process a specific date range
-  $ nexuslims-process-records --from=2025-01-01 --to=2025-01-31
+  $ nexuslims build-records --from=2025-01-01 --to=2025-01-31
 
   \b
   # Dry run (find files only)
-  $ nexuslims-process-records -n
+  $ nexuslims build-records -n
 
   \b
   # Verbose output
-  $ nexuslims-process-records -vv
+  $ nexuslims build-records -vv
 """
 )
 @click.option(
@@ -559,9 +544,7 @@ Examples:
     help="End date for session filtering (ISO format: YYYY-MM-DD). "
     "Omit to disable upper bound.",
 )
-@click.version_option(
-    version=None, message=_format_version("nexuslims-process-records")
-)
+@click.version_option(version=None, message=_format_version("nexuslims build-records"))
 def main(
     *, dry_run: bool, verbose: int, from_arg: str | None, to_arg: str | None
 ) -> None:

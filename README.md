@@ -66,11 +66,11 @@ cd NexusLIMS
 uv sync
 ```
 
-> **Note:** For development installs, you will need to prefix NexusLIMS commands with `uv run` (e.g. `uv run nexuslims-config edit`).
+> **Note:** For development installs, you will need to prefix NexusLIMS commands with `uv run` (e.g. `uv run nexuslims config edit`).
 
 ### Configuration
 
-Run `nexuslims-config edit` to interactively configure your installation. You'll need to set:
+Run `nexuslims config edit` to interactively configure your installation. You'll need to set:
 - CDCS frontend credentials and URL
 - File paths for data storage
 - NEMO API credentials (if using)
@@ -83,13 +83,13 @@ See [Configuration Documentation](https://datasophos.github.io/NexusLIMS/stable/
 ### Initialize Database
 
 ```bash
-nexuslims-migrate init
+nexuslims db init
 ```
 
 Then add your instruments using the interactive instrument manager:
 
 ```bash
-nexuslims-manage-instruments
+nexuslims instruments manage
 ```
 
 See the [Getting Started Guide](https://datasophos.github.io/NexusLIMS/stable/user_guide/getting_started.html) for more details.
@@ -97,7 +97,7 @@ See the [Getting Started Guide](https://datasophos.github.io/NexusLIMS/stable/us
 ### Build Records
 
 ```bash
-nexuslims-process-records
+nexuslims build-records
 ```
 
 ## Documentation

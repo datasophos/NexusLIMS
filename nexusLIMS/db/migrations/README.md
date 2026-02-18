@@ -21,12 +21,12 @@ nexusLIMS/db/migrations/
 
 ## Quick Start
 
-**Note:** The `nexuslims-migrate` command will use the `NX_DB_PATH` setting
+**Note:** The `nexuslims db` command will use the `NX_DB_PATH` setting
 configured in the `.env` file. If you would like to operate on a different
 database file, you will need to set that variable in every command, such as:
 
 ```bash
-NX_DB_PATH=/path/to/other/database.sqlite nexuslims-migrate check
+NX_DB_PATH=/path/to/other/database.sqlite nexuslims db check
 ```
 
 ### New Installations
@@ -34,7 +34,7 @@ NX_DB_PATH=/path/to/other/database.sqlite nexuslims-migrate check
 To initialize a new NexusLIMS database with the latest schema, run:
 
 ```bash
-nexuslims-migrate init
+nexuslims db init
 ```
 
 This creates the database file at `NX_DB_PATH`, applies all migrations, and marks it as current.
@@ -49,13 +49,13 @@ updates to make the database compatible with the current version of NexusLIMS:
 
 ```bash
 # Mark database as having the v1.4.3 baseline schema
-nexuslims-migrate alembic stamp v1_4_3
+nexuslims db alembic stamp v1_4_3
 
 # Apply pending migrations (v2.4.0 updates)
-nexuslims-migrate upgrade
+nexuslims db upgrade
 
 # Check the current version
-nexuslims-migrate check
+nexuslims db check
 ```
 
 The last command should output something like the following:
@@ -70,42 +70,42 @@ The last command should output something like the following:
 
 ```bash
 # Show current database version
-nexuslims-migrate current
+nexuslims db current
 
 # Check for pending migrations
-nexuslims-migrate check
+nexuslims db check
 
 # View migration history
-nexuslims-migrate history
+nexuslims db history
 ```
 
 ### Upgrade/Downgrade
 
 ```bash
 # Upgrade to latest schema
-nexuslims-migrate upgrade
+nexuslims db upgrade
 
 # Upgrade to specific version
-nexuslims-migrate upgrade v2_4_0a
+nexuslims db upgrade v2_4_0a
 
 # Downgrade one migration
-nexuslims-migrate downgrade
+nexuslims db downgrade
 
 # Downgrade to specific version
-nexuslims-migrate downgrade v1_4_3
+nexuslims db downgrade v1_4_3
 ```
 
 ### Advanced Commands (including Alembic CLI)
 
 ```bash
 # View detailed history
-nexuslims-migrate history --verbose
+nexuslims db history --verbose
 
 # Generate SQL without applying (to preview)
-nexuslims-migrate upgrade --sql
+nexuslims db upgrade --sql
 
-# all Alembic commands are also available through `nexuslims-migrate alembic`:
-nexuslims-migrate alembic [COMMAND] [OPTIONS]
+# all Alembic commands are also available through `nexuslims db alembic`:
+nexuslims db alembic [COMMAND] [OPTIONS]
 ```
 
 ## Creating New Migrations (for developers)
@@ -115,7 +115,7 @@ When you modify the database schema (SQLModel models in `nexusLIMS/db/models.py`
 1. **Edit the models** in `nexusLIMS/db/models.py`
 2. **Generate migration** (requires source checkout):
    ```bash
-   nexuslims-migrate alembic revision --autogenerate -m "Add field to SessionLog"
+   nexuslims db alembic revision --autogenerate -m "Add field to SessionLog"
    ```
    This creates a new migration with a version-based ID (e.g., `v2_5_0_add_field_to_sessionlog.py`)
 
@@ -126,9 +126,9 @@ When you modify the database schema (SQLModel models in `nexusLIMS/db/models.py`
 
 4. **Test migration**:
    ```bash
-   nexuslims-migrate upgrade      # Apply
-   nexuslims-migrate downgrade    # Rollback
-   nexuslims-migrate upgrade      # Re-apply
+   nexuslims db upgrade      # Apply
+   nexuslims db downgrade    # Rollback
+   nexuslims db upgrade      # Re-apply
    ```
 
 5. **Commit migration script** to version control

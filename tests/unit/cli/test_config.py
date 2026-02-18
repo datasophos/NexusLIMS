@@ -1,4 +1,4 @@
-"""Tests for the nexuslims-config CLI (dump / load) and helpers."""
+"""Tests for the nexuslims config CLI (dump / load) and helpers."""
 
 import json
 from pathlib import Path
@@ -410,7 +410,7 @@ class TestFlattenToEnv:
 
 
 class TestDumpCommand:
-    """Integration tests for ``nexuslims-config dump``."""
+    """Integration tests for ``nexuslims config dump``."""
 
     def test_dump_writes_valid_json(self, tmp_path, monkeypatch):
         """Dump produces a valid JSON file with the full unsanitised config."""
@@ -473,7 +473,7 @@ class TestDumpCommand:
 
 
 class TestLoadCommand:
-    """Integration tests for ``nexuslims-config load``."""
+    """Integration tests for ``nexuslims config load``."""
 
     def _write_config_json(self, path: Path) -> None:
         config = _build_config_dict(_mock_settings())
@@ -577,7 +577,7 @@ class TestLoadCommand:
 
 
 class TestEditCommand:
-    """Unit tests for ``nexuslims-config edit``."""
+    """Unit tests for ``nexuslims config edit``."""
 
     def test_edit_launches_configurator_app(self, tmp_path, monkeypatch):
         """Edit instantiates ConfiguratorApp with the given env path and calls run()."""

@@ -49,11 +49,13 @@ def test_fresh_install_without_config(built_wheel_path):
         # 3. Test that --help works WITHOUT configuration
         # This is important for user experience - they should be able to see
         # help text even before configuring the application
+        nexuslims = str(venv_path / "bin" / "nexuslims")
         help_commands = [
-            [str(venv_path / "bin" / "nexuslims-config"), "--help"],
-            [str(venv_path / "bin" / "nexuslims-migrate"), "--help"],
-            [str(venv_path / "bin" / "nexuslims-manage-instruments"), "--help"],
-            [str(venv_path / "bin" / "nexuslims-process-records"), "--help"],
+            [nexuslims, "--help"],
+            [nexuslims, "config", "--help"],
+            [nexuslims, "db", "--help"],
+            [nexuslims, "instruments", "manage", "--help"],
+            [nexuslims, "build-records", "--help"],
         ]
 
         for cmd in help_commands:
@@ -137,21 +139,14 @@ def built_wheel_path(tmp_path_factory):
     """
     Build the NexusLIMS wheel and return its path.
 
-    This fixture builds the wheel once per test session and reuses it
-    for all tests that need it.
+    This fixture always rebuilds the wheel to ensure it reflects the
+    current source, then reuses it for all tests in the session.
     """
-    # Check if wheel already exists in dist/
-    dist_dir = Path(__file__).parent.parent.parent / "dist"
-    existing_wheels = list(dist_dir.glob("nexuslims-*.whl"))
-
-    if existing_wheels:
-        # Use the most recently modified wheel
-        return max(existing_wheels, key=lambda p: p.stat().st_mtime)
-
-    # Build the wheel
     repo_root = Path(__file__).parent.parent.parent
+    dist_dir = repo_root / "dist"
+
     build_result = subprocess.run(
-        ["uv", "build"],
+        ["uv", "build", "--wheel"],
         cwd=repo_root,
         capture_output=True,
         text=True,
@@ -161,7 +156,6 @@ def built_wheel_path(tmp_path_factory):
     if build_result.returncode != 0:
         pytest.fail(f"Failed to build wheel:\n{build_result.stderr}")
 
-    # Find the newly built wheel
     wheels = list(dist_dir.glob("nexuslims-*.whl"))
     if not wheels:
         pytest.fail("No wheel found after build")

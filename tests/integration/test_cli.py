@@ -1,5 +1,5 @@
 """
-Integration tests for the nexuslims-process-records CLI script.
+Integration tests for the nexuslims build-records CLI script.
 
 This module tests the complete behavior of the process_records CLI entrypoint,
 including file locking, logging, email notifications, and error handling.
@@ -17,7 +17,7 @@ import pytest
 
 @pytest.mark.integration
 class TestProcessRecordsScript:
-    """Test the nexuslims-process-records CLI script behavior."""
+    """Test the nexuslims build-records CLI script behavior."""
 
     def test_script_basic_execution(
         self,
@@ -50,7 +50,7 @@ class TestProcessRecordsScript:
         test_start_time = datetime.now().astimezone()
 
         # Mock sys.argv to pass verbose flag
-        monkeypatch.setattr("sys.argv", ["nexuslims-process-records", "-vv"])
+        monkeypatch.setattr("sys.argv", ["nexuslims", "build-records", "-vv"])
 
         # Capture logs at DEBUG level to see all output
         with caplog.at_level(logging.DEBUG):
@@ -124,7 +124,7 @@ class TestProcessRecordsScript:
         test_start_time = datetime.now()
 
         # Mock sys.argv to pass dry-run and verbose flags
-        monkeypatch.setattr("sys.argv", ["nexuslims-process-records", "-n", "-vv"])
+        monkeypatch.setattr("sys.argv", ["nexuslims", "build-records", "-n", "-vv"])
 
         # Capture logs at DEBUG level to see all output
         with caplog.at_level(logging.DEBUG):
@@ -209,7 +209,7 @@ with lock:
         try:
             # Try to run the script - should exit immediately due to lock
             result = subprocess.run(
-                ["uv", "run", "nexuslims-process-records", "-vv"],
+                ["uv", "run", "nexuslims", "build-records", "-vv"],
                 check=False,
                 capture_output=True,
                 text=True,
@@ -268,7 +268,7 @@ with lock:
             raise RuntimeError(msg)
 
         # Mock sys.argv to pass no arguments (basic execution)
-        monkeypatch.setattr("sys.argv", ["nexuslims-process-records"])
+        monkeypatch.setattr("sys.argv", ["nexuslims", "build-records"])
 
         # Clear mailbox before test and wait a moment
         mailpit_client["clear_messages"]()
@@ -369,7 +369,7 @@ with lock:
 
         # Mock sys.argv to pass dry-run and verbose flags
         monkeypatch.setattr(
-            "sys.argv", ["nexuslims-process-records", "--dry-run", "-vv"]
+            "sys.argv", ["nexuslims", "build-records", "--dry-run", "-vv"]
         )
 
         # Call main() directly instead of subprocess
@@ -513,7 +513,7 @@ with lock:
         detection logic.
         """
         result = subprocess.run(
-            ["uv", "run", "nexuslims-process-records", "--version"],
+            ["uv", "run", "nexuslims", "build-records", "--version"],
             check=False,
             capture_output=True,
             text=True,
@@ -540,7 +540,7 @@ with lock:
         generation logic.
         """
         result = subprocess.run(
-            ["uv", "run", "nexuslims-process-records", "--help"],
+            ["uv", "run", "nexuslims", "build-records", "--help"],
             check=False,
             capture_output=True,
             text=True,

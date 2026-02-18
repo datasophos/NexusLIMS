@@ -20,7 +20,7 @@ does behind the scenes. Links to API reference documentation are provided throug
 Since instruments cannot communicate directly with NexusLIMS, the system uses periodic
 polling (via `systemd` or `cron`) to detect sessions requiring record generation.
 
-**Execution:** Run `nexuslims-process-records` to invoke
+**Execution:** Run `nexuslims build-records` to invoke
 {py:func}`~nexusLIMS.builder.record_builder.process_new_records`. See the
 {doc}`CLI reference <cli_reference>` for all command-line options including date filtering,
 dry-run mode, and verbosity controls. The command:

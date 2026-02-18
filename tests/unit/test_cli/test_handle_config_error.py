@@ -77,14 +77,14 @@ class TestHandleConfigError:
         assert "NX_CDCS_TOKEN" in stderr
 
     def test_output_mentions_config_edit(self, capsys):
-        """The error message promotes 'nexuslims-config edit'."""
+        """The error message promotes 'nexuslims config edit'."""
         from nexusLIMS.cli import handle_config_error
 
         with pytest.raises(SystemExit), handle_config_error():
             raise _make_validation_error(["NX_DB_PATH"])
 
         stderr = capsys.readouterr().err
-        assert "nexuslims-config edit" in stderr
+        assert "nexuslims config edit" in stderr
 
     def test_output_contains_docs_url(self, capsys):
         """The error message includes the documentation URL."""
@@ -124,7 +124,7 @@ class TestHandleConfigError:
 
 
 class TestProcessRecordsConfigError:
-    """Test that nexuslims-process-records shows a friendly config error."""
+    """Test that nexuslims build-records shows a friendly config error."""
 
     def test_missing_config_shows_friendly_error(self):
         """Running without config shows the friendly message, not a traceback."""
@@ -142,13 +142,13 @@ class TestProcessRecordsConfigError:
             result = runner.invoke(main, catch_exceptions=False)
 
         assert result.exit_code == 1
-        assert "nexuslims-config edit" in result.stderr
+        assert "nexuslims config edit" in result.stderr
         assert "Traceback" not in result.stderr
         assert "NX_DATA_PATH" in result.stderr
 
 
 class TestConfigDumpConfigError:
-    """Test that 'nexuslims-config dump' shows a friendly config error."""
+    """Test that 'nexuslims config dump' shows a friendly config error."""
 
     def test_missing_config_shows_friendly_error(self):
         """Running dump without config shows the friendly message."""
@@ -164,6 +164,6 @@ class TestConfigDumpConfigError:
             result = runner.invoke(main, ["dump"], catch_exceptions=False)
 
         assert result.exit_code == 1
-        assert "nexuslims-config edit" in result.stderr
+        assert "nexuslims config edit" in result.stderr
         assert "Traceback" not in result.stderr
         assert "NX_CDCS_TOKEN" in result.stderr

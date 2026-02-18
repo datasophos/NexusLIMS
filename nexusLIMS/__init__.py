@@ -182,7 +182,7 @@ See the ``.env.example`` file for more documentation and examples.
 
 `NX_EMAIL_SMTP_HOST`
     SMTP server hostname for sending email notifications from the
-    ``nexuslims-process-records`` script (e.g., ``smtp.gmail.com``).
+    ``nexuslims build-records`` script (e.g., ``smtp.gmail.com``).
     Required for email notifications.
 
 (email-smtp-port)=

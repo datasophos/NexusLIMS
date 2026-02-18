@@ -306,7 +306,7 @@ def test_settings_validation_error(monkeypatch, with_validation):
     # Verify the exception has the help note added (Python 3.11+)
     notes = "\n".join(exc_info.value.__notes__)
     assert "NexusLIMS configuration validation failed" in notes
-    assert "nexuslims-config edit" in notes
+    assert "nexuslims config edit" in notes
 
 
 def test_email_config_loads_from_dotenv_file(

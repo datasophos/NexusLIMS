@@ -160,6 +160,12 @@ def create_demo_database(db_path: Path) -> None:
         session.add_all(instruments)
         session.commit()
 
-    # Set NX_DB_PATH to the created database and refresh config
+    # Set NX_DB_PATH to the created database and refresh config.
+    # Also set dummy values for required fields that may not be present
+    # in the environment when running the demo script standalone.
     os.environ["NX_DB_PATH"] = str(db_path.absolute())
+    os.environ.setdefault("NX_INSTRUMENT_DATA_PATH", "/tmp")  # noqa: S108
+    os.environ.setdefault("NX_DATA_PATH", "/tmp")  # noqa: S108
+    os.environ.setdefault("NX_CDCS_TOKEN", "demo_token")
+    os.environ.setdefault("NX_CDCS_URL", "http://localhost:8000")
     refresh_settings()

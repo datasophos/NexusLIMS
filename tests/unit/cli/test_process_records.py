@@ -25,10 +25,10 @@ class TestFormatVersion:
         monkeypatch.setattr("nexusLIMS.version.__version__", "2.1.0")
         monkeypatch.setattr("nexusLIMS.version.__release_date__", "2025-02-06")
 
-        result = _format_version("nexuslims-process-records")
+        result = _format_version("nexuslims build-records")
 
         assert (
-            result == "nexuslims-process-records (NexusLIMS 2.1.0, released 2025-02-06)"
+            result == "nexuslims build-records (NexusLIMS 2.1.0, released 2025-02-06)"
         )
 
     def test_format_version_without_release_date(self, monkeypatch):
@@ -36,18 +36,18 @@ class TestFormatVersion:
         monkeypatch.setattr("nexusLIMS.version.__version__", "2.1.0")
         monkeypatch.setattr("nexusLIMS.version.__release_date__", None)
 
-        result = _format_version("nexuslims-process-records")
+        result = _format_version("nexuslims build-records")
 
-        assert result == "nexuslims-process-records (NexusLIMS 2.1.0)"
+        assert result == "nexuslims build-records (NexusLIMS 2.1.0)"
 
     def test_format_version_with_empty_release_date(self, monkeypatch):
         """Empty string release date is treated as missing."""
         monkeypatch.setattr("nexusLIMS.version.__version__", "2.1.0")
         monkeypatch.setattr("nexusLIMS.version.__release_date__", "")
 
-        result = _format_version("nexuslims-process-records")
+        result = _format_version("nexuslims build-records")
 
-        assert result == "nexuslims-process-records (NexusLIMS 2.1.0)"
+        assert result == "nexuslims build-records (NexusLIMS 2.1.0)"
 
 
 class TestSetupFileLogging:

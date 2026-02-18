@@ -79,16 +79,16 @@ pyright
 ```bash
 # Run the record builder with full orchestration (recommended for production)
 # Includes file locking, timestamped logging, and email notifications
-nexuslims-process-records
+nexuslims build-records
 
 # Or using the module directly:
 uv run python -m nexusLIMS.cli.process_records
 
 # Run in dry-run mode (find files without building records)
-nexuslims-process-records -n
+nexuslims build-records -n
 
 # Run with verbose output
-nexuslims-process-records -vv
+nexuslims build-records -vv
 
 # Run the core record builder directly (minimal logging, no locking)
 uv run python -m nexusLIMS.builder.record_builder

@@ -143,8 +143,8 @@ When you modify database models:
 1. **Update the models:** `nexusLIMS/db/models.py` or `nexusLIMS/db/enums.py`
    - Add/modify SQLModel classes
    - Update docstrings (field descriptions are extracted automatically)
-2. **Create migration:** `nexuslims-migrate alembic revision --autogenerate -m "description" --rev-id "vX_Y_Za"`
-3. **Test migration:** `nexuslims-migrate upgrade` and `nexuslims-migrate downgrade`
+2. **Create migration:** `nexuslims db alembic revision --autogenerate -m "description" --rev-id "vX_Y_Za"`
+3. **Test migration:** `nexuslims db upgrade` and `nexuslims db downgrade`
 4. **Build docs:** `./scripts/build_docs.sh` (automatically regenerates diagrams)
 5. **Review diagrams:** Check `docs/_static/db_schema.png` and `docs/dev_guide/db_schema_diagram.md`
 

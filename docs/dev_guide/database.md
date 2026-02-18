@@ -82,17 +82,17 @@ If you have an existing NexusLIMS database (created before version 2.2.0), you n
 
 ```bash
 # Mark existing database as consistent with the baseline pre-2.0 schema
-nexuslims-migrate alembic stamp v1_4_3
+nexuslims db alembic stamp v1_4_3
 ```
 
 This tells Alembic that your database already has the baseline schema structure and doesn't need to be created from scratch.
 
 ```{versionadded} 2.5.0
-The `nexuslims-migrate` command provides simple, user-friendly commands for
+The `nexuslims db` command provides simple, user-friendly commands for
 common database operations. It automatically locates the migrations directory
 inside the installed package, making migrations work correctly after pip/uv
 installation. Advanced users can access the full Alembic CLI via
-`nexuslims-migrate alembic [COMMAND]`. The `uv run alembic` command still works
+`nexuslims db alembic [COMMAND]`. The `uv run alembic` command still works
 for development from source checkouts.
 ```
 
@@ -100,28 +100,28 @@ for development from source checkouts.
 
 ```bash
 # Check current migration status
-nexuslims-migrate current
+nexuslims db current
 
 # Check if database has pending migrations
-nexuslims-migrate check
+nexuslims db check
 
 # View migration history
-nexuslims-migrate history
+nexuslims db history
 
 # Upgrade to latest schema version
-nexuslims-migrate upgrade
+nexuslims db upgrade
 
 # Upgrade to specific revision
-nexuslims-migrate upgrade v2_5_0a
+nexuslims db upgrade v2_5_0a
 
 # Downgrade one migration
-nexuslims-migrate downgrade
+nexuslims db downgrade
 
 # Generate a new migration (development only, requires source checkout)
-nexuslims-migrate alembic revision --autogenerate -m "Description"
+nexuslims db alembic revision --autogenerate -m "Description"
 ```
 
-For advanced Alembic operations, use `nexuslims-migrate alembic [COMMAND]` to access all Alembic sub-commands. From a source checkout, you can also use `uv run alembic` directly.
+For advanced Alembic operations, use `nexuslims db alembic [COMMAND]` to access all Alembic sub-commands. From a source checkout, you can also use `uv run alembic` directly.
 
 ### Creating New Migrations
 
@@ -137,7 +137,7 @@ When you modify the database schema (by changing {py:class}`~nexusLIMS.db.models
 
 3. **Generate migration script** (requires source checkout):
    ```bash
-   nexuslims-migrate alembic revision --autogenerate \
+   nexuslims db alembic revision --autogenerate \
        -m "add external user identifiers" \
        --rev-id "v2_5_0a"
    ```
@@ -158,13 +158,13 @@ When you modify the database schema (by changing {py:class}`~nexusLIMS.db.models
 5. **Test the migration thoroughly**:
    ```bash
    # Apply migration
-   nexuslims-migrate upgrade
+   nexuslims db upgrade
 
    # Test downgrade
-   nexuslims-migrate downgrade
+   nexuslims db downgrade
 
    # Re-apply
-   nexuslims-migrate upgrade head
+   nexuslims db upgrade head
    ```
 
 6. **Add integration tests** in `tests/integration/test_migrations.py`:
@@ -200,7 +200,7 @@ Alembic configuration is stored in:
 
 The database URL is automatically set from the {ref}`NX_DB_PATH <config-db-path>` environment variable in `env.py`, so you don't need to configure it separately. All Alembic configuration lives in `pyproject.toml`, eliminating the need for a separate `alembic.ini` file.
 
-The `nexuslims-migrate` CLI command automatically locates the migrations directory using `importlib.resources`, so migrations work correctly whether NexusLIMS is installed via pip, uv, or run from source.
+The `nexuslims db` CLI command automatically locates the migrations directory using `importlib.resources`, so migrations work correctly whether NexusLIMS is installed via pip, uv, or run from source.
 
 ### Important Notes
 

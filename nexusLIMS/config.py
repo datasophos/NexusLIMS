@@ -169,7 +169,7 @@ class NemoHarvesterConfig(BaseModel):
 
 
 class EmailConfig(BaseModel):
-    """Config for email notifications from the nexuslims-process-records script."""
+    """Config for email notifications from the nexuslims build-records script."""
 
     smtp_host: str = Field(
         "localhost" if TEST_MODE else ...,
@@ -257,7 +257,7 @@ class EmailConfig(BaseModel):
                 "messages when the record builder encounters problems. Provide as "
                 "a comma-separated string, e.g.:\n"
                 "  `NX_EMAIL_RECIPIENTS='admin@example.com,team@example.com'`\n\n"
-                "Notifications are sent when `nexuslims-process-records` detects "
+                "Notifications are sent when `nexuslims build-records` detects "
                 "ERROR-level log entries."
             ),
         },
@@ -384,7 +384,7 @@ class Settings(BaseSettings):
                 "The full filesystem path to the NexusLIMS SQLite database file. "
                 "\n\n"
                 "Must be writable by the NexusLIMS process. The database is created "
-                "automatically on first run of `nexuslims-migrate init`. Recommended "
+                "automatically on first run of `nexuslims db init`. Recommended "
                 "location: within `NX_DATA_PATH` for co-location with other data."
             ),
         },
@@ -936,7 +936,7 @@ class _SettingsManager:
             help_msg = (
                 "\n" + "=" * 80 + "\n"
                 "NexusLIMS configuration validation failed.\n\n"
-                "Quick fix:  Run 'nexuslims-config edit' to interactively\n"
+                "Quick fix:  Run 'nexuslims config edit' to interactively\n"
                 "            configure NexusLIMS in a terminal UI.\n\n"
                 "Reference:  https://datasophos.github.io/NexusLIMS/"
                 f"{doc_version}/user_guide/configuration.html\n" + "=" * 80

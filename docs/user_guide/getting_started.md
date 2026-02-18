@@ -39,10 +39,10 @@ Using `uv tool`, you can install NexusLIMS as an isolated command-line tool:
 uv tool install nexuslims
 ```
 
-This will install the following NexusLIMS command line tools directly onto your path,
-meaning they can be run from your terminal without needing to activate
-a virtual environment: `nexuslims-config`, `nexuslims-manage-instruments`,
-`nexuslims-migrate`, and `nexuslims-process-records`
+This will install the `nexuslims` command directly onto your path,
+meaning it can be run from your terminal without needing to activate
+a virtual environment. Use `nexuslims --help` to see all available
+subcommands (e.g. `nexuslims config edit`, `nexuslims build-records`)
 
 For more information on tools in uv, please see their
 [documentation](https://docs.astral.sh/uv/guides/tools/).
@@ -88,7 +88,7 @@ uv sync
 :class: note
 For development installs, you will need to prefix all NexusLIMS commands with `uv run`,
 from the project directory, since they will not be installed onto the path by default
-(e.g. `uv run nexuslims-config edit`).
+(e.g. `uv run nexuslims config edit`).
 ```
 ````
 
@@ -103,7 +103,7 @@ Check that NexusLIMS is installed correctly:
 ````{tab-item} uv (Recommended)
 
 ```bash
-nexuslims-config --help
+nexuslims --help
 ```
 
 ````
@@ -112,7 +112,7 @@ nexuslims-config --help
 
 ```text
 source nexuslims-venv/bin/activate
-nexuslims-config --help
+nexuslims --help
 ```
 
 ````
@@ -120,27 +120,30 @@ nexuslims-config --help
 ````{tab-item} From source
 ```text
 cd NexusLIMS
-uv run nexuslims-config --help
+uv run nexuslims --help
 ```
 ````
 
 `````
 
-You should see the help output for the NexusLIMS configuration management tool:
+You should see the help output for the NexusLIMS command-line interface:
 
 ```text
-Usage: nexuslims-config [OPTIONS] COMMAND [ARGS]...
+Usage: nexuslims [OPTIONS] COMMAND [ARGS]...
 
-  Manage NexusLIMS configuration files.
+  NexusLIMS command-line interface.
+
+  Manage records, configuration, database migrations, and instruments.
 
 Options:
   --version  Show the version and exit.
   --help     Show this message and exit.
 
 Commands:
-  dump  Dump the current effective configuration to JSON.
-  edit  Interactively edit the NexusLIMS configuration in a terminal UI.
-  load  Load a previously dumped JSON config into a .env file.
+  build-records  Process new NexusLIMS records with logging and email...
+  config         Manage NexusLIMS configuration files.
+  instruments    Manage NexusLIMS instruments.
+  db             Manage NexusLIMS database.
 ```
 
 
@@ -148,17 +151,16 @@ Commands:
 ## Configuration
 
 ```{note}
-In all of the following examples, commands like `nexuslims-config` and
-`nexuslims-manage-instruments` are installed as part of the NexusLIMS package.
-How you invoke them depends on your installation type:
+In all of the following examples, the `nexuslims` command is installed as part
+of the NexusLIMS package. How you invoke it depends on your installation type:
 
-- **uv tool install**: you can use the commands as written, since uv
-  puts them on your executable path during installation
+- **uv tool install**: you can use the command as written, since uv
+  puts it on your executable path during installation
 - **pip install**: activate your virtual environment first
-  (`source .venv/bin/activate`), then run commands directly (e.g. 
-  `nexuslims-config edit`)
+  (`source .venv/bin/activate`), then run commands directly (e.g.
+  `nexuslims config edit`)
 - **uv source install**: run the commands from the cloned NexusLIMS directory
-  and prefix each command with `uv run` (e.g. `uv run nexuslims-config edit`)
+  and prefix each command with `uv run` (e.g. `uv run nexuslims config edit`)
 ```
 
 NexusLIMS requires configuration through environment variables, which are typically stored in a `.env` file.
@@ -169,7 +171,7 @@ NexusLIMS requires configuration through environment variables, which are typica
    way to customize your configuration, and will automatically save a `.env` file
    with your selected values:
    ```bash
-   nexuslims-config edit
+   nexuslims config edit
    ```
 
    ```{tip}
@@ -188,7 +190,7 @@ NexusLIMS requires configuration through environment variables, which are typica
    ```bash
    # Dump current config to see what NexusLIMS sees
    # WARNING: Output contains live credentials - don't share publicly
-   nexuslims-config dump
+   nexuslims config dump
    ```
 
 ```{seealso}
@@ -208,7 +210,7 @@ you have set in the `NX_DB_PATH` varuable as the active database:
 
 ```bash
 # Initialize new database with schema and migrations
-nexuslims-migrate init
+nexuslims db init
 ```
 
 This creates an appropriately-formatted database file at `NX_DB_PATH`. 
@@ -222,7 +224,7 @@ in your .env, you can do so by setting the `NX_DB_PATH` environment variable
 directly on the command line:
 
 ```bash
-$ NX_DB_PATH=/path/to/other/database.db nexuslims-migrate init
+$ NX_DB_PATH=/path/to/other/database.db nexuslims db init
 ```
 
 ````
@@ -238,7 +240,7 @@ To add, edit, and delete instruments, use the NexusLIMS interactive
 instrument manager:
 
 ```bash
-nexuslims-manage-instruments
+nexuslims instruments manage
 ```
 
 This launches a terminal UI with a table of all/any configured
@@ -261,13 +263,13 @@ Once configured, run the record builder:
 # Full orchestration (recommended)
 # Includes file locking, timestamped logging, email notifications
 # by default, will only search for usage events that occurred in the past week
-nexuslims-process-records
+nexuslims build-records
 
 # Dry-run mode (find files without building records)
-nexuslims-process-records -n
+nexuslims build-records -n
 
 # Verbose output
-nexuslims-process-records -vv
+nexuslims build-records -vv
 ```
 
 For a detailed explanation of the record building workflow and session states,
@@ -320,13 +322,13 @@ apply any pending database migrations to make your database compatible with
 the new version:
 
 ```bash
-nexuslims-migrate upgrade
+nexuslims db upgrade
 ```
 
 To check whether migrations are needed without applying them, use:
 
 ```bash
-nexuslims-migrate check
+nexuslims db check
 ```
 
 ## Getting Help

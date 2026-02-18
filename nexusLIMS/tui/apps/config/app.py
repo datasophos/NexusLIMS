@@ -2,7 +2,7 @@
 NexusLIMS Configuration TUI Application.
 
 Provides an interactive terminal UI for editing the NexusLIMS ``.env``
-configuration file.  Launched via ``nexuslims-config edit``.
+configuration file.  Launched via ``nexuslims config edit``.
 """
 
 from pathlib import Path
