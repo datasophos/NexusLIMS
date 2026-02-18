@@ -15,7 +15,7 @@ Set Theme "Dracula"
 
 # Set up demo environment
 # Launch the TUI (NX_DB_PATH should already be set)
-Type "uv run nexuslims-manage-instruments"
+Type "uv run nexuslims instruments manage"
 Enter
 Sleep 2s
 

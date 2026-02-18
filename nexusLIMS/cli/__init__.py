@@ -11,12 +11,23 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
+def _format_version(prog_name: str) -> str:
+    """Format version string with release date if available."""
+    from nexusLIMS.version import __release_date__, __version__  # noqa: PLC0415
+
+    version_str = f"{prog_name} (NexusLIMS {__version__}"
+    if __release_date__:
+        version_str += f", released {__release_date__}"
+    version_str += ")"
+    return version_str
+
+
 @contextlib.contextmanager
 def handle_config_error() -> Iterator[None]:
     """Context manager that catches config ``ValidationError`` and exits cleanly.
 
     Instead of dumping a raw Pydantic traceback, this prints a short,
-    actionable message directing the user to ``nexuslims-config edit``
+    actionable message directing the user to ``nexuslims config edit``
     and the online documentation.
 
     Usage
@@ -51,7 +62,7 @@ def handle_config_error() -> Iterator[None]:
             "",
             "  1. Run the interactive configurator:",
             "",
-            "       nexuslims-config edit",
+            "       nexuslims config edit",
             "",
             "  2. Create a .env file manually (see documentation):",
             "",

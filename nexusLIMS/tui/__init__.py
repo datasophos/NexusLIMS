@@ -11,13 +11,13 @@ Available TUI applications:
 
 Usage
 -----
-TUI apps are launched via their respective CLI entry points::
+TUI apps are launched via their respective CLI subcommands::
 
     # Manage instruments
-    nexuslims-manage-instruments
+    nexuslims instruments manage
 
-    # Future: Manage configuration
-    nexuslims-manage-config
+    # Manage configuration
+    nexuslims config edit
 """
 
 from nexusLIMS.tui.common.base_app import BaseNexusApp

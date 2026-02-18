@@ -10,7 +10,7 @@ Set Height 900
 Set Theme "Dracula"
 
 # Launch the config TUI with demo .env file
-Type "uv run nexuslims-config edit --env-path demo.env"
+Type "uv run nexuslims config edit --env-path demo.env"
 Enter
 Sleep 3s
 

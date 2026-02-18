@@ -1,7 +1,7 @@
 """
 CLI commands for dumping and loading NexusLIMS configuration.
 
-Provides ``nexuslims-config dump`` and ``nexuslims-config load`` for exporting
+Provides ``nexuslims config dump`` and ``nexuslims config load`` for exporting
 the current effective configuration to JSON and importing a previously
 dumped configuration back into a ``.env`` file.  The JSON format uses a nested
 structure for NEMO harvesters and email config so that the file is both
@@ -10,18 +10,18 @@ human-readable and unambiguous.
 Usage
 -----
 
-```bash
-# Dump current config to stdout (default)
-nexuslims-config dump
+.. code-block:: bash
 
-# Dump current config to a file
-nexuslims-config dump --output /path/to/nexuslims_config.json
+    # Dump current config to stdout (default)
+    nexuslims config dump
 
-# Load a previously dumped config into .env
-nexuslims-config load nexuslims_config.json
-nexuslims-config load nexuslims_config.json --env-path /path/to/.env
-nexuslims-config load nexuslims_config.json --force          # skip confirmation prompt
-```
+    # Dump current config to a file
+    nexuslims config dump --output /path/to/nexuslims_config.json
+
+    # Load a previously dumped config into .env
+    nexuslims config load nexuslims_config.json
+    nexuslims config load nexuslims_config.json --env-path /path/to/.env
+    nexuslims config load nexuslims_config.json --force
 
 Security
 --------
@@ -39,21 +39,12 @@ from pathlib import Path
 
 import click
 
+from nexusLIMS.cli import _format_version
+
 # Heavy NexusLIMS imports are lazy-loaded inside functions to keep
 # --help / --version fast (same pattern as process_records.py).
 
 logger = logging.getLogger(__name__)
-
-
-def _format_version(prog_name: str) -> str:
-    """Format version string with release date if available."""
-    from nexusLIMS.version import __release_date__, __version__  # noqa: PLC0415
-
-    version_str = f"{prog_name} (NexusLIMS {__version__}"
-    if __release_date__:
-        version_str += f", released {__release_date__}"
-    version_str += ")"
-    return version_str
 
 
 # ---------------------------------------------------------------------------
@@ -286,7 +277,7 @@ def _write_env_file(env_vars: dict[str, str], path: Path) -> None:
 
 
 @click.group()
-@click.version_option(version=None, message=_format_version("nexuslims-config"))
+@click.version_option(version=None, message=_format_version("nexuslims config"))
 def main() -> None:
     """Manage NexusLIMS configuration files."""
 

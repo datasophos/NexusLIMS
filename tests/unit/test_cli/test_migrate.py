@@ -6,7 +6,7 @@ from click.testing import CliRunner
 
 
 def test_init_reads_db_path_from_dotenv_in_cwd(tmp_path, monkeypatch):
-    """Test that 'nexuslims-migrate init' finds .env in the user's cwd.
+    """Test that 'nexuslims db init' finds .env in the user's cwd.
 
     When NexusLIMS is installed as a package the calling file lives
     inside site-packages.  ``find_dotenv(usecwd=True)`` ensures the
@@ -126,7 +126,7 @@ def test_cli_help():
     result = runner.invoke(_cli(), ["--help"])
 
     assert result.exit_code == 0
-    assert "Manage NexusLIMS database schema migrations" in result.output
+    assert "Manage NexusLIMS database" in result.output
     assert "init" in result.output
     assert "upgrade" in result.output
     assert "downgrade" in result.output
@@ -142,7 +142,7 @@ def test_cli_version():
     result = runner.invoke(_cli(), ["--version"])
 
     assert result.exit_code == 0
-    assert "nexuslims-migrate" in result.output
+    assert "nexuslims db" in result.output
     assert "NexusLIMS" in result.output
 
 

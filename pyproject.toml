@@ -89,10 +89,7 @@ Documentation = "https://datasophos.github.io/NexusLIMS/stable"
 "Original-NIST-Repository" = "https://github.com/usnistgov/NexusLIMS.git"
 
 [project.scripts]
-nexuslims-process-records = "nexusLIMS.cli.process_records:main"
-nexuslims-config = "nexusLIMS.cli.config:main"
-nexuslims-migrate = "nexusLIMS.cli.migrate:main"
-nexuslims-manage-instruments = "nexusLIMS.cli.manage_instruments:main"
+nexuslims = "nexusLIMS.cli.main:main"
 
 [build-system]
 requires = ["hatchling"]

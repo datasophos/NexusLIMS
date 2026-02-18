@@ -39,10 +39,10 @@ pip install --quiet "$WHEEL_PATH"
 
 # 3. TEST CLI ENTRY POINTS
 echo "Testing CLI entry points..."
-nexuslims-process-records --version
-nexuslims-config --help >/dev/null
-nexuslims-migrate --help >/dev/null
-nexuslims-manage-instruments --help >/dev/null
+nexuslims build-records --version
+nexuslims config --help >/dev/null
+nexuslims db --help >/dev/null
+nexuslims instruments manage --help >/dev/null
 echo "✓ All 4 CLI entry points are callable"
 
 # 4. TEST DATA FILE LOADING
@@ -88,7 +88,7 @@ export NX_CDCS_URL="http://localhost:48080"
 
 mkdir -p "$NX_INSTRUMENT_DATA_PATH" "$NX_DATA_PATH"
 
-nexuslims-migrate init
+nexuslims db init
 
 test -f "$NX_DB_PATH" || { echo "ERROR: Database not created"; exit 1; }
 
@@ -106,7 +106,7 @@ conn.close()
 print('  ✓ Database initialized with correct schema')
 "
 
-nexuslims-migrate current >/dev/null
+nexuslims db current >/dev/null
 echo "  ✓ Migration commands work"
 
 # 6. TEST MIGRATIONS ARE INCLUDED

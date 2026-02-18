@@ -18,10 +18,10 @@ The **NexusLIMS Configuration Editor** provides a user-friendly terminal interfa
 
 ```bash
 # Launch the interactive configurator
-nexuslims-config edit
+nexuslims config edit
 
 # Edit a specific .env file
-nexuslims-config edit --env-path /path/to/.env
+nexuslims config edit --env-path /path/to/.env
 ```
 
 The configurator features:
@@ -104,14 +104,14 @@ and fill out each harvester's configuration in a logical grouping:
 
 ### Dumping Configuration
 
-Use `nexuslims-config dump` to export your current configuration to a JSON file:
+Use `nexuslims config dump` to export your current configuration to a JSON file:
 
 ```bash
 # Dump to default file (nexuslims_config.json)
-nexuslims-config dump
+nexuslims config dump
 
 # Dump to specific file
-nexuslims-config dump --output /path/to/my-config.json
+nexuslims config dump --output /path/to/my-config.json
 ```
 
 The dumped configuration includes:
@@ -159,17 +159,17 @@ Example output:
 
 ### Loading Configuration
 
-Use `nexuslims-config load` to convert a dumped JSON config back into a `.env` file:
+Use `nexuslims config load` to convert a dumped JSON config back into a `.env` file:
 
 ```bash
 # Load config (creates/overwrites .env in current directory)
-nexuslims-config load nexuslims_config.json
+nexuslims config load nexuslims_config.json
 
 # Load to specific .env file
-nexuslims-config load nexuslims_config.json --env-path /path/to/.env
+nexuslims config load nexuslims_config.json --env-path /path/to/.env
 
 # Skip confirmation prompt (useful for automation)
-nexuslims-config load nexuslims_config.json --force
+nexuslims config load nexuslims_config.json --force
 ```
 
 **Safety features:**
@@ -182,13 +182,13 @@ nexuslims-config load nexuslims_config.json --force
 
 ```bash
 # On source server
-nexuslims-config dump --output production-config.json
+nexuslims config dump --output production-config.json
 
 # Securely transfer the file to new server (contains live credentials!)
 scp production-config.json user@newserver:/path/to/
 
 # On destination server
-nexuslims-config load production-config.json
+nexuslims config load production-config.json
 
 # Clean up the dump file (it contains secrets)
 rm production-config.json
@@ -196,7 +196,7 @@ rm production-config.json
 
 ### Configuration in Logs
 
-When `nexuslims-process-records` starts with a verbosity of `-v` or higher,
+When `nexuslims build-records` starts with a verbosity of `-v` or higher,
 it logs a sanitized view of the loaded configuration to help with debugging.
 The log output is sanitized, ensuring no sensitive environment variables
 are exposed in logs.

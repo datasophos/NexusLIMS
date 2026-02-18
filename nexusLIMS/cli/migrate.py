@@ -9,22 +9,22 @@ Usage
 .. code-block:: bash
 
     # Initialize a new database
-    nexuslims-migrate init
+    nexuslims db init
 
     # Upgrade to latest schema version
-    nexuslims-migrate upgrade
+    nexuslims db upgrade
 
     # Show current database version
-    nexuslims-migrate current
+    nexuslims db current
 
     # Check for pending migrations
-    nexuslims-migrate check
+    nexuslims db check
 
     # Downgrade one migration
-    nexuslims-migrate downgrade
+    nexuslims db downgrade
 
     # Advanced: Run any Alembic command
-    nexuslims-migrate alembic history --verbose
+    nexuslims db alembic history --verbose
 
 Examples
 --------
@@ -32,20 +32,20 @@ Set up a new database:
 
 .. code-block:: bash
 
-    nexuslims-migrate init
+    nexuslims db init
 
 Check database status:
 
 .. code-block:: bash
 
-    nexuslims-migrate current
-    nexuslims-migrate check
+    nexuslims db current
+    nexuslims db check
 
 Apply pending migrations:
 
 .. code-block:: bash
 
-    nexuslims-migrate upgrade
+    nexuslims db upgrade
 
 Notes
 -----
@@ -164,10 +164,10 @@ def _cli():  # noqa: PLR0915
     @click.option("--version", is_flag=True, help="Show version and exit")
     @click.pass_context
     def cli(ctx, version):
-        """Manage NexusLIMS database schema migrations.
+        """Manage NexusLIMS database.
 
         This tool provides simple commands for common database operations.
-        For advanced usage, use 'nexuslims-migrate alembic [COMMAND]' to
+        For advanced usage, use 'nexuslims db alembic [COMMAND]' to
         access the full Alembic CLI.
         """
         # Load .env file if it exists (before any commands run)
@@ -178,7 +178,7 @@ def _cli():  # noqa: PLR0915
         if version:
             from nexusLIMS import __version__
 
-            click.echo(f"nexuslims-migrate (NexusLIMS {__version__})")
+            click.echo(f"nexuslims db (NexusLIMS {__version__})")
             ctx.exit()
 
         if ctx.invoked_subcommand is None:
@@ -197,7 +197,7 @@ def _cli():  # noqa: PLR0915
         and marks it as migrated to the latest version.
 
         This creates the database file and applies all migrations
-        (equivalent to 'nexuslims-migrate upgrade head' on a new DB).
+        (equivalent to 'nexuslims db upgrade head' on a new DB).
         """
         import os
         import sys
@@ -210,7 +210,7 @@ def _cli():  # noqa: PLR0915
                 "Error: NX_DB_PATH environment variable is not set.", fg="red", err=True
             )
             click.echo("\nSet it via the interactive configurator:\n", err=True)
-            click.echo("    nexuslims-config edit\n", err=True)
+            click.echo("    nexuslims config edit\n", err=True)
             click.echo("Or set it directly, e.g.:\n", err=True)
             click.echo("    export NX_DB_PATH=/path/to/database.db", err=True)
             sys.exit(1)
@@ -258,9 +258,9 @@ def _cli():  # noqa: PLR0915
 
         \b
         Examples:
-          nexuslims-migrate upgrade          # Upgrade to latest
-          nexuslims-migrate upgrade +1       # Upgrade one version
-          nexuslims-migrate upgrade abc123   # Upgrade to specific revision
+          nexuslims db upgrade          # Upgrade to latest
+          nexuslims db upgrade +1       # Upgrade one version
+          nexuslims db upgrade abc123   # Upgrade to specific revision
         """
         import os
         import sys
@@ -270,8 +270,7 @@ def _cli():  # noqa: PLR0915
             db_path = os.getenv("NX_DB_PATH")
             if not db_path or not Path(db_path).exists():
                 click.secho(
-                    "Error: Database does not exist. Run 'nexuslims-migrate init' "
-                    "first.",
+                    "Error: Database does not exist. Run 'nexuslims db init' first.",
                     fg="red",
                     err=True,
                 )
@@ -303,9 +302,9 @@ def _cli():  # noqa: PLR0915
 
         \b
         Examples:
-          nexuslims-migrate downgrade        # Downgrade one version
-          nexuslims-migrate downgrade -2     # Downgrade two versions
-          nexuslims-migrate downgrade abc123 # Downgrade to specific revision
+          nexuslims db downgrade        # Downgrade one version
+          nexuslims db downgrade -2     # Downgrade two versions
+          nexuslims db downgrade abc123 # Downgrade to specific revision
         """
         import os
         import sys
@@ -349,7 +348,7 @@ def _cli():  # noqa: PLR0915
         db_path = os.getenv("NX_DB_PATH")
         if not db_path or not Path(db_path).exists():
             click.secho(
-                "Error: Database does not exist. Run 'nexuslims-migrate init' first.",
+                "Error: Database does not exist. Run 'nexuslims db init' first.",
                 fg="red",
                 err=True,
             )
@@ -377,7 +376,7 @@ def _cli():  # noqa: PLR0915
         db_path = os.getenv("NX_DB_PATH")
         if not db_path or not Path(db_path).exists():
             click.secho(
-                "Error: Database does not exist. Run 'nexuslims-migrate init' first.",
+                "Error: Database does not exist. Run 'nexuslims db init' first.",
                 fg="red",
                 err=True,
             )
@@ -409,7 +408,7 @@ def _cli():  # noqa: PLR0915
                 click.echo(f"  Current revision: {current_rev or 'none'}", err=True)
                 click.echo(f"  Latest revision:  {head_rev}", err=True)
                 click.echo(
-                    "\nRun 'nexuslims-migrate upgrade' to apply pending migrations.",
+                    "\nRun 'nexuslims db upgrade' to apply pending migrations.",
                     err=True,
                 )
                 sys.exit(1)
@@ -452,9 +451,9 @@ def _cli():  # noqa: PLR0915
 
         \b
         Examples:
-          nexuslims-migrate alembic history --verbose
-          nexuslims-migrate alembic revision --autogenerate -m "Add column"
-          nexuslims-migrate alembic show head
+          nexuslims db alembic history --verbose
+          nexuslims db alembic revision --autogenerate -m "Add column"
+          nexuslims db alembic show head
         """
         import contextlib
         import sys
@@ -475,14 +474,14 @@ def _cli():  # noqa: PLR0915
             # Inject config file and pass through remaining arguments
             original_argv = sys.argv.copy()
             sys.argv = [
-                "nexuslims-migrate alembic",
+                "nexuslims db alembic",
                 "-c",
                 str(tmp_config_path),
                 *ctx.args,
             ]
 
             # Run Alembic's CLI
-            CommandLine(prog="nexuslims-migrate alembic").main()
+            CommandLine(prog="nexuslims db alembic").main()
         finally:
             sys.argv = original_argv
             # Clean up the temporary config file
@@ -493,7 +492,7 @@ def _cli():  # noqa: PLR0915
 
 
 def main() -> None:
-    """Entry point for nexuslims-migrate CLI."""
+    """Entry point for nexuslims db CLI."""
     cli = _cli()
     cli()
 

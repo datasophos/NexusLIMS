@@ -1,19 +1,19 @@
 """
 CLI entry point for the NexusLIMS instrument management TUI.
 
-Provides the ``nexuslims-manage-instruments`` command for interactive
+Provides the ``nexuslims instruments manage`` command for interactive
 database management.
 
 Usage
 -----
 
-```bash
-# Launch the instrument management TUI
-nexuslims-manage-instruments
+.. code-block:: bash
 
-# Show version information
-nexuslims-manage-instruments --version
-```
+    # Launch the instrument management TUI
+    nexuslims instruments manage
+
+    # Show version information
+    nexuslims instruments manage --version
 
 Features
 --------
@@ -59,7 +59,7 @@ def _ensure_database_initialized() -> None:
             err=True,
         )
         click.echo("\nSet it via the interactive configurator:\n", err=True)
-        click.echo("    nexuslims-config edit\n", err=True)
+        click.echo("    nexuslims config edit\n", err=True)
         click.echo("Or set it directly, e.g.:\n", err=True)
         click.echo("    export NX_DB_PATH=/path/to/database.db", err=True)
         raise click.Abort
@@ -96,20 +96,43 @@ def _ensure_database_initialized() -> None:
             raise click.Abort from e
 
 
-def _format_version(prog_name: str) -> str:
-    """Format version string with release date if available."""
-    from nexusLIMS.version import __release_date__, __version__  # noqa: PLC0415
+def _run_instrument_manager() -> None:
+    """Launch the instrument management TUI.
 
-    version_str = f"{prog_name} (NexusLIMS {__version__}"
-    if __release_date__:
-        version_str += f", released {__release_date__}"
-    version_str += ")"
-    return version_str
+    This is separated from the Click command so it can be called from
+    both the standalone ``main()`` command and the unified CLI's
+    ``nexuslims instruments manage`` subcommand.
+    """
+    from nexusLIMS.tui.apps.instruments import InstrumentManagerApp  # noqa: PLC0415
+
+    # Configure logging (quiet for TUI mode)
+    logging.basicConfig(
+        level=logging.WARNING,
+        format="%(levelname)s: %(message)s",
+    )
+
+    # Pass db_path explicitly so the TUI app doesn't need to access
+    # config.settings (which would require all settings to be valid)
+    db_path = Path(os.getenv("NX_DB_PATH"))
+
+    # Launch the TUI app
+    try:
+        app = InstrumentManagerApp(db_path=db_path)
+        app.run()
+    except KeyboardInterrupt:
+        # Clean exit on Ctrl+C
+        click.echo("\nExiting...", err=True)
+    except Exception as e:
+        # Show error and exit
+        click.echo(f"Error: {e}", err=True)
+        logger.exception("Failed to run instrument manager")
+        raise click.Abort from e
 
 
 @click.command()
 @click.version_option(
-    version=None, message=_format_version("nexuslims-manage-instruments")
+    version=None,
+    message="This standalone command is deprecated. Use: nexuslims instruments manage",
 )
 def main():
     """
@@ -133,40 +156,13 @@ def main():
     \b
     Example:
     --------
-      $ nexuslims-manage-instruments
+      $ nexuslims instruments manage
 
     The TUI will display a table of all instruments. Use arrow keys to
     navigate and press Enter or 'e' to edit the selected instrument.
     """  # noqa: D301
-    # Configure logging (quiet for TUI mode)
-    logging.basicConfig(
-        level=logging.WARNING,
-        format="%(levelname)s: %(message)s",
-    )
-
-    # Ensure database is initialized BEFORE importing TUI app
-    # (imports trigger config validation which requires database to exist)
     _ensure_database_initialized()
-
-    # Import here after database initialization
-    from nexusLIMS.tui.apps.instruments import InstrumentManagerApp  # noqa: PLC0415
-
-    # Pass db_path explicitly so the TUI app doesn't need to access
-    # config.settings (which would require all settings to be valid)
-    db_path = Path(os.getenv("NX_DB_PATH"))
-
-    # Launch the TUI app
-    try:
-        app = InstrumentManagerApp(db_path=db_path)
-        app.run()
-    except KeyboardInterrupt:
-        # Clean exit on Ctrl+C
-        click.echo("\nExiting...", err=True)
-    except Exception as e:
-        # Show error and exit
-        click.echo(f"Error: {e}", err=True)
-        logger.exception("Failed to run instrument manager")
-        raise click.Abort from e
+    _run_instrument_manager()
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -12,7 +12,7 @@ This application directly modifies your NexusLIMS database. Back up your databas
 The instrument manager is available as a command-line tool:
 
 ```bash
-uv run nexuslims-manage-instruments
+uv run nexuslims instruments manage
 ```
 
 The TUI will automatically initialize the database if it doesn't exist yet.
@@ -153,10 +153,10 @@ The help screen shows all available keybindings and actions.
 
 ```bash
 # Show version information
-nexuslims-manage-instruments --version
+nexuslims instruments manage --version
 
 # Show help
-nexuslims-manage-instruments --help
+nexuslims instruments manage --help
 ```
 
 The application will use the database configured in your `.env` file.
@@ -164,7 +164,7 @@ To run with a different database, you can override `NX_DB_PATH` when starting
 the application:
 
 ```bash
-NX_DB_PATH=/path/to/different/db.sqlite nexuslims-manage-instruments
+NX_DB_PATH=/path/to/different/db.sqlite nexuslims instruments manage
 ```
 
 ## Database Initialization
@@ -178,7 +178,7 @@ If the database doesn't exist when you launch the TUI, it will be automatically 
 You can also initialize the database manually using the migration CLI:
 
 ```bash
-nexuslims-migrate init
+nexuslims db init
 ```
 
 See the {doc}`/user_guide/migrations` guide for more details on database migrations.
@@ -191,7 +191,7 @@ If you see database connection errors:
 
 1. Verify `NX_DB_PATH` environment variable is set
 2. Ensure the database file exists and is readable
-3. Check that migrations are up to date: `nexuslims-migrate current`
+3. Check that migrations are up to date: `nexuslims db current`
 
 ### Validation Errors
 

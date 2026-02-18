@@ -2,7 +2,7 @@
 
 This package contains the Alembic migration scripts for managing the NexusLIMS
 database schema. The migrations are shipped as part of the installed package
-and can be applied using the `nexuslims-migrate` CLI command.
+and can be applied using the `nexuslims db` CLI command.
 
 See Also
 --------

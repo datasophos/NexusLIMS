@@ -1,4 +1,4 @@
-"""Integration tests for nexuslims-migrate CLI.
+"""Integration tests for nexuslims db CLI.
 
 Tests the CLI commands for database migration management.
 """
@@ -173,7 +173,7 @@ class TestInitCommand:
 
         assert result.exit_code == 1
         assert "NX_DB_PATH environment variable is not set" in result.output
-        assert "nexuslims-config edit" in result.output
+        assert "nexuslims config edit" in result.output
 
     def test_init_fails_if_exists(self, cli_runner, temp_db):
         """Test that init command fails if database already exists."""
@@ -541,7 +541,7 @@ class TestCLIHelpers:
         result = cli_runner.invoke(cli, ["--version"])
 
         assert result.exit_code == 0
-        assert "nexuslims-migrate" in result.output
+        assert "nexuslims db" in result.output
         assert "NexusLIMS" in result.output
 
     def test_no_command_shows_help(self, cli_runner):
@@ -550,7 +550,7 @@ class TestCLIHelpers:
         result = cli_runner.invoke(cli, [])
 
         assert result.exit_code == 0
-        assert "Manage NexusLIMS database schema migrations" in result.output
+        assert "Manage NexusLIMS database" in result.output
         assert "init" in result.output
         assert "upgrade" in result.output
         assert "downgrade" in result.output

@@ -12,10 +12,10 @@ When a user installs NexusLIMS without configuration:
 
 1. ✅ **Help commands work** - All `--help` flags work without requiring configuration:
    ```bash
-   nexuslims-config --help      # Works
-   nexuslims-migrate --help     # Works
-   nexuslims-manage-instruments --help  # Works
-   nexuslims-process-records --help     # Works
+   nexuslims config --help      # Works
+   nexuslims db --help     # Works
+   nexuslims instruments manage --help  # Works
+   nexuslims build-records --help     # Works
    ```
 
 2. ✅ **Clear error messages** - Attempting to actually use the package fails with helpful errors:
@@ -38,9 +38,9 @@ When a user installs NexusLIMS without configuration:
 
 ### Potential Issue (MINOR)
 
-`NX_DB_PATH` uses `FilePath` validation which requires the file to **already exist**. However, the documentation says "The database is created automatically on first run of `nexuslims-migrate init`". This creates a chicken-and-egg problem for fresh installs.
+`NX_DB_PATH` uses `FilePath` validation which requires the file to **already exist**. However, the documentation says "The database is created automatically on first run of `nexuslims db init`". This creates a chicken-and-egg problem for fresh installs.
 
-**Workaround:** Users can `touch` an empty file before first run, or run `nexuslims-migrate init` which likely handles this.
+**Workaround:** Users can `touch` an empty file before first run, or run `nexuslims db init` which likely handles this.
 
 **Possible fix:** Change `NX_DB_PATH` type from `TestAwareFilePath` to `TestAwarePath` (no existence check). The database layer already handles creating the file if it doesn't exist.
 

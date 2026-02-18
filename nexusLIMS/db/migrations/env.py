@@ -46,7 +46,7 @@ config = context.config
 # Set sqlalchemy.url directly from the environment variable rather than going
 # through nexusLIMS.config.settings, because Settings validation requires fields
 # (like NX_CDCS_TOKEN, NX_DATA_PATH, etc.) that are irrelevant for database
-# migrations. This allows 'nexuslims-migrate' commands to work with only
+# migrations. This allows 'nexuslims db' commands to work with only
 # NX_DB_PATH set.
 _db_path = os.getenv("NX_DB_PATH", "")
 config.set_main_option("sqlalchemy.url", f"sqlite:///{_db_path}")
@@ -106,7 +106,7 @@ def process_revision_directives(context_obj, _revision, directives):
     """Alembic hook to customize revision generation.
 
     This is called by Alembic when creating new migrations via
-    'nexuslims-migrate alembic revision --autogenerate'.
+    'nexuslims db alembic revision --autogenerate'.
 
     It replaces the default random hex revision ID with a sequential
     numbered ID for better readability.

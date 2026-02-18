@@ -1,13 +1,39 @@
 # Command-Line Interface Reference
 
-NexusLIMS provides command-line tools for record processing and configuration management. In all the examples below, if you are running
-NexusLIMS from a `git`-cloned version of the repository, ensure you
-add `uv run` before every command.
+NexusLIMS provides a unified `nexuslims` command with subcommands for record
+processing, configuration management, database migrations, and instrument
+management. In all the examples below, if you are running NexusLIMS from a
+`git`-cloned version of the repository, ensure you add `uv run` before every
+command.
 
 Every command (and any subcommands) also support the `--help` flag that can be
 used to get interactive assistance for any operation.
 
-## `nexuslims-process-records`
+## Top-Level Usage
+
+```bash
+nexuslims --help
+```
+
+```text
+Usage: nexuslims [OPTIONS] COMMAND [ARGS]...
+
+  NexusLIMS command-line interface.
+
+  Manage records, configuration, database migrations, and instruments.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  build-records  Process new NexusLIMS records with logging and email...
+  config         Manage NexusLIMS configuration files.
+  instruments    Manage NexusLIMS instruments.
+  db             Manage NexusLIMS database.
+```
+
+## `nexuslims build-records`
 
 The main record processing command that searches for completed sessions, builds
 XML records, and uploads them to configured export destinations.
@@ -15,11 +41,11 @@ XML records, and uploads them to configured export destinations.
 ### Basic Usage
 
 ```bash
-nexuslims-process-records --help
+nexuslims build-records --help
 ```
 
 ```text
-Usage: nexuslims-process-records [OPTIONS]
+Usage: nexuslims build-records [OPTIONS]
 
   Process new NexusLIMS records with logging and email notifications.
 
@@ -43,22 +69,22 @@ Options:
   Examples:
 
       # Normal run (process records from last week)
-      $ nexuslims-process-records
+      $ nexuslims build-records
 
       # Process all sessions (no date filtering)
-      $ nexuslims-process-records --from=none
+      $ nexuslims build-records --from=none
 
       # Process sessions since a specific date
-      $ nexuslims-process-records --from=2025-01-01
+      $ nexuslims build-records --from=2025-01-01
 
       # Process a specific date range
-      $ nexuslims-process-records --from=2025-01-01 --to=2025-01-31
+      $ nexuslims build-records --from=2025-01-01 --to=2025-01-31
 
       # Dry run (find files only)
-      $ nexuslims-process-records -n
+      $ nexuslims build-records -n
 
       # Verbose output
-      $ nexuslims-process-records -vv
+      $ nexuslims build-records -vv
 ```
 
 ### Options
@@ -76,7 +102,7 @@ When enabled:
 
 **Example:**
 ```bash
-nexuslims-process-records --dry-run
+nexuslims build-records --dry-run
 ```
 
 #### `--from DATE`
@@ -93,16 +119,16 @@ Filter sessions to only process those that **started on or after** the specified
 **Examples:**
 ```text
 # Process sessions from January 1, 2024 onward
-nexuslims-process-records --from 2024-01-01
+nexuslims build-records --from 2024-01-01
 
 # Process sessions from a specific date to present
-nexuslims-process-records --from 2024-06-15
+nexuslims build-records --from 2024-06-15
 
 # Process all sessions regardless of date (disable default 1-week filter)
-nexuslims-process-records --from none
+nexuslims build-records --from none
 ```
 
-**Note:** Times are interpreted in the system timezone (where `nexuslims-process-records` is running).
+**Note:** Times are interpreted in the system timezone (where `nexuslims build-records` is running).
 The start of day (00:00:00) is used for the from date.
 
 #### `--to DATE`
@@ -114,13 +140,13 @@ Filter sessions to only process those that **ended on or before** the specified 
 **Examples:**
 ```text
 # Process sessions up to and including December 31, 2023
-nexuslims-process-records --to 2023-12-31
+nexuslims build-records --to 2023-12-31
 
 # Process sessions from the past up to a specific date
-nexuslims-process-records --to 2024-01-15
+nexuslims build-records --to 2024-01-15
 ```
 
-**Note:** Times are interpreted in the system timezone (where `nexuslims-process-records` is running).
+**Note:** Times are interpreted in the system timezone (where `nexuslims build-records` is running).
 The end of day (23:59:59) is used for the to date to include all sessions that ended on
 that day.
 
@@ -131,13 +157,13 @@ Use both options together to process sessions within a specific date range.
 **Examples:**
 ```text
 # Process sessions from January 2024 only
-nexuslims-process-records --from 2024-01-01 --to 2024-01-31
+nexuslims build-records --from 2024-01-01 --to 2024-01-31
 
 # Process sessions from a specific week
-nexuslims-process-records --from 2024-02-05 --to 2024-02-11
+nexuslims build-records --from 2024-02-05 --to 2024-02-11
 
 # Dry-run for a specific month
-nexuslims-process-records -n --from 2024-03-01 --to 2024-03-31
+nexuslims build-records -n --from 2024-03-01 --to 2024-03-31
 ```
 
 **Date range interpretation:**
@@ -161,10 +187,10 @@ and debugging.
 **Examples:**
 ```bash
 # Normal verbosity
-nexuslims-process-records -v
+nexuslims build-records -v
 
 # Maximum verbosity for debugging
-nexuslims-process-records -vv
+nexuslims build-records -vv
 ```
 
 #### `--version`
@@ -173,8 +199,8 @@ Display the NexusLIMS version and exit.
 
 **Example:**
 ```bash
-nexuslims-process-records --version
-# Output: nexuslims-process-records (NexusLIMS 2.4.1, released 2025-02-06)
+nexuslims build-records --version
+# Output: nexuslims build-records (NexusLIMS 2.4.1, released 2025-02-06)
 ```
 
 #### `--help`
@@ -183,7 +209,7 @@ Display help message with all available options and exit.
 
 **Example:**
 ```bash
-nexuslims-process-records --help
+nexuslims build-records --help
 ```
 
 ### Exit Codes
@@ -216,10 +242,10 @@ Logs include:
 #### Process Recent Sessions (Default Behavior)
 
 ```bash
-nexuslims-process-records -v
+nexuslims build-records -v
 ```
 
-This is the typical usage when run via `cron`/`systemd`. By default, 
+This is the typical usage when run via `cron`/`systemd`. By default,
 it processes pulls usage events from NEMO in the **last week** with,
 and then builds records for any with `TO_BE_BUILT` status and
 uploads completed records.
@@ -229,7 +255,7 @@ uploads completed records.
 To process all sessions regardless of date:
 
 ```bash
-nexuslims-process-records --from none -v
+nexuslims build-records --from none -v
 ```
 
 This disables the default 1-week filter and fetches all usage events
@@ -241,7 +267,7 @@ record builder.
 Check what would be processed for a specific week without making changes:
 
 ```text
-nexuslims-process-records -n --from 2024-02-05 --to 2024-02-11 -vv
+nexuslims build-records -n --from 2024-02-05 --to 2024-02-11 -vv
 ```
 
 This dry-run with verbose output shows:
@@ -257,13 +283,13 @@ Typical cron configuration for hourly processing:
 
 ```text
 # Process new microscopy records every hour
-0 * * * * /path/to/nexuslims-process-records -v >> /var/log/nexuslims-cron.log 2>&1
+0 * * * * /path/to/nexuslims build-records -v >> /var/log/nexuslims-cron.log 2>&1
 ```
 
 Or systemd timer (recommended):
 
 ```ini
-# /etc/systemd/system/nexuslims-process-records.timer
+# /etc/systemd/system/nexuslims-build-records.timer
 [Unit]
 Description=NexusLIMS record processing timer
 
@@ -276,13 +302,13 @@ WantedBy=timers.target
 ```
 
 ```ini
-# /etc/systemd/system/nexuslims-process-records.service
+# /etc/systemd/system/nexuslims-build-records.service
 [Unit]
 Description=NexusLIMS record processing
 
 [Service]
 Type=oneshot
-ExecStart=/path/to/nexuslims-process-records -v
+ExecStart=/path/to/nexuslims build-records -v
 User=nexuslims
 Group=nexuslims
 ```
@@ -301,7 +327,7 @@ rm /path/to/nexuslims/data/.builder.lock
 
 ### Email Notifications
 
-If email is configured (see {doc}`configuration guide <configuration>`), 
+If email is configured (see {doc}`configuration guide <configuration>`),
 error notifications are sent when:
 
 - Record building fails (session marked ERROR)
@@ -312,7 +338,7 @@ See the {doc}`configuration guide <configuration>` Email Notifications section f
 
 ---
 
-## `nexuslims-manage-instruments`
+## `nexuslims instruments manage`
 
 Terminal user interface (TUI) for managing the NexusLIMS instruments database.
 
@@ -323,17 +349,16 @@ theme switching, and automatic database initialization.
 ### Basic Usage
 
 ```bash
-nexuslims-manage-instruments --help
+nexuslims instruments manage --help
 ```
 
 ```text
-Usage: nexuslims-manage-instruments [OPTIONS]
+Usage: nexuslims instruments manage [OPTIONS]
 
-  Manage NexusLIMS instruments database.
+  Launch the interactive instrument management TUI.
 
-  Launch an interactive terminal UI for adding, editing, and deleting
-  instruments in the NexusLIMS database. Provides form validation,
-  uniqueness checks, and confirmation prompts for destructive actions.
+  Opens a terminal UI for adding, editing, and deleting instruments in the
+  NexusLIMS database.
 
 Options:
   --version  Show the version and exit.
@@ -368,17 +393,17 @@ Quick reference:
 
 ```bash
 # Launch the instrument manager TUI
-nexuslims-manage-instruments
+nexuslims instruments manage
 
 # Show version
-nexuslims-manage-instruments --version
+nexuslims instruments manage --version
 ```
 
 For a complete guide with screenshots and demonstrations, see the {doc}`instrument_manager` user guide.
 
 ---
 
-## `nexuslims-config`
+## `nexuslims config`
 
 Configuration management utility for viewing and exporting NexusLIMS configuration.
 
@@ -387,11 +412,11 @@ See the {py:mod}`nexusLIMS.cli.config` module documentation for details.
 ### Basic Usage
 
 ```bash
-nexuslims-config --help
+nexuslims config --help
 ```
 
 ```text
-Usage: nexuslims-config [OPTIONS] COMMAND [ARGS]...
+Usage: nexuslims config [OPTIONS] COMMAND [ARGS]...
 
   Manage NexusLIMS configuration files.
 
@@ -401,19 +426,20 @@ Options:
 
 Commands:
   dump  Dump the current effective configuration to JSON.
+  edit  Interactively edit the NexusLIMS configuration in a terminal UI.
   load  Load a previously dumped JSON config into a .env file.
 ```
 
 ```bash
 # View current configuration (prints to stdout)
-nexuslims-config dump
+nexuslims config dump
 
 # Save configuration to a JSON file
-nexuslims-config dump --output nexuslims_config.json
+nexuslims config dump --output nexuslims_config.json
 
 # Load configuration from JSON file (if .env already exists,
 # this command will detect it and create a backup of the current file)
-nexuslims-config load nexuslims_config.json
+nexuslims config load nexuslims_config.json
 ```
 
 **Note:** The `dump` command prints to stdout by default. Use `--output` to write to a file instead.
@@ -472,12 +498,12 @@ Example output of the dump command:
 
 ---
 
-## `nexuslims-migrate`
+## `nexuslims db`
 
 ```{versionadded} 2.5.0
 ```
 
-`nexuslims-migrate` is the NexusLIMS database management tool. It
+`nexuslims db` is the NexusLIMS database management tool. It
 provides simple commands for common database operations while allowing
 advanced access to [Alembic](https://alembic.sqlalchemy.org/) functionality
 for developers.
@@ -491,7 +517,7 @@ process.
 This command is generally only needed when upgrading NexusLIMS to new versions,
 or when initially setting up a deployment of NexusLIMS. The release notes
 for each NexusLIMS version will indicate if a database upgrade is necessary.
-If so, you will need to run `nexuslims-migrate upgrade` as part of the
+If so, you will need to run `nexuslims db upgrade` as part of the
 version upgrade.
 ```
 
@@ -503,16 +529,16 @@ database version matches your installed NexusLIMS version.
 ### Basic Usage
 
 ```bash
-nexuslims-migrate --help
+nexuslims db --help
 ```
 
 ```text
-Usage: nexuslims-migrate [OPTIONS] COMMAND [ARGS]...
+Usage: nexuslims db [OPTIONS] COMMAND [ARGS]...
 
-  Manage NexusLIMS database schema migrations.
+  Manage NexusLIMS database.
 
   This tool provides simple commands for common database operations. For
-  advanced usage, use 'nexuslims-migrate alembic [COMMAND]' to access the full
+  advanced usage, use 'nexuslims db alembic [COMMAND]' to access the full
   Alembic CLI.
 
 Options:
@@ -540,7 +566,7 @@ and marks it as current.
 
 **Usage:**
 ```bash
-nexuslims-migrate init [OPTIONS]
+nexuslims db init [OPTIONS]
 ```
 
 **Options:**
@@ -549,10 +575,10 @@ nexuslims-migrate init [OPTIONS]
 **Examples:**
 ```bash
 # Create new database
-nexuslims-migrate init
+nexuslims db init
 
 # Force recreate (destroys existing data)
-nexuslims-migrate init --force
+nexuslims db init --force
 ```
 
 **Notes:**
@@ -566,7 +592,7 @@ Upgrade an existing NexusLIMS database to a later schema version.
 
 **Usage:**
 ```bash
-nexuslims-migrate upgrade [REVISION] [OPTIONS]
+nexuslims db upgrade [REVISION] [OPTIONS]
 ```
 
 **Arguments:**
@@ -581,16 +607,16 @@ nexuslims-migrate upgrade [REVISION] [OPTIONS]
 **Examples:**
 ```bash
 # Upgrade to latest version
-nexuslims-migrate upgrade
+nexuslims db upgrade
 
 # Upgrade one version at a time
-nexuslims-migrate upgrade +1
+nexuslims db upgrade +1
 
 # Upgrade to specific revision
-nexuslims-migrate upgrade v2_4_0a
+nexuslims db upgrade v2_4_0a
 
 # Generate SQL without applying
-nexuslims-migrate upgrade --sql
+nexuslims db upgrade --sql
 ```
 
 #### `downgrade`
@@ -599,7 +625,7 @@ Downgrade NexusLIMS database to an earlier schema version.
 
 **Usage:**
 ```bash
-nexuslims-migrate downgrade [REVISION] [OPTIONS]
+nexuslims db downgrade [REVISION] [OPTIONS]
 ```
 
 **Arguments:**
@@ -614,13 +640,13 @@ nexuslims-migrate downgrade [REVISION] [OPTIONS]
 **Examples:**
 ```bash
 # Downgrade one version
-nexuslims-migrate downgrade
+nexuslims db downgrade
 
 # Downgrade to specific revision
-nexuslims-migrate downgrade v1_4_3
+nexuslims db downgrade v1_4_3
 
 # Generate SQL without applying
-nexuslims-migrate downgrade --sql
+nexuslims db downgrade --sql
 ```
 
 #### `current`
@@ -629,7 +655,7 @@ Show the current database migration version.
 
 **Usage:**
 ```bash
-nexuslims-migrate current [OPTIONS]
+nexuslims db current [OPTIONS]
 ```
 
 **Options:**
@@ -638,13 +664,13 @@ nexuslims-migrate current [OPTIONS]
 **Examples:**
 ```bash
 # Show current version
-nexuslims-migrate current
+nexuslims db current
 
-# output: 
+# output:
 #   v2_4_0b (head)
 
 # Show detailed information
-nexuslims-migrate current -v
+nexuslims db current -v
 
 # output:
 #  Current revision(s) for sqlite:///test_db.sqlite:
@@ -661,7 +687,7 @@ Useful for automated monitoring or pre-deployment checks.
 
 **Usage:**
 ```bash
-nexuslims-migrate check
+nexuslims db check
 ```
 
 **Exit Codes:**
@@ -672,7 +698,7 @@ nexuslims-migrate check
 **Examples:**
 ```bash
 # Check migration status
-nexuslims-migrate check
+nexuslims db check
 
 # output:
 #   ⚠ Database has pending migrations
@@ -686,7 +712,7 @@ Show migration history.
 
 **Usage:**
 ```bash
-nexuslims-migrate history [OPTIONS]
+nexuslims db history [OPTIONS]
 ```
 
 **Options:**
@@ -696,7 +722,7 @@ nexuslims-migrate history [OPTIONS]
 **Examples:**
 ```bash
 # Show migration history
-nexuslims-migrate history
+nexuslims db history
 
 # output:
 #   v2_4_0a -> v2_4_0b (head), Add check constraints to session_log.
@@ -704,7 +730,7 @@ nexuslims-migrate history
 #   <base> -> v1_4_3, Initial schema baseline.
 
 # Show verbose history with current revision marked
-nexuslims-migrate history -v -i
+nexuslims db history -v -i
 ```
 
 #### `alembic`
@@ -716,22 +742,22 @@ simplified commands above.
 
 **Usage:**
 ```bash
-nexuslims-migrate alembic [ALEMBIC_COMMAND] [ALEMBIC_OPTIONS]
+nexuslims db alembic [ALEMBIC_COMMAND] [ALEMBIC_OPTIONS]
 ```
 
 **Examples:**
 ```bash
 # Show detailed migration history
-nexuslims-migrate alembic history --verbose
+nexuslims db alembic history --verbose
 
 # Create a new migration (development only, requires source checkout)
-nexuslims-migrate alembic revision --autogenerate -m "Add column"
+nexuslims db alembic revision --autogenerate -m "Add column"
 
 # Show specific revision details
-nexuslims-migrate alembic show 003
+nexuslims db alembic show 003
 
 # Stamp database without running migrations (use with caution)
-nexuslims-migrate alembic stamp head
+nexuslims db alembic stamp head
 ```
 
 **Note:** The `alembic` subcommand passes arguments directly to Alembic's CLI. See the
@@ -745,8 +771,8 @@ Display the NexusLIMS version and exit.
 
 **Example:**
 ```bash
-nexuslims-migrate --version
-# Output: nexuslims-migrate (NexusLIMS 2.4.1)
+nexuslims db --version
+# Output: nexuslims db (NexusLIMS 2.4.1)
 ```
 
 ### Common Workflows
@@ -758,29 +784,29 @@ nexuslims-migrate --version
 echo "NX_DB_PATH=/var/nexuslims/database.db" >> .env
 
 # 2. Initialize database
-nexuslims-migrate init
+nexuslims db init
 
 # 3. Verify database status
-nexuslims-migrate current
+nexuslims db current
 ```
 
 #### Upgrading After NexusLIMS Update
 
 ```bash
 # 1. Check for pending migrations
-nexuslims-migrate check
+nexuslims db check
 
 # 2. If migrations are pending, review what will change
-nexuslims-migrate history -v
+nexuslims db history -v
 
-# 3. Manually ackup database (recommended, though the upgrade command will also backup)
+# 3. Manually backup database (recommended, though the upgrade command will also backup)
 cp /path/to/database.db /path/to/database.db.backup
 
 # 4. Apply migrations
-nexuslims-migrate upgrade
+nexuslims db upgrade
 
 # 5. Verify upgrade
-nexuslims-migrate current
+nexuslims db current
 ```
 
 #### Migrating from v1.x or Early v2.x
@@ -790,14 +816,14 @@ mark it as migrated to the baseline schema:
 
 ```bash
 # Mark existing database as at the v1.4.3 migration level
-nexuslims-migrate alembic stamp v1_4_3
+nexuslims db alembic stamp v1_4_3
 ```
 
 See the {ref}`migration` guide for complete migration instructions.
 
 ### Configuration
 
-The `nexuslims-migrate` command automatically:
+The `nexuslims db` command automatically:
 
 - Reads database path from {ref}`NX_DB_PATH <config-db-path>` environment variable
 - Locates migrations directory inside the installed package (works with pip/uv installations)
