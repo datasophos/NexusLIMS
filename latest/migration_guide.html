@@ -787,7 +787,7 @@ powershell<span class="w"> </span>-c<span class="w"> </span><span class="s2">&qu
 </section>
 <section id="email-notification-configuration">
 <h3>Email Notification Configuration<a class="headerlink" href="#email-notification-configuration" title="Link to this heading">#</a></h3>
-<p>Email notifications are sent by <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code> when errors are detected:</p>
+<p>Email notifications are sent by <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code> when errors are detected:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p><strong>Variable</strong></p></th>
@@ -950,10 +950,10 @@ uv<span class="w"> </span>sync
 <p><span class="versionmodified added">Added in version 2.2.0: </span>NexusLIMS now uses Alembic for database schema version control. You need to mark your existing database as migrated to the baseline schema, then apply updates.</p>
 </div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mark database as at the baseline schema version (v1.4.3 schema)</span>
-nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>v1_4_3
+nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>v1_4_3
 
 <span class="c1"># Apply pending migrations (adds upload_log table and updated CHECK constraints)</span>
-nexuslims-migrate<span class="w"> </span>upgrade
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade
 </pre></div>
 </div>
 <p><strong>What this does:</strong></p>
@@ -969,8 +969,8 @@ nexuslims-migrate<span class="w"> </span>upgrade
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If you’re running from a source checkout (not an installed package), prefix commands with <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>v1_4_3
-uv<span class="w"> </span>run<span class="w"> </span>nexuslims-migrate<span class="w"> </span>upgrade
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>v1_4_3
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade
 </pre></div>
 </div>
 </div>
@@ -1008,7 +1008,7 @@ poetry<span class="w"> </span>run<span class="w"> </span>python<span class="w"> 
 <p><strong>New command style (v2.0+)</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using uv</span>
 <span class="nb">cd</span><span class="w"> </span>/path/to/NexusLIMS
-uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>build-records
 </pre></div>
 </div>
 </section>
@@ -1016,10 +1016,10 @@ uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records
 <h3>9. Test Record Building<a class="headerlink" href="#test-record-building" title="Link to this heading">#</a></h3>
 <p>Run a test record build to verify everything works:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dry run mode (find files but don&#39;t build records)</span>
-uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records<span class="w"> </span>-n
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>build-records<span class="w"> </span>-n
 
 <span class="c1"># Verbose mode (with detailed logging)</span>
-uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records<span class="w"> </span>-vv<span class="w"> </span>-n
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>build-records<span class="w"> </span>-vv<span class="w"> </span>-n
 </pre></div>
 </div>
 </section>

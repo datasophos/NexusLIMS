@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS.cli &#8212; NexusLIMS dev documentation</title>
+    <title>nexusLIMS.cli.main &#8212; NexusLIMS dev documentation</title>
   
   
   
@@ -48,7 +48,7 @@
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.cli';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.cli.main';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
@@ -57,12 +57,12 @@
             true;
         </script>
     <script src="../../_static/custom.js?v=ba087cdf"></script>
-    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/api/nexusLIMS/nexusLIMS.cli.html" />
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/api/nexusLIMS/nexusLIMS.cli.main.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="nexusLIMS.cli.main" href="nexusLIMS.cli.main.html" />
-    <link rel="prev" title="nexusLIMS.schemas.activity" href="nexusLIMS.schemas.activity.html" />
+    <link rel="next" title="nexusLIMS.cli.process_records" href="nexusLIMS.cli.process_records.html" />
+    <link rel="prev" title="nexusLIMS.cli" href="nexusLIMS.cli.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
@@ -414,8 +414,8 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">NexusLIMS API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
-<li class="toctree-l3 current active has-children"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.main.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.main</span></code></a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.main</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.process_records.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.process_records</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.manage_instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.manage_instruments</span></code></a></li>
@@ -486,7 +486,10 @@
     
     <li class="breadcrumb-item"><a href="nexusLIMS.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></span></li>
+    
+    <li class="breadcrumb-item"><a href="nexusLIMS.cli.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.main</span></code></span></li>
   </ul>
 </nav>
 </div>
@@ -503,29 +506,43 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-nexusLIMS.cli">
-<span id="nexuslims-cli"></span><h1><a class="reference internal" href="#module-nexusLIMS.cli" title="nexusLIMS.cli"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a><a class="headerlink" href="#module-nexusLIMS.cli" title="Link to this heading">#</a></h1>
-<p>CLI commands for NexusLIMS.</p>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.cli.main.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.main</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.cli.process_records.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.process_records</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.cli.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.cli.manage_instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.manage_instruments</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="nexusLIMS.cli.migrate.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.migrate</span></code></a></li>
-</ul>
+  <section id="module-nexusLIMS.cli.main">
+<span id="nexuslims-cli-main"></span><h1><a class="reference internal" href="#module-nexusLIMS.cli.main" title="nexusLIMS.cli.main"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.main</span></code></a><a class="headerlink" href="#module-nexusLIMS.cli.main" title="Link to this heading">#</a></h1>
+<p>Unified CLI entrypoint for NexusLIMS.</p>
+<p>Provides the <code class="docutils literal notranslate"><span class="pre">nexuslims</span></code> command with subcommands for all NexusLIMS CLI
+tools. Uses lazy loading so that <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">--help</span></code> stays fast without
+importing heavy modules.</p>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
+<p>.. code-block:: bash</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nexuslims --help
+nexuslims --version
+nexuslims build-records [OPTIONS]
+nexuslims config [dump|load|edit]
+nexuslims db [init|upgrade|...]
+nexuslims instruments manage
+</pre></div>
 </div>
 </section>
-<section id="package-contents">
-<h2>Package Contents<a class="headerlink" href="#package-contents" title="Link to this heading">#</a></h2>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.main.LazyGroup" title="nexusLIMS.cli.main.LazyGroup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LazyGroup</span></code></a></p></td>
+<td><p>Click group that lazily loads subcommands on first use.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="functions">
 <h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.handle_config_error" title="nexusLIMS.cli.handle_config_error"><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle_config_error</span></code></a></p></td>
-<td><p>Context manager that catches config <code class="docutils literal notranslate"><span class="pre">ValidationError</span></code> and exits cleanly.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.main.main" title="nexusLIMS.cli.main.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a></p></td>
+<td><p>NexusLIMS command-line interface.</p></td>
 </tr>
 </tbody>
 </table>
@@ -533,22 +550,30 @@
 </section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.cli.main.LazyGroup">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.main.</span></span><span class="sig-name descname"><span class="pre">LazyGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lazy_commands</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/cli/main.html#LazyGroup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.main.LazyGroup" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">click.Group</span></code></p>
+<p>Click group that lazily loads subcommands on first use.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.cli.main.LazyGroup.list_commands">
+<span class="sig-name descname"><span class="pre">list_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.Context</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli/main.html#LazyGroup.list_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.main.LazyGroup.list_commands" title="Link to this definition">#</a></dt>
+<dd><p>List all commands, including lazy ones.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.cli.main.LazyGroup.get_command">
+<span class="sig-name descname"><span class="pre">get_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.Context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmd_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">click.BaseCommand</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli/main.html#LazyGroup.get_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.main.LazyGroup.get_command" title="Link to this definition">#</a></dt>
+<dd><p>Get a command, lazily importing it if necessary.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.cli.handle_config_error">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.</span></span><span class="sig-name descname"><span class="pre">handle_config_error</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/collections.abc.html#collections.abc.Iterator" title="(in Python v3.11)"><span class="pre">Iterator</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli.html#handle_config_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.handle_config_error" title="Link to this definition">#</a></dt>
-<dd><p>Context manager that catches config <code class="docutils literal notranslate"><span class="pre">ValidationError</span></code> and exits cleanly.</p>
-<p>Instead of dumping a raw Pydantic traceback, this prints a short,
-actionable message directing the user to <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">edit</span></code>
-and the online documentation.</p>
-<section id="usage">
-<h4>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h4>
-<p>::</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>with handle_config_error():
-    from nexusLIMS.config import settings
-    settings.NX_DATA_PATH  # may raise ValidationError
-</pre></div>
-</div>
-</section>
+<dt class="sig sig-object py" id="nexusLIMS.cli.main.main">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli/main.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.main.main" title="Link to this definition">#</a></dt>
+<dd><p>NexusLIMS command-line interface.</p>
+<p>Manage records, configuration, database migrations, and instruments.</p>
 </dd></dl>
 
 </section>
@@ -566,20 +591,20 @@ and the online documentation.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="nexusLIMS.schemas.activity.html"
+       href="nexusLIMS.cli.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas.activity</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></p>
       </div>
     </a>
     <a class="right-next"
-       href="nexusLIMS.cli.main.html"
+       href="nexusLIMS.cli.process_records.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.main</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.process_records</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -602,11 +627,17 @@ and the online documentation.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#package-contents">Package Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage">Usage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.handle_config_error"><code class="docutils literal notranslate"><span class="pre">handle_config_error()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.main.LazyGroup"><code class="docutils literal notranslate"><span class="pre">LazyGroup</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.main.LazyGroup.list_commands"><code class="docutils literal notranslate"><span class="pre">LazyGroup.list_commands()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.main.LazyGroup.get_command"><code class="docutils literal notranslate"><span class="pre">LazyGroup.get_command()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.main.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -618,7 +649,7 @@ and the online documentation.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../../_sources/api/nexusLIMS/nexusLIMS.cli.md.txt"
+      <li><a href="../../_sources/api/nexusLIMS/nexusLIMS.cli.main.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

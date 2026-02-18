@@ -563,44 +563,44 @@
 <h3>For Existing Installations<a class="headerlink" href="#for-existing-installations" title="Link to this heading">#</a></h3>
 <p>If you have an existing NexusLIMS database (created before version 2.2.0), you need to mark it as migrated to the baseline schema:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mark existing database as consistent with the baseline pre-2.0 schema</span>
-nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>v1_4_3
+nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>v1_4_3
 </pre></div>
 </div>
 <p>This tells Alembic that your database already has the baseline schema structure and doesn’t need to be created from scratch.</p>
 <div class="versionadded">
-<p><span class="versionmodified added">Added in version 2.5.0: </span>The <code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span></code> command provides simple, user-friendly commands for
+<p><span class="versionmodified added">Added in version 2.5.0: </span>The <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span></code> command provides simple, user-friendly commands for
 common database operations. It automatically locates the migrations directory
 inside the installed package, making migrations work correctly after pip/uv
 installation. Advanced users can access the full Alembic CLI via
-<code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span> <span class="pre">alembic</span> <span class="pre">[COMMAND]</span></code>. The <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">alembic</span></code> command still works
+<code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span> <span class="pre">alembic</span> <span class="pre">[COMMAND]</span></code>. The <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">alembic</span></code> command still works
 for development from source checkouts.</p>
 </div>
 </section>
 <section id="common-migration-commands">
 <h3>Common Migration Commands<a class="headerlink" href="#common-migration-commands" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check current migration status</span>
-nexuslims-migrate<span class="w"> </span>current
+nexuslims<span class="w"> </span>db<span class="w"> </span>current
 
 <span class="c1"># Check if database has pending migrations</span>
-nexuslims-migrate<span class="w"> </span>check
+nexuslims<span class="w"> </span>db<span class="w"> </span>check
 
 <span class="c1"># View migration history</span>
-nexuslims-migrate<span class="w"> </span><span class="nb">history</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span><span class="nb">history</span>
 
 <span class="c1"># Upgrade to latest schema version</span>
-nexuslims-migrate<span class="w"> </span>upgrade
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade
 
 <span class="c1"># Upgrade to specific revision</span>
-nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>v2_5_0a
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade<span class="w"> </span>v2_5_0a
 
 <span class="c1"># Downgrade one migration</span>
-nexuslims-migrate<span class="w"> </span>downgrade
+nexuslims<span class="w"> </span>db<span class="w"> </span>downgrade
 
 <span class="c1"># Generate a new migration (development only, requires source checkout)</span>
-nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Description&quot;</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Description&quot;</span>
 </pre></div>
 </div>
-<p>For advanced Alembic operations, use <code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span> <span class="pre">alembic</span> <span class="pre">[COMMAND]</span></code> to access all Alembic sub-commands. From a source checkout, you can also use <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">alembic</span></code> directly.</p>
+<p>For advanced Alembic operations, use <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span> <span class="pre">alembic</span> <span class="pre">[COMMAND]</span></code> to access all Alembic sub-commands. From a source checkout, you can also use <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">alembic</span></code> directly.</p>
 </section>
 <section id="creating-new-migrations">
 <h3>Creating New Migrations<a class="headerlink" href="#creating-new-migrations" title="Link to this heading">#</a></h3>
@@ -616,7 +616,7 @@ nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>revision
 </ul>
 </li>
 <li><p><strong>Generate migration script</strong> (requires source checkout):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-m<span class="w"> </span><span class="s2">&quot;add external user identifiers&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--rev-id<span class="w"> </span><span class="s2">&quot;v2_5_0a&quot;</span>
 </pre></div>
@@ -637,13 +637,13 @@ nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>revision
 </li>
 <li><p><strong>Test the migration thoroughly</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Apply migration</span>
-nexuslims-migrate<span class="w"> </span>upgrade
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade
 
 <span class="c1"># Test downgrade</span>
-nexuslims-migrate<span class="w"> </span>downgrade
+nexuslims<span class="w"> </span>db<span class="w"> </span>downgrade
 
 <span class="c1"># Re-apply</span>
-nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>head
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade<span class="w"> </span>head
 </pre></div>
 </div>
 </li>
@@ -684,7 +684,7 @@ docs/changes/48.feature.md
 <li><p><code class="docutils literal notranslate"><span class="pre">nexusLIMS/migrations/versions/</span></code> - Migration scripts directory (shipped in the package)</p></li>
 </ul>
 <p>The database URL is automatically set from the <a class="reference internal" href="../user_guide/configuration.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a> environment variable in <code class="docutils literal notranslate"><span class="pre">env.py</span></code>, so you don’t need to configure it separately. All Alembic configuration lives in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>, eliminating the need for a separate <code class="docutils literal notranslate"><span class="pre">alembic.ini</span></code> file.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span></code> CLI command automatically locates the migrations directory using <code class="docutils literal notranslate"><span class="pre">importlib.resources</span></code>, so migrations work correctly whether NexusLIMS is installed via pip, uv, or run from source.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span></code> CLI command automatically locates the migrations directory using <code class="docutils literal notranslate"><span class="pre">importlib.resources</span></code>, so migrations work correctly whether NexusLIMS is installed via pip, uv, or run from source.</p>
 </section>
 <section id="important-notes">
 <h3>Important Notes<a class="headerlink" href="#important-notes" title="Link to this heading">#</a></h3>

@@ -516,10 +516,10 @@ uv (Recommended)</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>nexuslims
 </pre></div>
 </div>
-<p>This will install the following NexusLIMS command line tools directly onto your path,
-meaning they can be run from your terminal without needing to activate
-a virtual environment: <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span></code>, <code class="docutils literal notranslate"><span class="pre">nexuslims-manage-instruments</span></code>,
-<code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span></code>, and <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code></p>
+<p>This will install the <code class="docutils literal notranslate"><span class="pre">nexuslims</span></code> command directly onto your path,
+meaning it can be run from your terminal without needing to activate
+a virtual environment. Use <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">--help</span></code> to see all available
+subcommands (e.g. <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">edit</span></code>, <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code>)</p>
 <p>For more information on tools in uv, please see their
 <a class="reference external" href="https://docs.astral.sh/uv/guides/tools/">documentation</a>.</p>
 </div>
@@ -562,7 +562,7 @@ uv sync
 <p class="admonition-title">Using <em>uv run</em></p>
 <p>For development installs, you will need to prefix all NexusLIMS commands with <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span></code>,
 from the project directory, since they will not be installed onto the path by default
-(e.g. <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">nexuslims-config</span> <span class="pre">edit</span></code>).</p>
+(e.g. <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">edit</span></code>).</p>
 </div>
 </div>
 </div>
@@ -574,7 +574,7 @@ from the project directory, since they will not be installed onto the path by de
 <input checked="checked" id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
 <label class="sd-tab-label" for="sd-tab-item-3">
 uv (Recommended)</label><div class="sd-tab-content docutils">
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-config<span class="w"> </span>--help
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>--help
 </pre></div>
 </div>
 </div>
@@ -582,7 +582,7 @@ uv (Recommended)</label><div class="sd-tab-content docutils">
 <label class="sd-tab-label" for="sd-tab-item-4">
 pip</label><div class="sd-tab-content docutils">
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>source nexuslims-venv/bin/activate
-nexuslims-config --help
+nexuslims --help
 </pre></div>
 </div>
 </div>
@@ -590,24 +590,27 @@ nexuslims-config --help
 <label class="sd-tab-label" for="sd-tab-item-5">
 From source</label><div class="sd-tab-content docutils">
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>cd NexusLIMS
-uv run nexuslims-config --help
+uv run nexuslims --help
 </pre></div>
 </div>
 </div>
 </div>
-<p>You should see the help output for the NexusLIMS configuration management tool:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: nexuslims-config [OPTIONS] COMMAND [ARGS]...
+<p>You should see the help output for the NexusLIMS command-line interface:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: nexuslims [OPTIONS] COMMAND [ARGS]...
 
-  Manage NexusLIMS configuration files.
+  NexusLIMS command-line interface.
+
+  Manage records, configuration, database migrations, and instruments.
 
 Options:
   --version  Show the version and exit.
   --help     Show this message and exit.
 
 Commands:
-  dump  Dump the current effective configuration to JSON.
-  edit  Interactively edit the NexusLIMS configuration in a terminal UI.
-  load  Load a previously dumped JSON config into a .env file.
+  build-records  Process new NexusLIMS records with logging and email...
+  config         Manage NexusLIMS configuration files.
+  instruments    Manage NexusLIMS instruments.
+  db             Manage NexusLIMS database.
 </pre></div>
 </div>
 </section>
@@ -616,17 +619,16 @@ Commands:
 <h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>In all of the following examples, commands like <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span></code> and
-<code class="docutils literal notranslate"><span class="pre">nexuslims-manage-instruments</span></code> are installed as part of the NexusLIMS package.
-How you invoke them depends on your installation type:</p>
+<p>In all of the following examples, the <code class="docutils literal notranslate"><span class="pre">nexuslims</span></code> command is installed as part
+of the NexusLIMS package. How you invoke it depends on your installation type:</p>
 <ul class="simple">
-<li><p><strong>uv tool install</strong>: you can use the commands as written, since uv
-puts them on your executable path during installation</p></li>
+<li><p><strong>uv tool install</strong>: you can use the command as written, since uv
+puts it on your executable path during installation</p></li>
 <li><p><strong>pip install</strong>: activate your virtual environment first
 (<code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">.venv/bin/activate</span></code>), then run commands directly (e.g.
-<code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">edit</span></code>)</p></li>
+<code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">edit</span></code>)</p></li>
 <li><p><strong>uv source install</strong>: run the commands from the cloned NexusLIMS directory
-and prefix each command with <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">nexuslims-config</span> <span class="pre">edit</span></code>)</p></li>
+and prefix each command with <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">edit</span></code>)</p></li>
 </ul>
 </div>
 <p>NexusLIMS requires configuration through environment variables, which are typically stored in a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.</p>
@@ -636,7 +638,7 @@ and prefix each command with <code class="docutils literal notranslate"><span cl
 <li><p>Launch the interactive configuration editor, which provides an interactive
 way to customize your configuration, and will automatically save a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file
 with your selected values:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-config<span class="w"> </span>edit
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>config<span class="w"> </span>edit
 </pre></div>
 </div>
 <div class="admonition tip">
@@ -657,7 +659,7 @@ with your selected values:</p>
 <li><p><em>(Optional)</em> Verify your configuration was loaded correctly:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dump current config to see what NexusLIMS sees</span>
 <span class="c1"># WARNING: Output contains live credentials - don&#39;t share publicly</span>
-nexuslims-config<span class="w"> </span>dump
+nexuslims<span class="w"> </span>config<span class="w"> </span>dump
 </pre></div>
 </div>
 </li>
@@ -678,7 +680,7 @@ Before running the NexusLIMS record builder, you will need to initialize the
 database and add some instruments. The database tool will use whatever value
 you have set in the <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> varuable as the active database:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize new database with schema and migrations</span>
-nexuslims-migrate<span class="w"> </span>init
+nexuslims<span class="w"> </span>db<span class="w"> </span>init
 </pre></div>
 </div>
 <p>This creates an appropriately-formatted database file at <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code>.
@@ -689,7 +691,7 @@ structure.</p>
 <p>If for some reason you would like to use a different database file than specified
 in your .env, you can do so by setting the <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> environment variable
 directly on the command line:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nv">NX_DB_PATH</span><span class="o">=</span>/path/to/other/database.db<span class="w"> </span>nexuslims-migrate<span class="w"> </span>init
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nv">NX_DB_PATH</span><span class="o">=</span>/path/to/other/database.db<span class="w"> </span>nexuslims<span class="w"> </span>db<span class="w"> </span>init
 </pre></div>
 </div>
 </div>
@@ -701,7 +703,7 @@ your instruments and where their data is stored. This is information
 is kept in the database created in the previous step.</p>
 <p>To add, edit, and delete instruments, use the NexusLIMS interactive
 instrument manager:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-manage-instruments
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage
 </pre></div>
 </div>
 <p>This launches a terminal UI with a table of all/any configured
@@ -722,13 +724,13 @@ the <a class="reference internal" href="instrument_manager.html#instrument-manag
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Full orchestration (recommended)</span>
 <span class="c1"># Includes file locking, timestamped logging, email notifications</span>
 <span class="c1"># by default, will only search for usage events that occurred in the past week</span>
-nexuslims-process-records
+nexuslims<span class="w"> </span>build-records
 
 <span class="c1"># Dry-run mode (find files without building records)</span>
-nexuslims-process-records<span class="w"> </span>-n
+nexuslims<span class="w"> </span>build-records<span class="w"> </span>-n
 
 <span class="c1"># Verbose output</span>
-nexuslims-process-records<span class="w"> </span>-vv
+nexuslims<span class="w"> </span>build-records<span class="w"> </span>-vv
 </pre></div>
 </div>
 <p>For a detailed explanation of the record building workflow and session states,
@@ -776,11 +778,11 @@ uv<span class="w"> </span>sync
 version’s release notes for details). If necessary, run the folllowing to
 apply any pending database migrations to make your database compatible with
 the new version:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>upgrade
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade
 </pre></div>
 </div>
 <p>To check whether migrations are needed without applying them, use:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>check
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>check
 </pre></div>
 </div>
 </section>

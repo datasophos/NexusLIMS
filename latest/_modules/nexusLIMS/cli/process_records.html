@@ -834,28 +834,22 @@ window.addEventListener("load", load);
 <span class="sd">Usage</span>
 <span class="sd">-----</span>
 
-<span class="sd">```bash</span>
-<span class="sd">uv run python -m nexusLIMS.cli.process_records [OPTIONS]</span>
-<span class="sd">```</span>
+<span class="sd">.. code-block:: bash</span>
 
-<span class="sd">or</span>
-
-<span class="sd">```bash</span>
-<span class="sd">uv run nexuslims-process-records [OPTIONS]</span>
-<span class="sd">```</span>
+<span class="sd">    nexuslims build-records [OPTIONS]</span>
 
 <span class="sd">Options</span>
 <span class="sd">-------</span>
 
-<span class="sd">```bash</span>
-<span class="sd">-n, --dry-run   : Dry run mode (find files without building records)</span>
-<span class="sd">-v, --verbose   : Increase verbosity (-v for INFO, -vv for DEBUG)</span>
-<span class="sd">--from &lt;date&gt;   : Start date for filtering (ISO format). Defaults to 1 week ago.</span>
-<span class="sd">                  Use &quot;none&quot; to disable lower bound.</span>
-<span class="sd">--to &lt;date&gt;     : End date for filtering (ISO format). Omit to disable upper bound.</span>
-<span class="sd">--version       : Show version and exit</span>
-<span class="sd">--help          : Show help message and exit</span>
-<span class="sd">```</span>
+<span class="sd">.. code-block:: bash</span>
+
+<span class="sd">    -n, --dry-run   : Dry run mode (find files without building records)</span>
+<span class="sd">    -v, --verbose   : Increase verbosity (-v for INFO, -vv for DEBUG)</span>
+<span class="sd">    --from &lt;date&gt;   : Start date for filtering (ISO format). Defaults to 1 week ago.</span>
+<span class="sd">                      Use &quot;none&quot; to disable lower bound.</span>
+<span class="sd">    --to &lt;date&gt;     : End date for filtering (ISO format). Omit to disable upper bound.</span>
+<span class="sd">    --version       : Show version and exit</span>
+<span class="sd">    --help          : Show help message and exit</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
@@ -872,22 +866,13 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">rich.console</span><span class="w"> </span><span class="kn">import</span> <span class="n">Console</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">rich.logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">RichHandler</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">_format_version</span>
+
 <span class="c1"># Heavy NexusLIMS imports are lazy-loaded inside functions to speed up --help/--version</span>
 <span class="c1"># See: setup_file_logging(), send_error_notification(), and main()</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">console</span> <span class="o">=</span> <span class="n">Console</span><span class="p">()</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_format_version</span><span class="p">(</span><span class="n">prog_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Format version string with release date if available.&quot;&quot;&quot;</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">__release_date__</span><span class="p">,</span> <span class="n">__version__</span>  <span class="c1"># noqa: PLC0415</span>
-
-    <span class="n">version_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">prog_name</span><span class="si">}</span><span class="s2"> (NexusLIMS </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">if</span> <span class="n">__release_date__</span><span class="p">:</span>
-        <span class="n">version_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, released </span><span class="si">{</span><span class="n">__release_date__</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="n">version_str</span> <span class="o">+=</span> <span class="s2">&quot;)&quot;</span>
-    <span class="k">return</span> <span class="n">version_str</span>
 
 
 <span class="c1"># Error patterns to search for in log files</span>
@@ -1342,27 +1327,27 @@ window.addEventListener("load", load);
 
 <span class="s2">  </span><span class="se">\b</span>
 <span class="s2">  # Normal run (process records from last week)</span>
-<span class="s2">  $ nexuslims-process-records</span>
+<span class="s2">  $ nexuslims build-records</span>
 
 <span class="s2">  </span><span class="se">\b</span>
 <span class="s2">  # Process all sessions (no date filtering)</span>
-<span class="s2">  $ nexuslims-process-records --from=none</span>
+<span class="s2">  $ nexuslims build-records --from=none</span>
 
 <span class="s2">  </span><span class="se">\b</span>
 <span class="s2">  # Process sessions since a specific date</span>
-<span class="s2">  $ nexuslims-process-records --from=2025-01-01</span>
+<span class="s2">  $ nexuslims build-records --from=2025-01-01</span>
 
 <span class="s2">  </span><span class="se">\b</span>
 <span class="s2">  # Process a specific date range</span>
-<span class="s2">  $ nexuslims-process-records --from=2025-01-01 --to=2025-01-31</span>
+<span class="s2">  $ nexuslims build-records --from=2025-01-01 --to=2025-01-31</span>
 
 <span class="s2">  </span><span class="se">\b</span>
 <span class="s2">  # Dry run (find files only)</span>
-<span class="s2">  $ nexuslims-process-records -n</span>
+<span class="s2">  $ nexuslims build-records -n</span>
 
 <span class="s2">  </span><span class="se">\b</span>
 <span class="s2">  # Verbose output</span>
-<span class="s2">  $ nexuslims-process-records -vv</span>
+<span class="s2">  $ nexuslims build-records -vv</span>
 <span class="s2">&quot;&quot;&quot;</span>
 <span class="p">)</span>
 <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
@@ -1393,9 +1378,7 @@ window.addEventListener("load", load);
     <span class="n">help</span><span class="o">=</span><span class="s2">&quot;End date for session filtering (ISO format: YYYY-MM-DD). &quot;</span>
     <span class="s2">&quot;Omit to disable upper bound.&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="nd">@click</span><span class="o">.</span><span class="n">version_option</span><span class="p">(</span>
-    <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">_format_version</span><span class="p">(</span><span class="s2">&quot;nexuslims-process-records&quot;</span><span class="p">)</span>
-<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">version_option</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="n">_format_version</span><span class="p">(</span><span class="s2">&quot;nexuslims build-records&quot;</span><span class="p">))</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span> <span class="n">dry_run</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">from_arg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">to_arg</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

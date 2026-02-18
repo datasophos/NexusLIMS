@@ -415,6 +415,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.main.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.main</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.process_records.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.process_records</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.manage_instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.manage_instruments</span></code></a></li>
@@ -514,39 +515,39 @@ still allowing advanced users to access the underlying Alembic functionality.</p
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
 <p>.. code-block:: bash</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Initialize a new database
-nexuslims-migrate init
+nexuslims db init
 
 # Upgrade to latest schema version
-nexuslims-migrate upgrade
+nexuslims db upgrade
 
 # Show current database version
-nexuslims-migrate current
+nexuslims db current
 
 # Check for pending migrations
-nexuslims-migrate check
+nexuslims db check
 
 # Downgrade one migration
-nexuslims-migrate downgrade
+nexuslims db downgrade
 
 # Advanced: Run any Alembic command
-nexuslims-migrate alembic history --verbose
+nexuslims db alembic history --verbose
 </pre></div>
 </div>
 <p><strong>Examples:</strong></p>
 <p>Set up a new database:</p>
 <p>.. code-block:: bash</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate init
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nexuslims db init
 </pre></div>
 </div>
 <p>Check database status:</p>
 <p>.. code-block:: bash</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate current
-nexuslims-migrate check
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nexuslims db current
+nexuslims db check
 </pre></div>
 </div>
 <p>Apply pending migrations:</p>
 <p>.. code-block:: bash</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate upgrade
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nexuslims db upgrade
 </pre></div>
 </div>
 <p><strong>Notes:</strong></p>
@@ -561,7 +562,7 @@ via pip, uv, or run from source.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.migrate.main" title="nexusLIMS.cli.migrate.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a></p></td>
-<td><p>Entry point for nexuslims-migrate CLI.</p></td>
+<td><p>Entry point for nexuslims db CLI.</p></td>
 </tr>
 </tbody>
 </table>
@@ -572,7 +573,7 @@ via pip, uv, or run from source.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.cli.migrate.main">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.migrate.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli/migrate.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.migrate.main" title="Link to this definition">#</a></dt>
-<dd><p>Entry point for nexuslims-migrate CLI.</p>
+<dd><p>Entry point for nexuslims db CLI.</p>
 </dd></dl>
 
 </section>

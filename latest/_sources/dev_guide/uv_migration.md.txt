@@ -91,7 +91,7 @@ dev = [
 ]
 
 [project.scripts]
-nexuslims-process-records = "nexusLIMS.cli.process_records:main"
+nexuslims = "nexusLIMS.cli.main:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -203,16 +203,16 @@ uv run sphinx-build -b html docs _build
 
 ```bash
 # Using the CLI entry point
-uv run nexuslims-process-records
+uv run nexuslims build-records
 
 # Or using the module directly
 uv run python -m nexusLIMS.cli.process_records
 
 # Dry run mode
-uv run nexuslims-process-records -n
+uv run nexuslims build-records -n
 
 # Verbose mode
-uv run nexuslims-process-records -vv
+uv run nexuslims build-records -vv
 ```
 
 ## Managing Dependencies
@@ -376,11 +376,11 @@ If CLI commands aren't available after installation:
 
 ```bash
 # Ensure you're using uv run
-uv run nexuslims-process-records
+uv run nexuslims build-records
 
 # Or activate the virtual environment
 source .venv/bin/activate
-nexuslims-process-records
+nexuslims build-records
 ```
 
 ### Python Version Issues

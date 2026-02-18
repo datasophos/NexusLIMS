@@ -494,10 +494,10 @@
 <h3>Interactive Configuration Editor (TUI)<a class="headerlink" href="#interactive-configuration-editor-tui" title="Link to this heading">#</a></h3>
 <p>The <strong>NexusLIMS Configuration Editor</strong> provides a user-friendly terminal interface for editing your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Launch the interactive configurator</span>
-nexuslims-config<span class="w"> </span>edit
+nexuslims<span class="w"> </span>config<span class="w"> </span>edit
 
 <span class="c1"># Edit a specific .env file</span>
-nexuslims-config<span class="w"> </span>edit<span class="w"> </span>--env-path<span class="w"> </span>/path/to/.env
+nexuslims<span class="w"> </span>config<span class="w"> </span>edit<span class="w"> </span>--env-path<span class="w"> </span>/path/to/.env
 </pre></div>
 </div>
 <p>The configurator features:</p>
@@ -566,12 +566,12 @@ and fill out each harvester’s configuration in a logical grouping:</p>
 </section>
 <section id="dumping-configuration">
 <h3>Dumping Configuration<a class="headerlink" href="#dumping-configuration" title="Link to this heading">#</a></h3>
-<p>Use <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">dump</span></code> to export your current configuration to a JSON file:</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">dump</span></code> to export your current configuration to a JSON file:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dump to default file (nexuslims_config.json)</span>
-nexuslims-config<span class="w"> </span>dump
+nexuslims<span class="w"> </span>config<span class="w"> </span>dump
 
 <span class="c1"># Dump to specific file</span>
-nexuslims-config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>/path/to/my-config.json
+nexuslims<span class="w"> </span>config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>/path/to/my-config.json
 </pre></div>
 </div>
 <p>The dumped configuration includes:</p>
@@ -619,15 +619,15 @@ nexuslims-config<span class="w"> </span>dump<span class="w"> </span>--output<spa
 </section>
 <section id="loading-configuration">
 <h3>Loading Configuration<a class="headerlink" href="#loading-configuration" title="Link to this heading">#</a></h3>
-<p>Use <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">load</span></code> to convert a dumped JSON config back into a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file:</p>
+<p>Use <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">load</span></code> to convert a dumped JSON config back into a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load config (creates/overwrites .env in current directory)</span>
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json
+nexuslims<span class="w"> </span>config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json
 
 <span class="c1"># Load to specific .env file</span>
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json<span class="w"> </span>--env-path<span class="w"> </span>/path/to/.env
+nexuslims<span class="w"> </span>config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json<span class="w"> </span>--env-path<span class="w"> </span>/path/to/.env
 
 <span class="c1"># Skip confirmation prompt (useful for automation)</span>
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json<span class="w"> </span>--force
+nexuslims<span class="w"> </span>config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json<span class="w"> </span>--force
 </pre></div>
 </div>
 <p><strong>Safety features:</strong></p>
@@ -638,13 +638,13 @@ nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_co
 </ul>
 <p><strong>Migration workflow example:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># On source server</span>
-nexuslims-config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>production-config.json
+nexuslims<span class="w"> </span>config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>production-config.json
 
 <span class="c1"># Securely transfer the file to new server (contains live credentials!)</span>
 scp<span class="w"> </span>production-config.json<span class="w"> </span>user@newserver:/path/to/
 
 <span class="c1"># On destination server</span>
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>production-config.json
+nexuslims<span class="w"> </span>config<span class="w"> </span>load<span class="w"> </span>production-config.json
 
 <span class="c1"># Clean up the dump file (it contains secrets)</span>
 rm<span class="w"> </span>production-config.json
@@ -653,7 +653,7 @@ rm<span class="w"> </span>production-config.json
 </section>
 <section id="configuration-in-logs">
 <h3>Configuration in Logs<a class="headerlink" href="#configuration-in-logs" title="Link to this heading">#</a></h3>
-<p>When <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code> starts with a verbosity of <code class="docutils literal notranslate"><span class="pre">-v</span></code> or higher,
+<p>When <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code> starts with a verbosity of <code class="docutils literal notranslate"><span class="pre">-v</span></code> or higher,
 it logs a sanitized view of the loaded configuration to help with debugging.
 The log output is sanitized, ensuring no sensitive environment variables
 are exposed in logs.</p>
@@ -710,7 +710,7 @@ are exposed in logs.</p>
 <p class="config-field-info"><strong>Type:</strong> typing.Annotated[pathlib.Path, PathType(path_type=’file’)]</p>
 <p class="config-field-info"><strong>Required:</strong> <span class="config-required">Yes</span></p>
 <p>The full filesystem path to the NexusLIMS SQLite database file.</p>
-<p>Must be writable by the NexusLIMS process. The database is created automatically on first run of <code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span> <span class="pre">init</span></code>. Recommended location: within <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code> for co-location with other data.</p>
+<p>Must be writable by the NexusLIMS process. The database is created automatically on first run of <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span> <span class="pre">init</span></code>. Recommended location: within <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code> for co-location with other data.</p>
 <p><strong>Example:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_DB_PATH</span><span class="o">=</span>/var/nexuslims/data/nexuslims.db
 </pre></div>
@@ -1127,7 +1127,7 @@ are exposed in logs.</p>
 <p class="config-field-info"><strong>Required:</strong> <span class="config-required">Yes</span></p>
 <p>One or more email addresses that will receive error notification messages when the record builder encounters problems. Provide as a comma-separated string, e.g.:
 <code class="docutils literal notranslate"><span class="pre">NX_EMAIL_RECIPIENTS='admin&#64;example.com,team&#64;example.com'</span></code></p>
-<p>Notifications are sent when <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code> detects ERROR-level log entries.</p>
+<p>Notifications are sent when <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code> detects ERROR-level log entries.</p>
 <p><strong>Example:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_EMAIL_RECIPIENTS</span><span class="o">=</span>admin@example.com,team@example.com
 </pre></div>

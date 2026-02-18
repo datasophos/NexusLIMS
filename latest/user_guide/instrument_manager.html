@@ -490,7 +490,7 @@
 <section id="launching-the-tui">
 <h2>Launching the TUI<a class="headerlink" href="#launching-the-tui" title="Link to this heading">#</a></h2>
 <p>The instrument manager is available as a command-line tool:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>nexuslims-manage-instruments
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage
 </pre></div>
 </div>
 <p>The TUI will automatically initialize the database if it doesn’t exist yet.</p>
@@ -661,16 +661,16 @@
 <section id="command-line-options">
 <h2>Command-Line Options<a class="headerlink" href="#command-line-options" title="Link to this heading">#</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show version information</span>
-nexuslims-manage-instruments<span class="w"> </span>--version
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage<span class="w"> </span>--version
 
 <span class="c1"># Show help</span>
-nexuslims-manage-instruments<span class="w"> </span>--help
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage<span class="w"> </span>--help
 </pre></div>
 </div>
 <p>The application will use the database configured in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.
 To run with a different database, you can override <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> when starting
 the application:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_DB_PATH</span><span class="o">=</span>/path/to/different/db.sqlite<span class="w"> </span>nexuslims-manage-instruments
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_DB_PATH</span><span class="o">=</span>/path/to/different/db.sqlite<span class="w"> </span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage
 </pre></div>
 </div>
 </section>
@@ -683,7 +683,7 @@ the application:</p>
 <li><p>Displays the current schema version</p></li>
 </ol>
 <p>You can also initialize the database manually using the migration CLI:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>init
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>init
 </pre></div>
 </div>
 <p>See the <a class="reference internal" href="migrations.html"><span class="doc">Database Migrations</span></a> guide for more details on database migrations.</p>
@@ -696,7 +696,7 @@ the application:</p>
 <ol class="arabic simple">
 <li><p>Verify <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> environment variable is set</p></li>
 <li><p>Ensure the database file exists and is readable</p></li>
-<li><p>Check that migrations are up to date: <code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span> <span class="pre">current</span></code></p></li>
+<li><p>Check that migrations are up to date: <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span> <span class="pre">current</span></code></p></li>
 </ol>
 </section>
 <section id="validation-errors">

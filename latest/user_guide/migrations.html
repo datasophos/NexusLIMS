@@ -505,16 +505,16 @@ existing installations and ensuring schema consistency across deployments.</p>
 </section>
 <section id="quick-start">
 <h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
-<p><strong>Note:</strong> The <code class="docutils literal notranslate"><span class="pre">nexuslims-migrate</span></code> command will use the <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> setting
+<p><strong>Note:</strong> The <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span></code> command will use the <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> setting
 configured in the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file. If you would like to operate on a different
 database file, you will need to set that variable in every command, such as:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_DB_PATH</span><span class="o">=</span>/path/to/other/database.sqlite<span class="w"> </span>nexuslims-migrate<span class="w"> </span>check
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_DB_PATH</span><span class="o">=</span>/path/to/other/database.sqlite<span class="w"> </span>nexuslims<span class="w"> </span>db<span class="w"> </span>check
 </pre></div>
 </div>
 <section id="new-installations">
 <h3>New Installations<a class="headerlink" href="#new-installations" title="Link to this heading">#</a></h3>
 <p>To initialize a new NexusLIMS database with the latest schema, run:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>init
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>init
 </pre></div>
 </div>
 <p>This creates the database file at <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code>, applies all migrations, and marks it as current.</p>
@@ -527,13 +527,13 @@ database file, you will need to set that variable in every command, such as:</p>
 you will first have to mark it as at the baseline version, and then and apply
 updates to make the database compatible with the current version of NexusLIMS:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mark database as having the v1.4.3 baseline schema</span>
-nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>v1_4_3
+nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>v1_4_3
 
 <span class="c1"># Apply pending migrations (v2.4.0 updates)</span>
-nexuslims-migrate<span class="w"> </span>upgrade
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade
 
 <span class="c1"># Check the current version</span>
-nexuslims-migrate<span class="w"> </span>check
+nexuslims<span class="w"> </span>db<span class="w"> </span>check
 </pre></div>
 </div>
 <p>The last command should output something like the following:</p>
@@ -548,42 +548,42 @@ nexuslims-migrate<span class="w"> </span>check
 <section id="check-status">
 <h3>Check Status<a class="headerlink" href="#check-status" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show current database version</span>
-nexuslims-migrate<span class="w"> </span>current
+nexuslims<span class="w"> </span>db<span class="w"> </span>current
 
 <span class="c1"># Check for pending migrations</span>
-nexuslims-migrate<span class="w"> </span>check
+nexuslims<span class="w"> </span>db<span class="w"> </span>check
 
 <span class="c1"># View migration history</span>
-nexuslims-migrate<span class="w"> </span><span class="nb">history</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span><span class="nb">history</span>
 </pre></div>
 </div>
 </section>
 <section id="upgrade-downgrade">
 <h3>Upgrade/Downgrade<a class="headerlink" href="#upgrade-downgrade" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Upgrade to latest schema</span>
-nexuslims-migrate<span class="w"> </span>upgrade
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade
 
 <span class="c1"># Upgrade to specific version</span>
-nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>v2_4_0a
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade<span class="w"> </span>v2_4_0a
 
 <span class="c1"># Downgrade one migration</span>
-nexuslims-migrate<span class="w"> </span>downgrade
+nexuslims<span class="w"> </span>db<span class="w"> </span>downgrade
 
 <span class="c1"># Downgrade to specific version</span>
-nexuslims-migrate<span class="w"> </span>downgrade<span class="w"> </span>v1_4_3
+nexuslims<span class="w"> </span>db<span class="w"> </span>downgrade<span class="w"> </span>v1_4_3
 </pre></div>
 </div>
 </section>
 <section id="advanced-commands-including-alembic-cli">
 <h3>Advanced Commands (including Alembic CLI)<a class="headerlink" href="#advanced-commands-including-alembic-cli" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># View detailed history</span>
-nexuslims-migrate<span class="w"> </span><span class="nb">history</span><span class="w"> </span>--verbose
+nexuslims<span class="w"> </span>db<span class="w"> </span><span class="nb">history</span><span class="w"> </span>--verbose
 
 <span class="c1"># Generate SQL without applying (to preview)</span>
-nexuslims-migrate<span class="w"> </span>upgrade<span class="w"> </span>--sql
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade<span class="w"> </span>--sql
 
-<span class="c1"># all Alembic commands are also available through `nexuslims-migrate alembic`:</span>
-nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span><span class="o">[</span>COMMAND<span class="o">]</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+<span class="c1"># all Alembic commands are also available through `nexuslims db alembic`:</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span><span class="o">[</span>COMMAND<span class="o">]</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
 </section>
@@ -594,7 +594,7 @@ nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span><span cl
 <ol class="arabic">
 <li><p><strong>Edit the models</strong> in <code class="docutils literal notranslate"><span class="pre">nexusLIMS/db/models.py</span></code></p></li>
 <li><p><strong>Generate migration</strong> (requires source checkout):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add field to SessionLog&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add field to SessionLog&quot;</span>
 </pre></div>
 </div>
 <p>This creates a new migration with a version-based ID (e.g., <code class="docutils literal notranslate"><span class="pre">v2_5_0_add_field_to_sessionlog.py</span></code>)</p>
@@ -607,9 +607,9 @@ nexuslims-migrate<span class="w"> </span>alembic<span class="w"> </span><span cl
 </ul>
 </li>
 <li><p><strong>Test migration</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-migrate<span class="w"> </span>upgrade<span class="w">      </span><span class="c1"># Apply</span>
-nexuslims-migrate<span class="w"> </span>downgrade<span class="w">    </span><span class="c1"># Rollback</span>
-nexuslims-migrate<span class="w"> </span>upgrade<span class="w">      </span><span class="c1"># Re-apply</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade<span class="w">      </span><span class="c1"># Apply</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>downgrade<span class="w">    </span><span class="c1"># Rollback</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade<span class="w">      </span><span class="c1"># Re-apply</span>
 </pre></div>
 </div>
 </li>

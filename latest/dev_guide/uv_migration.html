@@ -579,7 +579,7 @@ Poetry-based workflow.</p>
 <span class="p">]</span>
 
 <span class="k">[project.scripts]</span>
-<span class="n">nexuslims-process-records</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;nexusLIMS.cli.process_records:main&quot;</span>
+<span class="n">nexuslims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;nexusLIMS.cli.main:main&quot;</span>
 
 <span class="k">[build-system]</span>
 <span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;hatchling&quot;</span><span class="p">]</span>
@@ -747,16 +747,16 @@ uv<span class="w"> </span>run<span class="w"> </span>sphinx-build<span class="w"
 <section id="running-the-record-builder">
 <h3>Running the Record Builder<a class="headerlink" href="#running-the-record-builder" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using the CLI entry point</span>
-uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>build-records
 
 <span class="c1"># Or using the module directly</span>
 uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>nexusLIMS.cli.process_records
 
 <span class="c1"># Dry run mode</span>
-uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records<span class="w"> </span>-n
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>build-records<span class="w"> </span>-n
 
 <span class="c1"># Verbose mode</span>
-uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records<span class="w"> </span>-vv
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>build-records<span class="w"> </span>-vv
 </pre></div>
 </div>
 </section>
@@ -917,11 +917,11 @@ uv<span class="w"> </span>lock<span class="w"> </span>--upgrade-package<span cla
 <h3>Missing Commands After Installation<a class="headerlink" href="#missing-commands-after-installation" title="Link to this heading">#</a></h3>
 <p>If CLI commands aren’t available after installation:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure you&#39;re using uv run</span>
-uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>build-records
 
 <span class="c1"># Or activate the virtual environment</span>
 <span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-nexuslims-process-records
+nexuslims<span class="w"> </span>build-records
 </pre></div>
 </div>
 </section>

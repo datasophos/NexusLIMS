@@ -133,7 +133,7 @@ Multiple NEMO harvesters can be configured using numbered suffixes (`_1`, `_2`, 
 
 ### Email Notification Configuration
 
-Email notifications are sent by `nexuslims-process-records` when errors are detected:
+Email notifications are sent by `nexuslims build-records` when errors are detected:
 
 | **Variable** | **Description** | **Example** |
 |--------------|-----------------|-------------|
@@ -272,10 +272,10 @@ NexusLIMS now uses Alembic for database schema version control. You need to mark
 
 ```bash
 # Mark database as at the baseline schema version (v1.4.3 schema)
-nexuslims-migrate alembic stamp v1_4_3
+nexuslims db alembic stamp v1_4_3
 
 # Apply pending migrations (adds upload_log table and updated CHECK constraints)
-nexuslims-migrate upgrade
+nexuslims db upgrade
 ```
 
 **What this does:**
@@ -288,8 +288,8 @@ nexuslims-migrate upgrade
 ````{note}
 If you're running from a source checkout (not an installed package), prefix commands with `uv run`:
 ```bash
-uv run nexuslims-migrate alembic stamp v1_4_3
-uv run nexuslims-migrate upgrade
+uv run nexuslims db alembic stamp v1_4_3
+uv run nexuslims db upgrade
 ```
 ````
 
@@ -332,7 +332,7 @@ poetry run python -m nexusLIMS.builder.record_builder
 ```bash
 # Using uv
 cd /path/to/NexusLIMS
-uv run nexuslims-process-records
+uv run nexuslims build-records
 ```
 
 ### 9. Test Record Building
@@ -341,10 +341,10 @@ Run a test record build to verify everything works:
 
 ```bash
 # Dry run mode (find files but don't build records)
-uv run nexuslims-process-records -n
+uv run nexuslims build-records -n
 
 # Verbose mode (with detailed logging)
-uv run nexuslims-process-records -vv -n
+uv run nexuslims build-records -vv -n
 ```
 
 ## Common Migration Issues

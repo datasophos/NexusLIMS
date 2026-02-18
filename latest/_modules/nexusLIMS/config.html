@@ -999,7 +999,7 @@ window.addEventListener("load", load);
 <div class="viewcode-block" id="EmailConfig">
 <a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.EmailConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EmailConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Config for email notifications from the nexuslims-process-records script.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Config for email notifications from the nexuslims build-records script.&quot;&quot;&quot;</span>
 
     <span class="n">smtp_host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="s2">&quot;localhost&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="o">...</span><span class="p">,</span>
@@ -1087,7 +1087,7 @@ window.addEventListener("load", load);
                 <span class="s2">&quot;messages when the record builder encounters problems. Provide as &quot;</span>
                 <span class="s2">&quot;a comma-separated string, e.g.:</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;  `NX_EMAIL_RECIPIENTS=&#39;admin@example.com,team@example.com&#39;`</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;Notifications are sent when `nexuslims-process-records` detects &quot;</span>
+                <span class="s2">&quot;Notifications are sent when `nexuslims build-records` detects &quot;</span>
                 <span class="s2">&quot;ERROR-level log entries.&quot;</span>
             <span class="p">),</span>
         <span class="p">},</span>
@@ -1217,7 +1217,7 @@ window.addEventListener("load", load);
                 <span class="s2">&quot;The full filesystem path to the NexusLIMS SQLite database file. &quot;</span>
                 <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;Must be writable by the NexusLIMS process. The database is created &quot;</span>
-                <span class="s2">&quot;automatically on first run of `nexuslims-migrate init`. Recommended &quot;</span>
+                <span class="s2">&quot;automatically on first run of `nexuslims db init`. Recommended &quot;</span>
                 <span class="s2">&quot;location: within `NX_DATA_PATH` for co-location with other data.&quot;</span>
             <span class="p">),</span>
         <span class="p">},</span>
@@ -1776,7 +1776,7 @@ window.addEventListener("load", load);
             <span class="n">help_msg</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;NexusLIMS configuration validation failed.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;Quick fix:  Run &#39;nexuslims-config edit&#39; to interactively</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Quick fix:  Run &#39;nexuslims config edit&#39; to interactively</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;            configure NexusLIMS in a terminal UI.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;Reference:  https://datasophos.github.io/NexusLIMS/&quot;</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">doc_version</span><span class="si">}</span><span class="s2">/user_guide/configuration.html</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span>

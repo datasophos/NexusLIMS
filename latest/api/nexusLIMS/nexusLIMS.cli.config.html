@@ -415,6 +415,7 @@
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.main.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.main</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.process_records.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.process_records</span></code></a></li>
 <li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.manage_instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.manage_instruments</span></code></a></li>
@@ -508,23 +509,24 @@
   <section id="module-nexusLIMS.cli.config">
 <span id="nexuslims-cli-config"></span><h1><a class="reference internal" href="#module-nexusLIMS.cli.config" title="nexusLIMS.cli.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a><a class="headerlink" href="#module-nexusLIMS.cli.config" title="Link to this heading">#</a></h1>
 <p>CLI commands for dumping and loading NexusLIMS configuration.</p>
-<p>Provides <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">dump</span></code> and <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">load</span></code> for exporting
+<p>Provides <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">dump</span></code> and <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">load</span></code> for exporting
 the current effective configuration to JSON and importing a previously
 dumped configuration back into a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.  The JSON format uses a nested
 structure for NEMO harvesters and email config so that the file is both
 human-readable and unambiguous.</p>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dump current config to stdout (default)</span>
-nexuslims-config<span class="w"> </span>dump
+<p>.. code-block:: bash</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Dump current config to stdout (default)
+nexuslims config dump
 
-<span class="c1"># Dump current config to a file</span>
-nexuslims-config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>/path/to/nexuslims_config.json
+# Dump current config to a file
+nexuslims config dump --output /path/to/nexuslims_config.json
 
-<span class="c1"># Load a previously dumped config into .env</span>
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json<span class="w"> </span>--env-path<span class="w"> </span>/path/to/.env
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json<span class="w"> </span>--force<span class="w">          </span><span class="c1"># skip confirmation prompt</span>
+# Load a previously dumped config into .env
+nexuslims config load nexuslims_config.json
+nexuslims config load nexuslims_config.json --env-path /path/to/.env
+nexuslims config load nexuslims_config.json --force
 </pre></div>
 </div>
 </section>

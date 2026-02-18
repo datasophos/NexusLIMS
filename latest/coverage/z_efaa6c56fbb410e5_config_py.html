@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_f62b17335ad9af53___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2026-02-18 04:18 +0000
+            created at 2026-02-18 05:52 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -251,7 +251,7 @@
     <p class="pln"><span class="n"><a id="t169" href="#t169">169</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t170" href="#t170">170</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t171" href="#t171">171</a></span><span class="t"><span class="key">class</span> <span class="nam">EmailConfig</span><span class="op">(</span><span class="nam">BaseModel</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t172" href="#t172">172</a></span><span class="t">    <span class="str">"""Config for email notifications from the nexuslims-process-records script."""</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t172" href="#t172">172</a></span><span class="t">    <span class="str">"""Config for email notifications from the nexuslims build-records script."""</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t173" href="#t173">173</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="exc show_exc"><span class="n"><a id="t174" href="#t174">174</a></span><span class="t">    <span class="nam">smtp_host</span><span class="op">:</span> <span class="nam">str</span> <span class="op">=</span> <span class="nam">Field</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="exc exc2 show_exc"><span class="n"><a id="t175" href="#t175">175</a></span><span class="t">        <span class="str">"localhost"</span> <span class="key">if</span> <span class="nam">TEST_MODE</span> <span class="key">else</span> <span class="op">...</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
@@ -339,7 +339,7 @@
     <p class="exc exc2 show_exc"><span class="n"><a id="t257" href="#t257">257</a></span><span class="t">                <span class="str">"messages when the record builder encounters problems. Provide as "</span>&nbsp;</span><span class="r"></span></p>
     <p class="exc exc2 show_exc"><span class="n"><a id="t258" href="#t258">258</a></span><span class="t">                <span class="str">"a comma-separated string, e.g.:\n"</span>&nbsp;</span><span class="r"></span></p>
     <p class="exc exc2 show_exc"><span class="n"><a id="t259" href="#t259">259</a></span><span class="t">                <span class="str">"  `NX_EMAIL_RECIPIENTS='admin@example.com,team@example.com'`\n\n"</span>&nbsp;</span><span class="r"></span></p>
-    <p class="exc exc2 show_exc"><span class="n"><a id="t260" href="#t260">260</a></span><span class="t">                <span class="str">"Notifications are sent when `nexuslims-process-records` detects "</span>&nbsp;</span><span class="r"></span></p>
+    <p class="exc exc2 show_exc"><span class="n"><a id="t260" href="#t260">260</a></span><span class="t">                <span class="str">"Notifications are sent when `nexuslims build-records` detects "</span>&nbsp;</span><span class="r"></span></p>
     <p class="exc exc2 show_exc"><span class="n"><a id="t261" href="#t261">261</a></span><span class="t">                <span class="str">"ERROR-level log entries."</span>&nbsp;</span><span class="r"></span></p>
     <p class="exc exc2 show_exc"><span class="n"><a id="t262" href="#t262">262</a></span><span class="t">            <span class="op">)</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="exc exc2 show_exc"><span class="n"><a id="t263" href="#t263">263</a></span><span class="t">        <span class="op">}</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
@@ -466,7 +466,7 @@
     <p class="exc exc2 show_exc"><span class="n"><a id="t384" href="#t384">384</a></span><span class="t">                <span class="str">"The full filesystem path to the NexusLIMS SQLite database file. "</span>&nbsp;</span><span class="r"></span></p>
     <p class="exc exc2 show_exc"><span class="n"><a id="t385" href="#t385">385</a></span><span class="t">                <span class="str">"\n\n"</span>&nbsp;</span><span class="r"></span></p>
     <p class="exc exc2 show_exc"><span class="n"><a id="t386" href="#t386">386</a></span><span class="t">                <span class="str">"Must be writable by the NexusLIMS process. The database is created "</span>&nbsp;</span><span class="r"></span></p>
-    <p class="exc exc2 show_exc"><span class="n"><a id="t387" href="#t387">387</a></span><span class="t">                <span class="str">"automatically on first run of `nexuslims-migrate init`. Recommended "</span>&nbsp;</span><span class="r"></span></p>
+    <p class="exc exc2 show_exc"><span class="n"><a id="t387" href="#t387">387</a></span><span class="t">                <span class="str">"automatically on first run of `nexuslims db init`. Recommended "</span>&nbsp;</span><span class="r"></span></p>
     <p class="exc exc2 show_exc"><span class="n"><a id="t388" href="#t388">388</a></span><span class="t">                <span class="str">"location: within `NX_DATA_PATH` for co-location with other data."</span>&nbsp;</span><span class="r"></span></p>
     <p class="exc exc2 show_exc"><span class="n"><a id="t389" href="#t389">389</a></span><span class="t">            <span class="op">)</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
     <p class="exc exc2 show_exc"><span class="n"><a id="t390" href="#t390">390</a></span><span class="t">        <span class="op">}</span><span class="op">,</span>&nbsp;</span><span class="r"></span></p>
@@ -1018,7 +1018,7 @@
     <p class="run"><span class="n"><a id="t936" href="#t936">936</a></span><span class="t">            <span class="nam">help_msg</span> <span class="op">=</span> <span class="op">(</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t937" href="#t937">937</a></span><span class="t">                <span class="str">"\n"</span> <span class="op">+</span> <span class="str">"="</span> <span class="op">*</span> <span class="num">80</span> <span class="op">+</span> <span class="str">"\n"</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t938" href="#t938">938</a></span><span class="t">                <span class="str">"NexusLIMS configuration validation failed.\n\n"</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run run2"><span class="n"><a id="t939" href="#t939">939</a></span><span class="t">                <span class="str">"Quick fix:  Run 'nexuslims-config edit' to interactively\n"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t939" href="#t939">939</a></span><span class="t">                <span class="str">"Quick fix:  Run 'nexuslims config edit' to interactively\n"</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t940" href="#t940">940</a></span><span class="t">                <span class="str">"            configure NexusLIMS in a terminal UI.\n\n"</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t941" href="#t941">941</a></span><span class="t">                <span class="str">"Reference:  https://datasophos.github.io/NexusLIMS/"</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t942" href="#t942">942</a></span><span class="t">                <span class="str">f"{doc_version}/user_guide/configuration.html\n"</span> <span class="op">+</span> <span class="str">"="</span> <span class="op">*</span> <span class="num">80</span>&nbsp;</span><span class="r"></span></p>
@@ -1156,7 +1156,7 @@
             <a class="nav" href="z_f62b17335ad9af53___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2026-02-18 04:18 +0000
+            created at 2026-02-18 05:52 +0000
         </p>
     </div>
 </footer>
