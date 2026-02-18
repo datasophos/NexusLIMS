@@ -556,7 +556,7 @@ def _record_validation_flow(
     return xml_files, sessions_built
 
 
-def process_new_records(
+def process_new_records(  # noqa: PLR0912
     *,
     dry_run: bool = False,
     dt_from: dt | None = None,
@@ -601,7 +601,22 @@ def process_new_records(
             # at this point, sessions can be from any type of harvester
             _logger.info("")
             _logger.info("")
-            get_reservation_event(s)
+            try:
+                get_reservation_event(s)
+            except nemo.exceptions.NoDataConsentError as e:
+                _logger.warning(
+                    "User requested this session not be harvested, "
+                    "skipping dry run for this session. %s",
+                    e,
+                )
+                continue
+            except nemo.exceptions.NoMatchingReservationError as e:
+                _logger.warning(
+                    "No matching reservation found for this session, "
+                    "skipping dry run for this session. %s",
+                    e,
+                )
+                continue
             dry_run_file_find(s)
     else:
         nemo_utils.add_all_usage_events_to_db(dt_from=dt_from, dt_to=dt_to)
