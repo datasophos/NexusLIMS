@@ -199,4 +199,100 @@ class TestLazyLoading:
         )
 
 
+class TestCompletionCommand:
+    """Tests for the ``nexuslims completion`` command."""
+
+    def test_completion_help(self):
+        """``nexuslims completion --help`` should show shell option."""
+        runner = CliRunner()
+        result = runner.invoke(main, ["completion", "--help"])
+
+        assert result.exit_code == 0
+        assert "--shell" in result.output
+
+    def test_explicit_bash(self):
+        """``--shell bash`` outputs the bash eval line and ~/.bashrc."""
+        runner = CliRunner()
+        result = runner.invoke(main, ["completion", "--shell", "bash"])
+
+        assert result.exit_code == 0
+        assert "_NEXUSLIMS_COMPLETE=bash_source nexuslims" in result.output
+        assert "~/.bashrc" in result.output
+
+    def test_explicit_zsh(self):
+        """``--shell zsh`` outputs the zsh eval line and ~/.zshrc."""
+        runner = CliRunner()
+        result = runner.invoke(main, ["completion", "--shell", "zsh"])
+
+        assert result.exit_code == 0
+        assert "_NEXUSLIMS_COMPLETE=zsh_source nexuslims" in result.output
+        assert "~/.zshrc" in result.output
+
+    def test_explicit_fish(self):
+        """``--shell fish`` outputs the fish source line and config.fish."""
+        runner = CliRunner()
+        result = runner.invoke(main, ["completion", "--shell", "fish"])
+
+        assert result.exit_code == 0
+        assert "_NEXUSLIMS_COMPLETE=fish_source nexuslims | source" in result.output
+        assert "~/.config/fish/config.fish" in result.output
+
+    def test_auto_detect_zsh(self):
+        """Auto-detection uses zsh when $SHELL contains 'zsh'."""
+        runner = CliRunner()
+        with patch.dict("os.environ", {"SHELL": "/usr/bin/zsh"}):
+            result = runner.invoke(main, ["completion"])
+
+        assert result.exit_code == 0
+        assert "_NEXUSLIMS_COMPLETE=zsh_source nexuslims" in result.output
+        assert "~/.zshrc" in result.output
+
+    def test_auto_detect_fish(self):
+        """Auto-detection uses fish when $SHELL contains 'fish'."""
+        runner = CliRunner()
+        with patch.dict("os.environ", {"SHELL": "/usr/local/bin/fish"}):
+            result = runner.invoke(main, ["completion"])
+
+        assert result.exit_code == 0
+        assert "_NEXUSLIMS_COMPLETE=fish_source nexuslims | source" in result.output
+        assert "~/.config/fish/config.fish" in result.output
+
+    def test_auto_detect_bash_fallback(self):
+        """Auto-detection falls back to bash when $SHELL is unrecognised."""
+        runner = CliRunner()
+        with patch.dict("os.environ", {"SHELL": "/bin/sh"}):
+            result = runner.invoke(main, ["completion"])
+
+        assert result.exit_code == 0
+        assert "_NEXUSLIMS_COMPLETE=bash_source nexuslims" in result.output
+        assert "~/.bashrc" in result.output
+
+    def test_auto_detect_empty_shell_env(self):
+        """Auto-detection falls back to bash when $SHELL is not set."""
+        runner = CliRunner()
+        env = {k: v for k, v in __import__("os").environ.items() if k != "SHELL"}
+        with patch.dict("os.environ", env, clear=True):
+            result = runner.invoke(main, ["completion"])
+
+        assert result.exit_code == 0
+        assert "_NEXUSLIMS_COMPLETE=bash_source nexuslims" in result.output
+        assert "~/.bashrc" in result.output
+
+    def test_output_includes_path_note(self):
+        """Output always includes the PATH note regardless of shell."""
+        runner = CliRunner()
+        for shell in ("bash", "zsh", "fish"):
+            result = runner.invoke(main, ["completion", "--shell", shell])
+            assert result.exit_code == 0
+            assert "nexuslims must be on your PATH" in result.output
+
+    def test_invalid_shell_rejected(self):
+        """Passing an unsupported shell value is rejected by Click."""
+        runner = CliRunner()
+        result = runner.invoke(main, ["completion", "--shell", "tcsh"])
+
+        assert result.exit_code != 0
+        assert "Invalid value" in result.output
+
+
 pytestmark = pytest.mark.unit

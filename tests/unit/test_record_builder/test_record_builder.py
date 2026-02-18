@@ -302,6 +302,70 @@ class TestRecordBuilder:
         )
         assert "No 'TO_BE_BUILT' sessions were found. Exiting." in caplog.text
 
+    def test_process_new_records_dry_run_no_consent(self, monkeypatch, caplog):
+        """NoDataConsentError during dry run logs a warning and continues."""
+        from nexusLIMS.harvesters.nemo.exceptions import NoDataConsentError
+
+        fake_session = Session(
+            session_identifier="no-consent-session",
+            instrument=make_test_tool(),
+            dt_range=(
+                dt.fromisoformat("2021-01-01T10:00:00-05:00"),
+                dt.fromisoformat("2021-01-01T11:00:00-05:00"),
+            ),
+            user="test",
+        )
+        monkeypatch.setattr(
+            record_builder, "get_sessions_to_build", lambda: [fake_session]
+        )
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.utils.get_usage_events_as_sessions",
+            lambda **_kwargs: [],
+        )
+        monkeypatch.setattr(
+            record_builder,
+            "get_reservation_event",
+            lambda _s: (_ for _ in ()).throw(
+                NoDataConsentError("user declined consent")
+            ),
+        )
+
+        record_builder.process_new_records(dry_run=True)
+
+        assert "User requested this session not be harvested" in caplog.text
+        assert "skipping dry run for this session" in caplog.text
+
+    def test_process_new_records_dry_run_no_reservation(self, monkeypatch, caplog):
+        """NoMatchingReservationError during dry run logs a warning and continues."""
+        fake_session = Session(
+            session_identifier="no-reservation-session",
+            instrument=make_test_tool(),
+            dt_range=(
+                dt.fromisoformat("2021-01-01T10:00:00-05:00"),
+                dt.fromisoformat("2021-01-01T11:00:00-05:00"),
+            ),
+            user="test",
+        )
+        monkeypatch.setattr(
+            record_builder, "get_sessions_to_build", lambda: [fake_session]
+        )
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.utils.get_usage_events_as_sessions",
+            lambda **_kwargs: [],
+        )
+        monkeypatch.setattr(
+            record_builder,
+            "get_reservation_event",
+            lambda _s: (_ for _ in ()).throw(
+                NoMatchingReservationError("no matching reservation")
+            ),
+        )
+
+        record_builder.process_new_records(dry_run=True)
+
+        assert "No matching reservation found for this session" in caplog.text
+        assert "skipping dry run for this session" in caplog.text
+
     @pytest.mark.usefixtures(
         "_cleanup_session_log",
         "mock_nemo_reservation",

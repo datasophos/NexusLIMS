@@ -68,6 +68,8 @@ def test_fresh_install_without_config(built_wheel_path):
 
         # 4. Test that importing config WITHOUT env vars fails with clear error
         # CRITICAL: Use a clean environment (no NX_TEST_MODE or other vars)
+        # Also set cwd to the venv dir (not the repo root) so pydantic-settings
+        # does not pick up the repo's .env file when searching for it.
         clean_env = {"PATH": subprocess.os.environ.get("PATH", "")}
         import_test = subprocess.run(
             [
@@ -78,6 +80,7 @@ def test_fresh_install_without_config(built_wheel_path):
             capture_output=True,
             text=True,
             env=clean_env,
+            cwd=str(venv_path),
             check=False,
         )
 
