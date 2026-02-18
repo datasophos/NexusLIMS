@@ -14,8 +14,33 @@
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.cli.manage_instruments
 nexusLIMS.cli.process_records
-nexusLIMS.cli.migrate
 nexusLIMS.cli.config
+nexusLIMS.cli.manage_instruments
+nexusLIMS.cli.migrate
 ```
+
+## Package Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`handle_config_error <nexusLIMS.cli.handle_config_error>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.handle_config_error
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} handle_config_error() -> collections.abc.Iterator[None]
+:canonical: nexusLIMS.cli.handle_config_error
+
+```{autodoc2-docstring} nexusLIMS.cli.handle_config_error
+:parser: autodoc2_docstrings_parser
+```
+````

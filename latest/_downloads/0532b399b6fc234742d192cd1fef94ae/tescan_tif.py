@@ -28,7 +28,6 @@ _MAX_ASCII_VALUE = 128
 """Maximum value for ASCII characters. Used to filter non-ASCII binary data."""
 
 _logger = logging.getLogger(__name__)
-_logger.setLevel(logging.INFO)
 
 
 class TescanTiffExtractor:

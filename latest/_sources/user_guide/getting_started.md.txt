@@ -10,46 +10,10 @@ self
 
 Welcome to NexusLIMS! This guide will help you get up and running quickly.
 
-```{note}
-**Upgrading from v1.x?** See the {ref}`migration` guide for step-by-step instructions on migrating from NexusLIMS v1.4.3 to v2.0+.
+```{admonition} Upgrading from v1.x?
+:class: note
+See the {ref}`migration` guide for step-by-step instructions on migrating from NexusLIMS v1.4.3 to v2.0+.
 ```
-
-```{important}
-**🆕 What's New in v2.0+?**
-
-End users will not notice significant changes, but the infrastructure powering NexusLIMS has received major upgrades, including:
-
-- **Pydantic Metadata Schemas**: All metadata is validated internally using type-specific schemas
-- **EM Glossary v2.0**: NexusLIMS uses standardized field names from the emerging [community ontology](https://emglossary.helmholtz-metadaten.de/)
-- **Pint Unit Integration**: Type-safe quantity handling with automatic unit conversion (with future connection to the [QUDT unit ontology](https://qudt.org/) planned)
-- **Better Validation**: Strict schema validation catches errors before record building
-- **Improved system administration**: Tools to help manage NexusLIMS installations have been drastically improved
-- **Multi-destination record export**: Records can now be uploaded to other ELN systems, in addition to the default CDCS.
-
-See [NexusLIMS Internal Schema](../dev_guide/nexuslims_internal_schema.md) for more details on how NexusLIMS handles data internally.
-```
-
-## What is NexusLIMS?
-
-NexusLIMS is an electron microscopy Laboratory Information Management System (LIMS) that automatically generates experimental records by:
-
-- Extracting metadata from microscopy data files
-- Harvesting information from reservation calendar systems (like [NEMO](https://github.com/usnistgov/NEMO))
-- Building structured XML records conforming to the [Nexus Experiment schema](https://doi.org/10.18434/M32245)
-- Uploading records to a [CDCS](https://github.com/datasophos/nexuslims-cdcs/) (Configurable Data Curation System) frontend
-
-Originally developed at NIST, NexusLIMS is now maintained by [datasophos](https://datasophos.co).
-
-### Key Features
-
-- **Automatic Record Generation**: Creates comprehensive experimental records without manual data entry
-- **Multiple File Format Support**: Reads metadata from `.dm3/.dm4`, `.tif`, `.ser/.emi`, `.spc/.msa` files
-- **Standardized Metadata** *(New in v2.2.0)*: Uses EM Glossary ontology for field names and units
-- **Schema Validation** *(New in v2.2.0)*: Pydantic schemas ensure metadata quality before record building
-- **Calendar Integration**: Connects with NEMO lab management systems
-- **Temporal File Clustering**: Intelligently groups files into acquisition activities using KDE
-- **CDCS Integration**: Publishes records to web-accessible data repositories
-- **Extensible Architecture**: Plugin-based extractors and instrument profiles for customization
 
 ## Installation
 
@@ -57,56 +21,163 @@ Originally developed at NIST, NexusLIMS is now maintained by [datasophos](https:
 
 - Python 3.11 or 3.12
 - Linux or macOS (Windows is not officially supported)
-- [uv](https://docs.astral.sh/uv/) package manager (recommended) or pip
+- [uv](https://docs.astral.sh/uv/#installation) (recommended) or pip
+
+Throughout the following sections, instructions are given for using `uv`,
+`pip`, and for a "from source" development installation. Most users will
+want to use the `uv` approach, as it will automatically use the correct
+python version and provides the most system integration and ease of use.
 
 ### Install NexusLIMS
 
-Using uv (recommended):
+`````{tab-set}
+
+````{tab-item} uv (Recommended)
+Using `uv tool`, you can install NexusLIMS as an isolated command-line tool:
 
 ```bash
+uv tool install nexuslims
+```
+
+This will install the following NexusLIMS command line tools directly onto your path,
+meaning they can be run from your terminal without needing to activate
+a virtual environment: `nexuslims-config`, `nexuslims-manage-instruments`,
+`nexuslims-migrate`, and `nexuslims-process-records`
+
+For more information on tools in uv, please see their
+[documentation](https://docs.astral.sh/uv/guides/tools/).
+````
+
+````{tab-item} pip
+NexusLIMS can also be installed using the traditional `pip` approach.
+If using this method, it is recommended to install in an isolated 
+virtual enviroment:
+
+```text
+# 1. create a new virtual environment
+python -m venv nexuslims-venv
+
+# 2. activate the environment
+source nexuslims-venv/bin/activate
+
+# 3. install NexusLIMS:
+pip install nexuslims
+```
+
+```{admonition} Using virtual environments
+:class: note
+If you use the virtual environment approach, you will need to
+"source" the environment every time (step 2, above) before you will be able to run
+any NexusLIMS command line tools.
+```
+````
+
+````{tab-item} From source
+For contributors who want to modify NexusLIMS source code:
+
+```text
 # Clone the repository
 git clone https://github.com/datasophos/NexusLIMS.git
 cd NexusLIMS
 
-# Install with uv
+# Install with uv (includes dev dependencies)
 uv sync
 ```
 
-Using pip:
-
-```bash
-# Clone the repository
-git clone https://github.com/datasophos/NexusLIMS.git
-cd NexusLIMS
-
-# Create virtual environment
-python -m venv .venv
-source .venv/bin/activate
-
-# Install
-pip install -e .
+```{admonition} Using *uv run*
+:class: note
+For development installs, you will need to prefix all NexusLIMS commands with `uv run`,
+from the project directory, since they will not be installed onto the path by default
+(e.g. `uv run nexuslims-config edit`).
 ```
+````
+
+`````
 
 ### Verify Installation
 
 Check that NexusLIMS is installed correctly:
 
+`````{tab-set}
+
+````{tab-item} uv (Recommended)
+
 ```bash
-python -c "import nexusLIMS; print(nexusLIMS.version.__version__)"
+nexuslims-config --help
 ```
+
+````
+
+````{tab-item} pip
+
+```text
+source nexuslims-venv/bin/activate
+nexuslims-config --help
+```
+
+````
+
+````{tab-item} From source
+```text
+cd NexusLIMS
+uv run nexuslims-config --help
+```
+````
+
+`````
+
+You should see the help output for the NexusLIMS configuration management tool:
+
+```text
+Usage: nexuslims-config [OPTIONS] COMMAND [ARGS]...
+
+  Manage NexusLIMS configuration files.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  dump  Dump the current effective configuration to JSON.
+  edit  Interactively edit the NexusLIMS configuration in a terminal UI.
+  load  Load a previously dumped JSON config into a .env file.
+```
+
+
 
 ## Configuration
 
-NexusLIMS requires configuration through environment variables, typically stored in a `.env` file.
+```{note}
+In all of the following examples, commands like `nexuslims-config` and
+`nexuslims-manage-instruments` are installed as part of the NexusLIMS package.
+How you invoke them depends on your installation type:
+
+- **uv tool install**: you can use the commands as written, since uv
+  puts them on your executable path during installation
+- **pip install**: activate your virtual environment first
+  (`source .venv/bin/activate`), then run commands directly (e.g. 
+  `nexuslims-config edit`)
+- **uv source install**: run the commands from the cloned NexusLIMS directory
+  and prefix each command with `uv run` (e.g. `uv run nexuslims-config edit`)
+```
+
+NexusLIMS requires configuration through environment variables, which are typically stored in a `.env` file.
 
 ### Quick Start
 
-1. Copy the example configuration file:
+1. Launch the interactive configuration editor, which provides an interactive
+   way to customize your configuration, and will automatically save a `.env` file
+   with your selected values:
    ```bash
-   cp .env.example .env
+   nexuslims-config edit
    ```
 
-2. Edit `.env` with your settings. At minimum, you'll need to set:
+   ```{tip}
+   For development installs from source, you can also copy the example file directly:
+   `cp .env.example .env` and then edit it manually.
+   ```
+
+2. At minimum, you'll need to set:
    - `NX_INSTRUMENT_DATA_PATH` - Path to instrument data
    - `NX_DATA_PATH` - Path for NexusLIMS data
    - `NX_DB_PATH` - Path to SQLite database
@@ -130,7 +201,10 @@ For config management tools (dump/load) and debugging configuration issues, see 
 
 ### Initialize the Database
 
-NexusLIMS uses SQLite to track instruments and sessions. Initialize the database:
+NexusLIMS uses a managed SQLite databse to track instruments, sessions, and users. 
+Before running the NexusLIMS record builder, you will need to initialize the
+database and add some instruments. The database tool will use whatever value
+you have set in the `NX_DB_PATH` varuable as the active database:
 
 ```bash
 # Initialize new database with schema and migrations
@@ -139,58 +213,43 @@ nexuslims-migrate init
 
 This creates an appropriately-formatted database file at `NX_DB_PATH`. 
 It will not have any instruments configured, but will have the correct
+structure.
 
-````{tip}
-**Check database status:**
+````{admonition} Using a custom database path
+:class: tip
+If for some reason you would like to use a different database file than specified
+in your .env, you can do so by setting the `NX_DB_PATH` environment variable
+directly on the command line:
+
 ```bash
-nexuslims-migrate current  # Show current version
-nexuslims-migrate check    # Check for pending migrations
+$ NX_DB_PATH=/path/to/other/database.db nexuslims-migrate init
 ```
 
-**Apply updates after upgrading NexusLIMS:**
-```bash
-nexuslims-migrate upgrade  # Apply pending migrations
-```
 ````
+
 
 ### Configure Instruments
 
-Add your instruments to the database. Each instrument requires:
+For NexusLIMS to start building records, it needs to know about 
+your instruments and where their data is stored. This is information
+is kept in the database created in the previous step.
 
-- **instrument_pid**: Unique instrument identifier (e.g., "FEI-Titan-TEM-12345")
-- **harvester**: "nemo" (SharePoint harvester is deprecated)
-- **filestore_path**: Path relative to `NX_INSTRUMENT_DATA_PATH`
-- **timezone**: Timezone for datetime handling (IANA format like "America/New_York")
-- **api_url**: NEMO API URL (for NEMO harvester) -- Should be of the format `https://<nemo_address>/api/tools/?id=<tool_id_in_NEMO>`
-- **display_name**: Human-readable name for the Nexus Microscopy schema
-- **location**: Physical location of the instrument
-- **property_tag**: Unique numeric identifier (for reference)
+To add, edit, and delete instruments, use the NexusLIMS interactive
+instrument manager:
 
-See {ref}`the instruments table documentation <instr-table>` for all available columns.
-
-Example SQL:
-
-```sql
-INSERT INTO instruments (
-    instrument_pid, harvester, filestore_path, timezone,
-    api_url, display_name, location, property_tag
-)
-VALUES (
-    'FEI-Titan-TEM-12345',
-    'nemo',
-    'Titan_data',
-    'America/New_York',
-    'https://nemo.example.com/api/tools/?id=10',
-    'FEI Titan TEM',
-    'Building 1, Room 101',
-    '12345'
-);
+```bash
+nexuslims-manage-instruments
 ```
 
-```{tip}
-You can use a SQLite database browser like [DB Browser for SQLite](https://sqlitebrowser.org/)
-to manage instruments graphically instead of writing SQL.
+This launches a terminal UI with a table of all/any configured
+instruments. Use arrow keys to navigate, and the `a` key to add an
+instrument by filling out the interactive form.
+
+```{seealso}
+For complete documentation on configuring instruments, see
+the {ref}`instrument_manager` guide.
 ```
+
 
 ## Quick Start
 
@@ -211,34 +270,64 @@ nexuslims-process-records -n
 nexuslims-process-records -vv
 ```
 
-### Understanding the Workflow
+For a detailed explanation of the record building workflow and session states,
+see {doc}`/user_guide/record_building` and {doc}`/dev_guide/database`.
 
-NexusLIMS follows this process:
+## Updating NexusLIMS
 
-1. **Harvest**: NEMO harvester checks API for new/ended reservations
-2. **Track**: Creates `session_log` entries with START/END events
-3. **Find Files**: Locates files modified during session window
-4. **Cluster**: Groups files into Acquisition Activities by temporal analysis
-5. **Extract**: Reads metadata from each file using format-specific extractors
-6. **Validate**: Validates record metadata matches expected format
-7. **Build**: Generates XML record conforming to Nexus Experiment schema
-8. **Upload**: Publishes record to CDCS
+```{admonition} Release notifications
+:class: tip
 
-The validation step (6) ensures all metadata meets quality standards before record generation. Invalid metadata causes extraction to fail with detailed error messages, preventing bad data from entering the system.
+To be notified of new NexusLIMS releases, watch the repository on GitHub
+(requires a GitHub account): go to [github.com/datasophos/NexusLIMS](https://github.com/datasophos/NexusLIMS),
+click **Watch** → **Custom**, and enable **Releases**.
+```
 
-### Session States
+`````{tab-set}
 
-NexusLIMS tracks your sessions through several states:
+````{tab-item} uv (Recommended)
+Upgrade to the latest version with:
 
-| Status | Meaning | Action Required |
-|--------|---------|-----------------|
-| `WAITING_FOR_END` | Session in progress | Continue using instrument normally |
-| `TO_BE_BUILT` | Session ended, record pending | Wait for automated processing |
-| `COMPLETED` | Record successfully created | View record in CDCS |
-| `NO_FILES_FOUND` | No data files detected | Check if files were saved to correct location |
-| `ERROR` | Record generation failed | Contact facility administrator |
-| `NO_CONSENT` | A user did not consent to have their data harvested for the session | Provide consent by clicking "Agree" in NEMO questions (post-run, pre-run, or reservation) |
-| `NO_RESERVATION` | There was no matching reservation found for this session | Make sure you made a reservation for your usage event |
+```bash
+uv tool upgrade nexuslims
+```
+````
+
+````{tab-item} pip
+Activate your virtual environment, then upgrade with pip:
+
+```bash
+source nexuslims-venv/bin/activate
+pip install --upgrade nexuslims
+```
+````
+
+````{tab-item} From source
+Pull the latest changes with `git` and sync dependencies:
+
+```bash
+cd NexusLIMS
+git pull
+uv sync
+```
+````
+
+`````
+
+After upgrading, you may need to upgrade the database structure (check each
+version's release notes for details). If necessary, run the folllowing to
+apply any pending database migrations to make your database compatible with
+the new version:
+
+```bash
+nexuslims-migrate upgrade
+```
+
+To check whether migrations are needed without applying them, use:
+
+```bash
+nexuslims-migrate check
+```
 
 ## Getting Help
 

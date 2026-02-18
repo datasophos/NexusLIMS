@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 12, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 18, 2026"/>
   </head>
   
   
@@ -832,7 +832,7 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">requests.adapters</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPAdapter</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters</span><span class="w"> </span><span class="kn">import</span> <span class="n">CA_BUNDLE_CONTENT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_ca_bundle_content</span>
 
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 <span class="n">_ssl_warning_logged</span> <span class="o">=</span> <span class="kc">False</span>
@@ -907,11 +907,11 @@ window.addEventListener("load", load);
             <span class="n">_ssl_warning_logged</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmp</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">verify_arg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">CA_BUNDLE_CONTENT</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verify_arg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ca_bundle_content</span> <span class="o">:=</span> <span class="n">get_ca_bundle_content</span><span class="p">()):</span>
             <span class="k">with</span> <span class="n">Path</span><span class="p">(</span><span class="n">certifi</span><span class="o">.</span><span class="n">where</span><span class="p">())</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">sys_cert</span><span class="p">:</span>
                 <span class="n">lines</span> <span class="o">=</span> <span class="n">sys_cert</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
             <span class="n">tmp</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-            <span class="n">tmp</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">CA_BUNDLE_CONTENT</span><span class="p">)</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">ca_bundle_content</span><span class="p">)</span>
             <span class="n">tmp</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">verify_arg</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">name</span>
 

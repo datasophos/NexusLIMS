@@ -50,8 +50,8 @@
 
 ````{py:data} instrument_db
 :canonical: nexusLIMS.instruments.instrument_db
-:value: >
-   '_get_instrument_db(...)'
+
+**Type:** dict
 
 ```{autodoc2-docstring} nexusLIMS.instruments.instrument_db
 :parser: autodoc2_docstrings_parser
