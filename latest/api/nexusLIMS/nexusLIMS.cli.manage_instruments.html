@@ -509,13 +509,19 @@
   <section id="module-nexusLIMS.cli.manage_instruments">
 <span id="nexuslims-cli-manage-instruments"></span><h1><a class="reference internal" href="#module-nexusLIMS.cli.manage_instruments" title="nexusLIMS.cli.manage_instruments"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.manage_instruments</span></code></a><a class="headerlink" href="#module-nexusLIMS.cli.manage_instruments" title="Link to this heading">#</a></h1>
 <p>CLI entry point for the NexusLIMS instrument management TUI.</p>
-<p>Provides the <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">manage</span></code> command for interactive
-database management.</p>
+<p>Provides the <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">manage</span></code> and <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">list</span></code>
+commands for interactive and scriptable database management.</p>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
 <p>.. code-block:: bash</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Launch the instrument management TUI
 nexuslims instruments manage
+
+# List instruments in a table
+nexuslims instruments list
+
+# List instruments as JSON
+nexuslims instruments list --format json
 
 # Show version information
 nexuslims instruments manage --version

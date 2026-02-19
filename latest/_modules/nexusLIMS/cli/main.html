@@ -840,6 +840,7 @@ window.addEventListener("load", load);
 <span class="sd">    nexuslims config [dump|load|edit]</span>
 <span class="sd">    nexuslims db [init|upgrade|...]</span>
 <span class="sd">    nexuslims instruments manage</span>
+<span class="sd">    nexuslims instruments list</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
@@ -946,6 +947,26 @@ window.addEventListener("load", load);
 
         <span class="n">_ensure_database_initialized</span><span class="p">()</span>
         <span class="n">_run_instrument_manager</span><span class="p">()</span>
+
+    <span class="nd">@instruments</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+        <span class="s2">&quot;--format&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;-f&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;output_format&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Choice</span><span class="p">([</span><span class="s2">&quot;table&quot;</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">]),</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">,</span>
+        <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output format.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list_instruments</span><span class="p">(</span><span class="n">output_format</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List all instruments in the database.&quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.cli.manage_instruments</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>  <span class="c1"># noqa: PLC0415</span>
+            <span class="n">_ensure_database_initialized</span><span class="p">,</span>
+            <span class="n">_list_instruments</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">_ensure_database_initialized</span><span class="p">()</span>
+        <span class="n">_list_instruments</span><span class="p">(</span><span class="n">output_format</span><span class="o">=</span><span class="n">output_format</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">instruments</span>
 

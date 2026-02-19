@@ -912,6 +912,100 @@ nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage<span 
 </pre></div>
 </div>
 <p>For a complete guide with screenshots and demonstrations, see the <a class="reference internal" href="instrument_manager.html"><span class="doc">Instrument Management</span></a> user guide.</p>
+<hr class="docutils" />
+</section>
+</section>
+<section id="nexuslims-instruments-list">
+<span id="id3"></span><h2><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">list</span></code><a class="headerlink" href="#nexuslims-instruments-list" title="Link to this heading">#</a></h2>
+<p>Print a summary of all instruments in the database without launching the full
+TUI. Useful for quick status checks and scripting.</p>
+<section id="id4">
+<h3>Basic Usage<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>list<span class="w"> </span>--help
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: nexuslims instruments list [OPTIONS]
+
+  List all instruments in the database.
+
+Options:
+  -f, --format [table|json]  Output format.  [default: table]
+  --help                     Show this message and exit.
+</pre></div>
+</div>
+</section>
+<section id="output-formats">
+<h3>Output Formats<a class="headerlink" href="#output-formats" title="Link to this heading">#</a></h3>
+<section id="table-default">
+<h4>Table (default)<a class="headerlink" href="#table-default" title="Link to this heading">#</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>list
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                    NexusLIMS Instruments (2 total)
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┓
+┃ ID               ┃ Display Name     ┃ Location ┃ API URL              ┃ Sessions ┃ Last Session         ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━┩
+│ FEI-Titan-TEM-01 │ FEI Titan TEM    │ Room 123 │ https://ne…?id=1     │       15 │ 2025-11-03 14:22 EST │
+│ JEOL-ARM-200F-67 │ JEOL ARM 200F    │ Room 456 │ https://ne…?id=42    │        8 │ 2025-09-15 09:05 EDT │
+└──────────────────┴──────────────────┴──────────┴──────────────────────┴──────────┴──────────────────────┘
+</pre></div>
+</div>
+<p>Columns:</p>
+<ul class="simple">
+<li><p><strong>ID</strong> — the <code class="docutils literal notranslate"><span class="pre">instrument_pid</span></code> (primary key in the database)</p></li>
+<li><p><strong>Display Name</strong> — human-readable name shown in NexusLIMS records</p></li>
+<li><p><strong>Location</strong> — physical location (building and room)</p></li>
+<li><p><strong>API URL</strong> — NEMO tool API endpoint (long URLs are middle-truncated so both
+the server host and the query parameters remain visible)</p></li>
+<li><p><strong>Sessions</strong> — number of distinct sessions recorded for this instrument (based
+on <code class="docutils literal notranslate"><span class="pre">END</span></code> events in <code class="docutils literal notranslate"><span class="pre">session_log</span></code>)</p></li>
+<li><p><strong>Last Session</strong> — timestamp of the most recent session end, localized to the
+instrument’s configured timezone; <code class="docutils literal notranslate"><span class="pre">—</span></code> if no sessions exist yet</p></li>
+</ul>
+</section>
+<section id="json-format-json">
+<h4>JSON (<code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">json</span></code>)<a class="headerlink" href="#json-format-json" title="Link to this heading">#</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>list<span class="w"> </span>--format<span class="w"> </span>json
+</pre></div>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;instrument_pid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FEI-Titan-TEM-01&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;display_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FEI Titan TEM&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;location&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Room 123&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;api_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://nemo.example.com/api/tools/?id=1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;harvester&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nemo&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;sessions_total&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;last_session&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-11-03T14:22:00-05:00&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">last_session</span></code> field is an ISO-8601 string with timezone offset, localized
+to each instrument’s configured timezone, or <code class="docutils literal notranslate"><span class="pre">null</span></code> if no sessions exist.</p>
+</section>
+</section>
+<section id="id5">
+<h3>Examples<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print table to terminal</span>
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>list
+
+<span class="c1"># Pipe JSON to jq for scripting</span>
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>list<span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.[].instrument_pid&#39;</span>
+
+<span class="c1"># Count total instruments</span>
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>list<span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;length&#39;</span>
+
+<span class="c1"># Find instruments with no sessions yet</span>
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>list<span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;[.[] | select(.sessions_total == 0)]&#39;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">list</span></code> is a read-only command — it never modifies the
+database. To add, edit, or delete instruments, use
+<code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">manage</span></code>.</p>
+</div>
 </section>
 </section>
 <hr class="docutils" />
@@ -919,8 +1013,8 @@ nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage<span 
 <h2><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span></code><a class="headerlink" href="#nexuslims-config" title="Link to this heading">#</a></h2>
 <p>Configuration management utility for viewing and exporting NexusLIMS configuration.</p>
 <p>See the <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.cli.config.html#module-nexusLIMS.cli.config" title="nexusLIMS.cli.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a> module documentation for details.</p>
-<section id="id3">
-<h3>Basic Usage<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>Basic Usage<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>config<span class="w"> </span>--help
 </pre></div>
 </div>
@@ -1028,8 +1122,8 @@ version upgrade.</p>
 version numbers. For example, revision <code class="docutils literal notranslate"><span class="pre">v2_4_0b</span></code> corresponds to the database
 schema required for NexusLIMS v2.4.0. This makes it easy to identify which
 database version matches your installed NexusLIMS version.</p>
-<section id="id4">
-<h3>Basic Usage<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h3>Basic Usage<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>--help
 </pre></div>
 </div>
@@ -1264,8 +1358,8 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
 </section>
 <section id="global-options">
 <h3>Global Options<a class="headerlink" href="#global-options" title="Link to this heading">#</a></h3>
-<section id="id5">
-<h4><code class="docutils literal notranslate"><span class="pre">--version</span></code><a class="headerlink" href="#id5" title="Link to this heading">#</a></h4>
+<section id="id8">
+<h4><code class="docutils literal notranslate"><span class="pre">--version</span></code><a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
 <p>Display the NexusLIMS version and exit.</p>
 <p><strong>Example:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>--version
@@ -1423,12 +1517,22 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Examples</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-instruments-list"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">list</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#output-formats">Output Formats</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#table-default">Table (default)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#json-format-json">JSON (<code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">json</span></code>)</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Examples</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-config"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Basic Usage</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-db"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Basic Usage</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#commands">Commands</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#init"><code class="docutils literal notranslate"><span class="pre">init</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#upgrade"><code class="docutils literal notranslate"><span class="pre">upgrade</span></code></a></li>
@@ -1440,7 +1544,7 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#global-options">Global Options</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id5"><code class="docutils literal notranslate"><span class="pre">--version</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8"><code class="docutils literal notranslate"><span class="pre">--version</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-workflows">Common Workflows</a><ul class="nav section-nav flex-column">
