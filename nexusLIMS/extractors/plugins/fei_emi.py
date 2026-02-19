@@ -149,15 +149,14 @@ class SerEmiExtractor:
 
         # if we successfully found the .emi file, add it to the metadata
         if emi_filename:
-            from nexusLIMS.config import settings  # noqa: PLC0415
+            try:
+                from nexusLIMS.config import settings  # noqa: PLC0415
 
-            rel_emi_fname = (
-                str(emi_filename).replace(
+                rel_emi_fname = str(emi_filename).replace(
                     str(settings.NX_INSTRUMENT_DATA_PATH) + "/", ""
                 )
-                if emi_filename
-                else None
-            )
+            except Exception:
+                rel_emi_fname = str(emi_filename)
             metadata["nx_meta"]["emi Filename"] = rel_emi_fname
         else:
             metadata["nx_meta"]["emi Filename"] = None

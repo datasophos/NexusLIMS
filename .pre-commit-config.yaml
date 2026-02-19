@@ -9,6 +9,7 @@ repos:
       - id: ruff
         name: Lint with ruff
         args: [--output-format=concise]
+        files: ^(nexusLIMS|tests)/
         stages: [pre-commit]
 
   - repo: local

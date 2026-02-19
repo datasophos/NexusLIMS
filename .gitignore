@@ -1,5 +1,6 @@
 # File patterns we want git to ignore
 docs/api/
+docs/notebooks/example_data
 api_tests/
 
 # backup

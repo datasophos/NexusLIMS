@@ -142,7 +142,7 @@ extensions = [
     "sphinxcontrib.autodoc_pydantic",
     "sphinx_autodoc_typehints",
     "sphinx_design",
-    "myst_parser",  # Support for Markdown files
+    "myst_nb",  # Support for Jupyter notebooks (.ipynb) and Markdown files
     "sphinxcontrib.mermaid",  # Support for Mermaid diagrams
     "xsd_documenter",  # Custom XSD documentation extension with D3.js diagrams
     "autodoc2",  # Automatic API documentation generation
@@ -160,6 +160,10 @@ copybutton_prompt_is_regexp = True
 copybutton_only_copy_prompt_lines = True
 # Remove prompts before copying
 copybutton_remove_prompts = True
+
+# MyST-NB: don't execute notebooks at build time (notebooks download data and
+# require the full NexusLIMS environment; users run them locally)
+nb_execution_mode = "off"
 
 # MyST parser extensions - enable fieldlist for proper parameter/return rendering
 myst_enable_extensions = [
@@ -235,10 +239,7 @@ towncrier_draft_working_directory = "."
 templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = {
-    ".rst": "restructuredtext",
-    ".md": "markdown",
-}
+source_suffix = [".rst", ".md", ".ipynb"]
 highlight_language = "python"
 # Set today to current timestamp in local timezone
 today = datetime.now().strftime("%B %d, %Y at %I:%M %p %Z")
