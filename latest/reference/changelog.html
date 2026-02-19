@@ -482,8 +482,9 @@
 <p>This changelog documents development history including the original NIST project
 up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 </div>
-<section id="unreleased-2026-02-19">
-<h2>[Unreleased] (2026-02-19)<a class="headerlink" href="#unreleased-2026-02-19" title="Link to this heading">#</a></h2>
+<!-- towncrier release notes start -->
+<section id="id1">
+<h2>2.5.0 (2026-02-18)<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <section id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
@@ -537,19 +538,18 @@ the documentation page to run locally. (<a class="reference external" href="http
 </ul>
 </section>
 </section>
-<!-- towncrier release notes start -->
-<section id="id1">
-<h2>2.4.1 (2026-02-06)<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <section id="id2">
-<h3>New features<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<h2>2.4.1 (2026-02-06)<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="id3">
+<h3>New features<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>The <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code> command now supports <code class="docutils literal notranslate"><span class="pre">--from</span></code> and <code class="docutils literal notranslate"><span class="pre">--to</span></code> options to filter sessions by date range. Use these options to process sessions from specific time periods, for example <code class="docutils literal notranslate"><span class="pre">--from</span> <span class="pre">2025-01-01</span> <span class="pre">--to</span> <span class="pre">2025-01-31</span></code> to process all sessions in January 2025. Both date bounds are inclusive (the <code class="docutils literal notranslate"><span class="pre">--to</span></code> date includes all sessions ending by 23:59:59 on that day). Without these options, all pending sessions are processed regardless of date. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/47">#47</a>)</p></li>
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">dump</span></code> and <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">load</span></code> commands for exporting and importing the full NexusLIMS configuration as a JSON file, making it straightforward to migrate configurations between deployments. Running <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span> <span class="pre">-v</span></code> (or <code class="docutils literal notranslate"><span class="pre">-vv</span></code>) now also prints the effective configuration (with secrets redacted) to the log at startup. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/56">#56</a>)</p></li>
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">NX_DISABLE_SSL_VERIFY</span></code> configuration option to disable SSL certificate verification for all outgoing HTTPS requests (for local development only).</p></li>
 </ul>
 </section>
-<section id="id3">
-<h3>Bug fixes<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>Bug fixes<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixed a validation error when extracting metadata from Gatan <code class="docutils literal notranslate"><span class="pre">.dm3</span></code> Diffraction files.  <code class="docutils literal notranslate"><span class="pre">magnification</span></code> and <code class="docutils literal notranslate"><span class="pre">stage_position</span></code> are now only written as core fields for dataset types whose schema declares them (Image / SpectrumImage); for other types the values are routed to extensions or dropped when empty. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/52">#52</a>)</p></li>
 <li><p>Fixed eLabFTW export failure when the <code class="docutils literal notranslate"><span class="pre">Location</span></code> header returned by the
@@ -558,8 +558,8 @@ Experiment and upload IDs are now extracted from the last path segment of the
 <code class="docutils literal notranslate"><span class="pre">Location</span></code> URL instead of relying on prefix-stripping. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/60">#60</a>)</p></li>
 </ul>
 </section>
-<section id="id4">
-<h3>Documentation improvements<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3>Documentation improvements<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added comprehensive CLI reference documentation covering all <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code> command-line options including the new <code class="docutils literal notranslate"><span class="pre">--from</span></code> and <code class="docutils literal notranslate"><span class="pre">--to</span></code> date filtering flags, dry-run mode, verbosity levels, and usage examples. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/47">#47</a>)</p></li>
 <li><p>Updated <code class="docutils literal notranslate"><span class="pre">.env.example</span></code> to match current configuration surface and documentation standards. Fixed stale repository links pointing to NIST infrastructure, removed unused <code class="docutils literal notranslate"><span class="pre">NX_TEST_CDCS_URL</span></code> variable, added missing <code class="docutils literal notranslate"><span class="pre">NX_EXPORT_STRATEGY</span></code> setting, synchronized <code class="docutils literal notranslate"><span class="pre">NX_IGNORE_PATTERNS</span></code> default value with code, and updated Python documentation link to version-agnostic URL. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/53">#53</a>)</p></li>
@@ -567,17 +567,17 @@ Experiment and upload IDs are now extracted from the last path segment of the
 <li><p>Added note to <a class="reference internal" href="../frontend_guide/local-test-deployment.html#cdcs-local-test-deployment"><span class="std std-ref">Local Test Deployment</span></a> docs about the need to set <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code> in the backend when using <code class="docutils literal notranslate"><span class="pre">mkcert</span></code>.</p></li>
 </ul>
 </section>
-<section id="id5">
-<h3>Miscellaneous/Development changes<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>Miscellaneous/Development changes<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Updated links to project homepage and documentation for PyPI release info.</p></li>
 </ul>
 </section>
 </section>
-<section id="id6">
-<h2>2.4.0 (2026-02-02)<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
 <section id="id7">
-<h3>New features<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<h2>2.4.0 (2026-02-02)<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<section id="id8">
+<h3>New features<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Added plugin-based export framework supporting multiple repository destinations (currently only CDCS and eLabFTW support, but other exporters planned in the future). Includes configurable export strategies (<code class="docutils literal notranslate"><span class="pre">all</span></code>, <code class="docutils literal notranslate"><span class="pre">first_success</span></code>, <code class="docutils literal notranslate"><span class="pre">best_effort</span></code> via <code class="docutils literal notranslate"><span class="pre">NX_EXPORT_STRATEGY</span></code>), per-destination upload tracking, and inter-destination dependencies. New <code class="docutils literal notranslate"><span class="pre">BUILT_NOT_EXPORTED</span></code> status for records that failed to export.</p>
 <p><strong>Breaking changes:</strong> Database migration required (<code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">alembic</span> <span class="pre">upgrade</span> <span class="pre">head</span></code>). <code class="docutils literal notranslate"><span class="pre">nexusLIMS.cdcs.upload_record_files()</span></code> removed; use <code class="docutils literal notranslate"><span class="pre">nexusLIMS.exporters.export_records()</span></code> instead. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/35">#35</a>)</p>
@@ -595,46 +595,46 @@ Experiment and upload IDs are now extracted from the last path segment of the
 </li>
 </ul>
 </section>
-<section id="id8">
-<h3>Bug fixes<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>Bug fixes<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixed instrument filestore path handling to correctly resolve paths that start with a leading slash. Previously, <code class="docutils literal notranslate"><span class="pre">pathlib</span></code> would treat leading slashes as absolute paths and discard the <code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code> base directory entirely. A new <code class="docutils literal notranslate"><span class="pre">join_instrument_filestore_path()</span></code> helper function now strips leading slashes before joining paths. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/43">#43</a>)</p></li>
 </ul>
 </section>
-<section id="id9">
-<h3>Documentation improvements<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>Documentation improvements<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Updated <a class="reference external" href="https://datasophos.github.io/NexusLIMS/stable/frontend_guide/local-test-deployment.html">local deployment documentation</a> to fix a few errors and be more complete. Also simplified local HTTPS configuration quite a bit in the <a class="reference external" href="https://github.com/datasophos/NexusLIMS-CDCS/releases/tag/3.18.0-nx1"><code class="docutils literal notranslate"><span class="pre">3.18.0-nx1</span></code></a> release of NexusLIMS-CDCS. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/40">#40</a>)</p></li>
 </ul>
 </section>
 </section>
-<section id="id10">
-<h2>2.3.0 (2026-01-19)<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
 <section id="id11">
-<h3>New features<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<h2>2.3.0 (2026-01-19)<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<section id="id12">
+<h3>New features<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">NX_CLUSTERING_SENSITIVITY</span></code> configuration option to control the sensitivity of file clustering into Acquisition Activities. Higher values make clustering more sensitive to time gaps (resulting in more activities), lower values make it less sensitive (fewer activities). Setting to <code class="docutils literal notranslate"><span class="pre">0</span></code> disables clustering entirely and groups all files into a single activity. (<em>Sponsored by UPenn/<a class="reference external" href="https://www.nano.upenn.edu/resources/nanoscale-characterization/">Singh Center for Nanotechnology</a>, thank you!</em>) (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/26">#26</a>)</p></li>
 <li><p>Add support for harvesting experiment metadata from NEMO usage event questions. The NEMO harvester now prioritizes data from usage events (what users actually did during their session) over reservation data (what they planned to do), using a three-tier fallback strategy that checks post-run questions, pre-run questions, and finally reservation questions to maximize record accuracy. (<em>Sponsored by UPenn/<a class="reference external" href="https://www.nano.upenn.edu/resources/nanoscale-characterization/">Singh Center for Nanotechnology</a>, thank you!</em>) (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/33">#33</a>)</p></li>
 </ul>
 </section>
-<section id="id12">
-<h3>Documentation improvements<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3>Documentation improvements<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add comprehensive documentation about features, development, and deployment of the CDCS-based frontend. These docs are kept in this repository to have one common documentation site. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/28">#28</a>)</p></li>
 <li><p>Refreshed the NexusLIMS logo to be more modern!</p></li>
 </ul>
 </section>
-<section id="id13">
-<h3>Miscellaneous/Development changes<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>Miscellaneous/Development changes<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Updated integration test infrastructure to use CDCS 3.18.0. Replaced username/password authentication with API token-based authentication throughout the codebase and test fixtures. Added <code class="docutils literal notranslate"><span class="pre">NX_TEST_MODE</span></code> environment variable to conditionally disable Pydantic validation during testing. (<em>Sponsored by UPenn/<a class="reference external" href="https://www.nano.upenn.edu/resources/nanoscale-characterization/">Singh Center for Nanotechnology</a>, thank you!</em>) (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/30">#30</a>)</p></li>
 </ul>
 </section>
 </section>
-<section id="id14">
-<h2>2.2.0 (2026-01-09)<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
 <section id="id15">
-<h3>New features<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<h2>2.2.0 (2026-01-09)<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
+<section id="id16">
+<h3>New features<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
 <ul>
 <li><p>Comprehensive refactor of internal metadata handling with <a class="reference external" href="https://pint.readthedocs.io/en/stable/">Pint Quantities</a> for representation of physical units and <a class="reference external" href="https://emglossary.helmholtz-metadaten.de/">EM Glossary v2.0.0</a> standardized field names. All extractor plugins now create Pint Quantity objects for fields with units, providing type safety and machine-readable XML with separate value/unit attributes. Added type-specific validation schemas (<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata" title="nexusLIMS.schemas.metadata.ImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImageMetadata</span></code></a>, <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumMetadata" title="nexusLIMS.schemas.metadata.SpectrumMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectrumMetadata</span></code></a>, <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumImageMetadata" title="nexusLIMS.schemas.metadata.SpectrumImageMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">SpectrumImageMetadata</span></code></a>, <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.DiffractionMetadata" title="nexusLIMS.schemas.metadata.DiffractionMetadata"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffractionMetadata</span></code></a>) and infrastructure modules for unit handling, EM Glossary integration via <a class="reference external" href="https://rdflib.readthedocs.io/en/stable/index.html">RDFLib</a>, and XML serialization. See the <a class="reference internal" href="../dev_guide/nexuslims_internal_schema.html"><span class="std std-doc">internal schema docs</span></a> for detail.</p>
 <blockquote>
@@ -652,15 +652,15 @@ Experiment and upload IDs are now extracted from the last path segment of the
 <li><p>Added support for Zeiss Orion and Fibics helium ion microscope TIFF files. The new extractor automatically detects the variant and parses metadata including beam parameters, stage position, and detector settings. (<em>Sponsored by UPenn/<a class="reference external" href="https://www.nano.upenn.edu/resources/nanoscale-characterization/">Singh Center for Nanotechnology</a>, thank you!</em>) (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/16">#16</a>)</p></li>
 </ul>
 </section>
-<section id="id16">
-<h3>Documentation improvements<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
+<section id="id17">
+<h3>Documentation improvements<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Comprehensive documentation overhaul: restructured sections for clearer layout, added <a class="reference internal" href="../dev_guide/nexuslims_internal_schema.html"><span class="std std-doc">internal schema docs</span></a>, expanded <a class="reference internal" href="../user_guide/extractors.html"><span class="std std-doc">extractor plugin documentation</span></a> with schema validation examples, updated <a class="reference internal" href="../dev_guide/testing/integration-tests.html"><span class="std std-doc">integration tests guide</span></a>, enhanced <a class="reference internal" href="../dev_guide/em_glossary_reference.html"><span class="std std-doc">EM Glossary reference</span></a> with RDF/SKOS concepts, reorganized <a class="reference internal" href="../user_guide/taxonomy.html"><span class="std std-doc">taxonomy documentation</span></a> with complete metadata field reference, improved <a class="reference internal" href="../dev_guide/development.html"><span class="std std-doc">developer guides</span></a> with unit handling patterns and schema extension examples, updated long-outdated <a class="reference internal" href="../user_guide/record_building.html"><span class="std std-doc">record building</span></a> documentation, and fixed fomatting in <a class="reference internal" href="api.html"><span class="std std-doc">API docs</span></a>. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/13">#13</a>)</p></li>
 <li><p>Fixed changelog build issues with towncrier integration and Sphinx documentation generation, along with warnings.</p></li>
 </ul>
 </section>
-<section id="id17">
-<h3>Miscellaneous/Development changes<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<section id="id18">
+<h3>Miscellaneous/Development changes<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Replaced custom nested dictionary utility functions with the well-maintained <a class="reference external" href="https://github.com/fabiocaccamo/python-benedict">python-benedict</a> library. This improves code reliability and maintainability by using battle-tested implementations for nested dictionary operations (<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.utils.dicts.html#nexusLIMS.utils.dicts.set_nested_dict_value" title="nexusLIMS.utils.dicts.set_nested_dict_value"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_nested_dict_value()</span></code></a>, <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.utils.dicts.html#nexusLIMS.utils.dicts.get_nested_dict_value_by_path" title="nexusLIMS.utils.dicts.get_nested_dict_value_by_path"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_nested_dict_value_by_path()</span></code></a>, <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.html#nexusLIMS.extractors.flatten_dict" title="nexusLIMS.extractors.flatten_dict"><code class="xref py py-func docutils literal notranslate"><span class="pre">flatten_dict()</span></code></a>). Removed vestigial functions <code class="docutils literal notranslate"><span class="pre">get_nested_dict_key</span></code> and <code class="docutils literal notranslate"><span class="pre">get_nested_dict_value</span></code> that had minimal or no production usage. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/18">#18</a>)</p></li>
 <li><p>Refactored TIFF-based extractors (<a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor" title="nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantaTiffExtractor</span></code></a>, <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.tescan_tif.html#nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor" title="nexusLIMS.extractors.plugins.tescan_tif.TescanTiffExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">TescanTiffExtractor</span></code></a>, <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.orion_HIM_tif.html#nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor" title="nexusLIMS.extractors.plugins.orion_HIM_tif.OrionTiffExtractor"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrionTiffExtractor</span></code></a>) to use a standardized <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.FieldDefinition" title="nexusLIMS.extractors.base.FieldDefinition"><code class="xref py py-class docutils literal notranslate"><span class="pre">FieldDefinition</span></code></a> configuration approach. This reduces code duplication and improves maintainability while preserving extraction functionality and accuracy. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/21">#21</a>)</p></li>
@@ -671,19 +671,19 @@ Experiment and upload IDs are now extracted from the last path segment of the
 </ul>
 </section>
 </section>
-<section id="id18">
-<h2>2.1.1 (2025-12-16)<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
 <section id="id19">
-<h3>Documentation improvements<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
+<h2>2.1.1 (2025-12-16)<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
+<section id="id20">
+<h3>Documentation improvements<a class="headerlink" href="#id20" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Actually fixed documentation version switcher to use full semantic version numbers (e.g., <code class="docutils literal notranslate"><span class="pre">2.1.0</span></code>) instead of major.minor versions (e.g., <code class="docutils literal notranslate"><span class="pre">2.1</span></code>), and properly highlight the current version being viewed. The switcher now shows only the most recent patch version for each minor release and marks the highest version as stable. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/5">#5</a>)</p></li>
 </ul>
 </section>
 </section>
-<section id="id20">
-<h2>2.1.0 (2025-12-16)<a class="headerlink" href="#id20" title="Link to this heading">#</a></h2>
 <section id="id21">
-<h3>New features<a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
+<h2>2.1.0 (2025-12-16)<a class="headerlink" href="#id21" title="Link to this heading">#</a></h2>
+<section id="id22">
+<h3>New features<a class="headerlink" href="#id22" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Implemented instrument profile system for site-specific metadata customization through profiles that can add static metadata, transform fields, and inject custom parsers. Profiles can be built-in (shipped with the package) or local (loaded from <code class="docutils literal notranslate"><span class="pre">NX_LOCAL_PROFILES_PATH</span></code> environment variable). (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/9">#9</a>)</p></li>
 <li><p>Preview generation has been migrated to a plugin-based system with separate image and text preview generators. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/9">#9</a>)</p></li>
@@ -691,24 +691,24 @@ Experiment and upload IDs are now extracted from the last path segment of the
 <li><p>Comprehensive Docker-based integration test suite providing end-to-end validation of NexusLIMS workflows. The new test suite includes NEMO and CDCS Docker services, tests for record building, file clustering, metadata extraction, CLI operations, email notifications, multi-instance NEMO support, and extensive error handling scenarios. Includes automated CI/CD integration with GitHub Actions and pre-built Docker images in GitHub Container Registry. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/10">#10</a>)</p></li>
 </ul>
 </section>
-<section id="id22">
-<h3>Bug fixes<a class="headerlink" href="#id22" title="Link to this heading">#</a></h3>
+<section id="id23">
+<h3>Bug fixes<a class="headerlink" href="#id23" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixed issue where mixed-case or upper-case extensions were not being properly assigned to the correct extractors. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/4">#4</a>)</p></li>
 <li><p>Fixed version switcher to properly display released versions. The switcher now correctly extracts and displays versioned releases (e.g., 2.0, 1.5) from documentation directories and matches them with the proper major.minor version format. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/5">#5</a>)</p></li>
 </ul>
 </section>
-<section id="id23">
-<h3>Miscellaneous/Development changes<a class="headerlink" href="#id23" title="Link to this heading">#</a></h3>
+<section id="id24">
+<h3>Miscellaneous/Development changes<a class="headerlink" href="#id24" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Split documentation deployment into separate GitHub Actions workflows for improved modularity and independent execution of docs builds from test runs. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/8">#8</a>)</p></li>
 </ul>
 </section>
 </section>
-<section id="id24">
-<h2>2.0.0 (2025-12-06)<a class="headerlink" href="#id24" title="Link to this heading">#</a></h2>
 <section id="id25">
-<h3>New features<a class="headerlink" href="#id25" title="Link to this heading">#</a></h3>
+<h2>2.0.0 (2025-12-06)<a class="headerlink" href="#id25" title="Link to this heading">#</a></h2>
+<section id="id26">
+<h3>New features<a class="headerlink" href="#id26" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Initial release of the <a class="reference external" href="https://datasophos.co">datasophos</a> fork of NexusLIMS!</p></li>
 <li><p>Migrated record processing from a bash script (<code class="docutils literal notranslate"><span class="pre">process_new_records.sh</span></code>) to a new Python CLI script (<code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code>),
@@ -729,8 +729,8 @@ unit tests.</p></li>
 <li><p>Updated dependencies (including hyperspy to 2.0+)</p></li>
 </ul>
 </section>
-<section id="id26">
-<h3>Documentation improvements<a class="headerlink" href="#id26" title="Link to this heading">#</a></h3>
+<section id="id27">
+<h3>Documentation improvements<a class="headerlink" href="#id27" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add a comprehensive documentation page for the extractors within NexusLIMS.</p></li>
 <li><p>Added a migration guide to support users migrating from v1 to v2</p></li>
@@ -738,16 +738,16 @@ unit tests.</p></li>
 <li><p>Migrated documentation to the modern PyData Sphinx Theme, offering a refreshed look, improved mobile responsiveness, and dark mode support. This overhaul includes a complete restructuring into hierarchical sections, a comprehensive “Getting Started” guide, new logo branding, and streamlined configuration.</p></li>
 </ul>
 </section>
-<section id="id27">
-<h3>Miscellaneous/Development changes<a class="headerlink" href="#id27" title="Link to this heading">#</a></h3>
+<section id="id28">
+<h3>Miscellaneous/Development changes<a class="headerlink" href="#id28" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added highly-compressible test files for extractors and record building process so test suite can run isolated from a deployed environment.</p></li>
 <li><p>Implemented full Github actions for CI/CD, covering tests, documentation, and release deployment.</p></li>
 <li><p>Migrated test suite to unit test pattern that can run without any external services connected.</p></li>
 </ul>
 </section>
-<section id="id28">
-<h3>Deprecations and/or Removals<a class="headerlink" href="#id28" title="Link to this heading">#</a></h3>
+<section id="id29">
+<h3>Deprecations and/or Removals<a class="headerlink" href="#id29" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Removed the deprecated SharePoint harvester.</p></li>
 <li><p>Removed tox for test running and local development processes, with most functions going into the <code class="docutils literal notranslate"><span class="pre">./scripts/</span></code> directory.</p></li>
@@ -759,95 +759,95 @@ is copied from the original NIST <a class="reference external" href="https://git
 </div>
 </section>
 </section>
-<section id="id29">
-<h2>1.4.3 (2024-06-07)<a class="headerlink" href="#id29" title="Link to this heading">#</a></h2>
 <section id="id30">
-<h3>Bug fixes<a class="headerlink" href="#id30" title="Link to this heading">#</a></h3>
+<h2>1.4.3 (2024-06-07)<a class="headerlink" href="#id30" title="Link to this heading">#</a></h2>
+<section id="id31">
+<h3>Bug fixes<a class="headerlink" href="#id31" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add ability to parse XML metadata included in some FEI/Thermo TIFF files that was
 causing the TIFF extractor to fail when it was present.</p></li>
 </ul>
 </section>
 </section>
-<section id="id31">
-<h2>1.4.2 (2024-05-29)<a class="headerlink" href="#id31" title="Link to this heading">#</a></h2>
 <section id="id32">
-<h3>Bug fixes<a class="headerlink" href="#id32" title="Link to this heading">#</a></h3>
+<h2>1.4.2 (2024-05-29)<a class="headerlink" href="#id32" title="Link to this heading">#</a></h2>
+<section id="id33">
+<h3>Bug fixes<a class="headerlink" href="#id33" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added workaround for issue where duplicate section titles would cause error in
 <code class="docutils literal notranslate"><span class="pre">quanta_tif</span></code> extractor.</p></li>
 </ul>
 </section>
 </section>
-<section id="id33">
-<h2>1.4.1 (2023-09-20)<a class="headerlink" href="#id33" title="Link to this heading">#</a></h2>
 <section id="id34">
-<h3>Bug fixes<a class="headerlink" href="#id34" title="Link to this heading">#</a></h3>
+<h2>1.4.1 (2023-09-20)<a class="headerlink" href="#id34" title="Link to this heading">#</a></h2>
+<section id="id35">
+<h3>Bug fixes<a class="headerlink" href="#id35" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Resolved issue where text files that can’t be opened with any encoding caused the record
 builder to crash</p></li>
 </ul>
 </section>
-<section id="id35">
-<h3>Documentation improvements<a class="headerlink" href="#id35" title="Link to this heading">#</a></h3>
+<section id="id36">
+<h3>Documentation improvements<a class="headerlink" href="#id36" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Documented internal release and deploy process on Wiki</p></li>
 </ul>
 </section>
 </section>
-<section id="id36">
-<h2>1.4.0 (2023-09-19)<a class="headerlink" href="#id36" title="Link to this heading">#</a></h2>
 <section id="id37">
-<h3>New features<a class="headerlink" href="#id37" title="Link to this heading">#</a></h3>
+<h2>1.4.0 (2023-09-19)<a class="headerlink" href="#id37" title="Link to this heading">#</a></h2>
+<section id="id38">
+<h3>New features<a class="headerlink" href="#id38" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added ability to generate previews for “plain” image files (e.g. <code class="docutils literal notranslate"><span class="pre">.jpg</span></code>, <code class="docutils literal notranslate"><span class="pre">.png</span></code>,
 etc.) and plain text files.</p></li>
 </ul>
 </section>
-<section id="id38">
-<h3>Bug fixes<a class="headerlink" href="#id38" title="Link to this heading">#</a></h3>
+<section id="id39">
+<h3>Bug fixes<a class="headerlink" href="#id39" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fix problem arising from NEMO API change that removed <code class="docutils literal notranslate"><span class="pre">username</span></code> keyword.</p></li>
 </ul>
 </section>
 </section>
-<section id="id39">
-<h2>1.3.1 (2023-05-19)<a class="headerlink" href="#id39" title="Link to this heading">#</a></h2>
 <section id="id40">
-<h3>Bug fixes<a class="headerlink" href="#id40" title="Link to this heading">#</a></h3>
+<h2>1.3.1 (2023-05-19)<a class="headerlink" href="#id40" title="Link to this heading">#</a></h2>
+<section id="id41">
+<h3>Bug fixes<a class="headerlink" href="#id41" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixed issue where “process new records” script was emailing an error alert on conditions
 that were not errors.</p></li>
 </ul>
 </section>
-<section id="id41">
-<h3>Miscellaneous/Development changes<a class="headerlink" href="#id41" title="Link to this heading">#</a></h3>
+<section id="id42">
+<h3>Miscellaneous/Development changes<a class="headerlink" href="#id42" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixed pipeline runner to not run tests when they’re not needed.</p></li>
 </ul>
 </section>
 </section>
-<section id="id42">
-<h2>1.3.0 (2023-04-14)<a class="headerlink" href="#id42" title="Link to this heading">#</a></h2>
 <section id="id43">
-<h3>New features<a class="headerlink" href="#id43" title="Link to this heading">#</a></h3>
+<h2>1.3.0 (2023-04-14)<a class="headerlink" href="#id43" title="Link to this heading">#</a></h2>
+<section id="id44">
+<h3>New features<a class="headerlink" href="#id44" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add support for reading <code class="docutils literal notranslate"><span class="pre">.spc</span></code> and <code class="docutils literal notranslate"><span class="pre">.msa</span></code> EDS spectrum files produced by EDAX
 acquisition softwares.</p></li>
 </ul>
 </section>
-<section id="id44">
-<h3>Documentation improvements<a class="headerlink" href="#id44" title="Link to this heading">#</a></h3>
+<section id="id45">
+<h3>Documentation improvements<a class="headerlink" href="#id45" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add <a class="reference external" href="https://towncrier.readthedocs.io/">towncrier</a> to manage documentation of
 changes in a semi-automated manner.</p></li>
 </ul>
 </section>
 </section>
-<section id="id45">
-<h2>1.2.0 (2023-03-31)<a class="headerlink" href="#id45" title="Link to this heading">#</a></h2>
 <section id="id46">
-<h3>New features<a class="headerlink" href="#id46" title="Link to this heading">#</a></h3>
+<h2>1.2.0 (2023-03-31)<a class="headerlink" href="#id46" title="Link to this heading">#</a></h2>
+<section id="id47">
+<h3>New features<a class="headerlink" href="#id47" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added new “default” extractor for filetypes we don’t know how to read
 that will add very basic file-based metadata otherwise</p></li>
@@ -862,8 +862,8 @@ provided as a string. Each item of the list will be passed to the GNU find comma
 as a pattern to ignore.</p></li>
 </ul>
 </section>
-<section id="id47">
-<h3>Bug fixes<a class="headerlink" href="#id47" title="Link to this heading">#</a></h3>
+<section id="id48">
+<h3>Bug fixes<a class="headerlink" href="#id48" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixed Poetry not installing due to change in upstream installer location</p></li>
 <li><p>Fixed issue where record builder would not run (and we wouldn’t even be alerted!)
@@ -872,8 +872,8 @@ if the network shares for <code class="docutils literal notranslate"><span class
 <li><p>Fix for development bug introduced by upgrade of tox package to 4.0.</p></li>
 </ul>
 </section>
-<section id="id48">
-<h3>Enhancements<a class="headerlink" href="#id48" title="Link to this heading">#</a></h3>
+<section id="id49">
+<h3>Enhancements<a class="headerlink" href="#id49" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added support for <code class="docutils literal notranslate"><span class="pre">&quot;NO_CONSENT&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;NO_RESERVATION&quot;</span></code> statuses in the
 <code class="docutils literal notranslate"><span class="pre">session_log</span></code> table of the NexusLIMS database</p></li>
@@ -886,8 +886,8 @@ to allow for and display this information in the front end.</p></li>
 folder hierarchy).</p></li>
 </ul>
 </section>
-<section id="id49">
-<h3>Documentation improvements<a class="headerlink" href="#id49" title="Link to this heading">#</a></h3>
+<section id="id50">
+<h3>Documentation improvements<a class="headerlink" href="#id50" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Improved documentation to be public-facing and also set up structure for public
 repository at https://github.com/usnistgov/nexuslims,
@@ -896,8 +896,8 @@ https://github.com/usnistgov/nexuslims-cdcs-docker</p></li>
 <li><p>Add NIST branding to documentation via header/footer script from pages.nist.gov</p></li>
 </ul>
 </section>
-<section id="id50">
-<h3>Miscellaneous/Development changes<a class="headerlink" href="#id50" title="Link to this heading">#</a></h3>
+<section id="id51">
+<h3>Miscellaneous/Development changes<a class="headerlink" href="#id51" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>If the record building delay has not passed and no files were found, a
 <code class="docutils literal notranslate"><span class="pre">RECORD_GENERATION</span></code> event will no longer be added to the <code class="docutils literal notranslate"><span class="pre">session_log</span></code> table
@@ -912,18 +912,18 @@ in the database to avoid cluttering things up.</p></li>
 <li><p>Updated third-party dependencies to recent latest versions</p></li>
 </ul>
 </section>
-<section id="id51">
-<h3>Deprecations and/or Removals<a class="headerlink" href="#id51" title="Link to this heading">#</a></h3>
+<section id="id52">
+<h3>Deprecations and/or Removals<a class="headerlink" href="#id52" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Remove support for Python 3.7.X</p></li>
 <li><p>Removed unused LDAP code</p></li>
 </ul>
 </section>
 </section>
-<section id="id52">
-<h2>1.1.1 (2022-06-15)<a class="headerlink" href="#id52" title="Link to this heading">#</a></h2>
 <section id="id53">
-<h3>Bug fixes<a class="headerlink" href="#id53" title="Link to this heading">#</a></h3>
+<h2>1.1.1 (2022-06-15)<a class="headerlink" href="#id53" title="Link to this heading">#</a></h2>
+<section id="id54">
+<h3>Bug fixes<a class="headerlink" href="#id54" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixed issue where record builder would crash if only one file was found during the
 activity (and added explicit test for this condition).</p></li>
@@ -940,8 +940,8 @@ was found, the harvester would return a generic event and a record would still b
 <li><p>Fixed bug where null bytes in a TIFF file caused an error in metadata extraction</p></li>
 </ul>
 </section>
-<section id="id54">
-<h3>Enhancements<a class="headerlink" href="#id54" title="Link to this heading">#</a></h3>
+<section id="id55">
+<h3>Enhancements<a class="headerlink" href="#id55" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add ability for record builder to insert a link to reservation information in the
 <code class="docutils literal notranslate"><span class="pre">summary</span></code> node (modified schema to hold this and record builder to insert it).</p></li>
@@ -965,8 +965,8 @@ specificity in multi-timezone setups.</p></li>
 implementation.</p></li>
 </ul>
 </section>
-<section id="id55">
-<h3>Miscellaneous/Development changes<a class="headerlink" href="#id55" title="Link to this heading">#</a></h3>
+<section id="id56">
+<h3>Miscellaneous/Development changes<a class="headerlink" href="#id56" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Configured tests to run on-premises, which speeds up various testing operations.</p></li>
 <li><p>Drastically restructured repository to look more like a proper Python library than just
@@ -981,8 +981,8 @@ failures due to network issues).</p></li>
 <li><p>Made some changes to the codebase in preparation of making it public-facing on Github.</p></li>
 </ul>
 </section>
-<section id="id56">
-<h3>Deprecations and/or Removals<a class="headerlink" href="#id56" title="Link to this heading">#</a></h3>
+<section id="id57">
+<h3>Deprecations and/or Removals<a class="headerlink" href="#id57" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Removed a variety of associated files that were not important for the Python package
 (old presentations, diagrams, reports, etc.)</p></li>
@@ -994,10 +994,10 @@ easier to add new instruments without having to do an XML schema migration).</p>
 </ul>
 </section>
 </section>
-<section id="id57">
-<h2>1.1.0 (2021-12-12)<a class="headerlink" href="#id57" title="Link to this heading">#</a></h2>
 <section id="id58">
-<h3>New features<a class="headerlink" href="#id58" title="Link to this heading">#</a></h3>
+<h2>1.1.0 (2021-12-12)<a class="headerlink" href="#id58" title="Link to this heading">#</a></h2>
+<section id="id59">
+<h3>New features<a class="headerlink" href="#id59" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Major new feature in this release is the implementation of a reservation and metadata
 harvester for the <a class="reference external" href="https://github.com/usnistgov/NEMO">NEMO</a> facility management
@@ -1007,8 +1007,8 @@ SharePoint calendar harvester will be deprecated in a future release. See the
 for more details.</p></li>
 </ul>
 </section>
-<section id="id59">
-<h3>Enhancements<a class="headerlink" href="#id59" title="Link to this heading">#</a></h3>
+<section id="id60">
+<h3>Enhancements<a class="headerlink" href="#id60" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add support to NEMO harvester for multiple samples in a set of reservation questions.
 The required structure for reservation questions is documented in the
@@ -1020,16 +1020,16 @@ inspecting files stored on servers in different timezones.</p></li>
 is now possible using the NEMO reservation questions).</p></li>
 </ul>
 </section>
-<section id="id60">
-<h3>Documentation improvements<a class="headerlink" href="#id60" title="Link to this heading">#</a></h3>
+<section id="id61">
+<h3>Documentation improvements<a class="headerlink" href="#id61" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Documented new NEMO harvester and updated record generation documentation to describe
 how the process works with multiple harvesters.</p></li>
 <li><p>Fixed broken image paths in README.</p></li>
 </ul>
 </section>
-<section id="id61">
-<h3>Miscellaneous/Development changes<a class="headerlink" href="#id61" title="Link to this heading">#</a></h3>
+<section id="id62">
+<h3>Miscellaneous/Development changes<a class="headerlink" href="#id62" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Migrated project structure from <a class="reference external" href="https://pipenv.pypa.io/en/latest/">pipenv</a> to <a class="reference external" href="https://python-poetry.org/">poetry</a> for better dependency
 resolution, easier and faster deployment, and configuration of project via
@@ -1039,18 +1039,18 @@ and pipelines.</p></li>
 <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.utils.html#module-nexusLIMS.utils" title="nexusLIMS.utils"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a> module for easier use throughout the rest of the codebase.</p></li>
 </ul>
 </section>
-<section id="id62">
-<h3>Deprecations and/or Removals<a class="headerlink" href="#id62" title="Link to this heading">#</a></h3>
+<section id="id63">
+<h3>Deprecations and/or Removals<a class="headerlink" href="#id63" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Removed the “Session Logger” application in favor of using NEMO and its usage events
 to track session timestamps.</p></li>
 </ul>
 </section>
 </section>
-<section id="id63">
-<h2>1.0.1 (2021-09-15)<a class="headerlink" href="#id63" title="Link to this heading">#</a></h2>
 <section id="id64">
-<h3>New features<a class="headerlink" href="#id64" title="Link to this heading">#</a></h3>
+<h2>1.0.1 (2021-09-15)<a class="headerlink" href="#id64" title="Link to this heading">#</a></h2>
+<section id="id65">
+<h3>New features<a class="headerlink" href="#id65" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Implemented a “file viewer” on the front-end NexusLIMS application which also allows
 for downloading single, multiple, or all data files from a particular record in
@@ -1064,8 +1064,8 @@ users through a tour describing what the various parts of the application do.</p
 one to see what records <code class="docutils literal notranslate"><span class="pre">would</span></code> be built without actually doing anything.</p></li>
 </ul>
 </section>
-<section id="id65">
-<h3>Bug fixes<a class="headerlink" href="#id65" title="Link to this heading">#</a></h3>
+<section id="id66">
+<h3>Bug fixes<a class="headerlink" href="#id66" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixed issue where Session Logger app was failing due to incompatibilities between
 the code and certain database states.</p></li>
@@ -1084,8 +1084,8 @@ HyperSpy project: <a class="reference external" href="https://github.com/hypersp
 <a class="reference external" href="https://github.com/hyperspy/hyperspy/pull/2529">3</a>).</p></li>
 </ul>
 </section>
-<section id="id66">
-<h3>Enhancements<a class="headerlink" href="#id66" title="Link to this heading">#</a></h3>
+<section id="id67">
+<h3>Enhancements<a class="headerlink" href="#id67" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added customized loading text while the list of records is loading in the front-end
 NexusLIMS application.</p></li>
@@ -1100,8 +1100,8 @@ if they are up to date or not.</p></li>
 <li><p>Small tweak to make acquisition activity links easier to click in record display.</p></li>
 </ul>
 </section>
-<section id="id67">
-<h3>Documentation improvements<a class="headerlink" href="#id67" title="Link to this heading">#</a></h3>
+<section id="id68">
+<h3>Documentation improvements<a class="headerlink" href="#id68" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added “taxonomy” of terms used in the NexusLIMS project to the documentation (see
 <a class="reference internal" href="../user_guide/taxonomy.html"><span class="doc">NexusLIMS Taxonomy</span></a> for details).</p></li>
@@ -1114,8 +1114,8 @@ including improvements to the project README, as well as the following pages:
 and pages about data security.</p></li>
 </ul>
 </section>
-<section id="id68">
-<h3>Miscellaneous/Development changes<a class="headerlink" href="#id68" title="Link to this heading">#</a></h3>
+<section id="id69">
+<h3>Miscellaneous/Development changes<a class="headerlink" href="#id69" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Improvement to logging to make it easier to debug records not being built correctly.</p></li>
 <li><p>Added new <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.harvesters.reservation_event.html#nexusLIMS.harvesters.reservation_event.ReservationEvent" title="nexusLIMS.harvesters.reservation_event.ReservationEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReservationEvent</span></code></a> class
@@ -1129,8 +1129,8 @@ implementation of the NEMO harvester.</p></li>
 </section>
 <section id="first-real-working-release">
 <h2>0.0.9 (2020-02-24) - First real working release<a class="headerlink" href="#first-real-working-release" title="Link to this heading">#</a></h2>
-<section id="id69">
-<h3>New features<a class="headerlink" href="#id69" title="Link to this heading">#</a></h3>
+<section id="id70">
+<h3>New features<a class="headerlink" href="#id70" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added extractor for TIFF image files produced by FEI SEM and FIB instruments.</p></li>
 <li><p>Record builder can now be run automatically and will do the whole process (probing
@@ -1138,8 +1138,8 @@ database, finding files, extracting metadata, building record XML, and uploading
 CDCS frontend).</p></li>
 </ul>
 </section>
-<section id="id70">
-<h3>Enhancements<a class="headerlink" href="#id70" title="Link to this heading">#</a></h3>
+<section id="id71">
+<h3>Enhancements<a class="headerlink" href="#id71" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Acquisition activities are now split up by clustering of file acquisition times, rather
 than inspecting when an instrument switches modes. This is more realistic to how
@@ -1159,14 +1159,14 @@ a record rather than a pure Python implementation.</p></li>
 <li><p>Various XSLT enhancements for better display of record data.</p></li>
 </ul>
 </section>
-<section id="id71">
-<h3>Documentation improvements<a class="headerlink" href="#id71" title="Link to this heading">#</a></h3>
+<section id="id72">
+<h3>Documentation improvements<a class="headerlink" href="#id72" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added record building documentation: <a class="reference internal" href="../user_guide/record_building.html"><span class="doc">Record building workflow</span></a>.</p></li>
 </ul>
 </section>
-<section id="id72">
-<h3>Miscellaneous/Development changes<a class="headerlink" href="#id72" title="Link to this heading">#</a></h3>
+<section id="id73">
+<h3>Miscellaneous/Development changes<a class="headerlink" href="#id73" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added helper script to update XLST on NexusLIMS front-end via API, making things easier
 for development.</p></li>
@@ -1178,8 +1178,8 @@ for development.</p></li>
 </section>
 <section id="pre-release-version">
 <h2>0.0.2 (2020-01-08) - Pre-release version<a class="headerlink" href="#pre-release-version" title="Link to this heading">#</a></h2>
-<section id="id73">
-<h3>New features<a class="headerlink" href="#id73" title="Link to this heading">#</a></h3>
+<section id="id74">
+<h3>New features<a class="headerlink" href="#id74" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added ability to use custom CA certificate for network communications (useful if
 communicating with servers with self-signed certificates).</p></li>
@@ -1195,16 +1195,16 @@ experiments, which are then translated into XML for the final record.</p></li>
 acquisition activities in record building.</p></li>
 </ul>
 </section>
-<section id="id74">
-<h3>Bug fixes<a class="headerlink" href="#id74" title="Link to this heading">#</a></h3>
+<section id="id75">
+<h3>Bug fixes<a class="headerlink" href="#id75" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Updated endpoint for sharepoint calendar API that had broken due to a change in that service.</p></li>
 <li><p>Fixed issue where schema had duplicate “labels” for certain fields that was causing
 a confusing display in the CDCS “curate” page.</p></li>
 </ul>
 </section>
-<section id="id75">
-<h3>Enhancements<a class="headerlink" href="#id75" title="Link to this heading">#</a></h3>
+<section id="id76">
+<h3>Enhancements<a class="headerlink" href="#id76" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added other Nexus instruments to the schema so we can have records from more than just
 a single <code class="docutils literal notranslate"><span class="pre">Instrument</span></code> (as it was in initial testing).</p></li>
@@ -1221,15 +1221,15 @@ in the application code.</p></li>
 <li><p>XSLT now properly displays preview images rather than a placeholder for each dataset.</p></li>
 </ul>
 </section>
-<section id="id76">
-<h3>Documentation improvements<a class="headerlink" href="#id76" title="Link to this heading">#</a></h3>
+<section id="id77">
+<h3>Documentation improvements<a class="headerlink" href="#id77" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fix links in README to point to new upstream project location.</p></li>
 <li><p>Added basic documentation for NexusLIMS package and link via a badge on the README.</p></li>
 </ul>
 </section>
-<section id="id77">
-<h3>Miscellaneous/Development changes<a class="headerlink" href="#id77" title="Link to this heading">#</a></h3>
+<section id="id78">
+<h3>Miscellaneous/Development changes<a class="headerlink" href="#id78" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Moved project out of a personal account and into it’s own NexusLIMS group on Gitlab.</p></li>
 <li><p>Added dedicated folder (separate form data storage location) for NexusLIMS to write
@@ -1240,25 +1240,25 @@ delineate functionality of the various parts of NexusLIMS</p></li>
 </ul>
 </section>
 </section>
-<section id="id78">
-<h2>0.0.1 (2019-03-26) - Pre-release version<a class="headerlink" href="#id78" title="Link to this heading">#</a></h2>
 <section id="id79">
-<h3>New features<a class="headerlink" href="#id79" title="Link to this heading">#</a></h3>
+<h2>0.0.1 (2019-03-26) - Pre-release version<a class="headerlink" href="#id79" title="Link to this heading">#</a></h2>
+<section id="id80">
+<h3>New features<a class="headerlink" href="#id80" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Implemented SharePoint calendar metadata harvesting for equipment reservations.</p></li>
 <li><p>Added metadata extractor for FEI TIFF image files produced by SEMs and FIBs.</p></li>
 <li><p>Created repository to hold initial work on NexusLIMS.</p></li>
 </ul>
 </section>
-<section id="id80">
-<h3>Enhancements<a class="headerlink" href="#id80" title="Link to this heading">#</a></h3>
+<section id="id81">
+<h3>Enhancements<a class="headerlink" href="#id81" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added a concept of “role” (experimental, calibration, etc.) to datasets in the
 <code class="docutils literal notranslate"><span class="pre">Nexus</span> <span class="pre">Experiment</span></code> schema</p></li>
 </ul>
 </section>
-<section id="id81">
-<h3>Miscellaneous/Development changes<a class="headerlink" href="#id81" title="Link to this heading">#</a></h3>
+<section id="id82">
+<h3>Miscellaneous/Development changes<a class="headerlink" href="#id82" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Added CI/CD pipeline for backend tests.</p></li>
 </ul>
@@ -1313,27 +1313,27 @@ delineate functionality of the various parts of NexusLIMS</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-2026-02-19">[Unreleased] (2026-02-19)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.4.1 (2026-02-06)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2.4.0 (2026-02-02)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">2.3.0 (2026-01-19)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">2.2.0 (2026-01-09)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">2.1.1 (2025-12-16)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">2.1.0 (2025-12-16)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">2.0.0 (2025-12-06)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id29">1.4.3 (2024-06-07)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id31">1.4.2 (2024-05-29)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id33">1.4.1 (2023-09-20)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id36">1.4.0 (2023-09-19)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id39">1.3.1 (2023-05-19)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id42">1.3.0 (2023-04-14)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id45">1.2.0 (2023-03-31)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id52">1.1.1 (2022-06-15)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id57">1.1.0 (2021-12-12)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id63">1.0.1 (2021-09-15)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.5.0 (2026-02-18)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.4.1 (2026-02-06)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">2.4.0 (2026-02-02)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">2.3.0 (2026-01-19)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">2.2.0 (2026-01-09)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">2.1.1 (2025-12-16)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">2.1.0 (2025-12-16)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">2.0.0 (2025-12-06)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id30">1.4.3 (2024-06-07)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id32">1.4.2 (2024-05-29)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id34">1.4.1 (2023-09-20)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id37">1.4.0 (2023-09-19)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id40">1.3.1 (2023-05-19)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id43">1.3.0 (2023-04-14)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id46">1.2.0 (2023-03-31)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id53">1.1.1 (2022-06-15)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id58">1.1.0 (2021-12-12)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id64">1.0.1 (2021-09-15)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#first-real-working-release">0.0.9 (2020-02-24) - First real working release</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-release-version">0.0.2 (2020-01-08) - Pre-release version</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id78">0.0.1 (2019-03-26) - Pre-release version</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id79">0.0.1 (2019-03-26) - Pre-release version</a></li>
 </ul>
   </nav></div>
 
