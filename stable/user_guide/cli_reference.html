@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Command-Line Interface Reference &#8212; NexusLIMS 2.4.1 documentation</title>
+    <title>Command-Line Interface Reference &#8212; NexusLIMS 2.5.0 documentation</title>
   
   
   
@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css?v=a0a71c94" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
@@ -42,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=e9ebdb8f"></script>
+    <script src="../_static/documentation_options.js?v=3c4615cf"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.4.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.5.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -60,12 +61,12 @@
     <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Extractors" href="extractors.html" />
-    <link rel="prev" title="Record building workflow" href="record_building.html" />
+    <link rel="next" title="Record building workflow" href="record_building.html" />
+    <link rel="prev" title="Configuration" href="configuration.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.4.1" />
-    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
+  <meta name="docsearch:version" content="2.5.0" />
+    <meta name="docbuild:last-update" content="Feb, 19, 2026"/>
   </head>
   
   
@@ -131,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.4.1 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.4.1 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.5.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.5.0 documentation - Home"/>
   
   
 </a></div>
@@ -182,7 +183,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration.html">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -321,7 +322,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration.html">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -411,9 +412,13 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Command-Line Interface Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument_manager.html">Instrument Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrations.html">Database Migrations</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/standalone_extractor_usage.html">Standalone Extractor Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exporters.html">Export Destinations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxonomy.html">NexusLIMS Taxonomy</a></li>
 </ul>
@@ -478,16 +483,136 @@
                   
   <section id="command-line-interface-reference">
 <h1>Command-Line Interface Reference<a class="headerlink" href="#command-line-interface-reference" title="Link to this heading">#</a></h1>
-<p>NexusLIMS provides command-line tools for record processing and configuration management. In all the examples below, if you are running
-NexusLIMS from a <code class="docutils literal notranslate"><span class="pre">git</span></code>-cloned version of the repository, ensure you
-add <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span></code> before every command.</p>
-<section id="nexuslims-process-records">
-<h2><code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code><a class="headerlink" href="#nexuslims-process-records" title="Link to this heading">#</a></h2>
-<p>The main record processing command that searches for completed sessions, builds XML records,
-and uploads them to configured export destinations.</p>
+<p>NexusLIMS provides a unified <code class="docutils literal notranslate"><span class="pre">nexuslims</span></code> command with subcommands for record
+processing, configuration management, database migrations, and instrument
+management. In all the examples below, if you are running NexusLIMS from a
+<code class="docutils literal notranslate"><span class="pre">git</span></code>-cloned version of the repository, ensure you add <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span></code> before every
+command.</p>
+<p>Every command (and any subcommands) also support the <code class="docutils literal notranslate"><span class="pre">--help</span></code> flag that can be
+used to get interactive assistance for any operation.</p>
+<section id="shell-completion">
+<h2>Shell Completion<a class="headerlink" href="#shell-completion" title="Link to this heading">#</a></h2>
+<p>NexusLIMS supports tab completion for subcommands, sub-subcommands, and option
+flags in bash, zsh, and fish. Run <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">completion</span></code> to get the setup
+line for your current shell:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>completion
+</pre></div>
+</div>
+<p>Or specify a shell explicitly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>completion<span class="w"> </span>--shell<span class="w"> </span>zsh
+nexuslims<span class="w"> </span>completion<span class="w"> </span>--shell<span class="w"> </span>bash
+nexuslims<span class="w"> </span>completion<span class="w"> </span>--shell<span class="w"> </span>fish
+</pre></div>
+</div>
+<p>Add the printed line to your shell’s rc file and restart your shell (or
+<code class="docutils literal notranslate"><span class="pre">source</span></code> the rc file). For example, for zsh:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># ~/.zshrc</span>
+<span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nv">_NEXUSLIMS_COMPLETE</span><span class="o">=</span>zsh_source<span class="w"> </span>nexuslims<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>For bash:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># ~/.bashrc</span>
+<span class="nb">eval</span><span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nv">_NEXUSLIMS_COMPLETE</span><span class="o">=</span>bash_source<span class="w"> </span>nexuslims<span class="k">)</span><span class="s2">&quot;</span>
+</pre></div>
+</div>
+<p>For fish:</p>
+<div class="highlight-fish notranslate"><div class="highlight"><pre><span></span><span class="c"># ~/.config/fish/config.fish</span>
+<span class="nv">_NEXUSLIMS_COMPLETE</span><span class="o">=</span>fish_source nexuslims <span class="o">|</span> <span class="nb">source</span>
+</pre></div>
+</div>
+<p>Once enabled, pressing <code class="docutils literal notranslate"><span class="pre">Tab</span></code> after any partial command or <code class="docutils literal notranslate"><span class="pre">--</span></code> completes
+subcommands, flags, and <code class="docutils literal notranslate"><span class="pre">click.Path</span></code> arguments:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$ nexuslims &lt;Tab&gt;
+build-records  completion  config  db  instruments
+
+$ nexuslims build-records --&lt;Tab&gt;
+--dry-run  --from  --help  --to  --verbose  --version
+
+$ nexuslims config &lt;Tab&gt;
+dump  edit  load
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Completion only works when <code class="docutils literal notranslate"><span class="pre">nexuslims</span></code> is on your <code class="docutils literal notranslate"><span class="pre">PATH</span></code> — i.e. when your
+virtual environment is activated, or when the package is installed globally
+with <code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">tool</span> <span class="pre">install</span> <span class="pre">nexuslims</span></code>. It does <strong>not</strong> work when invoked via
+<code class="docutils literal notranslate"><span class="pre">uv</span> <span class="pre">run</span> <span class="pre">nexuslims</span></code>.</p>
+</div>
+</section>
+<section id="top-level-usage">
+<h2>Top-Level Usage<a class="headerlink" href="#top-level-usage" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>--help
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: nexuslims [OPTIONS] COMMAND [ARGS]...
+
+  NexusLIMS command-line interface.
+
+  Manage records, configuration, database migrations, and instruments.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  build-records  Process new NexusLIMS records with logging and email...
+  completion     Print shell completion setup instructions.
+  config         Manage NexusLIMS configuration files.
+  db             Manage NexusLIMS database.
+  instruments    Manage NexusLIMS instruments.
+</pre></div>
+</div>
+</section>
+<section id="nexuslims-build-records">
+<h2><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code><a class="headerlink" href="#nexuslims-build-records" title="Link to this heading">#</a></h2>
+<p>The main record processing command that searches for completed sessions, builds
+XML records, and uploads them to configured export destinations.</p>
 <section id="basic-usage">
 <h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading">#</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-process-records<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>build-records<span class="w"> </span>--help
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: nexuslims build-records [OPTIONS]
+
+  Process new NexusLIMS records with logging and email notifications.
+
+  This command runs the NexusLIMS record builder to process new experimental
+  sessions and generate XML records. It provides file locking to prevent
+  concurrent runs, timestamped logging, and email notifications on errors.
+
+  By default, only sessions from the last week are processed. Use --from=none
+  to process all sessions, or specify custom date ranges with --from and --to.
+
+Options:
+  -n, --dry-run  Dry run: find files without building records
+  -v, --verbose  Increase verbosity (-v for INFO, -vv for DEBUG)
+  --from TEXT    Start date for session filtering (ISO format: YYYY-MM-DD).
+                 Defaults to 1 week ago. Use &quot;none&quot; to disable lower bound.
+  --to TEXT      End date for session filtering (ISO format: YYYY-MM-DD). Omit
+                 to disable upper bound.
+  --version      Show the version and exit.
+  --help         Show this message and exit.
+
+  Examples:
+
+      # Normal run (process records from last week)
+      $ nexuslims build-records
+
+      # Process all sessions (no date filtering)
+      $ nexuslims build-records --from=none
+
+      # Process sessions since a specific date
+      $ nexuslims build-records --from=2025-01-01
+
+      # Process a specific date range
+      $ nexuslims build-records --from=2025-01-01 --to=2025-01-31
+
+      # Dry run (find files only)
+      $ nexuslims build-records -n
+
+      # Verbose output
+      $ nexuslims build-records -vv
 </pre></div>
 </div>
 </section>
@@ -505,7 +630,7 @@ or uploading records.</p>
 <li><p>Database is not modified</p></li>
 </ul>
 <p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-process-records<span class="w"> </span>--dry-run
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>build-records<span class="w"> </span>--dry-run
 </pre></div>
 </div>
 </section>
@@ -519,17 +644,17 @@ or uploading records.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">none</span></code> - Disable the lower bound and process all sessions regardless of start date</p></li>
 </ul>
 <p><strong>Examples:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Process sessions from January 1, 2024 onward</span>
-nexuslims-process-records<span class="w"> </span>--from<span class="w"> </span><span class="m">2024</span>-01-01
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Process sessions from January 1, 2024 onward
+nexuslims build-records --from 2024-01-01
 
-<span class="c1"># Process sessions from a specific date to present</span>
-nexuslims-process-records<span class="w"> </span>--from<span class="w"> </span><span class="m">2024</span>-06-15
+# Process sessions from a specific date to present
+nexuslims build-records --from 2024-06-15
 
-<span class="c1"># Process all sessions regardless of date (disable default 1-week filter)</span>
-nexuslims-process-records<span class="w"> </span>--from<span class="w"> </span>none
+# Process all sessions regardless of date (disable default 1-week filter)
+nexuslims build-records --from none
 </pre></div>
 </div>
-<p><strong>Note:</strong> Times are interpreted in the system timezone (where <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code> is running).
+<p><strong>Note:</strong> Times are interpreted in the system timezone (where <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code> is running).
 The start of day (00:00:00) is used for the from date.</p>
 </section>
 <section id="to-date">
@@ -537,14 +662,14 @@ The start of day (00:00:00) is used for the from date.</p>
 <p>Filter sessions to only process those that <strong>ended on or before</strong> the specified date.</p>
 <p><strong>Date format:</strong> <code class="docutils literal notranslate"><span class="pre">YYYY-MM-DD</span></code> (ISO 8601 date format)</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Process sessions up to and including December 31, 2023</span>
-nexuslims-process-records<span class="w"> </span>--to<span class="w"> </span><span class="m">2023</span>-12-31
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Process sessions up to and including December 31, 2023
+nexuslims build-records --to 2023-12-31
 
-<span class="c1"># Process sessions from the past up to a specific date</span>
-nexuslims-process-records<span class="w"> </span>--to<span class="w"> </span><span class="m">2024</span>-01-15
+# Process sessions from the past up to a specific date
+nexuslims build-records --to 2024-01-15
 </pre></div>
 </div>
-<p><strong>Note:</strong> Times are interpreted in the system timezone (where <code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code> is running).
+<p><strong>Note:</strong> Times are interpreted in the system timezone (where <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code> is running).
 The end of day (23:59:59) is used for the to date to include all sessions that ended on
 that day.</p>
 </section>
@@ -552,14 +677,14 @@ that day.</p>
 <h4>Combining <code class="docutils literal notranslate"><span class="pre">--from</span></code> and <code class="docutils literal notranslate"><span class="pre">--to</span></code><a class="headerlink" href="#combining-from-and-to" title="Link to this heading">#</a></h4>
 <p>Use both options together to process sessions within a specific date range.</p>
 <p><strong>Examples:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Process sessions from January 2024 only</span>
-nexuslims-process-records<span class="w"> </span>--from<span class="w"> </span><span class="m">2024</span>-01-01<span class="w"> </span>--to<span class="w"> </span><span class="m">2024</span>-01-31
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Process sessions from January 2024 only
+nexuslims build-records --from 2024-01-01 --to 2024-01-31
 
-<span class="c1"># Process sessions from a specific week</span>
-nexuslims-process-records<span class="w"> </span>--from<span class="w"> </span><span class="m">2024</span>-02-05<span class="w"> </span>--to<span class="w"> </span><span class="m">2024</span>-02-11
+# Process sessions from a specific week
+nexuslims build-records --from 2024-02-05 --to 2024-02-11
 
-<span class="c1"># Dry-run for a specific month</span>
-nexuslims-process-records<span class="w"> </span>-n<span class="w"> </span>--from<span class="w"> </span><span class="m">2024</span>-03-01<span class="w"> </span>--to<span class="w"> </span><span class="m">2024</span>-03-31
+# Dry-run for a specific month
+nexuslims build-records -n --from 2024-03-01 --to 2024-03-31
 </pre></div>
 </div>
 <p><strong>Date range interpretation:</strong></p>
@@ -583,10 +708,10 @@ current configuration settings are printed at startup for transparency
 and debugging.</p>
 <p><strong>Examples:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Normal verbosity</span>
-nexuslims-process-records<span class="w"> </span>-v
+nexuslims<span class="w"> </span>build-records<span class="w"> </span>-v
 
 <span class="c1"># Maximum verbosity for debugging</span>
-nexuslims-process-records<span class="w"> </span>-vv
+nexuslims<span class="w"> </span>build-records<span class="w"> </span>-vv
 </pre></div>
 </div>
 </section>
@@ -594,8 +719,8 @@ nexuslims-process-records<span class="w"> </span>-vv
 <h4><code class="docutils literal notranslate"><span class="pre">--version</span></code><a class="headerlink" href="#version" title="Link to this heading">#</a></h4>
 <p>Display the NexusLIMS version and exit.</p>
 <p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-process-records<span class="w"> </span>--version
-<span class="c1"># Output: nexuslims-process-records (NexusLIMS 2.4.1, released 2025-02-06)</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>build-records<span class="w"> </span>--version
+<span class="c1"># Output: nexuslims build-records (NexusLIMS 2.4.1, released 2025-02-06)</span>
 </pre></div>
 </div>
 </section>
@@ -603,7 +728,7 @@ nexuslims-process-records<span class="w"> </span>-vv
 <h4><code class="docutils literal notranslate"><span class="pre">--help</span></code><a class="headerlink" href="#help" title="Link to this heading">#</a></h4>
 <p>Display help message with all available options and exit.</p>
 <p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-process-records<span class="w"> </span>--help
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>build-records<span class="w"> </span>--help
 </pre></div>
 </div>
 </section>
@@ -639,7 +764,7 @@ if that config variable is not set):</p>
 <h3>Examples<a class="headerlink" href="#examples" title="Link to this heading">#</a></h3>
 <section id="process-recent-sessions-default-behavior">
 <h4>Process Recent Sessions (Default Behavior)<a class="headerlink" href="#process-recent-sessions-default-behavior" title="Link to this heading">#</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-process-records<span class="w"> </span>-v
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>build-records<span class="w"> </span>-v
 </pre></div>
 </div>
 <p>This is the typical usage when run via <code class="docutils literal notranslate"><span class="pre">cron</span></code>/<code class="docutils literal notranslate"><span class="pre">systemd</span></code>. By default,
@@ -650,7 +775,7 @@ uploads completed records.</p>
 <section id="process-all-pending-sessions">
 <h4>Process All Pending Sessions<a class="headerlink" href="#process-all-pending-sessions" title="Link to this heading">#</a></h4>
 <p>To process all sessions regardless of date:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims-process-records<span class="w"> </span>--from<span class="w"> </span>none<span class="w"> </span>-v
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>build-records<span class="w"> </span>--from<span class="w"> </span>none<span class="w"> </span>-v
 </pre></div>
 </div>
 <p>This disables the default 1-week filter and fetches all usage events
@@ -660,7 +785,7 @@ record builder.</p>
 <section id="preview-weekly-processing">
 <h4>Preview Weekly Processing<a class="headerlink" href="#preview-weekly-processing" title="Link to this heading">#</a></h4>
 <p>Check what would be processed for a specific week without making changes:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>nexuslims-process-records -n --from 2024-02-05 --to 2024-02-11 -vv
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>nexuslims build-records -n --from 2024-02-05 --to 2024-02-11 -vv
 </pre></div>
 </div>
 <p>This dry-run with verbose output shows:</p>
@@ -675,11 +800,11 @@ record builder.</p>
 <h4>Automated Scheduled Execution<a class="headerlink" href="#automated-scheduled-execution" title="Link to this heading">#</a></h4>
 <p>Typical cron configuration for hourly processing:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span># Process new microscopy records every hour
-0 * * * * /path/to/nexuslims-process-records -v &gt;&gt; /var/log/nexuslims-cron.log 2&gt;&amp;1
+0 * * * * /path/to/nexuslims build-records -v &gt;&gt; /var/log/nexuslims-cron.log 2&gt;&amp;1
 </pre></div>
 </div>
 <p>Or systemd timer (recommended):</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># /etc/systemd/system/nexuslims-process-records.timer</span>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># /etc/systemd/system/nexuslims-build-records.timer</span>
 <span class="k">[Unit]</span>
 <span class="na">Description</span><span class="o">=</span><span class="s">NexusLIMS record processing timer</span>
 
@@ -691,13 +816,13 @@ record builder.</p>
 <span class="na">WantedBy</span><span class="o">=</span><span class="s">timers.target</span>
 </pre></div>
 </div>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># /etc/systemd/system/nexuslims-process-records.service</span>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># /etc/systemd/system/nexuslims-build-records.service</span>
 <span class="k">[Unit]</span>
 <span class="na">Description</span><span class="o">=</span><span class="s">NexusLIMS record processing</span>
 
 <span class="k">[Service]</span>
 <span class="na">Type</span><span class="o">=</span><span class="s">oneshot</span>
-<span class="na">ExecStart</span><span class="o">=</span><span class="s">/path/to/nexuslims-process-records -v</span>
+<span class="na">ExecStart</span><span class="o">=</span><span class="s">/path/to/nexuslims build-records -v</span>
 <span class="na">User</span><span class="o">=</span><span class="s">nexuslims</span>
 <span class="na">Group</span><span class="o">=</span><span class="s">nexuslims</span>
 </pre></div>
@@ -727,21 +852,196 @@ error notifications are sent when:</p>
 </section>
 </section>
 <hr class="docutils" />
-<section id="nexuslims-config">
-<h2><code class="docutils literal notranslate"><span class="pre">nexuslims-config</span></code><a class="headerlink" href="#nexuslims-config" title="Link to this heading">#</a></h2>
-<p>Configuration management utility for viewing and exporting NexusLIMS configuration.</p>
-<p>See the <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.cli.config.html#module-nexusLIMS.cli.config" title="nexusLIMS.cli.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a> module documentation for details.</p>
+<section id="nexuslims-instruments-manage">
+<h2><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">manage</span></code><a class="headerlink" href="#nexuslims-instruments-manage" title="Link to this heading">#</a></h2>
+<p>Terminal user interface (TUI) for managing the NexusLIMS instruments database.</p>
+<p>Provides an interactive interface for adding, editing, and deleting instruments without
+manual SQL manipulation. Features include sortable tables, real-time validation, search/filter,
+theme switching, and automatic database initialization.</p>
 <section id="id1">
 <h3>Basic Usage<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage<span class="w"> </span>--help
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: nexuslims instruments manage [OPTIONS]
+
+  Launch the interactive instrument management TUI.
+
+  Opens a terminal UI for adding, editing, and deleting instruments in the
+  NexusLIMS database.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+</pre></div>
+</div>
+</section>
+<section id="features">
+<h3>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Interactive table</strong>: Sortable instrument list with real-time filtering</p></li>
+<li><p><strong>Add instruments</strong>: Form validation ensures data integrity</p></li>
+<li><p><strong>Edit instruments</strong>: Modify existing instruments with pre-filled forms</p></li>
+<li><p><strong>Delete instruments</strong>: Confirmation prompts prevent accidental deletion</p></li>
+<li><p><strong>Search/filter</strong>: Find instruments by any field</p></li>
+<li><p><strong>Theme switching</strong>: Toggle between dark and light modes</p></li>
+<li><p><strong>Auto-init</strong>: Automatically creates database if it doesn’t exist</p></li>
+<li><p><strong>Help screen</strong>: Built-in keybinding reference</p></li>
+</ul>
+</section>
+<section id="keybindings">
+<h3>Keybindings<a class="headerlink" href="#keybindings" title="Link to this heading">#</a></h3>
+<p>See the <a class="reference internal" href="instrument_manager.html"><span class="doc">Instrument Management</span></a> guide for detailed keybindings and usage examples.</p>
+<p>Quick reference:</p>
+<ul class="simple">
+<li><p><strong>a</strong>: Add new instrument</p></li>
+<li><p><strong>e</strong>: Edit selected instrument</p></li>
+<li><p><strong>d</strong>: Delete selected instrument</p></li>
+<li><p><strong>/</strong>: Focus search/filter input</p></li>
+<li><p><strong>Ctrl+T</strong>: Toggle theme</p></li>
+<li><p><strong>?</strong>: Show help</p></li>
+<li><p><strong>q</strong>: Quit</p></li>
+</ul>
+</section>
+<section id="id2">
+<h3>Examples<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Launch the instrument manager TUI</span>
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage
+
+<span class="c1"># Show version</span>
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage<span class="w"> </span>--version
+</pre></div>
+</div>
+<p>For a complete guide with screenshots and demonstrations, see the <a class="reference internal" href="instrument_manager.html"><span class="doc">Instrument Management</span></a> user guide.</p>
+<hr class="docutils" />
+</section>
+</section>
+<section id="nexuslims-instruments-list">
+<span id="id3"></span><h2><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">list</span></code><a class="headerlink" href="#nexuslims-instruments-list" title="Link to this heading">#</a></h2>
+<p>Print a summary of all instruments in the database without launching the full
+TUI. Useful for quick status checks and scripting.</p>
+<section id="id4">
+<h3>Basic Usage<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>list<span class="w"> </span>--help
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: nexuslims instruments list [OPTIONS]
+
+  List all instruments in the database.
+
+Options:
+  -f, --format [table|json]  Output format.  [default: table]
+  --help                     Show this message and exit.
+</pre></div>
+</div>
+</section>
+<section id="output-formats">
+<h3>Output Formats<a class="headerlink" href="#output-formats" title="Link to this heading">#</a></h3>
+<section id="table-default">
+<h4>Table (default)<a class="headerlink" href="#table-default" title="Link to this heading">#</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>list
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>                    NexusLIMS Instruments (2 total)
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┓
+┃ ID               ┃ Display Name     ┃ Location ┃ API URL              ┃ Sessions ┃ Last Session         ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━┩
+│ FEI-Titan-TEM-01 │ FEI Titan TEM    │ Room 123 │ https://ne…?id=1     │       15 │ 2025-11-03 14:22 EST │
+│ JEOL-ARM-200F-67 │ JEOL ARM 200F    │ Room 456 │ https://ne…?id=42    │        8 │ 2025-09-15 09:05 EDT │
+└──────────────────┴──────────────────┴──────────┴──────────────────────┴──────────┴──────────────────────┘
+</pre></div>
+</div>
+<p>Columns:</p>
+<ul class="simple">
+<li><p><strong>ID</strong> — the <code class="docutils literal notranslate"><span class="pre">instrument_pid</span></code> (primary key in the database)</p></li>
+<li><p><strong>Display Name</strong> — human-readable name shown in NexusLIMS records</p></li>
+<li><p><strong>Location</strong> — physical location (building and room)</p></li>
+<li><p><strong>API URL</strong> — NEMO tool API endpoint (long URLs are middle-truncated so both
+the server host and the query parameters remain visible)</p></li>
+<li><p><strong>Sessions</strong> — number of distinct sessions recorded for this instrument (based
+on <code class="docutils literal notranslate"><span class="pre">END</span></code> events in <code class="docutils literal notranslate"><span class="pre">session_log</span></code>)</p></li>
+<li><p><strong>Last Session</strong> — timestamp of the most recent session end, localized to the
+instrument’s configured timezone; <code class="docutils literal notranslate"><span class="pre">—</span></code> if no sessions exist yet</p></li>
+</ul>
+</section>
+<section id="json-format-json">
+<h4>JSON (<code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">json</span></code>)<a class="headerlink" href="#json-format-json" title="Link to this heading">#</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>list<span class="w"> </span>--format<span class="w"> </span>json
+</pre></div>
+</div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;instrument_pid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FEI-Titan-TEM-01&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;display_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FEI Titan TEM&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;location&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Room 123&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;api_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://nemo.example.com/api/tools/?id=1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;harvester&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nemo&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;sessions_total&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;last_session&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-11-03T14:22:00-05:00&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">last_session</span></code> field is an ISO-8601 string with timezone offset, localized
+to each instrument’s configured timezone, or <code class="docutils literal notranslate"><span class="pre">null</span></code> if no sessions exist.</p>
+</section>
+</section>
+<section id="id5">
+<h3>Examples<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print table to terminal</span>
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>list
+
+<span class="c1"># Pipe JSON to jq for scripting</span>
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>list<span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.[].instrument_pid&#39;</span>
+
+<span class="c1"># Count total instruments</span>
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>list<span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;length&#39;</span>
+
+<span class="c1"># Find instruments with no sessions yet</span>
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>list<span class="w"> </span>--format<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;[.[] | select(.sessions_total == 0)]&#39;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">list</span></code> is a read-only command — it never modifies the
+database. To add, edit, or delete instruments, use
+<code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">manage</span></code>.</p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="nexuslims-config">
+<h2><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span></code><a class="headerlink" href="#nexuslims-config" title="Link to this heading">#</a></h2>
+<p>Configuration management utility for viewing and exporting NexusLIMS configuration.</p>
+<p>See the <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.cli.config.html#module-nexusLIMS.cli.config" title="nexusLIMS.cli.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a> module documentation for details.</p>
+<section id="id6">
+<h3>Basic Usage<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>config<span class="w"> </span>--help
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: nexuslims config [OPTIONS] COMMAND [ARGS]...
+
+  Manage NexusLIMS configuration files.
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  dump  Dump the current effective configuration to JSON.
+  edit  Interactively edit the NexusLIMS configuration in a terminal UI.
+  load  Load a previously dumped JSON config into a .env file.
+</pre></div>
+</div>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># View current configuration (prints to stdout)</span>
-nexuslims-config<span class="w"> </span>dump
+nexuslims<span class="w"> </span>config<span class="w"> </span>dump
 
 <span class="c1"># Save configuration to a JSON file</span>
-nexuslims-config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>nexuslims_config.json
+nexuslims<span class="w"> </span>config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>nexuslims_config.json
 
 <span class="c1"># Load configuration from JSON file (if .env already exists,</span>
 <span class="c1"># this command will detect it and create a backup of the current file)</span>
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json
+nexuslims<span class="w"> </span>config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json
 </pre></div>
 </div>
 <p><strong>Note:</strong> The <code class="docutils literal notranslate"><span class="pre">dump</span></code> command prints to stdout by default. Use <code class="docutils literal notranslate"><span class="pre">--output</span></code> to write to a file instead.</p>
@@ -797,6 +1097,344 @@ nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_co
 </div>
 </section>
 </section>
+<hr class="docutils" />
+<section id="nexuslims-db">
+<h2><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span></code><a class="headerlink" href="#nexuslims-db" title="Link to this heading">#</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.5.0.</span></p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span></code> is the NexusLIMS database management tool. It
+provides simple commands for common database operations while allowing
+advanced access to <a class="reference external" href="https://alembic.sqlalchemy.org/">Alembic</a> functionality
+for developers.</p>
+<p>The migration command will automatically read the value of <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code>
+set in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file and apply any changes required to that database.
+Backups of your database file will be made automatically during the upgrade
+process.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This command is generally only needed when upgrading NexusLIMS to new versions,
+or when initially setting up a deployment of NexusLIMS. The release notes
+for each NexusLIMS version will indicate if a database upgrade is necessary.
+If so, you will need to run <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span> <span class="pre">upgrade</span></code> as part of the
+version upgrade.</p>
+</div>
+<p><strong>Database version naming:</strong> Database migration revision IDs track NexusLIMS
+version numbers. For example, revision <code class="docutils literal notranslate"><span class="pre">v2_4_0b</span></code> corresponds to the database
+schema required for NexusLIMS v2.4.0. This makes it easy to identify which
+database version matches your installed NexusLIMS version.</p>
+<section id="id7">
+<h3>Basic Usage<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>--help
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: nexuslims db [OPTIONS] COMMAND [ARGS]...
+
+  Manage NexusLIMS database.
+
+  This tool provides simple commands for common database operations. For
+  advanced usage, use &#39;nexuslims db alembic [COMMAND]&#39; to access the full
+  Alembic CLI.
+
+Options:
+  --version  Show version and exit
+  --help     Show this message and exit.
+
+Commands:
+  alembic    Run Alembic commands directly (advanced usage).
+  check      Check if the database has pending migrations.
+  current    Show the current database migration version.
+  downgrade  Downgrade database to an earlier version.
+  history    Show migration history.
+  init       Initialize a new NexusLIMS database.
+  upgrade    Upgrade database to a later version.
+</pre></div>
+</div>
+</section>
+<section id="commands">
+<h3>Commands<a class="headerlink" href="#commands" title="Link to this heading">#</a></h3>
+<section id="init">
+<h4><code class="docutils literal notranslate"><span class="pre">init</span></code><a class="headerlink" href="#init" title="Link to this heading">#</a></h4>
+<p>Initialize a new NexusLIMS database with.</p>
+<p>Creates the database file at <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code>, applies all migrations to create the schema,
+and marks it as current.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>init<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--force</span></code> - Overwrite existing database file if it exists (use with caution)</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create new database</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>init
+
+<span class="c1"># Force recreate (destroys existing data)</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>init<span class="w"> </span>--force
+</pre></div>
+</div>
+<p><strong>Notes:</strong></p>
+<ul class="simple">
+<li><p>Database location is read from <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> environment variable</p></li>
+<li><p>Parent directories are created automatically if they don’t exist</p></li>
+<li><p>Fails with clear error if database already exists (unless <code class="docutils literal notranslate"><span class="pre">--force</span></code> is used)</p></li>
+</ul>
+</section>
+<section id="upgrade">
+<h4><code class="docutils literal notranslate"><span class="pre">upgrade</span></code><a class="headerlink" href="#upgrade" title="Link to this heading">#</a></h4>
+<p>Upgrade an existing NexusLIMS database to a later schema version.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade<span class="w"> </span><span class="o">[</span>REVISION<span class="o">]</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Arguments:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">REVISION</span></code> - Target migration version (default: <code class="docutils literal notranslate"><span class="pre">head</span></code> for latest)</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">head</span></code> - Upgrade to latest version</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">+1</span></code> - Upgrade one version</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">abc</span></code> - Upgrade to specific revision ID (e.g., <code class="docutils literal notranslate"><span class="pre">v2_4_0a</span></code>)</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--sql</span></code> - Generate SQL script instead of applying changes</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Upgrade to latest version</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade
+
+<span class="c1"># Upgrade one version at a time</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade<span class="w"> </span>+1
+
+<span class="c1"># Upgrade to specific revision</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade<span class="w"> </span>v2_4_0a
+
+<span class="c1"># Generate SQL without applying</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade<span class="w"> </span>--sql
+</pre></div>
+</div>
+</section>
+<section id="downgrade">
+<h4><code class="docutils literal notranslate"><span class="pre">downgrade</span></code><a class="headerlink" href="#downgrade" title="Link to this heading">#</a></h4>
+<p>Downgrade NexusLIMS database to an earlier schema version.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>downgrade<span class="w"> </span><span class="o">[</span>REVISION<span class="o">]</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Arguments:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">REVISION</span></code> - Target migration version (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code> for one step back)</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">-1</span></code> - Downgrade one version</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-2</span></code> - Downgrade two versions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">abc</span></code> - Downgrade to specific revision ID (e.g., <code class="docutils literal notranslate"><span class="pre">002</span></code>)</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--sql</span></code> - Generate SQL script instead of applying changes</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Downgrade one version</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>downgrade
+
+<span class="c1"># Downgrade to specific revision</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>downgrade<span class="w"> </span>v1_4_3
+
+<span class="c1"># Generate SQL without applying</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>downgrade<span class="w"> </span>--sql
+</pre></div>
+</div>
+</section>
+<section id="current">
+<h4><code class="docutils literal notranslate"><span class="pre">current</span></code><a class="headerlink" href="#current" title="Link to this heading">#</a></h4>
+<p>Show the current database migration version.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>current<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code> - Show detailed information</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show current version</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>current
+
+<span class="c1"># output:</span>
+<span class="c1">#   v2_4_0b (head)</span>
+
+<span class="c1"># Show detailed information</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>current<span class="w"> </span>-v
+
+<span class="c1"># output:</span>
+<span class="c1">#  Current revision(s) for sqlite:///test_db.sqlite:</span>
+<span class="c1">#  Rev: v2_4_0b (head)</span>
+<span class="c1">#  Parent: v2_4_0a</span>
+<span class="c1">#  Path: nexusLIMS/db/migrations/versions/v2_4_0b_add_check_constraints.py</span>
+</pre></div>
+</div>
+</section>
+<section id="check">
+<h4><code class="docutils literal notranslate"><span class="pre">check</span></code><a class="headerlink" href="#check" title="Link to this heading">#</a></h4>
+<p>Check if the database has any pending migrations.</p>
+<p>Useful for automated monitoring or pre-deployment checks.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>check
+</pre></div>
+</div>
+<p><strong>Exit Codes:</strong></p>
+<ul class="simple">
+<li><p><strong>0</strong> - Database is up-to-date</p></li>
+<li><p><strong>1</strong> - Database has pending migrations</p></li>
+<li><p><strong>2</strong> - Error occurred</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check migration status</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>check
+
+<span class="c1"># output:</span>
+<span class="c1">#   ⚠ Database has pending migrations</span>
+<span class="c1">#   Current revision: v1_4_3</span>
+<span class="c1">#   Latest revision:  v2_4_0b</span>
+</pre></div>
+</div>
+</section>
+<section id="history">
+<h4><code class="docutils literal notranslate"><span class="pre">history</span></code><a class="headerlink" href="#history" title="Link to this heading">#</a></h4>
+<p>Show migration history.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span><span class="nb">history</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code> - Show detailed information</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-i,</span> <span class="pre">--indicate-current</span></code> - Indicate current revision (Alembic default)</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show migration history</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span><span class="nb">history</span>
+
+<span class="c1"># output:</span>
+<span class="c1">#   v2_4_0a -&gt; v2_4_0b (head), Add check constraints to session_log.</span>
+<span class="c1">#   v1_4_3 -&gt; v2_4_0a, Add upload_log table and BUILT_NOT_EXPORTED status.</span>
+<span class="c1">#   &lt;base&gt; -&gt; v1_4_3, Initial schema baseline.</span>
+
+<span class="c1"># Show verbose history with current revision marked</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span><span class="nb">history</span><span class="w"> </span>-v<span class="w"> </span>-i
+</pre></div>
+</div>
+</section>
+<section id="alembic">
+<h4><code class="docutils literal notranslate"><span class="pre">alembic</span></code><a class="headerlink" href="#alembic" title="Link to this heading">#</a></h4>
+<p>Run Alembic commands directly (advanced usage).</p>
+<p>Provides access to the full Alembic CLI for advanced operations not covered by the
+simplified commands above.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span><span class="o">[</span>ALEMBIC_COMMAND<span class="o">]</span><span class="w"> </span><span class="o">[</span>ALEMBIC_OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show detailed migration history</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span><span class="nb">history</span><span class="w"> </span>--verbose
+
+<span class="c1"># Create a new migration (development only, requires source checkout)</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add column&quot;</span>
+
+<span class="c1"># Show specific revision details</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span>show<span class="w"> </span><span class="m">003</span>
+
+<span class="c1"># Stamp database without running migrations (use with caution)</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>head
+</pre></div>
+</div>
+<p><strong>Note:</strong> The <code class="docutils literal notranslate"><span class="pre">alembic</span></code> subcommand passes arguments directly to Alembic’s CLI. See the
+<a class="reference external" href="https://alembic.sqlalchemy.org/">Alembic documentation</a> for available commands.</p>
+</section>
+</section>
+<section id="global-options">
+<h3>Global Options<a class="headerlink" href="#global-options" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h4><code class="docutils literal notranslate"><span class="pre">--version</span></code><a class="headerlink" href="#id8" title="Link to this heading">#</a></h4>
+<p>Display the NexusLIMS version and exit.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>--version
+<span class="c1"># Output: nexuslims db (NexusLIMS 2.4.1)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="common-workflows">
+<h3>Common Workflows<a class="headerlink" href="#common-workflows" title="Link to this heading">#</a></h3>
+<section id="setting-up-a-new-installation">
+<h4>Setting Up a New Installation<a class="headerlink" href="#setting-up-a-new-installation" title="Link to this heading">#</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Set database path in .env</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;NX_DB_PATH=/var/nexuslims/database.db&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>.env
+
+<span class="c1"># 2. Initialize database</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>init
+
+<span class="c1"># 3. Verify database status</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>current
+</pre></div>
+</div>
+</section>
+<section id="upgrading-after-nexuslims-update">
+<h4>Upgrading After NexusLIMS Update<a class="headerlink" href="#upgrading-after-nexuslims-update" title="Link to this heading">#</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Check for pending migrations</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>check
+
+<span class="c1"># 2. If migrations are pending, review what will change</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span><span class="nb">history</span><span class="w"> </span>-v
+
+<span class="c1"># 3. Manually backup database (recommended, though the upgrade command will also backup)</span>
+cp<span class="w"> </span>/path/to/database.db<span class="w"> </span>/path/to/database.db.backup
+
+<span class="c1"># 4. Apply migrations</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>upgrade
+
+<span class="c1"># 5. Verify upgrade</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>current
+</pre></div>
+</div>
+</section>
+<section id="migrating-from-v1-x-or-early-v2-x">
+<h4>Migrating from v1.x or Early v2.x<a class="headerlink" href="#migrating-from-v1-x-or-early-v2-x" title="Link to this heading">#</a></h4>
+<p>If you have an existing database from before v2.2.0 (when Alembic was introduced),
+mark it as migrated to the baseline schema:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mark existing database as at the v1.4.3 migration level</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w"> </span>stamp<span class="w"> </span>v1_4_3
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="../migration_guide.html#migration"><span class="std std-ref">Migration Guide</span></a> guide for complete migration instructions.</p>
+</section>
+</section>
+<section id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span></code> command automatically:</p>
+<ul class="simple">
+<li><p>Reads database path from <a class="reference internal" href="configuration.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a> environment variable</p></li>
+<li><p>Locates migrations directory inside the installed package (works with pip/uv installations)</p></li>
+<li><p>Creates temporary Alembic configuration as needed</p></li>
+</ul>
+<p>No manual configuration is required.</p>
+</section>
+<section id="notes">
+<h3>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Always backup your database</strong> before running migrations on production data</p></li>
+<li><p><strong>Test migrations</strong> in a development environment first</p></li>
+<li><p><strong>Never edit applied migrations</strong> - create a new migration to fix issues</p></li>
+<li><p>The sequential revision IDs aligned to NexusLIMS versions (v1_4_3, v2_4_0, etc.) make it easy to track migration order</p></li>
+</ul>
+<p>For more details on the migration system, see the <a class="reference internal" href="../dev_guide/database.html"><span class="doc">database migration documentation</span></a>.</p>
+</section>
+</section>
 </section>
 
 
@@ -810,20 +1448,20 @@ nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_co
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="record_building.html"
+       href="configuration.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Record building workflow</p>
+        <p class="prev-next-title">Configuration</p>
       </div>
     </a>
     <a class="right-next"
-       href="extractors.html"
+       href="record_building.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Extractors</p>
+        <p class="prev-next-title">Record building workflow</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -846,7 +1484,9 @@ nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_co
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-process-records"><code class="docutils literal notranslate"><span class="pre">nexuslims-process-records</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shell-completion">Shell Completion</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#top-level-usage">Top-Level Usage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-build-records"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-usage">Basic Usage</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#options">Options</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#n-dry-run"><code class="docutils literal notranslate"><span class="pre">-n,</span> <span class="pre">--dry-run</span></code></a></li>
@@ -871,8 +1511,51 @@ nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_co
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#email-notifications">Email Notifications</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-config"><code class="docutils literal notranslate"><span class="pre">nexuslims-config</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-instruments-manage"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">manage</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#features">Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keybindings">Keybindings</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Examples</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-instruments-list"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">list</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#output-formats">Output Formats</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#table-default">Table (default)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#json-format-json">JSON (<code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">json</span></code>)</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Examples</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-config"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Basic Usage</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-db"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#commands">Commands</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#init"><code class="docutils literal notranslate"><span class="pre">init</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#upgrade"><code class="docutils literal notranslate"><span class="pre">upgrade</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#downgrade"><code class="docutils literal notranslate"><span class="pre">downgrade</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#current"><code class="docutils literal notranslate"><span class="pre">current</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#check"><code class="docutils literal notranslate"><span class="pre">check</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#history"><code class="docutils literal notranslate"><span class="pre">history</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#alembic"><code class="docutils literal notranslate"><span class="pre">alembic</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#global-options">Global Options</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id8"><code class="docutils literal notranslate"><span class="pre">--version</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-workflows">Common Workflows</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-a-new-installation">Setting Up a New Installation</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#upgrading-after-nexuslims-update">Upgrading After NexusLIMS Update</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#migrating-from-v1-x-or-early-v2-x">Migrating from v1.x or Early v2.x</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#notes">Notes</a></li>
 </ul>
 </li>
 </ul>

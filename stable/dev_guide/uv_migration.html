@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Migration from Poetry to uv &#8212; NexusLIMS 2.4.1 documentation</title>
+    <title>Migration from Poetry to uv &#8212; NexusLIMS 2.5.0 documentation</title>
   
   
   
@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css?v=a0a71c94" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
@@ -42,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=e9ebdb8f"></script>
+    <script src="../_static/documentation_options.js?v=3c4615cf"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.4.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.5.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -64,8 +65,8 @@
     <link rel="prev" title="Examples" href="examples.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.4.1" />
-    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
+  <meta name="docsearch:version" content="2.5.0" />
+    <meta name="docbuild:last-update" content="Feb, 19, 2026"/>
   </head>
   
   
@@ -131,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.4.1 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.4.1 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.5.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.5.0 documentation - Home"/>
   
   
 </a></div>
@@ -182,7 +183,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration.html">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -321,7 +322,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration.html">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -420,6 +421,7 @@
 <li class="toctree-l1"><a class="reference internal" href="database.html">NexusLIMS Database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="schema_documentation.html">XML Schema Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing/integration-tests.html">Integration Testing Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/textual_testing_reference.html">Textual Testing Reference</a></li>
 </ul>
 </div>
 </nav></div>
@@ -577,7 +579,7 @@ Poetry-based workflow.</p>
 <span class="p">]</span>
 
 <span class="k">[project.scripts]</span>
-<span class="n">nexuslims-process-records</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;nexusLIMS.cli.process_records:main&quot;</span>
+<span class="n">nexuslims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;nexusLIMS.cli.main:main&quot;</span>
 
 <span class="k">[build-system]</span>
 <span class="n">requires</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;hatchling&quot;</span><span class="p">]</span>
@@ -745,16 +747,16 @@ uv<span class="w"> </span>run<span class="w"> </span>sphinx-build<span class="w"
 <section id="running-the-record-builder">
 <h3>Running the Record Builder<a class="headerlink" href="#running-the-record-builder" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using the CLI entry point</span>
-uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>build-records
 
 <span class="c1"># Or using the module directly</span>
 uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>nexusLIMS.cli.process_records
 
 <span class="c1"># Dry run mode</span>
-uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records<span class="w"> </span>-n
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>build-records<span class="w"> </span>-n
 
 <span class="c1"># Verbose mode</span>
-uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records<span class="w"> </span>-vv
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>build-records<span class="w"> </span>-vv
 </pre></div>
 </div>
 </section>
@@ -915,11 +917,11 @@ uv<span class="w"> </span>lock<span class="w"> </span>--upgrade-package<span cla
 <h3>Missing Commands After Installation<a class="headerlink" href="#missing-commands-after-installation" title="Link to this heading">#</a></h3>
 <p>If CLI commands aren’t available after installation:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure you&#39;re using uv run</span>
-uv<span class="w"> </span>run<span class="w"> </span>nexuslims-process-records
+uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>build-records
 
 <span class="c1"># Or activate the virtual environment</span>
 <span class="nb">source</span><span class="w"> </span>.venv/bin/activate
-nexuslims-process-records
+nexuslims<span class="w"> </span>build-records
 </pre></div>
 </div>
 </section>

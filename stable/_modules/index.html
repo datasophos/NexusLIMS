@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Overview: module code &#8212; NexusLIMS 2.4.1 documentation</title>
+    <title>Overview: module code &#8212; NexusLIMS 2.5.0 documentation</title>
   
   
   
@@ -31,6 +31,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css?v=a0a71c94" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
@@ -41,7 +42,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=e9ebdb8f"></script>
+    <script src="../_static/documentation_options.js?v=3c4615cf"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -416,7 +417,7 @@ window.addEventListener("load", load);
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.4.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.5.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -426,8 +427,8 @@ window.addEventListener("load", load);
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.4.1" />
-    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
+  <meta name="docsearch:version" content="2.5.0" />
+    <meta name="docbuild:last-update" content="Feb, 19, 2026"/>
   </head>
   
   
@@ -493,8 +494,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.4.1 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.4.1 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.5.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.5.0 documentation - Home"/>
   
   
 </a></div>
@@ -544,7 +545,7 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration.html">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -681,7 +682,7 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration.html">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -818,11 +819,21 @@ window.addEventListener("load", load);
   <h1>All modules for which code is available</h1>
 <ul><li><a href="click/core.html">click.core</a></li>
 <li><a href="logging.html">logging</a></li>
+<li><a href="nexusLIMS/builder/preflight.html">nexusLIMS.builder.preflight</a></li>
 <li><a href="nexusLIMS/builder/record_builder.html">nexusLIMS.builder.record_builder</a></li>
+<li><a href="nexusLIMS/cli.html">nexusLIMS.cli</a></li>
+<ul><li><a href="nexusLIMS/cli/main.html">nexusLIMS.cli.main</a></li>
+<li><a href="nexusLIMS/cli/migrate.html">nexusLIMS.cli.migrate</a></li>
 <li><a href="nexusLIMS/cli/process_records.html">nexusLIMS.cli.process_records</a></li>
-<li><a href="nexusLIMS/config.html">nexusLIMS.config</a></li>
+</ul><li><a href="nexusLIMS/config.html">nexusLIMS.config</a></li>
 <li><a href="nexusLIMS/db/engine.html">nexusLIMS.db.engine</a></li>
 <li><a href="nexusLIMS/db/enums.html">nexusLIMS.db.enums</a></li>
+<li><a href="nexusLIMS/db/migrations/utils.html">nexusLIMS.db.migrations.utils</a></li>
+<li><a href="nexusLIMS/db/migrations/versions/v1_4_3_initial_schema_baseline.html">nexusLIMS.db.migrations.versions.v1_4_3_initial_schema_baseline</a></li>
+<li><a href="nexusLIMS/db/migrations/versions/v2_4_0a_add_upload_log_table.html">nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table</a></li>
+<li><a href="nexusLIMS/db/migrations/versions/v2_4_0b_add_check_constraints.html">nexusLIMS.db.migrations.versions.v2_4_0b_add_check_constraints</a></li>
+<li><a href="nexusLIMS/db/migrations/versions/v2_5_0a_add_external_user_identifiers.html">nexusLIMS.db.migrations.versions.v2_5_0a_add_external_user_identifiers</a></li>
+<li><a href="nexusLIMS/db/migrations/versions/v2_5_0b_remove_computer_fields.html">nexusLIMS.db.migrations.versions.v2_5_0b_remove_computer_fields</a></li>
 <li><a href="nexusLIMS/db/models.html">nexusLIMS.db.models</a></li>
 <li><a href="nexusLIMS/db/session_handler.html">nexusLIMS.db.session_handler</a></li>
 <li><a href="nexusLIMS/exporters.html">nexusLIMS.exporters</a></li>
@@ -851,16 +862,29 @@ window.addEventListener("load", load);
 <li><a href="nexusLIMS/extractors/registry.html">nexusLIMS.extractors.registry</a></li>
 <li><a href="nexusLIMS/extractors/utils.html">nexusLIMS.extractors.utils</a></li>
 <li><a href="nexusLIMS/extractors/xml_serialization.html">nexusLIMS.extractors.xml_serialization</a></li>
-</ul><li><a href="nexusLIMS/harvesters/nemo.html">nexusLIMS.harvesters.nemo</a></li>
+</ul><li><a href="nexusLIMS/harvesters.html">nexusLIMS.harvesters</a></li>
+<ul><li><a href="nexusLIMS/harvesters/nemo.html">nexusLIMS.harvesters.nemo</a></li>
 <ul><li><a href="nexusLIMS/harvesters/nemo/connector.html">nexusLIMS.harvesters.nemo.connector</a></li>
 <li><a href="nexusLIMS/harvesters/nemo/exceptions.html">nexusLIMS.harvesters.nemo.exceptions</a></li>
 <li><a href="nexusLIMS/harvesters/nemo/utils.html">nexusLIMS.harvesters.nemo.utils</a></li>
 </ul><li><a href="nexusLIMS/harvesters/reservation_event.html">nexusLIMS.harvesters.reservation_event</a></li>
-<li><a href="nexusLIMS/instruments.html">nexusLIMS.instruments</a></li>
+</ul><li><a href="nexusLIMS/instruments.html">nexusLIMS.instruments</a></li>
 <li><a href="nexusLIMS/schemas/activity.html">nexusLIMS.schemas.activity</a></li>
 <li><a href="nexusLIMS/schemas/em_glossary.html">nexusLIMS.schemas.em_glossary</a></li>
 <li><a href="nexusLIMS/schemas/metadata.html">nexusLIMS.schemas.metadata</a></li>
 <li><a href="nexusLIMS/schemas/units.html">nexusLIMS.schemas.units</a></li>
+<li><a href="nexusLIMS/tui/apps/config/app.html">nexusLIMS.tui.apps.config.app</a></li>
+<li><a href="nexusLIMS/tui/apps/config/screens.html">nexusLIMS.tui.apps.config.screens</a></li>
+<li><a href="nexusLIMS/tui/apps/config/validators.html">nexusLIMS.tui.apps.config.validators</a></li>
+<li><a href="nexusLIMS/tui/apps/instruments/app.html">nexusLIMS.tui.apps.instruments.app</a></li>
+<li><a href="nexusLIMS/tui/apps/instruments/screens.html">nexusLIMS.tui.apps.instruments.screens</a></li>
+<li><a href="nexusLIMS/tui/apps/instruments/validators.html">nexusLIMS.tui.apps.instruments.validators</a></li>
+<li><a href="nexusLIMS/tui/common/base_app.html">nexusLIMS.tui.common.base_app</a></li>
+<li><a href="nexusLIMS/tui/common/base_screens.html">nexusLIMS.tui.common.base_screens</a></li>
+<li><a href="nexusLIMS/tui/common/db_utils.html">nexusLIMS.tui.common.db_utils</a></li>
+<li><a href="nexusLIMS/tui/common/validators.html">nexusLIMS.tui.common.validators</a></li>
+<li><a href="nexusLIMS/tui/common/widgets.html">nexusLIMS.tui.common.widgets</a></li>
+<li><a href="nexusLIMS/tui/demo_helpers.html">nexusLIMS.tui.demo_helpers</a></li>
 <li><a href="nexusLIMS/utils/cdcs.html">nexusLIMS.utils.cdcs</a></li>
 <li><a href="nexusLIMS/utils/dicts.html">nexusLIMS.utils.dicts</a></li>
 <li><a href="nexusLIMS/utils/elabftw.html">nexusLIMS.utils.elabftw</a></li>
@@ -873,7 +897,6 @@ window.addEventListener("load", load);
 <li><a href="pint/registry.html">pint.registry</a></li>
 <li><a href="rdflib/namespace.html">rdflib.namespace</a></li>
 <li><a href="rich/console.html">rich.console</a></li>
-<li><a href="sqlalchemy/engine/base.html">sqlalchemy.engine.base</a></li>
 <li><a href="sqlalchemy/orm/attributes.html">sqlalchemy.orm.attributes</a></li>
 <li><a href="sqlalchemy/sql/sqltypes.html">sqlalchemy.sql.sqltypes</a></li>
 <li><a href="time.html">time</a></li>

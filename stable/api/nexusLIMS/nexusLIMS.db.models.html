@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS.db.models &#8212; NexusLIMS 2.4.1 documentation</title>
+    <title>nexusLIMS.db.models &#8212; NexusLIMS 2.5.0 documentation</title>
   
   
   
@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css?v=a0a71c94" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=acda69ee" />
@@ -42,7 +43,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=e9ebdb8f"></script>
+    <script src="../../_static/documentation_options.js?v=3c4615cf"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.4.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.5.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -60,12 +61,12 @@
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="nexusLIMS.db.enums" href="nexusLIMS.db.enums.html" />
-    <link rel="prev" title="nexusLIMS.db.engine" href="nexusLIMS.db.engine.html" />
+    <link rel="next" title="nexusLIMS.db.engine" href="nexusLIMS.db.engine.html" />
+    <link rel="prev" title="nexusLIMS.db.migrations.env" href="nexusLIMS.db.migrations.env.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.4.1" />
-    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
+  <meta name="docsearch:version" content="2.5.0" />
+    <meta name="docbuild:last-update" content="Feb, 19, 2026"/>
   </head>
   
   
@@ -131,8 +132,8 @@
       
     
     
-    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.4.1 documentation - Home"/>
-    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.4.1 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.5.0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.5.0 documentation - Home"/>
   
   
 </a></div>
@@ -182,7 +183,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
+  <a class="nav-link nav-internal" href="../../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -321,7 +322,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
+  <a class="nav-link nav-internal" href="../../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -412,22 +413,24 @@
 <li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">NexusLIMS API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3 current active has-children"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.db.session_handler.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.session_handler</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.db.engine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.engine</span></code></a></li>
-<li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.models</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.db.enums.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.enums</span></code></a></li>
-</ul>
-</details></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.harvesters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.tui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.exporters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
+<li class="toctree-l3 current active has-children"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.db.migrations.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.migrations</span></code></a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.models</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.db.engine.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.engine</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.db.enums.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.enums</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.db.session_handler.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.session_handler</span></code></a></li>
+</ul>
+</details></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 </ul>
 </details></li>
 </ul>
@@ -526,6 +529,29 @@ database tables (<code class="docutils literal notranslate"><span class="pre">in
 <tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.db.models.UploadLog" title="nexusLIMS.db.models.UploadLog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UploadLog</span></code></a></p></td>
 <td><p>Log of export attempts to destination repositories.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.db.models.ExternalUserIdentifier" title="nexusLIMS.db.models.ExternalUserIdentifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ExternalUserIdentifier</span></code></a></p></td>
+<td><p>Maps NexusLIMS usernames to external system user IDs.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.db.models.get_external_id" title="nexusLIMS.db.models.get_external_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_external_id</span></code></a></p></td>
+<td><p>Get external system ID for a NexusLIMS user.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.db.models.get_nexuslims_username" title="nexusLIMS.db.models.get_nexuslims_username"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_nexuslims_username</span></code></a></p></td>
+<td><p>Reverse lookup: find NexusLIMS username from external ID.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.db.models.store_external_id" title="nexusLIMS.db.models.store_external_id"><code class="xref py py-obj docutils literal notranslate"><span class="pre">store_external_id</span></code></a></p></td>
+<td><p>Store or update external ID mapping.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.db.models.get_all_external_ids" title="nexusLIMS.db.models.get_all_external_ids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_all_external_ids</span></code></a></p></td>
+<td><p>Get all external IDs for a user.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -576,16 +602,13 @@ with configuration for calendar integration, file storage, and metadata.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>instrument_pid</strong> – Unique identifier for the instrument (e.g., “FEI-Titan-TEM-012345”)</p></li>
-<li><p><strong>api_url</strong> – Calendar API endpoint URL for this instrument’s scheduler</p></li>
-<li><p><strong>calendar_name</strong> – User-friendly name displayed in the reservation system</p></li>
+<li><p><strong>api_url</strong> – Calendar API endpoint URL for this instrument’s scheduler (e.g.,
+<code class="docutils literal notranslate"><span class="pre">https://&lt;nemo_address&gt;/api/tools/?id=&lt;tool_id&gt;</span></code>)</p></li>
 <li><p><strong>calendar_url</strong> – URL to the instrument’s web-accessible calendar</p></li>
 <li><p><strong>location</strong> – Physical location (building and room number)</p></li>
-<li><p><strong>schema_name</strong> – Human-readable name as displayed in NexusLIMS records</p></li>
+<li><p><strong>display_name</strong> – Human-readable instrument name displayed in NexusLIMS records</p></li>
 <li><p><strong>property_tag</strong> – Unique numeric identifier (for reference)</p></li>
 <li><p><strong>filestore_path</strong> – Relative path under NX_INSTRUMENT_DATA_PATH where data is stored</p></li>
-<li><p><strong>computer_name</strong> – Hostname of the support PC running Session Logger App</p></li>
-<li><p><strong>computer_ip</strong> – IP address of the support PC</p></li>
-<li><p><strong>computer_mount</strong> – Full path where central storage is mounted on support PC</p></li>
 <li><p><strong>harvester</strong> – Harvester module to use (“nemo” or “sharepoint”)</p></li>
 <li><p><strong>timezone_str</strong> – IANA timezone database string (e.g., “America/New_York”)</p></li>
 </ul>
@@ -604,12 +627,6 @@ with configuration for calendar integration, file storage, and metadata.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.calendar_name">
-<span class="sig-name descname"><span class="pre">calendar_name</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.calendar_name" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> str</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.calendar_url">
 <span class="sig-name descname"><span class="pre">calendar_url</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.calendar_url" title="Link to this definition">#</a></dt>
 <dd><p><strong>Type:</strong> str</p>
@@ -622,8 +639,8 @@ with configuration for calendar integration, file storage, and metadata.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.schema_name">
-<span class="sig-name descname"><span class="pre">schema_name</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.schema_name" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.display_name">
+<span class="sig-name descname"><span class="pre">display_name</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.display_name" title="Link to this definition">#</a></dt>
 <dd><p><strong>Type:</strong> str</p>
 </dd></dl>
 
@@ -649,24 +666,6 @@ with configuration for calendar integration, file storage, and metadata.</p>
 <dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.timezone_str">
 <span class="sig-name descname"><span class="pre">timezone_str</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.timezone_str" title="Link to this definition">#</a></dt>
 <dd><p><strong>Type:</strong> str</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.computer_name">
-<span class="sig-name descname"><span class="pre">computer_name</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.computer_name" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> str | None</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.computer_ip">
-<span class="sig-name descname"><span class="pre">computer_ip</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.computer_ip" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> str | None</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.db.models.Instrument.computer_mount">
-<span class="sig-name descname"><span class="pre">computer_mount</span></span><a class="headerlink" href="#nexusLIMS.db.models.Instrument.computer_mount" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -939,6 +938,220 @@ multi-destination export with granular success/failure tracking.</p>
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.ExternalUserIdentifier">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.db.models.</span></span><span class="sig-name descname"><span class="pre">ExternalUserIdentifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/db/models.html#ExternalUserIdentifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.models.ExternalUserIdentifier" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">sqlmodel.SQLModel</span></code></p>
+<p>Maps NexusLIMS usernames to external system user IDs.</p>
+<p>Maintains a star topology with nexuslims_username (from session_log.user)
+as the canonical identifier, mapping to external system IDs.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – Auto-incrementing primary key</p></li>
+<li><p><strong>nexuslims_username</strong> – Canonical username in NexusLIMS (from session_log.user)</p></li>
+<li><p><strong>external_system</strong> – External system identifier (nemo, labarchives_eln, etc.)</p></li>
+<li><p><strong>external_id</strong> – User ID/username in the external system</p></li>
+<li><p><strong>email</strong> – User’s email for verification/matching (optional)</p></li>
+<li><p><strong>created_at</strong> – When this mapping was created</p></li>
+<li><p><strong>last_verified_at</strong> – Last time this mapping was verified (optional)</p></li>
+<li><p><strong>notes</strong> – Additional notes about this mapping (optional)</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># NEMO harvester user ID</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ExternalUserIdentifier</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">nexuslims_username</span><span class="o">=</span><span class="s1">&#39;jsmith&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">external_system</span><span class="o">=</span><span class="n">ExternalSystem</span><span class="o">.</span><span class="n">NEMO</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">external_id</span><span class="o">=</span><span class="s1">&#39;12345&#39;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># LabArchives UID from OAuth</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ExternalUserIdentifier</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">nexuslims_username</span><span class="o">=</span><span class="s1">&#39;jsmith&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">external_system</span><span class="o">=</span><span class="n">ExternalSystem</span><span class="o">.</span><span class="n">LABARCHIVES_ELN</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">external_id</span><span class="o">=</span><span class="s1">&#39;285489257Ho...&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">email</span><span class="o">=</span><span class="s1">&#39;jsmith@upenn.edu&#39;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.ExternalUserIdentifier.id">
+<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#nexusLIMS.db.models.ExternalUserIdentifier.id" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> int | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.ExternalUserIdentifier.nexuslims_username">
+<span class="sig-name descname"><span class="pre">nexuslims_username</span></span><a class="headerlink" href="#nexusLIMS.db.models.ExternalUserIdentifier.nexuslims_username" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.ExternalUserIdentifier.external_system">
+<span class="sig-name descname"><span class="pre">external_system</span></span><a class="headerlink" href="#nexusLIMS.db.models.ExternalUserIdentifier.external_system" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.ExternalUserIdentifier.external_id">
+<span class="sig-name descname"><span class="pre">external_id</span></span><a class="headerlink" href="#nexusLIMS.db.models.ExternalUserIdentifier.external_id" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.ExternalUserIdentifier.email">
+<span class="sig-name descname"><span class="pre">email</span></span><a class="headerlink" href="#nexusLIMS.db.models.ExternalUserIdentifier.email" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.ExternalUserIdentifier.created_at">
+<span class="sig-name descname"><span class="pre">created_at</span></span><a class="headerlink" href="#nexusLIMS.db.models.ExternalUserIdentifier.created_at" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> datetime.datetime</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.ExternalUserIdentifier.last_verified_at">
+<span class="sig-name descname"><span class="pre">last_verified_at</span></span><a class="headerlink" href="#nexusLIMS.db.models.ExternalUserIdentifier.last_verified_at" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> datetime.datetime | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.ExternalUserIdentifier.notes">
+<span class="sig-name descname"><span class="pre">notes</span></span><a class="headerlink" href="#nexusLIMS.db.models.ExternalUserIdentifier.notes" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.get_external_id">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.db.models.</span></span><span class="sig-name descname"><span class="pre">get_external_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nexuslims_username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">external_system</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.db.enums.html#nexusLIMS.db.enums.ExternalSystem" title="nexusLIMS.db.enums.ExternalSystem"><span class="pre">ExternalSystem</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/db/models.html#get_external_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.models.get_external_id" title="Link to this definition">#</a></dt>
+<dd><p>Get external system ID for a NexusLIMS user.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nexuslims_username</strong> – Username from session_log.user</p></li>
+<li><p><strong>external_system</strong> – Target external system</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>External ID if found, None otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> | <em>None</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_external_id</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExternalSystem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">uid</span> <span class="o">=</span> <span class="n">get_external_id</span><span class="p">(</span><span class="s1">&#39;jsmith&#39;</span><span class="p">,</span> <span class="n">ExternalSystem</span><span class="o">.</span><span class="n">LABARCHIVES_ELN</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span>
+<span class="go">&#39;285489257Ho...&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.get_nexuslims_username">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.db.models.</span></span><span class="sig-name descname"><span class="pre">get_nexuslims_username</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">external_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">external_system</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.db.enums.html#nexusLIMS.db.enums.ExternalSystem" title="nexusLIMS.db.enums.ExternalSystem"><span class="pre">ExternalSystem</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/db/models.html#get_nexuslims_username"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.models.get_nexuslims_username" title="Link to this definition">#</a></dt>
+<dd><p>Reverse lookup: find NexusLIMS username from external ID.</p>
+<p>Useful for harvesters that receive external IDs (e.g., NEMO user IDs)
+and need to map them to NexusLIMS usernames for session_log entries.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>external_id</strong> – ID in external system</p></li>
+<li><p><strong>external_system</strong> – Source external system</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>NexusLIMS username if found, None otherwise</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> | <em>None</em></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_nexuslims_username</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExternalSystem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">username</span> <span class="o">=</span> <span class="n">get_nexuslims_username</span><span class="p">(</span><span class="s1">&#39;12345&#39;</span><span class="p">,</span> <span class="n">ExternalSystem</span><span class="o">.</span><span class="n">NEMO</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+<span class="go">&#39;jsmith&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.store_external_id">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.db.models.</span></span><span class="sig-name descname"><span class="pre">store_external_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nexuslims_username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">external_system</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.db.enums.html#nexusLIMS.db.enums.ExternalSystem" title="nexusLIMS.db.enums.ExternalSystem"><span class="pre">ExternalSystem</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">external_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nexusLIMS.db.models.ExternalUserIdentifier" title="nexusLIMS.db.models.ExternalUserIdentifier"><span class="pre">ExternalUserIdentifier</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/db/models.html#store_external_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.models.store_external_id" title="Link to this definition">#</a></dt>
+<dd><p>Store or update external ID mapping.</p>
+<p>If mapping exists for this user/system combination, updates it and
+refreshes last_verified_at. Otherwise, creates new mapping.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nexuslims_username</strong> – Username from session_log.user</p></li>
+<li><p><strong>external_system</strong> – Target external system</p></li>
+<li><p><strong>external_id</strong> – ID in external system</p></li>
+<li><p><strong>email</strong> – Optional email for verification</p></li>
+<li><p><strong>notes</strong> – Optional notes about this mapping</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Created or updated ExternalUserIdentifier record</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#nexusLIMS.db.models.ExternalUserIdentifier" title="nexusLIMS.db.models.ExternalUserIdentifier"><em>ExternalUserIdentifier</em></a></p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">store_external_id</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExternalSystem</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">record</span> <span class="o">=</span> <span class="n">store_external_id</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">nexuslims_username</span><span class="o">=</span><span class="s1">&#39;jsmith&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">external_system</span><span class="o">=</span><span class="n">ExternalSystem</span><span class="o">.</span><span class="n">LABARCHIVES_ELN</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">external_id</span><span class="o">=</span><span class="s1">&#39;285489257Ho...&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">email</span><span class="o">=</span><span class="s1">&#39;jsmith@upenn.edu&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">notes</span><span class="o">=</span><span class="s1">&#39;OAuth registration portal 2026-01-25&#39;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.db.models.get_all_external_ids">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.db.models.</span></span><span class="sig-name descname"><span class="pre">get_all_external_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nexuslims_username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/db/models.html#get_all_external_ids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.models.get_all_external_ids" title="Link to this definition">#</a></dt>
+<dd><p>Get all external IDs for a user.</p>
+<p>Returns dict mapping external system name to external ID.
+Useful for debugging or user profile displays.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nexuslims_username</strong> – Username from session_log.user</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict mapping external system name to external ID</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>, <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>]</p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_all_external_ids</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span> <span class="o">=</span> <span class="n">get_all_external_ids</span><span class="p">(</span><span class="s1">&#39;jsmith&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    &#39;nemo&#39;: &#39;12345&#39;,</span>
+<span class="go">    &#39;labarchives_eln&#39;: &#39;285489257Ho...&#39;,</span>
+<span class="go">    &#39;cdcs&#39;: &#39;jsmith@upenn.edu&#39;</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 </section>
 </section>
@@ -954,20 +1167,20 @@ multi-destination export with granular success/failure tracking.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="nexusLIMS.db.engine.html"
+       href="nexusLIMS.db.migrations.env.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.engine</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.migrations.env</span></code></p>
       </div>
     </a>
     <a class="right-next"
-       href="nexusLIMS.db.enums.html"
+       href="nexusLIMS.db.engine.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.enums</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.engine</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -992,6 +1205,7 @@ multi-destination export with granular success/failure tracking.</p>
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.TZDateTime"><code class="docutils literal notranslate"><span class="pre">TZDateTime</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.TZDateTime.impl"><code class="docutils literal notranslate"><span class="pre">TZDateTime.impl</span></code></a></li>
@@ -1003,17 +1217,13 @@ multi-destination export with granular success/failure tracking.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument"><code class="docutils literal notranslate"><span class="pre">Instrument</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.instrument_pid"><code class="docutils literal notranslate"><span class="pre">Instrument.instrument_pid</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.api_url"><code class="docutils literal notranslate"><span class="pre">Instrument.api_url</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.calendar_name"><code class="docutils literal notranslate"><span class="pre">Instrument.calendar_name</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.calendar_url"><code class="docutils literal notranslate"><span class="pre">Instrument.calendar_url</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.location"><code class="docutils literal notranslate"><span class="pre">Instrument.location</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.schema_name"><code class="docutils literal notranslate"><span class="pre">Instrument.schema_name</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.display_name"><code class="docutils literal notranslate"><span class="pre">Instrument.display_name</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.property_tag"><code class="docutils literal notranslate"><span class="pre">Instrument.property_tag</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.filestore_path"><code class="docutils literal notranslate"><span class="pre">Instrument.filestore_path</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.harvester"><code class="docutils literal notranslate"><span class="pre">Instrument.harvester</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.timezone_str"><code class="docutils literal notranslate"><span class="pre">Instrument.timezone_str</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.computer_name"><code class="docutils literal notranslate"><span class="pre">Instrument.computer_name</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.computer_ip"><code class="docutils literal notranslate"><span class="pre">Instrument.computer_ip</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.computer_mount"><code class="docutils literal notranslate"><span class="pre">Instrument.computer_mount</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.session_logs"><code class="docutils literal notranslate"><span class="pre">Instrument.session_logs</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.name"><code class="docutils literal notranslate"><span class="pre">Instrument.name</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.Instrument.timezone"><code class="docutils literal notranslate"><span class="pre">Instrument.timezone</span></code></a></li>
@@ -1047,6 +1257,21 @@ multi-destination export with granular success/failure tracking.</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.UploadLog.metadata_json"><code class="docutils literal notranslate"><span class="pre">UploadLog.metadata_json</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.ExternalUserIdentifier"><code class="docutils literal notranslate"><span class="pre">ExternalUserIdentifier</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.ExternalUserIdentifier.id"><code class="docutils literal notranslate"><span class="pre">ExternalUserIdentifier.id</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.ExternalUserIdentifier.nexuslims_username"><code class="docutils literal notranslate"><span class="pre">ExternalUserIdentifier.nexuslims_username</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.ExternalUserIdentifier.external_system"><code class="docutils literal notranslate"><span class="pre">ExternalUserIdentifier.external_system</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.ExternalUserIdentifier.external_id"><code class="docutils literal notranslate"><span class="pre">ExternalUserIdentifier.external_id</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.ExternalUserIdentifier.email"><code class="docutils literal notranslate"><span class="pre">ExternalUserIdentifier.email</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.ExternalUserIdentifier.created_at"><code class="docutils literal notranslate"><span class="pre">ExternalUserIdentifier.created_at</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.ExternalUserIdentifier.last_verified_at"><code class="docutils literal notranslate"><span class="pre">ExternalUserIdentifier.last_verified_at</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.ExternalUserIdentifier.notes"><code class="docutils literal notranslate"><span class="pre">ExternalUserIdentifier.notes</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.get_external_id"><code class="docutils literal notranslate"><span class="pre">get_external_id()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.get_nexuslims_username"><code class="docutils literal notranslate"><span class="pre">get_nexuslims_username()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.store_external_id"><code class="docutils literal notranslate"><span class="pre">store_external_id()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.models.get_all_external_ids"><code class="docutils literal notranslate"><span class="pre">get_all_external_ids()</span></code></a></li>
 </ul>
 </li>
 </ul>

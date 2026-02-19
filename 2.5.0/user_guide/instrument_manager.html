@@ -1,0 +1,863 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Instrument Management &#8212; NexusLIMS 2.5.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=3c4615cf"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'user_guide/instrument_manager';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.5.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/custom.js?v=ba087cdf"></script>
+    <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Database Migrations" href="migrations.html" />
+    <link rel="prev" title="Record building workflow" href="record_building.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.5.0" />
+    <meta name="docbuild:last-update" content="Feb, 19, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.5.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.5.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli_reference.html">Command-Line Interface Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Instrument Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrations.html">Database Migrations</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="extractors.html">Extractors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/standalone_extractor_usage.html">Standalone Extractor Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exporters.html">Export Destinations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="taxonomy.html">NexusLIMS Taxonomy</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../user_guide.html" class="nav-link">User Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Instrument Management</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="instrument-management">
+<span id="instrument-manager"></span><h1>Instrument Management<a class="headerlink" href="#instrument-management" title="Link to this heading">#</a></h1>
+<p>The NexusLIMS Instrument Manager provides an interactive terminal user interface (TUI) for managing the instrument database. It offers a modern, user-friendly alternative to direct SQL database manipulation.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This application directly modifies your NexusLIMS database. Back up your database file before making any changes, especially before deleting instruments!</p>
+</div>
+<section id="launching-the-tui">
+<h2>Launching the TUI<a class="headerlink" href="#launching-the-tui" title="Link to this heading">#</a></h2>
+<p>The instrument manager is available as a command-line tool:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage
+</pre></div>
+</div>
+<p>The TUI will automatically initialize the database if it doesn’t exist yet.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Need a quick, scriptable summary of your instruments without opening the TUI?
+Use <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">list</span></code> for a plain-text table or JSON output.
+See the <a class="reference internal" href="cli_reference.html#nexuslims-instruments-list"><span class="std std-ref">nexuslims instruments list</span></a> section of the CLI reference for details.</p>
+</div>
+</section>
+<section id="main-interface">
+<h2>Main Interface<a class="headerlink" href="#main-interface" title="Link to this heading">#</a></h2>
+<p>When you launch the instrument manager, you’ll see a table listing all instruments in the database:</p>
+<p><img alt="Main Screen" src="../_images/main_screen.svg" /></p>
+<p>The main interface includes (from top down):</p>
+<ul class="simple">
+<li><p><strong>Filter input</strong>: Search/filter instruments by any field</p></li>
+<li><p><strong>Instrument table</strong>: Sortable columns showing key instrument details</p></li>
+<li><p><strong>Status bar</strong>: Shows available keyboard shortcuts</p></li>
+</ul>
+<section id="navigation">
+<h3>Navigation<a class="headerlink" href="#navigation" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Arrow keys</strong> (↑/↓): Navigate through instrument list</p></li>
+<li><p><strong>Enter</strong> or <strong>e</strong>: Select instrument for (e)diting</p></li>
+<li><p><strong>Tab</strong> or <strong>/</strong>: Move between table and filter input</p></li>
+<li><p><strong>s</strong>: Change sorting of table (sort order will be shown in notification)</p></li>
+<li><p><strong>?</strong>: Show help screen</p></li>
+<li><p><strong>q</strong> or <strong>Ctrl+Q</strong>: Quit application</p></li>
+</ul>
+</section>
+<section id="sorting">
+<h3>Sorting<a class="headerlink" href="#sorting" title="Link to this heading">#</a></h3>
+<p>Click on any column header to sort by that column. Click again to reverse the sort order. You can also press the <strong>s</strong> key to sort with the keyboard.</p>
+</section>
+<section id="filtering">
+<h3>Filtering<a class="headerlink" href="#filtering" title="Link to this heading">#</a></h3>
+<p>Press <code class="docutils literal notranslate"><span class="pre">/</span></code> to focus the filter input, then type to search across all fields:</p>
+<p><video src="../_images/demo_search_filter.mp4" width="100%" controls autoplay muted loop></video></p>
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<p><span style="display: none;"><video src="../_images/demo_search_filter.mp4" title="search filter"><a href="../_images/demo_search_filter.mp4">search filter</a></video></span></p>
+<p>The filter searches across all instrument fields (PID, location, display name, etc.).</p>
+</section>
+</section>
+<section id="adding-instruments">
+<h2>Adding Instruments<a class="headerlink" href="#adding-instruments" title="Link to this heading">#</a></h2>
+<p>Press <code class="docutils literal notranslate"><span class="pre">a</span></code> to open the add instrument form:</p>
+<p><video src="../_images/demo_add_instrument.mp4" width="100%" controls autoplay muted loop></video></p>
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<p><span style="display: none;"><video src="../_images/demo_add_instrument.mp4" title="add instrument"><a href="../_images/demo_add_instrument.mp4">add instrument</a></video></span></p>
+<p>The form includes:</p>
+<ul class="simple">
+<li><p><strong>Instrument PID</strong>: Unique identifier (e.g., “FEI-Titan-TEM-635816”)</p></li>
+<li><p><strong>API URL</strong>: NEMO tool API endpoint</p></li>
+<li><p><strong>Calendar URL</strong>: Web-accessible calendar URL</p></li>
+<li><p><strong>Display Name</strong>: Human-readable name for records</p></li>
+<li><p><strong>Location</strong>: Physical location (building and room)</p></li>
+<li><p><strong>Property Tag</strong>: Unique reference number</p></li>
+<li><p><strong>Filestore Path</strong>: Relative path under <code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code></p></li>
+<li><p><strong>Harvester</strong>: Calendar harvester integration (only “nemo” allowed)</p></li>
+<li><p><strong>Timezone</strong>: IANA timezone string (e.g., “US/Eastern”)</p></li>
+</ul>
+<section id="form-validation">
+<h3>Form Validation<a class="headerlink" href="#form-validation" title="Link to this heading">#</a></h3>
+<p>The form validates:</p>
+<ul class="simple">
+<li><p><strong>Required fields</strong>: All fields must be filled</p></li>
+<li><p><strong>Unique constraints</strong>: PID and API URL must be unique</p></li>
+<li><p><strong>URL format</strong>: API and calendar URLs must be valid</p></li>
+<li><p><strong>Timezone</strong>: Must be a valid IANA timezone string</p></li>
+</ul>
+<p>Invalid fields are highlighted in red with error messages.</p>
+</section>
+<section id="keybindings">
+<h3>Keybindings<a class="headerlink" href="#keybindings" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Tab</strong> / <strong>Shift+Tab</strong>: Navigate between fields</p></li>
+<li><p><strong>Ctrl+S</strong>: Save instrument</p></li>
+<li><p><strong>Escape</strong> or <strong>Cancel button</strong>: Cancel without saving</p></li>
+</ul>
+</section>
+</section>
+<section id="editing-instruments">
+<h2>Editing Instruments<a class="headerlink" href="#editing-instruments" title="Link to this heading">#</a></h2>
+<p>Select an instrument and press <code class="docutils literal notranslate"><span class="pre">e</span></code> to edit:</p>
+<p><video src="../_images/demo_edit_instrument.mp4" width="100%" controls autoplay muted loop></video></p>
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<p><span style="display: none;"><video src="../_images/demo_edit_instrument.mp4" title="edit instrument"><a href="../_images/demo_edit_instrument.mp4">edit instrument</a></video></span></p>
+<p>The edit form is identical to the add form, but pre-filled with the instrument’s current values.</p>
+</section>
+<section id="deleting-instruments">
+<h2>Deleting Instruments<a class="headerlink" href="#deleting-instruments" title="Link to this heading">#</a></h2>
+<p>Select an instrument and press <code class="docutils literal notranslate"><span class="pre">d</span></code> to delete:</p>
+<p><video src="../_images/demo_delete_instrument.mp4" width="100%" controls autoplay muted loop></video></p>
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<p><span style="display: none;"><video src="../_images/demo_delete_instrument.mp4" title="delete instrument"><a href="../_images/demo_delete_instrument.mp4">delete instrument</a></video></span></p>
+<p>A confirmation dialog will appear before deletion. This action cannot be undone.</p>
+<p><strong>Warning</strong>: Deleting an instrument does not delete its associated session logs. Use with caution.</p>
+</section>
+<section id="theme-switching">
+<h2>Theme Switching<a class="headerlink" href="#theme-switching" title="Link to this heading">#</a></h2>
+<p>Press <code class="docutils literal notranslate"><span class="pre">Ctrl+T</span></code> to toggle between dark and light themes:</p>
+<p><video src="../_images/demo_theme_switch.mp4" width="100%" controls autoplay muted loop></video></p>
+<!-- this hidden span is so Sphinx will properly copy the video to the right location -->
+<p><span style="display: none;"><video src="../_images/demo_theme_switch.mp4" title="theme switch"><a href="../_images/demo_theme_switch.mp4">theme switch</a></video></span></p>
+</section>
+<section id="help-screen">
+<h2>Help Screen<a class="headerlink" href="#help-screen" title="Link to this heading">#</a></h2>
+<p>Press <code class="docutils literal notranslate"><span class="pre">?</span></code> to view the built-in help screen:</p>
+<p><img alt="Help Screen" src="../_images/help_screen.svg" /></p>
+<p>The help screen shows all available keybindings and actions.</p>
+</section>
+<section id="keybindings-reference">
+<h2>Keybindings Reference<a class="headerlink" href="#keybindings-reference" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Navigation</strong></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>↑/↓</p></td>
+<td><p>Move selection up/down in table</p></td>
+</tr>
+<tr class="row-even"><td><p>Enter</p></td>
+<td><p>Edit selected instrument</p></td>
+</tr>
+<tr class="row-odd"><td><p>Tab</p></td>
+<td><p>Switch between table and filter</p></td>
+</tr>
+<tr class="row-even"><td><p>/</p></td>
+<td><p>Focus filter input for search</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Actions</strong></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>a</p></td>
+<td><p>Add new instrument</p></td>
+</tr>
+<tr class="row-odd"><td><p>e</p></td>
+<td><p>Edit selected instrument</p></td>
+</tr>
+<tr class="row-even"><td><p>d</p></td>
+<td><p>Delete selected instrument</p></td>
+</tr>
+<tr class="row-odd"><td><p>r</p></td>
+<td><p>Refresh instrument list</p></td>
+</tr>
+<tr class="row-even"><td><p>?</p></td>
+<td><p>Show help screen</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Global</strong></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>Ctrl+T</p></td>
+<td><p>Toggle theme (dark/light)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ctrl+Q</p></td>
+<td><p>Quit application</p></td>
+</tr>
+<tr class="row-even"><td><p>q</p></td>
+<td><p>Quit application</p></td>
+</tr>
+<tr class="row-odd"><td><p>Escape</p></td>
+<td><p>Close dialog or cancel action</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="command-line-options">
+<h2>Command-Line Options<a class="headerlink" href="#command-line-options" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show version information</span>
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage<span class="w"> </span>--version
+
+<span class="c1"># Show help</span>
+nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage<span class="w"> </span>--help
+</pre></div>
+</div>
+<p>The application will use the database configured in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.
+To run with a different database, you can override <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> when starting
+the application:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_DB_PATH</span><span class="o">=</span>/path/to/different/db.sqlite<span class="w"> </span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage
+</pre></div>
+</div>
+</section>
+<section id="database-initialization">
+<h2>Database Initialization<a class="headerlink" href="#database-initialization" title="Link to this heading">#</a></h2>
+<p>If the database doesn’t exist when you launch the TUI, it will be automatically initialized:</p>
+<ol class="arabic simple">
+<li><p>Creates the database file at <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code></p></li>
+<li><p>Runs Alembic migrations to create the schema</p></li>
+<li><p>Displays the current schema version</p></li>
+</ol>
+<p>You can also initialize the database manually using the migration CLI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>init
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="migrations.html"><span class="doc">Database Migrations</span></a> guide for more details on database migrations.</p>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h2>
+<section id="database-connection-errors">
+<h3>Database Connection Errors<a class="headerlink" href="#database-connection-errors" title="Link to this heading">#</a></h3>
+<p>If you see database connection errors:</p>
+<ol class="arabic simple">
+<li><p>Verify <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> environment variable is set</p></li>
+<li><p>Ensure the database file exists and is readable</p></li>
+<li><p>Check that migrations are up to date: <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span> <span class="pre">current</span></code></p></li>
+</ol>
+</section>
+<section id="validation-errors">
+<h3>Validation Errors<a class="headerlink" href="#validation-errors" title="Link to this heading">#</a></h3>
+<p>If form validation fails:</p>
+<ul class="simple">
+<li><p>Check error messages at the bottom of the form</p></li>
+<li><p>Ensure unique fields (PID, API URL) don’t conflict with existing instruments</p></li>
+<li><p>Verify timezone strings match IANA timezone database (e.g., “America/New_York”, not “EST”)</p></li>
+<li><p>Confirm URLs are properly formatted with scheme (https://)</p></li>
+</ul>
+</section>
+</section>
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="cli_reference.html"><span class="doc">Command-Line Interface Reference</span></a> - Full CLI command reference (includes <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">list</span></code>)</p></li>
+<li><p><a class="reference internal" href="migrations.html"><span class="doc">Database Migrations</span></a> - Database schema management</p></li>
+<li><p><a class="reference internal" href="../dev_guide/database.html"><span class="doc">NexusLIMS Database</span></a> - Database schema documentation</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="record_building.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Record building workflow</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="migrations.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Database Migrations</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#launching-the-tui">Launching the TUI</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#main-interface">Main Interface</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#navigation">Navigation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sorting">Sorting</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#filtering">Filtering</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-instruments">Adding Instruments</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#form-validation">Form Validation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keybindings">Keybindings</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#editing-instruments">Editing Instruments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deleting-instruments">Deleting Instruments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#theme-switching">Theme Switching</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#help-screen">Help Screen</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#keybindings-reference">Keybindings Reference</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#command-line-options">Command-Line Options</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#database-initialization">Database Initialization</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#database-connection-errors">Database Connection Errors</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validation-errors">Validation Errors</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#see-also">See Also</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/user_guide/instrument_manager.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

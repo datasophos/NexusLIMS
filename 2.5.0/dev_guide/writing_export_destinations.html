@@ -1,0 +1,1249 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Writing Export Destination Plugins &#8212; NexusLIMS 2.5.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=3c4615cf"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'dev_guide/writing_export_destinations';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.5.0';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/custom.js?v=ba087cdf"></script>
+    <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Instrument Profiles" href="instrument_profiles.html" />
+    <link rel="prev" title="Writing Extractor Plugins" href="writing_extractor_plugins.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.5.0" />
+    <meta name="docbuild:last-update" content="Feb, 19, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.5.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.5.0 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing_extractor_plugins.html">Writing Extractor Plugins</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Writing Export Destination Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="instrument_profiles.html">Instrument Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nexuslims_internal_schema.html">Internal Metadata Schema System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="em_glossary_reference.html">EM Glossary Field Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uv_migration.html">Migration from Poetry to uv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">NexusLIMS Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schema_documentation.html">XML Schema Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing/integration-tests.html">Integration Testing Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/textual_testing_reference.html">Textual Testing Reference</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../dev_guide.html" class="nav-link">Dev Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Writing Export Destination Plugins</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="writing-export-destination-plugins">
+<h1>Writing Export Destination Plugins<a class="headerlink" href="#writing-export-destination-plugins" title="Link to this heading">#</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.4.0.</span></p>
+</div>
+<p>This guide explains how to create custom export destination plugins for the NexusLIMS multi-destination export framework.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>Export destinations are plugins that receive built NexusLIMS XML records and export them to external repository systems (CDCS, LabArchives, eLabFTW, etc.). The framework uses protocol-based typing for automatic plugin discovery—no inheritance or registration required.</p>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Create a Python file in <code class="docutils literal notranslate"><span class="pre">nexusLIMS/exporters/destinations/</span></code></p></li>
+<li><p>Define a class matching the <code class="docutils literal notranslate"><span class="pre">ExportDestination</span></code> protocol</p></li>
+<li><p>The plugin will be auto-discovered when the exporters package is imported</p></li>
+</ol>
+</section>
+<section id="protocol-requirements">
+<h2>Protocol Requirements<a class="headerlink" href="#protocol-requirements" title="Link to this heading">#</a></h2>
+<p>Your export destination class must implement the <code class="docutils literal notranslate"><span class="pre">ExportDestination</span></code> protocol:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.exporters.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExportContext</span><span class="p">,</span> <span class="n">ExportResult</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDestination</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;My custom export destination.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Required class attributes</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_destination&quot;</span>  <span class="c1"># Unique identifier</span>
+    <span class="n">priority</span> <span class="o">=</span> <span class="mi">80</span>  <span class="c1"># Export priority (0-1000, higher runs first)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if this destination is configured and ready.&quot;&quot;&quot;</span>
+        <span class="c1"># Check if required configuration is present</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate configuration at startup.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple[bool, str | None]</span>
+<span class="sd">            (is_valid, error_message)</span>
+<span class="sd">            - is_valid: True if configuration is valid</span>
+<span class="sd">            - error_message: None if valid, descriptive error if invalid</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExportContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExportResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export record to this destination.</span>
+
+<span class="sd">        CRITICAL: Must never raise exceptions. All errors must be caught</span>
+<span class="sd">        and returned as ExportResult with success=False.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        context : ExportContext</span>
+<span class="sd">            Contains xml_file_path, session_identifier, instrument_pid,</span>
+<span class="sd">            dt_from, dt_to, user, and previous_results from other destinations</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ExportResult</span>
+<span class="sd">            Result of the export attempt (success or failure)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<section id="required-attributes">
+<h3>Required Attributes<a class="headerlink" href="#required-attributes" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">name</span></code></strong> (str): Unique identifier for this destination (lowercase, alphanumeric + underscores)</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">priority</span></code></strong> (int): Export priority (0-1000). Higher priority destinations run first. Use this to manage inter-destination dependencies.</p></li>
+</ul>
+</section>
+<section id="required-methods">
+<h3>Required Methods<a class="headerlink" href="#required-methods" title="Link to this heading">#</a></h3>
+<section id="enabled-property">
+<h4><code class="docutils literal notranslate"><span class="pre">enabled</span></code> property<a class="headerlink" href="#enabled-property" title="Link to this heading">#</a></h4>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">bool</span></code> indicating whether the destination is configured and ready to use. Typically checks for required environment variables (API keys, URLs, etc.).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">hasattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s1">&#39;MY_API_KEY&#39;</span><span class="p">)</span> <span class="ow">and</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">MY_API_KEY</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="validate-config-method">
+<h4><code class="docutils literal notranslate"><span class="pre">validate_config()</span></code> method<a class="headerlink" href="#validate-config-method" title="Link to this heading">#</a></h4>
+<p>Performs startup-time configuration validation. Called during initialization to provide detailed error feedback. Should test authentication, connectivity, etc.</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">(is_valid,</span> <span class="pre">error_message)</span></code> tuple.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s1">&#39;MY_API_KEY&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;MY_API_KEY not configured&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">MY_API_KEY</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;MY_API_KEY is empty&quot;</span>
+
+    <span class="c1"># Test authentication</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_test_connection</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Connection test failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="export-method">
+<h4><code class="docutils literal notranslate"><span class="pre">export()</span></code> method<a class="headerlink" href="#export-method" title="Link to this heading">#</a></h4>
+<p>Performs the actual export. <strong>Must never raise exceptions</strong>—all errors must be caught and returned as <code class="docutils literal notranslate"><span class="pre">ExportResult</span></code> with <code class="docutils literal notranslate"><span class="pre">success=False</span></code> and <code class="docutils literal notranslate"><span class="pre">error_message</span></code> set.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExportContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExportResult</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Read XML content</span>
+        <span class="k">with</span> <span class="n">context</span><span class="o">.</span><span class="n">xml_file_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">xml_content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="c1"># Upload to destination</span>
+        <span class="n">record_id</span><span class="p">,</span> <span class="n">record_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upload</span><span class="p">(</span><span class="n">xml_content</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ExportResult</span><span class="p">(</span>
+            <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">destination_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">record_id</span><span class="o">=</span><span class="n">record_id</span><span class="p">,</span>
+            <span class="n">record_url</span><span class="o">=</span><span class="n">record_url</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to export to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">xml_file_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ExportResult</span><span class="p">(</span>
+            <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">destination_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">error_message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="configuration-patterns">
+<h2>Configuration Patterns<a class="headerlink" href="#configuration-patterns" title="Link to this heading">#</a></h2>
+<section id="reading-configuration">
+<h3>Reading Configuration<a class="headerlink" href="#reading-configuration" title="Link to this heading">#</a></h3>
+<p>Always use the <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code> module, never <code class="docutils literal notranslate"><span class="pre">os.getenv()</span></code> directly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+
+<span class="c1"># Good</span>
+<span class="n">api_key</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">MY_API_KEY</span>
+
+<span class="c1"># Bad - do not use</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;MY_API_KEY&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="adding-new-configuration-variables">
+<h3>Adding New Configuration Variables<a class="headerlink" href="#adding-new-configuration-variables" title="Link to this heading">#</a></h3>
+<p>Add new environment variables to <code class="docutils literal notranslate"><span class="pre">nexusLIMS/config.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Settings</span><span class="p">(</span><span class="n">BaseSettings</span><span class="p">):</span>
+    <span class="c1"># ... existing fields ...</span>
+
+    <span class="n">MY_DESTINATION_API_KEY</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;API key for MyDestination service&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">MY_DESTINATION_URL</span><span class="p">:</span> <span class="n">AnyHttpUrl</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Base URL for MyDestination API&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>Document the new variables in <code class="docutils literal notranslate"><span class="pre">.env.example</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># MyDestination Configuration</span>
+<span class="nv">MY_DESTINATION_API_KEY</span><span class="o">=</span>your_api_key_here
+<span class="nv">MY_DESTINATION_URL</span><span class="o">=</span>https://api.mydestination.com
+</pre></div>
+</div>
+</section>
+<section id="optional-vs-required-configuration">
+<h3>Optional vs Required Configuration<a class="headerlink" href="#optional-vs-required-configuration" title="Link to this heading">#</a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">Field(None,</span> <span class="pre">...)</span></code> for optional configuration (destination won’t be enabled if missing). Use <code class="docutils literal notranslate"><span class="pre">Field(...,</span> <span class="pre">...)</span></code> for required configuration (will cause validation error if missing—only use this if the variable is needed for NexusLIMS core functionality).</p>
+</section>
+</section>
+<section id="error-handling">
+<h2>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading">#</a></h2>
+<section id="never-raise-exceptions-from-export">
+<h3>Never Raise Exceptions from <code class="docutils literal notranslate"><span class="pre">export()</span></code><a class="headerlink" href="#never-raise-exceptions-from-export" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">export()</span></code> method is called in a loop across all destinations. If it raises an exception, it will break the entire export process. <strong>Always catch exceptions and return ExportResult</strong>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExportContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExportResult</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Do export work</span>
+        <span class="o">...</span>
+        <span class="k">return</span> <span class="n">ExportResult</span><span class="p">(</span><span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">SpecificError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># Log specific errors at appropriate level</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Specific error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ExportResult</span><span class="p">(</span><span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="o">...</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># Catch-all for unexpected errors</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected error in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ExportResult</span><span class="p">(</span><span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="logging-best-practices">
+<h3>Logging Best Practices<a class="headerlink" href="#logging-best-practices" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">_logger.info()</span></code> for successful exports</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">_logger.warning()</span></code> for expected errors (e.g., network timeout, invalid credentials)</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">_logger.exception()</span></code> for unexpected errors (includes traceback)</p></li>
+<li><p>Include context in log messages (file name, session identifier, etc.)</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExportContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExportResult</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># ... export logic ...</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Successfully exported </span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">xml_file_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">record_url</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ExportResult</span><span class="p">(</span><span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Failed to export </span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">xml_file_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ExportResult</span><span class="p">(</span><span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">error_message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="inter-destination-dependencies">
+<span id="id1"></span><h2>Inter-Destination Dependencies<a class="headerlink" href="#inter-destination-dependencies" title="Link to this heading">#</a></h2>
+<p>Destinations may depend on results from other destinations (e.g., LabArchives including a CDCS link). Handle this using priority ordering and <code class="docutils literal notranslate"><span class="pre">context.previous_results</span></code>.</p>
+<section id="how-it-works">
+<h3>How It Works<a class="headerlink" href="#how-it-works" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Priority ordering</strong>: Destinations run in priority order (highest first)</p></li>
+<li><p><strong>Result accumulation</strong>: Each destination’s result is added to <code class="docutils literal notranslate"><span class="pre">context.previous_results</span></code> before the next destination runs</p></li>
+<li><p><strong>Access previous results</strong>: Lower-priority destinations can access results from higher-priority destinations</p></li>
+</ol>
+</section>
+<section id="priority-management">
+<h3>Priority Management<a class="headerlink" href="#priority-management" title="Link to this heading">#</a></h3>
+<p>If destination A needs data from destination B, give B a <strong>higher priority</strong>:</p>
+<ul class="simple">
+<li><p>CDCS: priority 100 (runs FIRST)</p></li>
+<li><p>LabArchives: priority 90 (runs SECOND, can see CDCS result)</p></li>
+<li><p>eLabFTW: priority 85 (runs THIRD, can see both CDCS and LabArchives)</p></li>
+<li><p>LocalArchive: priority 80 (runs LAST, can see all others)</p></li>
+</ul>
+</section>
+<section id="accessing-previous-results">
+<h3>Accessing Previous Results<a class="headerlink" href="#accessing-previous-results" title="Link to this heading">#</a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">context.get_result(destination_name)</span></code> or <code class="docutils literal notranslate"><span class="pre">context.has_successful_export(destination_name)</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LabArchivesDestination</span><span class="p">:</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;labarchives&quot;</span>
+    <span class="n">priority</span> <span class="o">=</span> <span class="mi">90</span>  <span class="c1"># Lower than CDCS (100), so runs AFTER CDCS</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExportContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExportResult</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Build base content</span>
+            <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_entry</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+            <span class="c1"># Check if CDCS export succeeded and include link</span>
+            <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">has_successful_export</span><span class="p">(</span><span class="s2">&quot;cdcs&quot;</span><span class="p">):</span>
+                <span class="n">cdcs_result</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_result</span><span class="p">(</span><span class="s2">&quot;cdcs&quot;</span><span class="p">)</span>
+                <span class="n">content</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;&lt;p&gt;CDCS Record: &lt;a href=&#39;</span><span class="si">{</span><span class="n">cdcs_result</span><span class="o">.</span><span class="n">record_url</span><span class="si">}</span><span class="s2">&#39;&gt;</span><span class="si">{</span><span class="n">cdcs_result</span><span class="o">.</span><span class="n">record_id</span><span class="si">}</span><span class="s2">&lt;/a&gt;&lt;/p&gt;&quot;</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Including CDCS link in LabArchives: </span><span class="si">{</span><span class="n">cdcs_result</span><span class="o">.</span><span class="n">record_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CDCS export did not succeed, skipping link in LabArchives&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Upload to LabArchives</span>
+            <span class="n">notebook_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upload</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">ExportResult</span><span class="p">(</span>
+                <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">destination_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">record_id</span><span class="o">=</span><span class="n">notebook_id</span><span class="p">,</span>
+                <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;included_cdcs_link&quot;</span><span class="p">:</span> <span class="n">context</span><span class="o">.</span><span class="n">has_successful_export</span><span class="p">(</span><span class="s2">&quot;cdcs&quot;</span><span class="p">)},</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+<section id="graceful-degradation">
+<h3>Graceful Degradation<a class="headerlink" href="#graceful-degradation" title="Link to this heading">#</a></h3>
+<p>Dependencies should be <strong>optional</strong>. If the dependency failed, gracefully degrade rather than failing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">has_successful_export</span><span class="p">(</span><span class="s2">&quot;cdcs&quot;</span><span class="p">):</span>
+    <span class="c1"># Include enhanced content with CDCS link</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="n">cdcs_link_section</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># Still complete export, just without CDCS link</span>
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;CDCS not available, proceeding without link&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="available-result-fields">
+<h3>Available Result Fields<a class="headerlink" href="#available-result-fields" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">ExportResult</span></code> object includes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">record_id</span></code>: Destination-specific record identifier (str)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">record_url</span></code>: Direct URL to view the record (str)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metadata</span></code>: Custom metadata dict with destination-specific details (dict)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">success</span></code>: Whether the export succeeded (bool)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timestamp</span></code>: When the export occurred (datetime)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">error_message</span></code>: Error message if failed (str | None)</p></li>
+</ul>
+</section>
+<section id="best-practices">
+<h3>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Document dependencies</strong>: Add a docstring comment noting priority requirements</p></li>
+<li><p><strong>Optional dependencies</strong>: Always handle the case where the dependency failed</p></li>
+<li><p><strong>Log decisions</strong>: Log when including/excluding dependent content</p></li>
+<li><p><strong>Use metadata</strong>: Track what was included in the <code class="docutils literal notranslate"><span class="pre">metadata</span></code> field for debugging</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LabArchivesDestination</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;LabArchives ELN export destination.</span>
+
+<span class="sd">    Priority: 90 (must run after CDCS at priority 100 to include CDCS links)</span>
+
+<span class="sd">    Dependencies:</span>
+<span class="sd">    - CDCS (optional): Includes CDCS record link if available</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;labarchives&quot;</span>
+    <span class="n">priority</span> <span class="o">=</span> <span class="mi">90</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="testing-strategies">
+<h2>Testing Strategies<a class="headerlink" href="#testing-strategies" title="Link to this heading">#</a></h2>
+<section id="unit-tests">
+<h3>Unit Tests<a class="headerlink" href="#unit-tests" title="Link to this heading">#</a></h3>
+<p>Test your destination in isolation using mocks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># tests/unit/test_exporters/test_my_destination.py</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">unittest.mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mock</span><span class="p">,</span> <span class="n">patch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.exporters.destinations.my_destination</span><span class="w"> </span><span class="kn">import</span> <span class="n">MyDestination</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.exporters.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExportContext</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mock_config</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s2">&quot;nexusLIMS.exporters.destinations.my_destination.config&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_cfg</span><span class="p">:</span>
+        <span class="n">mock_cfg</span><span class="o">.</span><span class="n">MY_API_KEY</span> <span class="o">=</span> <span class="s2">&quot;test_key&quot;</span>
+        <span class="n">mock_cfg</span><span class="o">.</span><span class="n">MY_API_URL</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:8000&quot;</span>
+        <span class="k">yield</span> <span class="n">mock_cfg</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_enabled_with_config</span><span class="p">(</span><span class="n">mock_config</span><span class="p">):</span>
+    <span class="n">dest</span> <span class="o">=</span> <span class="n">MyDestination</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">dest</span><span class="o">.</span><span class="n">enabled</span> <span class="ow">is</span> <span class="kc">True</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_enabled_without_config</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s2">&quot;nexusLIMS.exporters.destinations.my_destination.config&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_cfg</span><span class="p">:</span>
+        <span class="n">mock_cfg</span><span class="o">.</span><span class="n">MY_API_KEY</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">dest</span> <span class="o">=</span> <span class="n">MyDestination</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="n">dest</span><span class="o">.</span><span class="n">enabled</span> <span class="ow">is</span> <span class="kc">False</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_export_success</span><span class="p">(</span><span class="n">mock_config</span><span class="p">,</span> <span class="n">tmp_path</span><span class="p">):</span>
+    <span class="c1"># Create test XML file</span>
+    <span class="n">xml_file</span> <span class="o">=</span> <span class="n">tmp_path</span> <span class="o">/</span> <span class="s2">&quot;test_record.xml&quot;</span>
+    <span class="n">xml_file</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">&quot;&lt;record&gt;test&lt;/record&gt;&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Create export context</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">ExportContext</span><span class="p">(</span>
+        <span class="n">xml_file_path</span><span class="o">=</span><span class="n">xml_file</span><span class="p">,</span>
+        <span class="n">session_identifier</span><span class="o">=</span><span class="s2">&quot;test-session-123&quot;</span><span class="p">,</span>
+        <span class="n">instrument_pid</span><span class="o">=</span><span class="s2">&quot;test-instrument&quot;</span><span class="p">,</span>
+        <span class="n">dt_from</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="n">dt_to</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Mock API calls</span>
+    <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s2">&quot;nexusLIMS.exporters.destinations.my_destination.nexus_req&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_req</span><span class="p">:</span>
+        <span class="n">mock_req</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">201</span>
+        <span class="n">mock_req</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">json</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;record-123&quot;</span><span class="p">}</span>
+
+        <span class="n">dest</span> <span class="o">=</span> <span class="n">MyDestination</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">dest</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span> <span class="ow">is</span> <span class="kc">True</span>
+        <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">record_id</span> <span class="o">==</span> <span class="s2">&quot;record-123&quot;</span>
+        <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">error_message</span> <span class="ow">is</span> <span class="kc">None</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_export_failure</span><span class="p">(</span><span class="n">mock_config</span><span class="p">,</span> <span class="n">tmp_path</span><span class="p">):</span>
+    <span class="n">xml_file</span> <span class="o">=</span> <span class="n">tmp_path</span> <span class="o">/</span> <span class="s2">&quot;test_record.xml&quot;</span>
+    <span class="n">xml_file</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">&quot;&lt;record&gt;test&lt;/record&gt;&quot;</span><span class="p">)</span>
+
+    <span class="n">context</span> <span class="o">=</span> <span class="n">ExportContext</span><span class="p">(</span>
+        <span class="n">xml_file_path</span><span class="o">=</span><span class="n">xml_file</span><span class="p">,</span>
+        <span class="n">session_identifier</span><span class="o">=</span><span class="s2">&quot;test-session-123&quot;</span><span class="p">,</span>
+        <span class="n">instrument_pid</span><span class="o">=</span><span class="s2">&quot;test-instrument&quot;</span><span class="p">,</span>
+        <span class="n">dt_from</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="n">dt_to</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Mock API failure</span>
+    <span class="k">with</span> <span class="n">patch</span><span class="p">(</span><span class="s2">&quot;nexusLIMS.exporters.destinations.my_destination.nexus_req&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mock_req</span><span class="p">:</span>
+        <span class="n">mock_req</span><span class="o">.</span><span class="n">side_effect</span> <span class="o">=</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Connection failed&quot;</span><span class="p">)</span>
+
+        <span class="n">dest</span> <span class="o">=</span> <span class="n">MyDestination</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">dest</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+        <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span> <span class="ow">is</span> <span class="kc">False</span>
+        <span class="k">assert</span> <span class="s2">&quot;Connection failed&quot;</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">error_message</span>
+</pre></div>
+</div>
+</section>
+<section id="integration-tests">
+<h3>Integration Tests<a class="headerlink" href="#integration-tests" title="Link to this heading">#</a></h3>
+<p>Test with a real or mock destination server:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># tests/integration/test_my_destination_integration.py</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.exporters</span><span class="w"> </span><span class="kn">import</span> <span class="n">export_records</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.exporters.destinations.my_destination</span><span class="w"> </span><span class="kn">import</span> <span class="n">MyDestination</span>
+
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">integration</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_full_export_workflow</span><span class="p">(</span><span class="n">db_session</span><span class="p">,</span> <span class="n">sample_session</span><span class="p">,</span> <span class="n">sample_xml_file</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test complete export workflow with MyDestination.&quot;&quot;&quot;</span>
+    <span class="c1"># Ensure destination is enabled</span>
+    <span class="n">dest</span> <span class="o">=</span> <span class="n">MyDestination</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">dest</span><span class="o">.</span><span class="n">enabled</span> <span class="ow">is</span> <span class="kc">True</span>
+
+    <span class="c1"># Export record</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">export_records</span><span class="p">([</span><span class="n">sample_xml_file</span><span class="p">],</span> <span class="p">[</span><span class="n">sample_session</span><span class="p">])</span>
+
+    <span class="c1"># Verify results</span>
+    <span class="k">assert</span> <span class="n">sample_xml_file</span> <span class="ow">in</span> <span class="n">results</span>
+    <span class="n">my_dest_results</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="n">sample_xml_file</span><span class="p">]</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">destination_name</span> <span class="o">==</span> <span class="s2">&quot;my_destination&quot;</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">my_dest_results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">assert</span> <span class="n">my_dest_results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">success</span> <span class="ow">is</span> <span class="kc">True</span>
+
+    <span class="c1"># Verify upload_log entry</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">UploadLog</span>
+    <span class="n">logs</span> <span class="o">=</span> <span class="n">db_session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">UploadLog</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span>
+        <span class="n">session_identifier</span><span class="o">=</span><span class="n">sample_session</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>
+        <span class="n">destination_name</span><span class="o">=</span><span class="s2">&quot;my_destination&quot;</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">assert</span> <span class="n">logs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">success</span> <span class="ow">is</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+<section id="test-dependencies">
+<h3>Test Dependencies<a class="headerlink" href="#test-dependencies" title="Link to this heading">#</a></h3>
+<p>Test inter-destination dependencies:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">test_dependency_on_cdcs</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Test that LabArchives correctly handles CDCS dependency.&quot;&quot;&quot;</span>
+    <span class="n">xml_file</span> <span class="o">=</span> <span class="n">tmp_path</span> <span class="o">/</span> <span class="s2">&quot;test.xml&quot;</span>
+    <span class="n">xml_file</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="s2">&quot;&lt;record&gt;test&lt;/record&gt;&quot;</span><span class="p">)</span>
+
+    <span class="n">context</span> <span class="o">=</span> <span class="n">ExportContext</span><span class="p">(</span>
+        <span class="n">xml_file_path</span><span class="o">=</span><span class="n">xml_file</span><span class="p">,</span>
+        <span class="n">session_identifier</span><span class="o">=</span><span class="s2">&quot;test-123&quot;</span><span class="p">,</span>
+        <span class="n">instrument_pid</span><span class="o">=</span><span class="s2">&quot;test-instrument&quot;</span><span class="p">,</span>
+        <span class="n">dt_from</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="n">dt_to</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Simulate CDCS result</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.exporters.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExportResult</span>
+    <span class="n">cdcs_result</span> <span class="o">=</span> <span class="n">ExportResult</span><span class="p">(</span>
+        <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">destination_name</span><span class="o">=</span><span class="s2">&quot;cdcs&quot;</span><span class="p">,</span>
+        <span class="n">record_id</span><span class="o">=</span><span class="s2">&quot;cdcs-456&quot;</span><span class="p">,</span>
+        <span class="n">record_url</span><span class="o">=</span><span class="s2">&quot;http://cdcs.example.com/data?id=cdcs-456&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">context</span><span class="o">.</span><span class="n">previous_results</span><span class="p">[</span><span class="s2">&quot;cdcs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cdcs_result</span>
+
+    <span class="c1"># Export to LabArchives</span>
+    <span class="n">dest</span> <span class="o">=</span> <span class="n">LabArchivesDestination</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">dest</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">success</span> <span class="ow">is</span> <span class="kc">True</span>
+    <span class="k">assert</span> <span class="n">result</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;included_cdcs_link&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="example-implementation">
+<h2>Example Implementation<a class="headerlink" href="#example-implementation" title="Link to this heading">#</a></h2>
+<p>Here’s a complete example implementing a simple local file archive destination:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># nexusLIMS/exporters/destinations/local_archive.py</span>
+
+<span class="sd">&quot;&quot;&quot;Local file archive export destination.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.exporters.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExportContext</span><span class="p">,</span> <span class="n">ExportResult</span>
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">LocalArchiveDestination</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Local filesystem archive export destination.</span>
+
+<span class="sd">    Copies exported records to a local directory for archival purposes.</span>
+<span class="sd">    Priority: 50 (runs after primary destinations like CDCS)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;local_archive&quot;</span>
+    <span class="n">priority</span> <span class="o">=</span> <span class="mi">50</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if local archive directory is configured.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="nb">hasattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;NX_LOCAL_ARCHIVE_PATH&quot;</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">NX_LOCAL_ARCHIVE_PATH</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate that archive directory exists and is writable.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="s2">&quot;NX_LOCAL_ARCHIVE_PATH&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;NX_LOCAL_ARCHIVE_PATH not configured&quot;</span>
+
+        <span class="n">archive_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">NX_LOCAL_ARCHIVE_PATH</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">archive_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Archive directory does not exist: </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">archive_path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Archive path is not a directory: </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="c1"># Test write permissions</span>
+        <span class="n">test_file</span> <span class="o">=</span> <span class="n">archive_path</span> <span class="o">/</span> <span class="s2">&quot;.write_test&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">test_file</span><span class="o">.</span><span class="n">touch</span><span class="p">()</span>
+            <span class="n">test_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Archive directory is not writable: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExportContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExportResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Copy XML file to archive directory.</span>
+
+<span class="sd">        File will be named: YYYY-MM-DD_INSTRUMENT_SESSION.xml</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Build archive filename</span>
+            <span class="n">archive_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">NX_LOCAL_ARCHIVE_PATH</span><span class="p">)</span>
+            <span class="n">archive_filename</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">dt_from</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">_&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">instrument_pid</span><span class="si">}</span><span class="s2">_&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">session_identifier</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">.xml&quot;</span>
+            <span class="p">)</span>
+            <span class="n">archive_path</span> <span class="o">=</span> <span class="n">archive_dir</span> <span class="o">/</span> <span class="n">archive_filename</span>
+
+            <span class="c1"># Copy file to archive</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">xml_file_path</span><span class="p">,</span> <span class="n">archive_path</span><span class="p">)</span>
+
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Archived </span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">xml_file_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">archive_path</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">ExportResult</span><span class="p">(</span>
+                <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">destination_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">record_id</span><span class="o">=</span><span class="n">archive_filename</span><span class="p">,</span>
+                <span class="n">record_url</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;file://</span><span class="si">{</span><span class="n">archive_path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;archive_path&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">archive_path</span><span class="p">)},</span>
+            <span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Failed to archive </span><span class="si">{</span><span class="n">context</span><span class="o">.</span><span class="n">xml_file_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> to local filesystem&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">ExportResult</span><span class="p">(</span>
+                <span class="n">success</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">destination_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">error_message</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span>
+            <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="summary-checklist">
+<h2>Summary Checklist<a class="headerlink" href="#summary-checklist" title="Link to this heading">#</a></h2>
+<p>When creating a new export destination, ensure you:</p>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Create a class matching the <code class="docutils literal notranslate"><span class="pre">ExportDestination</span></code> protocol</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Set <code class="docutils literal notranslate"><span class="pre">name</span></code> and <code class="docutils literal notranslate"><span class="pre">priority</span></code> class attributes</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Implement <code class="docutils literal notranslate"><span class="pre">enabled</span></code> property to check configuration</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Implement <code class="docutils literal notranslate"><span class="pre">validate_config()</span></code> for startup validation</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Implement <code class="docutils literal notranslate"><span class="pre">export()</span></code> that never raises exceptions</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Use <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code> for all configuration access</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Add new config variables to <code class="docutils literal notranslate"><span class="pre">nexusLIMS/config.py</span></code></p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Document new config variables in <code class="docutils literal notranslate"><span class="pre">.env.example</span></code></p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Handle errors gracefully with appropriate logging</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Consider inter-destination dependencies (use priority)</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Write unit tests for your destination</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Test integration with the full export workflow</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Document any special requirements or dependencies</p></li>
+</ul>
+<p>For more examples, see the CDCS destination implementation at <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.exporters.destinations.cdcs.html#module-nexusLIMS.exporters.destinations.cdcs" title="nexusLIMS.exporters.destinations.cdcs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters.destinations.cdcs</span></code></a>.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="writing_extractor_plugins.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Writing Extractor Plugins</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="instrument_profiles.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Instrument Profiles</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#protocol-requirements">Protocol Requirements</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#required-attributes">Required Attributes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#required-methods">Required Methods</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#enabled-property"><code class="docutils literal notranslate"><span class="pre">enabled</span></code> property</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#validate-config-method"><code class="docutils literal notranslate"><span class="pre">validate_config()</span></code> method</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#export-method"><code class="docutils literal notranslate"><span class="pre">export()</span></code> method</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-patterns">Configuration Patterns</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reading-configuration">Reading Configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-new-configuration-variables">Adding New Configuration Variables</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-vs-required-configuration">Optional vs Required Configuration</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#error-handling">Error Handling</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#never-raise-exceptions-from-export">Never Raise Exceptions from <code class="docutils literal notranslate"><span class="pre">export()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#logging-best-practices">Logging Best Practices</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inter-destination-dependencies">Inter-Destination Dependencies</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-it-works">How It Works</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#priority-management">Priority Management</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-previous-results">Accessing Previous Results</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#graceful-degradation">Graceful Degradation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#available-result-fields">Available Result Fields</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#best-practices">Best Practices</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-strategies">Testing Strategies</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unit-tests">Unit Tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#integration-tests">Integration Tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-dependencies">Test Dependencies</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-implementation">Example Implementation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-checklist">Summary Checklist</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/dev_guide/writing_export_destinations.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

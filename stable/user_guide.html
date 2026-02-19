@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>User Guide &#8212; NexusLIMS 2.4.1 documentation</title>
+    <title>User Guide &#8212; NexusLIMS 2.5.0 documentation</title>
   
   
   
@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css?v=a0a71c94" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=acda69ee" />
@@ -42,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=e9ebdb8f"></script>
+    <script src="_static/documentation_options.js?v=3c4615cf"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.4.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.5.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -64,8 +65,8 @@
     <link rel="prev" title="NexusLIMS" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.4.1" />
-    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
+  <meta name="docsearch:version" content="2.5.0" />
+    <meta name="docbuild:last-update" content="Feb, 19, 2026"/>
   </head>
   
   
@@ -131,8 +132,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.4.1 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.4.1 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.5.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.5.0 documentation - Home"/>
   
   
 </a></div>
@@ -182,7 +183,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="migration.html">
+  <a class="nav-link nav-internal" href="migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -321,7 +322,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="migration.html">
+  <a class="nav-link nav-internal" href="migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -411,9 +412,13 @@
   <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="user_guide/getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/record_building.html">Record building workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/cli_reference.html">Command-Line Interface Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/record_building.html">Record building workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/instrument_manager.html">Instrument Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/migrations.html">Database Migrations</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="user_guide/extractors.html">Extractors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/standalone_extractor_usage.html">Standalone Extractor Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/exporters.html">Export Destinations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/taxonomy.html">NexusLIMS Taxonomy</a></li>
 </ul>
@@ -476,6 +481,11 @@
   <section id="user-guide">
 <span id="id1"></span><h1>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading">#</a></h1>
 <p>Welcome to the NexusLIMS User Guide! This guide helps you understand how NexusLIMS works, what to expect from the system, and how to interact with your experimental records.</p>
+<div class="tip admonition">
+<p class="admonition-title">Want to jump right in?</p>
+<p>See the <a class="reference internal" href="user_guide/getting_started.html#getting-started"><span class="std std-ref">Getting Started</span></a> page for quick-start
+installation and configuration instructions.</p>
+</div>
 <section id="about-this-guide">
 <h2>About This Guide<a class="headerlink" href="#about-this-guide" title="Link to this heading">#</a></h2>
 <p>This user guide is for:</p>
@@ -487,6 +497,30 @@
 <p><strong>For developers</strong> extending NexusLIMS with new extractors or profiles, see the <a class="reference internal" href="dev_guide.html"><span class="std std-doc">Developer Guide</span></a>.</p>
 </section>
 <hr class="docutils" />
+<section id="what-is-nexuslims">
+<h2>What is NexusLIMS?<a class="headerlink" href="#what-is-nexuslims" title="Link to this heading">#</a></h2>
+<p>NexusLIMS is an electron microscopy Laboratory Information Management System (LIMS) that automatically generates experimental records by:</p>
+<ul class="simple">
+<li><p>Extracting metadata from microscopy data files</p></li>
+<li><p>Harvesting information from reservation calendar systems (like <a class="reference external" href="https://github.com/usnistgov/NEMO">NEMO</a>)</p></li>
+<li><p>Building structured XML records conforming to the <a class="reference external" href="https://doi.org/10.18434/M32245">Nexus Experiment schema</a></p></li>
+<li><p>Uploading records to a <a class="reference external" href="https://github.com/datasophos/nexuslims-cdcs/">CDCS</a> (Configurable Data Curation System) frontend</p></li>
+</ul>
+<p>Originally developed at NIST, NexusLIMS is now maintained by <a class="reference external" href="https://datasophos.co">datasophos</a>.</p>
+<section id="key-features">
+<h3>Key Features<a class="headerlink" href="#key-features" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Automatic Record Generation</strong>: Creates comprehensive experimental records without manual data entry</p></li>
+<li><p><strong>Multiple File Format Support</strong>: Reads metadata from <code class="docutils literal notranslate"><span class="pre">.dm3/.dm4</span></code>, <code class="docutils literal notranslate"><span class="pre">.tif</span></code>, <code class="docutils literal notranslate"><span class="pre">.ser/.emi</span></code>, <code class="docutils literal notranslate"><span class="pre">.spc/.msa</span></code> files</p></li>
+<li><p><strong>Standardized Metadata</strong> <em>(New in v2.2.0)</em>: Uses EM Glossary ontology for field names and units</p></li>
+<li><p><strong>Schema Validation</strong> <em>(New in v2.2.0)</em>: Pydantic schemas ensure metadata quality before record building</p></li>
+<li><p><strong>Calendar Integration</strong>: Connects with NEMO lab management systems</p></li>
+<li><p><strong>Temporal File Clustering</strong>: Intelligently groups files into acquisition activities using KDE</p></li>
+<li><p><strong>CDCS Integration</strong>: Publishes records to web-accessible data repositories</p></li>
+<li><p><strong>Extensible Architecture</strong>: Plugin-based extractors and instrument profiles for customization</p></li>
+</ul>
+</section>
+</section>
 <section id="understanding-nexuslims-records">
 <h2>Understanding NexusLIMS Records<a class="headerlink" href="#understanding-nexuslims-records" title="Link to this heading">#</a></h2>
 <p>NexusLIMS automatically creates <strong>experimental records</strong> that document your microscopy sessions. Each record is a structured XML document that captures:</p>
@@ -676,9 +710,13 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/record_building.html">Record building workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/cli_reference.html">Command-Line Interface Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/record_building.html">Record building workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/instrument_manager.html">Instrument Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/migrations.html">Database Migrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/migrations.html#nexuslims-database-migrations">NexusLIMS Database Migrations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/extractors.html">Extractors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/standalone_extractor_usage.html">Standalone Extractor Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/exporters.html">Export Destinations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/taxonomy.html">NexusLIMS Taxonomy</a></li>
 </ul>
@@ -766,6 +804,10 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#about-this-guide">About This Guide</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-nexuslims">What is NexusLIMS?</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-features">Key Features</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-nexuslims-records">Understanding NexusLIMS Records</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#record-structure">Record Structure</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-record">Example Record</a></li>

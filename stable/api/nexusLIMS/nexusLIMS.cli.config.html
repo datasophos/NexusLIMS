@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS.cli.config &#8212; NexusLIMS 2.4.1 documentation</title>
+    <title>nexusLIMS.cli.config &#8212; NexusLIMS 2.5.0 documentation</title>
   
   
   
@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css?v=a0a71c94" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=acda69ee" />
@@ -42,7 +43,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../../_static/documentation_options.js?v=e9ebdb8f"></script>
+    <script src="../../_static/documentation_options.js?v=3c4615cf"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.4.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.5.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -60,12 +61,12 @@
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="nexusLIMS.harvesters" href="nexusLIMS.harvesters.html" />
+    <link rel="next" title="nexusLIMS.cli.manage_instruments" href="nexusLIMS.cli.manage_instruments.html" />
     <link rel="prev" title="nexusLIMS.cli.process_records" href="nexusLIMS.cli.process_records.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.4.1" />
-    <meta name="docbuild:last-update" content="Feb, 07, 2026"/>
+  <meta name="docsearch:version" content="2.5.0" />
+    <meta name="docbuild:last-update" content="Feb, 19, 2026"/>
   </head>
   
   
@@ -131,8 +132,8 @@
       
     
     
-    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.4.1 documentation - Home"/>
-    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.4.1 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.5.0 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.5.0 documentation - Home"/>
   
   
 </a></div>
@@ -182,7 +183,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
+  <a class="nav-link nav-internal" href="../../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -321,7 +322,7 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration.html">
+  <a class="nav-link nav-internal" href="../../migration_guide.html">
     Migration Guide
   </a>
 </li>
@@ -412,20 +413,24 @@
 <li class="toctree-l1"><a class="reference internal" href="../../reference/changelog.html">Changelog</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">NexusLIMS API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.main.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.main</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.process_records.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.process_records</span></code></a></li>
 <li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.manage_instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.manage_instruments</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.migrate.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.migrate</span></code></a></li>
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.harvesters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.tui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.exporters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
 </ul>
 </details></li>
 </ul>
@@ -504,23 +509,24 @@
   <section id="module-nexusLIMS.cli.config">
 <span id="nexuslims-cli-config"></span><h1><a class="reference internal" href="#module-nexusLIMS.cli.config" title="nexusLIMS.cli.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a><a class="headerlink" href="#module-nexusLIMS.cli.config" title="Link to this heading">#</a></h1>
 <p>CLI commands for dumping and loading NexusLIMS configuration.</p>
-<p>Provides <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">dump</span></code> and <code class="docutils literal notranslate"><span class="pre">nexuslims-config</span> <span class="pre">load</span></code> for exporting
+<p>Provides <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">dump</span></code> and <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">load</span></code> for exporting
 the current effective configuration to JSON and importing a previously
 dumped configuration back into a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.  The JSON format uses a nested
 structure for NEMO harvesters and email config so that the file is both
 human-readable and unambiguous.</p>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dump current config to stdout (default)</span>
-nexuslims-config<span class="w"> </span>dump
+<p>.. code-block:: bash</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Dump current config to stdout (default)
+nexuslims config dump
 
-<span class="c1"># Dump current config to a file</span>
-nexuslims-config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>/path/to/nexuslims_config.json
+# Dump current config to a file
+nexuslims config dump --output /path/to/nexuslims_config.json
 
-<span class="c1"># Load a previously dumped config into .env</span>
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json<span class="w"> </span>--env-path<span class="w"> </span>/path/to/.env
-nexuslims-config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json<span class="w"> </span>--force<span class="w">          </span><span class="c1"># skip confirmation prompt</span>
+# Load a previously dumped config into .env
+nexuslims config load nexuslims_config.json
+nexuslims config load nexuslims_config.json --env-path /path/to/.env
+nexuslims config load nexuslims_config.json --force
 </pre></div>
 </div>
 </section>
@@ -543,7 +549,10 @@ back up any pre-existing <code class="docutils literal notranslate"><span class=
 <tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.dump" title="nexusLIMS.cli.config.dump"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code></a></p></td>
 <td><p>Dump the current effective configuration to JSON.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.load" title="nexusLIMS.cli.config.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.edit" title="nexusLIMS.cli.config.edit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edit</span></code></a></p></td>
+<td><p>Interactively edit the NexusLIMS configuration in a terminal UI.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.load" title="nexusLIMS.cli.config.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a></p></td>
 <td><p>Load a previously dumped JSON config into a .env file.</p></td>
 </tr>
 </tbody>
@@ -586,6 +595,15 @@ secret.  Use <code class="docutils literal notranslate"><span class="pre">load</
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.cli.config.edit">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.config.</span></span><span class="sig-name descname"><span class="pre">edit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.config.edit" title="Link to this definition">#</a></dt>
+<dd><p>Interactively edit the NexusLIMS configuration in a terminal UI.</p>
+<p>Opens a tabbed form pre-populated from the existing .env file (if any).
+Press Ctrl+S to save and write the .env file, or Escape to cancel without
+saving.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.cli.config.load">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.config.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.config.load" title="Link to this definition">#</a></dt>
 <dd><p>Load a previously dumped JSON config into a .env file.</p>
@@ -618,11 +636,11 @@ before it is overwritten.</p>
       </div>
     </a>
     <a class="right-next"
-       href="nexusLIMS.harvesters.html"
+       href="nexusLIMS.cli.manage_instruments.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.manage_instruments</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -654,6 +672,7 @@ before it is overwritten.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.dump"><code class="docutils literal notranslate"><span class="pre">dump()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.edit"><code class="docutils literal notranslate"><span class="pre">edit()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.load"><code class="docutils literal notranslate"><span class="pre">load()</span></code></a></li>
 </ul>
 </li>
