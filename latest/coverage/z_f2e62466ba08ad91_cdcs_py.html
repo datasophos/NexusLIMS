@@ -54,8 +54,8 @@
             </div>
         </aside>
         <h2>
-            <span class="text">68 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">68<span class="text"> run</span></button>
+            <span class="text">69 statements &nbsp;</span>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">69<span class="text"> run</span></button>
             <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">0<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
         </h2>
@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_f2e62466ba08ad91_elabftw_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2026-02-18 16:13 +0000
+            created at 2026-02-19 00:50 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -283,27 +283,29 @@
     <p class="pln"><span class="n"><a id="t201" href="#t201">201</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t202" href="#t202">202</a></span><span class="t">        <span class="key">return</span> <span class="nam">r</span><span class="op">.</span><span class="nam">json</span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">[</span><span class="str">"current"</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t203" href="#t203">203</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t204" href="#t204">204</a></span><span class="t">    <span class="key">def</span> <span class="nam">_get_workspace_id</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span> <span class="op">-></span> <span class="nam">int</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t204" href="#t204">204</a></span><span class="t">    <span class="key">def</span> <span class="nam">_get_workspace_id</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span> <span class="op">-></span> <span class="nam">int</span> <span class="op">|</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t205" href="#t205">205</a></span><span class="t">        <span class="str">"""Get workspace ID from CDCS.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t206" href="#t206">206</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t207" href="#t207">207</a></span><span class="t"><span class="str">        Returns</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t208" href="#t208">208</a></span><span class="t"><span class="str">        -------</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t209" href="#t209">209</a></span><span class="t"><span class="str">        int</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t210" href="#t210">210</a></span><span class="t"><span class="str">            Workspace ID</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t211" href="#t211">211</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t212" href="#t212">212</a></span><span class="t"><span class="str">        Raises</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t213" href="#t213">213</a></span><span class="t"><span class="str">        ------</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t214" href="#t214">214</a></span><span class="t"><span class="str">        AuthenticationError</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t215" href="#t215">215</a></span><span class="t"><span class="str">            If authentication fails</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t216" href="#t216">216</a></span><span class="t"><span class="str">        """</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t217" href="#t217">217</a></span><span class="t">        <span class="nam">endpoint</span> <span class="op">=</span> <span class="nam">urljoin</span><span class="op">(</span><span class="nam">str</span><span class="op">(</span><span class="nam">settings</span><span class="op">.</span><span class="nam">NX_CDCS_URL</span><span class="op">)</span><span class="op">,</span> <span class="str">"rest/workspace/read_access"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t218" href="#t218">218</a></span><span class="t">        <span class="nam">r</span> <span class="op">=</span> <span class="nam">nexus_req</span><span class="op">(</span><span class="nam">endpoint</span><span class="op">,</span> <span class="str">"GET"</span><span class="op">,</span> <span class="nam">token_auth</span><span class="op">=</span><span class="nam">settings</span><span class="op">.</span><span class="nam">NX_CDCS_TOKEN</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t219" href="#t219">219</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t220" href="#t220">220</a></span><span class="t">        <span class="key">if</span> <span class="nam">r</span><span class="op">.</span><span class="nam">status_code</span> <span class="key">in</span> <span class="op">(</span><span class="nam">HTTPStatus</span><span class="op">.</span><span class="nam">UNAUTHORIZED</span><span class="op">,</span> <span class="nam">HTTPStatus</span><span class="op">.</span><span class="nam">FORBIDDEN</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t221" href="#t221">221</a></span><span class="t">            <span class="nam">msg</span> <span class="op">=</span> <span class="str">"Could not authenticate to CDCS"</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t222" href="#t222">222</a></span><span class="t">            <span class="key">raise</span> <span class="nam">AuthenticationError</span><span class="op">(</span><span class="nam">msg</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t223" href="#t223">223</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t224" href="#t224">224</a></span><span class="t">        <span class="key">return</span> <span class="nam">r</span><span class="op">.</span><span class="nam">json</span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">[</span><span class="str">"id"</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t209" href="#t209">209</a></span><span class="t"><span class="str">        int or None</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t210" href="#t210">210</a></span><span class="t"><span class="str">            Workspace ID, or ``None`` if no workspaces are available (which</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t211" href="#t211">211</a></span><span class="t"><span class="str">            still means authentication succeeded).</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t212" href="#t212">212</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t213" href="#t213">213</a></span><span class="t"><span class="str">        Raises</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t214" href="#t214">214</a></span><span class="t"><span class="str">        ------</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t215" href="#t215">215</a></span><span class="t"><span class="str">        AuthenticationError</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t216" href="#t216">216</a></span><span class="t"><span class="str">            If authentication fails</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t217" href="#t217">217</a></span><span class="t"><span class="str">        """</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t218" href="#t218">218</a></span><span class="t">        <span class="nam">endpoint</span> <span class="op">=</span> <span class="nam">urljoin</span><span class="op">(</span><span class="nam">str</span><span class="op">(</span><span class="nam">settings</span><span class="op">.</span><span class="nam">NX_CDCS_URL</span><span class="op">)</span><span class="op">,</span> <span class="str">"rest/workspace/read_access"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t219" href="#t219">219</a></span><span class="t">        <span class="nam">r</span> <span class="op">=</span> <span class="nam">nexus_req</span><span class="op">(</span><span class="nam">endpoint</span><span class="op">,</span> <span class="str">"GET"</span><span class="op">,</span> <span class="nam">token_auth</span><span class="op">=</span><span class="nam">settings</span><span class="op">.</span><span class="nam">NX_CDCS_TOKEN</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t220" href="#t220">220</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t221" href="#t221">221</a></span><span class="t">        <span class="key">if</span> <span class="nam">r</span><span class="op">.</span><span class="nam">status_code</span> <span class="key">in</span> <span class="op">(</span><span class="nam">HTTPStatus</span><span class="op">.</span><span class="nam">UNAUTHORIZED</span><span class="op">,</span> <span class="nam">HTTPStatus</span><span class="op">.</span><span class="nam">FORBIDDEN</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t222" href="#t222">222</a></span><span class="t">            <span class="nam">msg</span> <span class="op">=</span> <span class="str">"Could not authenticate to CDCS"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t223" href="#t223">223</a></span><span class="t">            <span class="key">raise</span> <span class="nam">AuthenticationError</span><span class="op">(</span><span class="nam">msg</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t224" href="#t224">224</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t225" href="#t225">225</a></span><span class="t">        <span class="nam">workspaces</span> <span class="op">=</span> <span class="nam">r</span><span class="op">.</span><span class="nam">json</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t226" href="#t226">226</a></span><span class="t">        <span class="key">return</span> <span class="nam">workspaces</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="op">[</span><span class="str">"id"</span><span class="op">]</span> <span class="key">if</span> <span class="nam">workspaces</span> <span class="key">else</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
 </main>
 <footer>
     <div class="content">
@@ -313,7 +315,7 @@
             <a class="nav" href="z_f2e62466ba08ad91_elabftw_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2026-02-18 16:13 +0000
+            created at 2026-02-19 00:50 +0000
         </p>
     </div>
 </footer>

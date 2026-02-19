@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 18, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 19, 2026"/>
   </head>
   
   
@@ -1034,13 +1034,14 @@ window.addEventListener("load", load);
 
         <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;current&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_workspace_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_workspace_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get workspace ID from CDCS.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        int</span>
-<span class="sd">            Workspace ID</span>
+<span class="sd">        int or None</span>
+<span class="sd">            Workspace ID, or ``None`` if no workspaces are available (which</span>
+<span class="sd">            still means authentication succeeded).</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
@@ -1054,7 +1055,8 @@ window.addEventListener("load", load);
             <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Could not authenticate to CDCS&quot;</span>
             <span class="k">raise</span> <span class="n">AuthenticationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span></div>
+        <span class="n">workspaces</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">workspaces</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">workspaces</span> <span class="k">else</span> <span class="kc">None</span></div>
 
 </pre></div>
 

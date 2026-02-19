@@ -428,7 +428,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Feb, 18, 2026"/>
+    <meta name="docbuild:last-update" content="Feb, 19, 2026"/>
   </head>
   
   
@@ -866,6 +866,7 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">rich.console</span><span class="w"> </span><span class="kn">import</span> <span class="n">Console</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">rich.logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">RichHandler</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.builder.preflight</span><span class="w"> </span><span class="kn">import</span> <span class="n">PreflightError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">_format_version</span>
 
 <span class="c1"># Heavy NexusLIMS imports are lazy-loaded inside functions to speed up --help/--version</span>
@@ -1205,6 +1206,12 @@ window.addEventListener("load", load);
                     <span class="n">dry_run</span><span class="o">=</span><span class="n">dry_run</span><span class="p">,</span> <span class="n">dt_from</span><span class="o">=</span><span class="n">dt_from</span><span class="p">,</span> <span class="n">dt_to</span><span class="o">=</span><span class="n">dt_to</span>
                 <span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Record processing completed&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">PreflightError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>  <span class="c1"># noqa: TRY400</span>
+                    <span class="s2">&quot;Preflight checks failed — record builder aborted&quot;</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">check</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">failed_checks</span><span class="p">:</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;  [</span><span class="si">%s</span><span class="s2">] </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">check</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">check</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>  <span class="c1"># noqa: TRY400</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Error during record processing&quot;</span><span class="p">)</span>
 
