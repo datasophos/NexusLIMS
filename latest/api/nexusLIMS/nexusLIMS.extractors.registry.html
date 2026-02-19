@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=acda69ee" />
@@ -625,6 +626,29 @@ sorted by priority (descending).</p>
 </div>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="nexusLIMS.extractors.registry.ExtractorRegistry.all_extractors">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_extractors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.BaseExtractor" title="nexusLIMS.extractors.base.BaseExtractor"><span class="pre">BaseExtractor</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#nexusLIMS.extractors.registry.ExtractorRegistry.all_extractors" title="Link to this definition">#</a></dt>
+<dd><p>Get a deduplicated flat list of all registered extractor instances.</p>
+<p>Returns one instance per unique extractor class (both extension-specific
+and wildcard extractors), sorted by priority descending.</p>
+<p>Auto-discovers plugins if not already discovered.</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Unique extractor instances sorted by priority (descending)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>[<a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.BaseExtractor" title="nexusLIMS.extractors.base.BaseExtractor"><em>BaseExtractor</em></a>]</p>
+</dd>
+</dl>
+<p><strong>Examples:</strong></p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">registry</span> <span class="o">=</span> <span class="n">get_registry</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="n">registry</span><span class="o">.</span><span class="n">all_extractors</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ext</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: priority </span><span class="si">{</span><span class="n">ext</span><span class="o">.</span><span class="n">priority</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.registry.ExtractorRegistry.discover_plugins">
 <span class="sig-name descname"><span class="pre">discover_plugins</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/registry.html#ExtractorRegistry.discover_plugins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.registry.ExtractorRegistry.discover_plugins" title="Link to this definition">#</a></dt>
@@ -904,6 +928,7 @@ also be used to manually register generators (useful for testing).</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.ExtractorRegistry"><code class="docutils literal notranslate"><span class="pre">ExtractorRegistry</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.ExtractorRegistry.extractors"><code class="docutils literal notranslate"><span class="pre">ExtractorRegistry.extractors</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.ExtractorRegistry.extractor_names"><code class="docutils literal notranslate"><span class="pre">ExtractorRegistry.extractor_names</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.ExtractorRegistry.all_extractors"><code class="docutils literal notranslate"><span class="pre">ExtractorRegistry.all_extractors</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.ExtractorRegistry.discover_plugins"><code class="docutils literal notranslate"><span class="pre">ExtractorRegistry.discover_plugins()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.ExtractorRegistry.register_extractor"><code class="docutils literal notranslate"><span class="pre">ExtractorRegistry.register_extractor()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.registry.ExtractorRegistry.get_extractor"><code class="docutils literal notranslate"><span class="pre">ExtractorRegistry.get_extractor()</span></code></a></li>

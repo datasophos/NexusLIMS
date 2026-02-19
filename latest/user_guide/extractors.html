@@ -32,6 +32,7 @@
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
@@ -1242,6 +1243,130 @@ each format.</p>
 <p>See <a class="reference internal" href="../dev_guide/nexuslims_internal_schema.html#metadata-helper-functions"><span class="std std-ref">Helper Functions</span></a> for the <code class="docutils literal notranslate"><span class="pre">add_to_extensions()</span></code> helper function and <a class="reference internal" href="../dev_guide/writing_extractor_plugins.html"><span class="doc">Writing Extractor Plugins</span></a> for complete guidance on using extensions in your own extractors.</p>
 </section>
 </section>
+<section id="standalone-library-usage">
+<span id="standalone-extractor-usage"></span><h2>Standalone Library Usage<a class="headerlink" href="#standalone-library-usage" title="Link to this heading">#</a></h2>
+<p>The NexusLIMS extractor system can be used as a <strong>standalone Python library</strong>
+without a full NexusLIMS deployment.  No <code class="docutils literal notranslate"><span class="pre">.env</span></code> file, database, NEMO instance,
+or CDCS server is required.  This is useful for:</p>
+<ul class="simple">
+<li><p>Quickly inspecting microscopy file metadata in a Jupyter notebook</p></li>
+<li><p>Batch-processing files on a workstation that isn’t connected to a NexusLIMS deployment</p></li>
+<li><p>Prototyping new analysis workflows that read instrument metadata</p></li>
+</ul>
+<section id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>nexusLIMS
+<span class="c1"># or, if using uv:</span>
+uv<span class="w"> </span>add<span class="w"> </span>nexusLIMS
+</pre></div>
+</div>
+<p>No environment variables need to be set for basic extraction.</p>
+</section>
+<section id="quickstart">
+<h3>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading">#</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_metadata</span>
+
+<span class="c1"># Works with no .env, no database, no NEMO / CDCS</span>
+<span class="n">metadata_list</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">parse_metadata</span><span class="p">(</span>
+    <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;my_data.dm3&quot;</span><span class="p">),</span>
+    <span class="n">write_output</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>     <span class="c1"># don&#39;t try to write a JSON sidecar</span>
+    <span class="n">generate_preview</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="c1"># don&#39;t try to generate a thumbnail</span>
+<span class="p">)</span>
+
+<span class="n">nx</span> <span class="o">=</span> <span class="n">metadata_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">nx</span><span class="p">[</span><span class="s2">&quot;Creation Time&quot;</span><span class="p">])</span>       <span class="c1"># ISO-8601 timestamp</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">nx</span><span class="p">[</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">])</span>         <span class="c1"># &quot;Image&quot;, &quot;Spectrum&quot;, etc.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">nx</span><span class="p">[</span><span class="s2">&quot;Data Type&quot;</span><span class="p">])</span>           <span class="c1"># e.g., &quot;STEM_Imaging&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="default-behaviour-when-called-with-write-output-true">
+<h3>Default behaviour when called with <code class="docutils literal notranslate"><span class="pre">write_output=True</span></code><a class="headerlink" href="#default-behaviour-when-called-with-write-output-true" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">parse_metadata</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">write_output=True</span></code> and <code class="docutils literal notranslate"><span class="pre">generate_preview=True</span></code>
+so that the full record-building pipeline works without any code changes.
+When NexusLIMS configuration is <strong>not</strong> available those two steps are silently
+skipped and a warning is logged:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">WARNING</span> <span class="n">nexusLIMS</span><span class="o">.</span><span class="n">extractors</span><span class="p">:</span> <span class="n">NexusLIMS</span> <span class="n">config</span> <span class="n">unavailable</span><span class="p">;</span> <span class="n">skipping</span> <span class="n">metadata</span>
+<span class="n">file</span> <span class="n">write</span> <span class="p">(</span><span class="k">pass</span> <span class="n">write_output</span><span class="o">=</span><span class="kc">False</span> <span class="n">to</span> <span class="n">suppress</span> <span class="n">this</span> <span class="n">warning</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Passing <code class="docutils literal notranslate"><span class="pre">write_output=False,</span> <span class="pre">generate_preview=False</span></code> suppresses the warnings
+and makes the intent explicit.</p>
+</section>
+<section id="low-level-api">
+<h3>Low-level API<a class="headerlink" href="#low-level-api" title="Link to this heading">#</a></h3>
+<p>You can also use the extractor registry directly for more control:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtractionContext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.registry</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_registry</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;my_data.dm3&quot;</span><span class="p">)</span>
+<span class="n">context</span> <span class="o">=</span> <span class="n">ExtractionContext</span><span class="p">(</span><span class="n">file_path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+<span class="n">registry</span> <span class="o">=</span> <span class="n">get_registry</span><span class="p">()</span>
+<span class="n">extractor</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_extractor</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Selected extractor: </span><span class="si">{</span><span class="n">extractor</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">metadata_list</span> <span class="o">=</span> <span class="n">extractor</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">metadata_list</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Signal </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">m</span><span class="p">[</span><span class="s1">&#39;nx_meta&#39;</span><span class="p">][</span><span class="s1">&#39;DatasetType&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="what-degrades-gracefully">
+<h3>What degrades gracefully<a class="headerlink" href="#what-degrades-gracefully" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Without config</p></th>
+<th class="head"><p>With config</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Metadata extraction</p></td>
+<td><p>✅ Full</p></td>
+<td><p>✅ Full</p></td>
+</tr>
+<tr class="row-odd"><td><p>Schema validation</p></td>
+<td><p>✅ Full</p></td>
+<td><p>✅ Full</p></td>
+</tr>
+<tr class="row-even"><td><p>Instrument identification from DB</p></td>
+<td><p>⚠️ Returns <code class="docutils literal notranslate"><span class="pre">None</span></code></p></td>
+<td><p>✅ Looks up DB</p></td>
+</tr>
+<tr class="row-odd"><td><p>JSON sidecar write (<code class="docutils literal notranslate"><span class="pre">write_output</span></code>)</p></td>
+<td><p>⚠️ Skipped + warning</p></td>
+<td><p>✅ Written</p></td>
+</tr>
+<tr class="row-even"><td><p>Preview generation (<code class="docutils literal notranslate"><span class="pre">generate_preview</span></code>)</p></td>
+<td><p>⚠️ Skipped + warning</p></td>
+<td><p>✅ Generated</p></td>
+</tr>
+<tr class="row-odd"><td><p>Local instrument profiles</p></td>
+<td><p>⚠️ Skipped (built-in profiles active)</p></td>
+<td><p>✅ Loaded</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="supported-formats">
+<h3>Supported formats<a class="headerlink" href="#supported-formats" title="Link to this heading">#</a></h3>
+<p>All formats listed in the Quick Reference table at the top of this page work
+in standalone mode.  The extractor registry auto-discovers plugins on first
+use with no configuration needed.</p>
+</section>
+<section id="example-notebook">
+<h3>Example notebook<a class="headerlink" href="#example-notebook" title="Link to this heading">#</a></h3>
+<p>See <span class="xref std std-doc">/notebooks/standalone_extractor_usage</span> for a complete, runnable
+Jupyter notebook that downloads real microscopy test files from the project
+repository and walks through both the high-level and low-level APIs, including
+the graceful-degradation behaviour when no config is present.</p>
+</section>
+</section>
 <section id="adding-support-for-new-formats">
 <h2>Adding Support for New Formats<a class="headerlink" href="#adding-support-for-new-formats" title="Link to this heading">#</a></h2>
 <p>See <a class="reference internal" href="../dev_guide/writing_extractor_plugins.html"><span class="doc">Writing Extractor Plugins</span></a> for instructions on how to write a new extractor.</p>
@@ -1377,6 +1502,16 @@ each format.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extraction-process">Extraction Process</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-metadata-structure">Expected Metadata Structure</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extension-fields-in-practice">Extension Fields in Practice</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standalone-library-usage">Standalone Library Usage</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quickstart">Quickstart</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#default-behaviour-when-called-with-write-output-true">Default behaviour when called with <code class="docutils literal notranslate"><span class="pre">write_output=True</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#low-level-api">Low-level API</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#what-degrades-gracefully">What degrades gracefully</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-formats">Supported formats</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-notebook">Example notebook</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-support-for-new-formats">Adding Support for New Formats</a></li>

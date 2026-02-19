@@ -65,6 +65,16 @@
 
 ````
 
+````{py:property} all_extractors
+:canonical: nexusLIMS.extractors.registry.ExtractorRegistry.all_extractors
+:type: list[nexusLIMS.extractors.base.BaseExtractor]
+
+```{autodoc2-docstring} nexusLIMS.extractors.registry.ExtractorRegistry.all_extractors
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:method} discover_plugins() -> None
 :canonical: nexusLIMS.extractors.registry.ExtractorRegistry.discover_plugins
 
