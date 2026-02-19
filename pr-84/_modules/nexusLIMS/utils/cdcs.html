@@ -1,0 +1,1345 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nexusLIMS.utils.cdcs &#8212; NexusLIMS pr-84 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=7b7ca1de"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nexusLIMS/utils/cdcs';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-84';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../../../_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-84/_modules/nexusLIMS/utils/cdcs.html" />
+    <link rel="icon" href="../../../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="pr-84" />
+    <meta name="docbuild:last-update" content="Feb, 19, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS pr-84 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS pr-84 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.utils.cdcs</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for nexusLIMS.utils.cdcs</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;CDCS interaction utilities for NexusLIMS.</span>
+
+<span class="sd">This module provides functions for querying, downloading, and deleting records</span>
+<span class="sd">from a CDCS instance. These are non-export operations used primarily for</span>
+<span class="sd">testing and maintenance.</span>
+
+<span class="sd">For exporting records to CDCS, use the CDCSDestination plugin in</span>
+<span class="sd">nexusLIMS.exporters.destinations.cdcs instead.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">http</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPStatus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urljoin</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils.network</span><span class="w"> </span><span class="kn">import</span> <span class="n">nexus_req</span>
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AuthenticationError">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.cdcs.html#nexusLIMS.utils.cdcs.AuthenticationError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AuthenticationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for showing an exception having to do with authentication.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span></div>
+
+
+
+<div class="viewcode-block" id="CDCSDataRecord">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.cdcs.html#nexusLIMS.utils.cdcs.CDCSDataRecord">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CDCSDataRecord</span><span class="p">(</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Type definition for a CDCS Data record returned by the API.</span>
+
+<span class="sd">    This represents the structure of record objects returned by CDCS endpoints</span>
+<span class="sd">    like /rest/data/query/ and /rest/data/query/keyword/.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    id : int</span>
+<span class="sd">        The record ID</span>
+<span class="sd">    template : int</span>
+<span class="sd">        The template ID</span>
+<span class="sd">    workspace : int | None</span>
+<span class="sd">        The workspace ID</span>
+<span class="sd">    user_id : str</span>
+<span class="sd">        The user ID that created the record</span>
+<span class="sd">    title : str</span>
+<span class="sd">        The record title</span>
+<span class="sd">    checksum : str | None</span>
+<span class="sd">        The record checksum</span>
+<span class="sd">    creation_date : str | None</span>
+<span class="sd">        The record creation date</span>
+<span class="sd">    last_modification_date : str | None</span>
+<span class="sd">        The last modification date</span>
+<span class="sd">    last_change_date : str | None</span>
+<span class="sd">        The last change date</span>
+<span class="sd">    xml_content : str</span>
+<span class="sd">        The XML content of the record</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="get_cdcs_url">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.cdcs.html#nexusLIMS.utils.cdcs.get_cdcs_url">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_cdcs_url</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the URL to the NexusLIMS CDCS instance from environment.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        The URL of the NexusLIMS CDCS instance to use</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the NX_CDCS_URL setting is not defined</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># NX_CDCS_URL is required, so validation ensures it exists</span>
+    <span class="c1"># Convert AnyHttpUrl to string</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_URL</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_workspace_id">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.cdcs.html#nexusLIMS.utils.cdcs.get_workspace_id">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_workspace_id</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the workspace ID that the user has access to.</span>
+
+<span class="sd">    This should be the Global Public Workspace in the current NexusLIMS CDCS</span>
+<span class="sd">    implementation.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    int</span>
+<span class="sd">        The workspace ID</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AuthenticationError</span>
+<span class="sd">        If authentication to CDCS fails</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># assuming there&#39;s only one workspace for this user (that is the public</span>
+    <span class="c1"># workspace)</span>
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="s2">&quot;rest/workspace/read_access&quot;</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">UNAUTHORIZED</span><span class="p">,</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">FORBIDDEN</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Could not authenticate to CDCS. Is the NX_CDCS_TOKEN &quot;</span>
+            <span class="s2">&quot;environment variable set correctly?&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">AuthenticationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>  <span class="c1"># return workspace id</span></div>
+
+
+
+<div class="viewcode-block" id="get_template_id">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.cdcs.html#nexusLIMS.utils.cdcs.get_template_id">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_template_id</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the template ID for the schema.</span>
+
+<span class="sd">    Returns the template ID so records can be associated with the correct schema.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        The template ID</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AuthenticationError</span>
+<span class="sd">        If authentication to CDCS fails</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get the current template (XSD) id value:</span>
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="s2">&quot;rest/template-version-manager/global&quot;</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">UNAUTHORIZED</span><span class="p">,</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">FORBIDDEN</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Could not authenticate to CDCS. Is the NX_CDCS_TOKEN &quot;</span>
+            <span class="s2">&quot;environment variable set correctly?&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">AuthenticationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;current&quot;</span><span class="p">]</span>  <span class="c1"># return template id</span></div>
+
+
+
+<div class="viewcode-block" id="delete_record">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.cdcs.html#nexusLIMS.utils.cdcs.delete_record">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_record</span><span class="p">(</span><span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete a Data record from the NexusLIMS CDCS instance via REST API.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    record_id</span>
+<span class="sd">        The id value (on the CDCS server) of the record to be deleted</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    requests.Response</span>
+<span class="sd">        The REST response returned from the CDCS instance after attempting</span>
+<span class="sd">        the delete operation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;rest/data/</span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NO_CONTENT</span><span class="p">:</span>
+        <span class="c1"># anything other than 204 status means something went wrong</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Received error while deleting </span><span class="si">%s</span><span class="s2">:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">record_id</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span></div>
+
+
+
+<div class="viewcode-block" id="search_records">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.cdcs.html#nexusLIMS.utils.cdcs.search_records">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">search_records</span><span class="p">(</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">template_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keyword</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">CDCSDataRecord</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Search for records in the CDCS instance by title, keyword, or criteria.</span>
+
+<span class="sd">    This function uses the CDCS query endpoint to search for records.</span>
+<span class="sd">    If no parameters are provided, all records are returned.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    If ``keyword`` is provided, it takes precedence and the ``title`` parameter</span>
+<span class="sd">    is ignored. The keyword search uses a different CDCS endpoint</span>
+<span class="sd">    (``/rest/data/query/keyword/``) that performs full-text search but does not</span>
+<span class="sd">    support title filtering. In this mode, only ``template_id`` can be combined</span>
+<span class="sd">    with ``keyword`` to filter results.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    title</span>
+<span class="sd">        The title to search for (exact match). Only used when ``keyword`` is None.</span>
+<span class="sd">    template_id</span>
+<span class="sd">        The template ID to filter by. Can be combined with either ``title`` or</span>
+<span class="sd">        ``keyword``.</span>
+<span class="sd">    keyword</span>
+<span class="sd">        Keyword(s) for full-text search across record content. When provided,</span>
+<span class="sd">        takes precedence over ``title`` parameter.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list[CDCSDataRecord]</span>
+<span class="sd">        List of matching record objects from CDCS. Each record is a dictionary</span>
+<span class="sd">        containing id, title, xml_content, template, workspace, user_id, checksum,</span>
+<span class="sd">        and date fields. See :class:`CDCSDataRecord` for complete structure.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AuthenticationError</span>
+<span class="sd">        If authentication fails</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If keyword parameter is empty or search parameters are invalid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">keyword</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">keyword</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Keyword parameter cannot be empty&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="c1"># Use keyword search endpoint if keyword is provided</span>
+    <span class="k">if</span> <span class="n">keyword</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="s2">&quot;rest/data/query/keyword/&quot;</span><span class="p">)</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">keyword</span><span class="p">,</span>
+            <span class="s2">&quot;all&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>  <span class="c1"># Return all results (not paginated)</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">template_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;templates&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">template_id</span><span class="p">}]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="s2">&quot;rest/data/query/&quot;</span><span class="p">)</span>
+        <span class="c1"># Build query payload</span>
+        <span class="c1"># The query endpoint expects a POST with JSON body</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="p">{},</span>  <span class="c1"># Empty query matches all records</span>
+            <span class="s2">&quot;all&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>  <span class="c1"># Return all results (not paginated)</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="k">if</span> <span class="n">template_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">payload</span><span class="p">[</span><span class="s2">&quot;templates&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">template_id</span><span class="p">}]</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span>
+        <span class="n">endpoint</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">UNAUTHORIZED</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Could not authenticate to CDCS. Is the NX_CDCS_TOKEN &quot;</span>
+            <span class="s2">&quot;environment variable set correctly?&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">AuthenticationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">BAD_REQUEST</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Bad request while searching records:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Invalid search parameters: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Got error while searching records:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="download_record">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.cdcs.html#nexusLIMS.utils.cdcs.download_record">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">download_record</span><span class="p">(</span><span class="n">record_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download the XML content of a record from the CDCS instance.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    record_id</span>
+<span class="sd">        The id value (on the CDCS server) of the record to download</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        The XML content of the record</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    AuthenticationError</span>
+<span class="sd">        If authentication fails</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If the record is not found or another error occurs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;rest/data/download/</span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">UNAUTHORIZED</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Could not authenticate to CDCS. Is the NX_CDCS_TOKEN &quot;</span>
+            <span class="s2">&quot;environment variable set correctly?&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">AuthenticationError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Record with id </span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2"> not found&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">OK</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Got error while downloading </span><span class="si">%s</span><span class="s2">:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">record_id</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Failed to download record </span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span></div>
+
+
+
+<div class="viewcode-block" id="upload_record_content">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.cdcs.html#nexusLIMS.utils.cdcs.upload_record_content">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">upload_record_content</span><span class="p">(</span><span class="n">xml_content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Upload a single XML record to the NexusLIMS CDCS instance.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    This is a low-level utility function primarily used for testing.</span>
+<span class="sd">    For production record uploads, use the CDCSDestination exporter plugin</span>
+<span class="sd">    in nexusLIMS.exporters.destinations.cdcs instead.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xml_content</span>
+<span class="sd">        The actual content of an XML record (rather than a file)</span>
+<span class="sd">    title</span>
+<span class="sd">        The title to give to the record in CDCS</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple[requests.Response, int | None]</span>
+<span class="sd">        A tuple of (response, record_id). The response is the REST response</span>
+<span class="sd">        returned from the CDCS instance after attempting the upload.</span>
+<span class="sd">        The record_id is the id (on the server) of the record that was uploaded,</span>
+<span class="sd">        or None if there was an error.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="s2">&quot;rest/data/&quot;</span><span class="p">)</span>
+
+    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;template&quot;</span><span class="p">:</span> <span class="n">get_template_id</span><span class="p">(),</span>
+        <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span>
+        <span class="s2">&quot;xml_content&quot;</span><span class="p">:</span> <span class="n">xml_content</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">post_r</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span>
+        <span class="n">endpoint</span><span class="p">,</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">post_r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">:</span>
+        <span class="c1"># anything other than 201 status means something went wrong</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Got error while uploading </span><span class="si">%s</span><span class="s2">:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">post_r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">post_r</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="c1"># assign this record to the public workspace</span>
+    <span class="n">record_id</span> <span class="o">=</span> <span class="n">post_r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="n">record_url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;data?id=</span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">wrk_endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span>
+        <span class="n">get_cdcs_url</span><span class="p">(),</span>
+        <span class="sa">f</span><span class="s2">&quot;rest/data/</span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2">/assign/</span><span class="si">{</span><span class="n">get_workspace_id</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">_</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span><span class="n">wrk_endpoint</span><span class="p">,</span> <span class="s2">&quot;PATCH&quot;</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span><span class="p">)</span>
+
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Record &quot;</span><span class="si">%s</span><span class="s1">&quot; available at </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">record_url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">post_r</span><span class="p">,</span> <span class="n">record_id</span></div>
+
+
+
+<div class="viewcode-block" id="upload_record_files">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.cdcs.html#nexusLIMS.utils.cdcs.upload_record_files">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">upload_record_files</span><span class="p">(</span>
+    <span class="n">files_to_upload</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Upload record files to CDCS.</span>
+
+<span class="sd">    Upload a list of .xml files (or all .xml files in the current directory)</span>
+<span class="sd">    to the NexusLIMS CDCS instance using :py:meth:`upload_record_content`.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    This is a utility function primarily used for testing and manual uploads.</span>
+<span class="sd">    For production record uploads, use the CDCSDestination exporter plugin</span>
+<span class="sd">    in nexusLIMS.exporters.destinations.cdcs instead.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    files_to_upload: List[pathlib.Path] | None</span>
+<span class="sd">        The list of .xml files to upload. If ``None``, all .xml files in the</span>
+<span class="sd">        current directory will be used instead.</span>
+<span class="sd">    progress</span>
+<span class="sd">        Whether to show a progress bar for uploading</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple[list[pathlib.Path], list[int]]</span>
+<span class="sd">        A tuple of (files_uploaded, record_ids). files_uploaded is a list of</span>
+<span class="sd">        the files that were successfully uploaded. record_ids is a list of the</span>
+<span class="sd">        record id values (on the server) that were uploaded.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If no .xml files are found</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">files_to_upload</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using all .xml files in this directory&quot;</span><span class="p">)</span>
+        <span class="n">files_to_upload</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">()</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.xml&quot;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using .xml files from command line&quot;</span><span class="p">)</span>
+
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">%s</span><span class="s2"> files to upload</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">files_to_upload</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files_to_upload</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;No .xml files were found (please specify on the &quot;</span>
+            <span class="s2">&quot;command line, or run this script from a directory &quot;</span>
+            <span class="s2">&quot;containing one or more .xml files&quot;</span>
+        <span class="p">)</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">files_uploaded</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">record_ids</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">files_to_upload</span><span class="p">)</span> <span class="k">if</span> <span class="n">progress</span> <span class="k">else</span> <span class="n">files_to_upload</span><span class="p">:</span>
+        <span class="n">f_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">f_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">xml_file</span><span class="p">:</span>
+            <span class="n">xml_content</span> <span class="o">=</span> <span class="n">xml_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+        <span class="n">title</span> <span class="o">=</span> <span class="n">f_path</span><span class="o">.</span><span class="n">stem</span>
+        <span class="n">response</span><span class="p">,</span> <span class="n">record_id</span> <span class="o">=</span> <span class="n">upload_record_content</span><span class="p">(</span><span class="n">xml_content</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">CREATED</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not upload </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">f_path</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">files_uploaded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f_path</span><span class="p">)</span>
+        <span class="n">record_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record_id</span><span class="p">)</span>
+
+    <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;Successfully uploaded </span><span class="si">%i</span><span class="s2"> of </span><span class="si">%i</span><span class="s2"> files&quot;</span><span class="p">,</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">files_uploaded</span><span class="p">),</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">files_to_upload</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">files_uploaded</span><span class="p">,</span> <span class="n">record_ids</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

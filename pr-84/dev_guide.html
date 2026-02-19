@@ -1,0 +1,1566 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Dev Guide &#8212; NexusLIMS pr-84 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="_static/documentation_options.js?v=7b7ca1de"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=30646c52"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'dev_guide';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-84';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-84/dev_guide.html" />
+    <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Development introduction" href="dev_guide/development.html" />
+    <link rel="prev" title="Migration Guide" href="migration_guide.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="pr-84" />
+    <meta name="docbuild:last-update" content="Feb, 19, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS pr-84 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS pr-84 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/development.html">Development introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/writing_extractor_plugins.html">Writing Extractor Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/writing_export_destinations.html">Writing Export Destination Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/instrument_profiles.html">Instrument Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/nexuslims_internal_schema.html">Internal Metadata Schema System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/em_glossary_reference.html">EM Glossary Field Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/uv_migration.html">Migration from Poetry to uv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/database.html">NexusLIMS Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/schema_documentation.html">XML Schema Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/testing/integration-tests.html">Integration Testing Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/textual_testing_reference.html">Textual Testing Reference</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Dev Guide</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="dev-guide">
+<span id="id1"></span><h1>Dev Guide<a class="headerlink" href="#dev-guide" title="Link to this heading">#</a></h1>
+<p>This guide helps developers understand, extend, and contribute to NexusLIMS. Whether you’re adding support for a new file format, customizing extraction for your instruments, or contributing to the core codebase, this guide provides the roadmap you need.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>NexusLIMS is an <strong>automated Laboratory Information Management System</strong> for electron microscopy facilities. It transforms raw microscopy data files and calendar reservations into structured, searchable experimental records.</p>
+<p><strong>Key capabilities:</strong></p>
+<ul class="simple">
+<li><p><strong>Automated record generation</strong> - No manual data entry required</p></li>
+<li><p><strong>Multi-instrument support</strong> - Works across different microscope vendors and types</p></li>
+<li><p><strong>Extensible metadata extraction</strong> - Plugin-based system for adding new file formats</p></li>
+<li><p><strong>Standardized metadata</strong> - Uses EM Glossary ontology for interoperability</p></li>
+<li><p><strong>Flexible deployment</strong> - Runs as a daemon, cron job, or on-demand</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="what-s-new-in-v2-2-0">
+<h2>🆕 What’s New in v2.2.0<a class="headerlink" href="#what-s-new-in-v2-2-0" title="Link to this heading">#</a></h2>
+<p><strong>Major schema system upgrade</strong> with Pydantic v2, EM Glossary integration, and improved validation:</p>
+<section id="key-changes">
+<h3>Key Changes<a class="headerlink" href="#key-changes" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Pydantic Metadata Schemas</strong></p>
+<ul class="simple">
+<li><p>All metadata validated using type-specific Pydantic schemas</p></li>
+<li><p>Schema selection based on <code class="docutils literal notranslate"><span class="pre">DatasetType</span></code> (Image, Spectrum, SpectrumImage, Diffraction)</p></li>
+<li><p>Strict validation catches errors before record building</p></li>
+<li><p>See <a class="reference internal" href="dev_guide/nexuslims_internal_schema.html"><span class="std std-doc">NexusLIMS Internal Schema</span></a> for details</p></li>
+</ul>
+</li>
+<li><p><strong>EM Glossary v2.0 Integration</strong></p>
+<ul class="simple">
+<li><p>50+ standardized field names from community ontology</p></li>
+<li><p>Automatic display name and EMG ID annotation</p></li>
+<li><p>Preferred units for each physical quantity</p></li>
+<li><p>See <a class="reference internal" href="dev_guide/em_glossary_reference.html"><span class="std std-doc">EM Glossary Reference</span></a> for field mappings</p></li>
+</ul>
+</li>
+<li><p><strong>Formal Unit Integration</strong></p>
+<ul class="simple">
+<li><p>All physical quantities use Pint with QUDT ontology</p></li>
+<li><p>Automatic unit conversion and validation</p></li>
+<li><p>Machine-readable unit information in XML output</p></li>
+<li><p>Type-safe quantity handling</p></li>
+</ul>
+</li>
+<li><p><strong>Schema Module Reorganization</strong></p>
+<ul class="simple">
+<li><p>Modular design: <code class="docutils literal notranslate"><span class="pre">metadata.py</span></code>, <code class="docutils literal notranslate"><span class="pre">em_glossary.py</span></code>, <code class="docutils literal notranslate"><span class="pre">units.py</span></code>, <code class="docutils literal notranslate"><span class="pre">pint_types.py</span></code></p></li>
+<li><p>Clear separation between core, type-specific, and extension fields</p></li>
+<li><p>Better extensibility for future enhancements</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="migration-impact">
+<h3>Migration Impact<a class="headerlink" href="#migration-impact" title="Link to this heading">#</a></h3>
+<p>If you maintain custom extractors or instrument profiles:</p>
+<ul class="simple">
+<li><p><strong>Extractors:</strong> Use Pint Quantities for fields with units</p></li>
+<li><p><strong>Profiles:</strong> Use <code class="docutils literal notranslate"><span class="pre">extension_fields</span></code> for custom metadata that does not fit within the schemas</p></li>
+<li><p><strong>Tests:</strong> Use new schema class names (e.g., <code class="docutils literal notranslate"><span class="pre">ImageMetadata</span></code>)</p></li>
+</ul>
+<p>See migration guides in <a class="reference internal" href="dev_guide/nexuslims_internal_schema.html"><span class="std std-doc">NexusLIMS Internal Schema</span></a> and <a class="reference internal" href="dev_guide/instrument_profiles.html"><span class="std std-doc">Instrument Profiles</span></a>.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="architecture-overview">
+<h2>Architecture Overview<a class="headerlink" href="#architecture-overview" title="Link to this heading">#</a></h2>
+<p>NexusLIMS follows a pipeline architecture with six main components:</p>
+<section id="component-descriptions">
+<h3>Component Descriptions<a class="headerlink" href="#component-descriptions" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Harvesters</strong> (<code class="docutils literal notranslate"><span class="pre">nexusLIMS/harvesters/</span></code>)</p>
+<ul class="simple">
+<li><p>Poll NEMO API for instrument reservations and usage events</p></li>
+<li><p>Create session start/end events in database</p></li>
+<li><p>Support multiple NEMO instances via configuration</p></li>
+<li><p><strong>Extension point:</strong> Add new harvesters for other calendar systems</p></li>
+</ul>
+</li>
+<li><p><strong>Database</strong> (<code class="docutils literal notranslate"><span class="pre">nexusLIMS/db/</span></code>)</p>
+<ul class="simple">
+<li><p>SQLite database tracking instrument sessions</p></li>
+<li><p>Two tables: <code class="docutils literal notranslate"><span class="pre">instruments</span></code> (config), <code class="docutils literal notranslate"><span class="pre">session_log</span></code> (events)</p></li>
+<li><p>Session states: WAITING_FOR_END → TO_BE_BUILT → COMPLETED/ERROR</p></li>
+<li><p>ORM-like <code class="docutils literal notranslate"><span class="pre">Session</span></code> objects via <code class="docutils literal notranslate"><span class="pre">session_handler.py</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>Record Builder</strong> (<code class="docutils literal notranslate"><span class="pre">nexusLIMS/builder/record_builder.py</span></code>)</p>
+<ul class="simple">
+<li><p>Orchestrates complete record generation workflow:</p>
+<ol class="arabic simple">
+<li><p>Query for sessions ready to build</p></li>
+<li><p>Find files modified during session window</p></li>
+<li><p>Cluster files into Acquisition Activities (temporal analysis)</p></li>
+<li><p>Extract and validate metadata from each file</p></li>
+<li><p>Build XML record conforming to Nexus Experiment schema</p></li>
+<li><p>Upload to CDCS instance</p></li>
+</ol>
+</li>
+<li><p><strong>Entry point:</strong> <code class="docutils literal notranslate"><span class="pre">process_new_records()</span></code> function</p></li>
+</ul>
+</li>
+<li><p><strong>Extractors</strong> (<code class="docutils literal notranslate"><span class="pre">nexusLIMS/extractors/</span></code>)</p>
+<ul class="simple">
+<li><p>Plugin-based system for format-specific metadata extraction</p></li>
+<li><p>Auto-discovery from <code class="docutils literal notranslate"><span class="pre">plugins/</span></code> directory</p></li>
+<li><p>Priority-based selection (higher priority tried first)</p></li>
+<li><p>Returns <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> dict validated by Pydantic schemas</p></li>
+<li><p><strong>Extension point:</strong> Add plugins for new file formats</p></li>
+</ul>
+</li>
+<li><p><strong>Schemas</strong> (<code class="docutils literal notranslate"><span class="pre">nexusLIMS/schemas/</span></code>)</p>
+<ul class="simple">
+<li><p>Pydantic models for metadata validation</p></li>
+<li><p>Type-specific schemas: <code class="docutils literal notranslate"><span class="pre">ImageMetadata</span></code>, <code class="docutils literal notranslate"><span class="pre">SpectrumMetadata</span></code>, <code class="docutils literal notranslate"><span class="pre">SpectrumImageMetadata</span></code>, <code class="docutils literal notranslate"><span class="pre">DiffractionMetadata</span></code></p></li>
+<li><p>EM Glossary integration for standardized field names</p></li>
+<li><p>Unit handling with Pint and QUDT</p></li>
+<li><p><strong>Extension point:</strong> Add new fields to schemas</p></li>
+</ul>
+</li>
+<li><p><strong>CDCS Integration</strong> (<code class="docutils literal notranslate"><span class="pre">cdcs.py</span></code>)</p>
+<ul class="simple">
+<li><p>Uploads XML records to NexusLIMS CDCS frontend</p></li>
+<li><p>REST API communication with token authentication</p></li>
+<li><p>Workspace and template management</p></li>
+<li><p><strong>Configuration:</strong> <code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code>, <code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code></p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="data-flow">
+<h3>Data Flow<a class="headerlink" href="#data-flow" title="Link to this heading">#</a></h3>
+<pre  class="mermaid">
+        %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#e3f2fd', 'primaryTextColor': '#000', 'primaryBorderColor': '#1976d2', 'lineColor': '#1976d2'}}}%%
+flowchart TD
+    Start([User creates Reservation in NEMO]) --&gt; Experiment[User performs experiment]
+    Experiment --&gt; UsageEvent[NEMO creates Usage Event&lt;br/&gt;start &amp; end times]
+    UsageEvent --&gt; Poll[Harvester polls Usage Events API]
+    Poll --&gt; StartEvent[Session START event → Database]
+    StartEvent --&gt; EndEvent[Session END event → Database]
+    EndEvent --&gt; ToBuild[Session state = TO_BE_BUILT]
+    ToBuild --&gt; FindSession[Record Builder finds session]
+    FindSession --&gt; FindFiles[Find files by modification time]
+    FindFiles --&gt; Cluster[Cluster files into Activities&lt;br/&gt;using KDE]
+    Cluster --&gt; ProcessFiles{For each file}
+
+    ProcessFiles --&gt; SelectExtractor[&quot;Select extractor&lt;br/&gt;via &lt;code&gt;priority&lt;/code&gt; + &lt;code&gt;supports()&lt;/code&gt;&quot;]
+    SelectExtractor --&gt; ExtractMeta[&quot;Extract metadata → &lt;code&gt;nx_meta&lt;/code&gt; dict&quot;]
+    ExtractMeta --&gt; ValidateSchema[Validate with Pydantic schema]
+    ValidateSchema --&gt; MoreFiles{More files?}
+    MoreFiles --&gt;|Yes| ProcessFiles
+    MoreFiles --&gt;|No| BuildXML[Build XML record&lt;br/&gt;Nexus Experiment schema]
+
+    BuildXML --&gt; Upload[Upload to CDCS]
+    Upload --&gt; Complete[Session state = COMPLETED]
+    Complete --&gt; End([End])
+
+    classDef userAction fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef dbAction fill:#e1f5ff,stroke:#1976d2,stroke-width:2px
+    classDef processing fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+
+    class Start,Experiment userAction
+    class StartEvent,EndEvent,ToBuild,Complete dbAction
+    class FindSession,FindFiles,Cluster,SelectExtractor,ExtractMeta,ValidateSchema,BuildXML,Upload processing
+    </pre></section>
+</section>
+<hr class="docutils" />
+<section id="common-development-tasks">
+<h2>Common Development Tasks<a class="headerlink" href="#common-development-tasks" title="Link to this heading">#</a></h2>
+<p>Quick links to guides for common tasks:</p>
+<section id="adding-file-format-support">
+<h3>Adding File Format Support<a class="headerlink" href="#adding-file-format-support" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Guide:</strong> <a class="reference internal" href="dev_guide/writing_extractor_plugins.html"><span class="std std-doc">Writing Extractor Plugins</span></a></p></li>
+<li><p><strong>Example:</strong> See <code class="docutils literal notranslate"><span class="pre">plugins/quanta_tif.py</span></code> for TIFF format</p></li>
+<li><p><strong>Steps:</strong> Create plugin class, implement <code class="docutils literal notranslate"><span class="pre">supports()</span></code> and <code class="docutils literal notranslate"><span class="pre">extract()</span></code>, test with sample files</p></li>
+</ul>
+</section>
+<section id="customizing-instrument-behavior">
+<h3>Customizing Instrument Behavior<a class="headerlink" href="#customizing-instrument-behavior" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Guide:</strong> <a class="reference internal" href="dev_guide/instrument_profiles.html"><span class="std std-doc">Instrument Profiles</span></a></p></li>
+<li><p><strong>Example:</strong> See <code class="docutils literal notranslate"><span class="pre">profiles/fei_titan_tem_642.py</span></code></p></li>
+<li><p><strong>Steps:</strong> Create profile with parsers/transformations, register with registry</p></li>
+</ul>
+</section>
+<section id="understanding-metadata-schemas">
+<h3>Understanding Metadata Schemas<a class="headerlink" href="#understanding-metadata-schemas" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Guide:</strong> <a class="reference internal" href="dev_guide/nexuslims_internal_schema.html"><span class="std std-doc">NexusLIMS Internal Schema</span></a></p></li>
+<li><p><strong>Reference:</strong> <a class="reference internal" href="dev_guide/em_glossary_reference.html"><span class="std std-doc">EM Glossary Reference</span></a></p></li>
+<li><p><strong>Helper Functions:</strong> <a class="reference internal" href="dev_guide/nexuslims_internal_schema.html#metadata-helper-functions"><span class="std std-ref">Helper Functions</span></a></p></li>
+</ul>
+</section>
+<section id="running-tests">
+<h3>Running Tests<a class="headerlink" href="#running-tests" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Guide:</strong> <a class="reference internal" href="dev_guide/development.html#testing"><span class="std std-ref">Testing</span></a></p></li>
+<li><p><strong>Command:</strong> <code class="docutils literal notranslate"><span class="pre">./scripts/run_tests.sh</span></code> (with mpl comparison)</p></li>
+<li><p><strong>Coverage:</strong> Reports generated in <code class="docutils literal notranslate"><span class="pre">tests/coverage/</span></code></p></li>
+</ul>
+</section>
+<section id="building-documentation">
+<h3>Building Documentation<a class="headerlink" href="#building-documentation" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Guide:</strong> <a class="reference internal" href="dev_guide/development.html#documentation"><span class="std std-ref">Documentation</span></a></p></li>
+<li><p><strong>Command:</strong> <code class="docutils literal notranslate"><span class="pre">./scripts/build_docs.sh</span></code></p></li>
+<li><p><strong>Output:</strong> <code class="docutils literal notranslate"><span class="pre">./_build/html/index.html</span></code></p></li>
+</ul>
+</section>
+<section id="debugging-extraction">
+<h3>Debugging Extraction<a class="headerlink" href="#debugging-extraction" title="Link to this heading">#</a></h3>
+<ul>
+<li><p><strong>Enable debug logging:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;nexusLIMS.extractors&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;nexusLIMS.schemas&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Test extraction directly:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_full_meta</span>
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">get_full_meta</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/path/to/file.dm3&quot;</span><span class="p">),</span> <span class="n">instrument</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<hr class="docutils" />
+</section>
+</section>
+<section id="creating-sanitized-test-files">
+<span id="id2"></span><h2>Creating Sanitized Test Files<a class="headerlink" href="#creating-sanitized-test-files" title="Link to this heading">#</a></h2>
+<p>When adding test fixtures for new file formats, it’s critical to sanitize files to remove sensitive data while preserving the metadata structure needed for testing. This section explains how to create highly-compressed test archives for the repository.</p>
+<section id="why-sanitize-test-files">
+<h3>Why Sanitize Test Files?<a class="headerlink" href="#why-sanitize-test-files" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Privacy</strong>: Remove proprietary or sensitive image data</p></li>
+<li><p><strong>Size</strong>: Zeroed data compresses extremely well (1000:1 or better)</p></li>
+<li><p><strong>Repository health</strong>: Keep the git repository small and fast</p></li>
+<li><p><strong>Complete metadata</strong>: Preserve all metadata structure for realistic testing</p></li>
+</ol>
+</section>
+<section id="general-approach">
+<h3>General Approach<a class="headerlink" href="#general-approach" title="Link to this heading">#</a></h3>
+<p>The goal is to <strong>zero out image/spectral data</strong> while <strong>preserving all metadata</strong> and file structure:</p>
+<ol class="arabic simple">
+<li><p>Start with a real microscopy file from your target format</p></li>
+<li><p>Parse the file structure to locate image/spectral data regions</p></li>
+<li><p>Replace data bytes with zeros while keeping all metadata intact</p></li>
+<li><p>Compress into a <code class="docutils literal notranslate"><span class="pre">.tar.gz</span></code> archive for the test suite</p></li>
+</ol>
+</section>
+<section id="format-specific-methods">
+<h3>Format-Specific Methods<a class="headerlink" href="#format-specific-methods" title="Link to this heading">#</a></h3>
+<section id="tiff-files-compressed">
+<h4>TIFF Files (Compressed)<a class="headerlink" href="#tiff-files-compressed" title="Link to this heading">#</a></h4>
+<p>For LZW-compressed TIFF files (common in FEI/Thermo, Zeiss, TESCAN instruments), use the binary patching method:</p>
+<p><strong>Key insight</strong>: You cannot simply write zeros to the file - the compressed data size changes, which requires rebuilding the entire file structure.</p>
+<p><strong>Process</strong>:</p>
+<ol class="arabic simple">
+<li><p>Read entire file as binary</p></li>
+<li><p>Parse TIFF structure (header → IFD → tag data)</p></li>
+<li><p>Locate and decompress image strips (using <code class="docutils literal notranslate"><span class="pre">imagecodecs.lzw_decode</span></code>)</p></li>
+<li><p>Create zeroed array with same dimensions</p></li>
+<li><p>Recompress zeros (using <code class="docutils literal notranslate"><span class="pre">imagecodecs.lzw_encode</span></code>)</p></li>
+<li><p>Binary patch: write new header + compressed data + updated IFD</p></li>
+</ol>
+<p><strong>Reference implementation</strong>: See <code class="docutils literal notranslate"><span class="pre">.claude/notes/zeroing-compressed-tiff-files.md</span></code> for detailed algorithm</p>
+<p><strong>Example script skeleton</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">imagecodecs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">zero_lzw_tiff</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Zero image data in LZW-compressed TIFF while preserving metadata.&quot;&quot;&quot;</span>
+    <span class="c1"># 1. Read file</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">input_path</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">())</span>
+
+    <span class="c1"># 2. Parse TIFF structure to find StripOffsets and StripByteCounts</span>
+    <span class="c1"># (implement TIFF parsing - read IFD entries, find tags 273 and 279)</span>
+
+    <span class="c1"># 3. Extract and decompress strips</span>
+    <span class="n">compressed</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">strip_offset</span><span class="p">:</span><span class="n">strip_offset</span> <span class="o">+</span> <span class="n">strip_bytes</span><span class="p">]</span>
+    <span class="n">uncompressed</span> <span class="o">=</span> <span class="n">imagecodecs</span><span class="o">.</span><span class="n">lzw_decode</span><span class="p">(</span><span class="n">compressed</span><span class="p">)</span>
+
+    <span class="c1"># 4. Zero and recompress</span>
+    <span class="n">zeroed</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">uncompressed</span><span class="p">))</span>
+    <span class="n">new_compressed</span> <span class="o">=</span> <span class="n">imagecodecs</span><span class="o">.</span><span class="n">lzw_encode</span><span class="p">(</span><span class="n">zeroed</span><span class="p">)</span>
+
+    <span class="c1"># 5. Rebuild file (header + new_compressed + updated IFD)</span>
+    <span class="c1"># (implement binary patching logic)</span>
+
+    <span class="n">output_path</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">new_data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Result</strong>: Files shrink from ~2MB to ~10KB (99%+ reduction)</p>
+</section>
+<section id="tiff-files-uncompressed">
+<h4>TIFF Files (Uncompressed)<a class="headerlink" href="#tiff-files-uncompressed" title="Link to this heading">#</a></h4>
+<p>For uncompressed TIFF files, you can directly write zeros to the image data region:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">tifffile</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">zero_uncompressed_tiff</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Zero uncompressed TIFF image data.&quot;&quot;&quot;</span>
+    <span class="c1"># Read TIFF pages</span>
+    <span class="k">with</span> <span class="n">tifffile</span><span class="o">.</span><span class="n">TiffFile</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">tif</span><span class="p">:</span>
+        <span class="c1"># Get first page</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="n">tif</span><span class="o">.</span><span class="n">pages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Create zeroed array with same shape</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">page</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">page</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="c1"># Write with original metadata tags</span>
+        <span class="n">tifffile</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span>
+            <span class="n">output_path</span><span class="p">,</span>
+            <span class="n">data</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">page</span><span class="o">.</span><span class="n">tags</span>  <span class="c1"># Preserves original tags</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Warning</strong>: This recreates the file structure, which may lose some vendor-specific tags. For maximum fidelity, use the binary patching method.</p>
+</section>
+<section id="digital-micrograph-dm3-dm4">
+<h4>Digital Micrograph (.dm3/.dm4)<a class="headerlink" href="#digital-micrograph-dm3-dm4" title="Link to this heading">#</a></h4>
+<p>DM files use a tagged data structure. Use HyperSpy to read and zero:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hyperspy.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">hs</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">zero_dm_file</span><span class="p">(</span><span class="n">input_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Zero DM3/DM4 image/spectral data while preserving metadata.&quot;&quot;&quot;</span>
+    <span class="c1"># Load file</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">hs</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">input_path</span><span class="p">)</span>
+
+    <span class="c1"># Handle multiple signals (may return list)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">signal</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+            <span class="n">signal</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="c1"># Save with all metadata preserved</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output_path</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Result</strong>: Excellent compression since DM format already uses compression on zero data.</p>
+</section>
+<section id="other-binary-formats">
+<h4>Other Binary Formats<a class="headerlink" href="#other-binary-formats" title="Link to this heading">#</a></h4>
+<p>For proprietary binary formats:</p>
+<ol class="arabic simple">
+<li><p><strong>Use hex editor</strong> to locate image data regions (often contiguous blocks)</p></li>
+<li><p><strong>Write zeros</strong> to those byte ranges</p></li>
+<li><p><strong>Verify</strong> the file still opens and metadata is readable</p></li>
+<li><p><strong>Test</strong> that your extractor still works on the zeroed file</p></li>
+</ol>
+</section>
+</section>
+<section id="creating-the-archive">
+<h3>Creating the Archive<a class="headerlink" href="#creating-the-archive" title="Link to this heading">#</a></h3>
+<p>Once you have sanitized file(s), create a tar.gz archive:</p>
+<p><strong>CRITICAL</strong>: On macOS, use <code class="docutils literal notranslate"><span class="pre">COPYFILE_DISABLE=1</span></code> to prevent including <code class="docutils literal notranslate"><span class="pre">.DS_Store</span></code> and resource forks:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create archive (from tests/unit/files/ directory)</span>
+<span class="nv">COPYFILE_DISABLE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>tar<span class="w"> </span>-czf<span class="w"> </span>xyz_format_dataZeroed.tar.gz<span class="w"> </span>test_file.xyz
+
+<span class="c1"># Verify contents (should only show your test file)</span>
+tar<span class="w"> </span>-tzf<span class="w"> </span>xyz_format_dataZeroed.tar.gz
+</pre></div>
+</div>
+<p><strong>Naming convention</strong>: Use <code class="docutils literal notranslate"><span class="pre">*_dataZeroed.tar.gz</span></code> suffix to indicate sanitized files.</p>
+</section>
+<section id="adding-to-test-suite">
+<h3>Adding to Test Suite<a class="headerlink" href="#adding-to-test-suite" title="Link to this heading">#</a></h3>
+<ol class="arabic">
+<li><p><strong>Place archive</strong> in <code class="docutils literal notranslate"><span class="pre">tests/unit/files/</span></code></p></li>
+<li><p><strong>Register in <code class="docutils literal notranslate"><span class="pre">tests/unit/utils.py</span></code></strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tars</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># ... existing entries ...</span>
+    <span class="s2">&quot;XYZ_FORMAT&quot;</span><span class="p">:</span> <span class="s2">&quot;xyz_format_test_dataZeroed.tar.gz&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Create fixture</strong> in your test file (see <a class="reference internal" href="dev_guide/writing_extractor_plugins.html"><span class="doc">Writing Extractor Plugins</span></a>)</p></li>
+</ol>
+</section>
+<section id="verification-checklist">
+<h3>Verification Checklist<a class="headerlink" href="#verification-checklist" title="Link to this heading">#</a></h3>
+<p>Before committing your sanitized test file:</p>
+<ul class="contains-task-list simple">
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> File still opens with intended software/library</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> All metadata fields are present and correct</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Image/spectral data is zeroed</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> File size is significantly reduced (check compression ratio)</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Archive contains no macOS hidden files (<code class="docutils literal notranslate"><span class="pre">.DS_Store</span></code>, <code class="docutils literal notranslate"><span class="pre">._*</span></code>)</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Your extractor tests pass using the sanitized file</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Archive is in <code class="docutils literal notranslate"><span class="pre">tests/unit/files/</span></code> directory</p></li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" disabled="disabled" type="checkbox"> Archive is registered in <code class="docutils literal notranslate"><span class="pre">tests/unit/utils.py</span></code></p></li>
+</ul>
+</section>
+<section id="example-complete-workflow">
+<h3>Example: Complete Workflow<a class="headerlink" href="#example-complete-workflow" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Create sanitized file using your script</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/zero_my_format.py<span class="w"> </span>input.xyz<span class="w"> </span>output_dataZeroed.xyz
+
+<span class="c1"># 2. Verify it&#39;s sanitized</span>
+ls<span class="w"> </span>-lh<span class="w"> </span>output_dataZeroed.xyz<span class="w">  </span><span class="c1"># Should be much smaller</span>
+
+<span class="c1"># 3. Create archive (from tests/unit/files/)</span>
+<span class="nb">cd</span><span class="w"> </span>tests/unit/files
+<span class="nv">COPYFILE_DISABLE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>tar<span class="w"> </span>-czf<span class="w"> </span>my_format_dataZeroed.tar.gz<span class="w"> </span>output_dataZeroed.xyz
+
+<span class="c1"># 4. Verify archive contents</span>
+tar<span class="w"> </span>-tzf<span class="w"> </span>my_format_dataZeroed.tar.gz
+
+<span class="c1"># 5. Add to registry</span>
+<span class="c1"># Edit tests/unit/utils.py and add entry to tars dict</span>
+
+<span class="c1"># 6. Write tests using your new fixture</span>
+<span class="c1"># See writing_extractor_plugins.md</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="contributing-guidelines">
+<h2>Contributing Guidelines<a class="headerlink" href="#contributing-guidelines" title="Link to this heading">#</a></h2>
+<p>We welcome contributions! Here’s how to get started:</p>
+<section id="development-setup">
+<h3>Development Setup<a class="headerlink" href="#development-setup" title="Link to this heading">#</a></h3>
+<ol class="arabic">
+<li><p><strong>Clone repository:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datasophos/NexusLIMS.git
+<span class="nb">cd</span><span class="w"> </span>NexusLIMS
+</pre></div>
+</div>
+</li>
+<li><p><strong>Install dependencies:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>sync<span class="w">  </span><span class="c1"># Installs all dependencies including dev tools</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Configure environment:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
+<span class="c1"># Edit .env with your configuration</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Run tests:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./scripts/run_tests.sh
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="code-standards">
+<h3>Code Standards<a class="headerlink" href="#code-standards" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Formatting:</strong> Ruff (88 char line length)</p></li>
+<li><p><strong>Linting:</strong> Ruff with extensive rule set</p></li>
+<li><p><strong>Type hints:</strong> Use type annotations where possible</p></li>
+<li><p><strong>Docstrings:</strong> NumPy-style docstrings for all public functions/classes</p></li>
+<li><p><strong>Testing:</strong> Write tests for new features (pytest with mpl comparison)</p></li>
+<li><p><strong>Pre-commit:</strong> Git hooks automatically run formatters and linters before commits</p></li>
+</ul>
+<section id="setting-up-pre-commit">
+<h4>Setting Up Pre-commit<a class="headerlink" href="#setting-up-pre-commit" title="Link to this heading">#</a></h4>
+<p>Pre-commit hooks are configured to automatically format and lint your code:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install pre-commit hooks (one-time setup)</span>
+uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>install
+
+<span class="c1"># Pre-commit will now run automatically on `git commit`</span>
+<span class="c1"># It will format code and run linters, blocking commits if issues are found</span>
+</pre></div>
+</div>
+<p>To run checks manually:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run on all files</span>
+uv<span class="w"> </span>run<span class="w"> </span>pre-commit<span class="w"> </span>run<span class="w"> </span>--all-files
+
+<span class="c1"># Or use the convenience script (includes type checking)</span>
+./scripts/run_lint.sh
+</pre></div>
+</div>
+</section>
+</section>
+<section id="submitting-changes">
+<h3>Submitting Changes<a class="headerlink" href="#submitting-changes" title="Link to this heading">#</a></h3>
+<ol class="arabic">
+<li><p><strong>Create feature branch:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/your-feature-name
+</pre></div>
+</div>
+</li>
+<li><p><strong>Make changes and test:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Edit code</span>
+./scripts/run_lint.sh<span class="w">  </span><span class="c1"># Check code quality</span>
+./scripts/run_tests.sh<span class="w">  </span><span class="c1"># Run test suite</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Create changelog blurb:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add file to docs/changes/ following instructions in docs/changes/README.rst</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Commit changes:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>.
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;feat: Add support for XYZ format&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Push and create PR:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>feature/your-feature-name
+<span class="c1"># Create pull request on GitHub</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="contribution-areas">
+<h3>Contribution Areas<a class="headerlink" href="#contribution-areas" title="Link to this heading">#</a></h3>
+<p>We especially welcome contributions in these areas:</p>
+<ul class="simple">
+<li><p><strong>New file format support</strong> - Extractor plugins for additional microscopy formats</p></li>
+<li><p><strong>Instrument profiles</strong> - Profiles for commercial instruments</p></li>
+<li><p><strong>Documentation improvements</strong> - Clarifications, examples, guides</p></li>
+<li><p><strong>Test coverage</strong> - Additional test cases and fixtures</p></li>
+<li><p><strong>Bug fixes</strong> - Issues labeled “good first issue”</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="additional-resources">
+<h2>Additional Resources<a class="headerlink" href="#additional-resources" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/development.html">Development introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/writing_extractor_plugins.html">Writing Extractor Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/writing_export_destinations.html">Writing Export Destination Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/instrument_profiles.html">Instrument Profiles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/nexuslims_internal_schema.html">Internal Metadata Schema System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/em_glossary_reference.html">EM Glossary Field Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/uv_migration.html">Migration from Poetry to uv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/database.html">NexusLIMS Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/schema_documentation.html">XML Schema Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev_guide/testing/integration-tests.html">Integration Testing Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/textual_testing_reference.html">Textual Testing Reference</a></li>
+</ul>
+</div>
+</section>
+<hr class="docutils" />
+<section id="getting-help">
+<h2>Getting Help<a class="headerlink" href="#getting-help" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>GitHub Issues:</strong> Report bugs or request features at <a class="github reference external" href="https://github.com/datasophos/NexusLIMS/issues">datasophos/NexusLIMS#issues</a></p></li>
+<li><p><strong>Documentation:</strong> Comprehensive guides in this developer documentation</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="migration_guide.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Migration Guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="dev_guide/development.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Development introduction</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-s-new-in-v2-2-0">🆕 What’s New in v2.2.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-changes">Key Changes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#migration-impact">Migration Impact</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture-overview">Architecture Overview</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#component-descriptions">Component Descriptions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-flow">Data Flow</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-development-tasks">Common Development Tasks</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-file-format-support">Adding File Format Support</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#customizing-instrument-behavior">Customizing Instrument Behavior</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-metadata-schemas">Understanding Metadata Schemas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#running-tests">Running Tests</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#building-documentation">Building Documentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#debugging-extraction">Debugging Extraction</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-sanitized-test-files">Creating Sanitized Test Files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#why-sanitize-test-files">Why Sanitize Test Files?</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#general-approach">General Approach</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#format-specific-methods">Format-Specific Methods</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#tiff-files-compressed">TIFF Files (Compressed)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#tiff-files-uncompressed">TIFF Files (Uncompressed)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#digital-micrograph-dm3-dm4">Digital Micrograph (.dm3/.dm4)</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#other-binary-formats">Other Binary Formats</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-the-archive">Creating the Archive</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-to-test-suite">Adding to Test Suite</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verification-checklist">Verification Checklist</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-complete-workflow">Example: Complete Workflow</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contributing-guidelines">Contributing Guidelines</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#development-setup">Development Setup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#code-standards">Code Standards</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-pre-commit">Setting Up Pre-commit</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#submitting-changes">Submitting Changes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#contribution-areas">Contribution Areas</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-resources">Additional Resources</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-help">Getting Help</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/dev_guide.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
