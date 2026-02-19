@@ -41,6 +41,7 @@ from filelock import FileLock, Timeout
 from rich.console import Console
 from rich.logging import RichHandler
 
+from nexusLIMS.builder.preflight import PreflightError
 from nexusLIMS.cli import _format_version
 
 # Heavy NexusLIMS imports are lazy-loaded inside functions to speed up --help/--version
@@ -371,6 +372,12 @@ def _run_with_lock(
                     dry_run=dry_run, dt_from=dt_from, dt_to=dt_to
                 )
                 logger.info("Record processing completed")
+            except PreflightError as e:
+                logger.error(  # noqa: TRY400
+                    "Preflight checks failed — record builder aborted"
+                )
+                for check in e.failed_checks:
+                    logger.error("  [%s] %s", check.name, check.message)  # noqa: TRY400
             except Exception:
                 logger.exception("Error during record processing")
 
