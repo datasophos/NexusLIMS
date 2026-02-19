@@ -244,6 +244,10 @@ uv run ruff format pyproject.toml || true
 # Stage changes
 info "Staging changes..."
 git add pyproject.toml nexusLIMS/version.py docs/reference/changelog.md docs/changes/
+# Include RELEASE_NOTES.md if it was written by the release skill
+if [ -f "RELEASE_NOTES.md" ]; then
+    git add RELEASE_NOTES.md
+fi
 success "Changes staged"
 
 # Commit
@@ -278,6 +282,10 @@ rm nexusLIMS/version.py.bak
 
 # Stage and commit dev version bump
 git add pyproject.toml nexusLIMS/version.py
+# Remove RELEASE_NOTES.md from the dev branch — it belongs to the release tag only
+if [ -f "RELEASE_NOTES.md" ]; then
+    git rm RELEASE_NOTES.md
+fi
 git commit -m "Bump version to $DEV_VERSION for development"
 success "Version bumped to $DEV_VERSION"
 
