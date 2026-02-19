@@ -61,15 +61,17 @@ pyright
 
 ### Documentation
 
+**Always use `--skip-tui-demos` when building docs locally** — TUI demo generation is slow and unnecessary for checking content.
+
 ```bash
-# Build documentation
-./scripts/build_docs.sh
+# Build documentation (local — always add --skip-tui-demos)
+./scripts/build_docs.sh --skip-tui-demos
 
 # Build with strict mode (treat warnings as errors - used in CI)
-./scripts/build_docs.sh --strict
+./scripts/build_docs.sh --strict --skip-tui-demos
 
 # Watch mode for auto-rebuild during development
-./scripts/build_docs.sh --watch
+./scripts/build_docs.sh --watch --skip-tui-demos
 
 # Documentation will be in ./_build directory
 ```

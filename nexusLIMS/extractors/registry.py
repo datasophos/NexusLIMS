@@ -160,6 +160,45 @@ class ExtractorRegistry:
 
         return sorted(extractor_names_set)
 
+    @property
+    def all_extractors(self) -> list[BaseExtractor]:
+        """
+        Get a deduplicated flat list of all registered extractor instances.
+
+        Returns one instance per unique extractor class (both extension-specific
+        and wildcard extractors), sorted by priority descending.
+
+        Auto-discovers plugins if not already discovered.
+
+        Returns
+        -------
+        list[BaseExtractor]
+            Unique extractor instances sorted by priority (descending)
+
+        Examples
+        --------
+            >>> registry = get_registry()
+            >>> for ext in registry.all_extractors:
+            ...     print(f"{ext.name}: priority {ext.priority}")
+        """
+        if not self._discovered:
+            self.discover_plugins()
+
+        seen: set[type] = set()
+        unique_classes: list[type] = []
+        for extractor_classes in self._extractors.values():
+            for cls in extractor_classes:
+                if cls not in seen:
+                    seen.add(cls)
+                    unique_classes.append(cls)
+        for cls in self._wildcard_extractors:
+            if cls not in seen:
+                seen.add(cls)
+                unique_classes.append(cls)
+
+        instances = [self._get_instance(cls) for cls in unique_classes]
+        return sorted(instances, key=lambda e: e.priority, reverse=True)
+
     def discover_plugins(self) -> None:
         """
         Auto-discover extractor plugins by walking the plugins directory.

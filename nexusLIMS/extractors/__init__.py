@@ -77,6 +77,19 @@ from .plugins.preview_generators.text_preview import text_to_thumbnail
 
 _logger = logging.getLogger(__name__)
 
+
+def _config_available() -> bool:
+    """Return True if NexusLIMS settings can be loaded without error."""
+    try:
+        from nexusLIMS.config import settings  # noqa: PLC0415
+
+        _ = settings.NX_DATA_PATH
+    except Exception:
+        return False
+    else:
+        return True
+
+
 PLACEHOLDER_PREVIEW = Path(__file__).parent / "assets" / "extractor_error.png"
 """Path to placeholder preview image used when preview generation fails."""
 
@@ -356,7 +369,7 @@ def validate_nx_meta(
     return metadata_dict
 
 
-def parse_metadata(  # noqa: PLR0912
+def parse_metadata(  # noqa: PLR0912, PLR0915
     fname: Path,
     *,
     write_output: bool = True,
@@ -469,7 +482,14 @@ def parse_metadata(  # noqa: PLR0912
         validate_nx_meta(nx_meta, filename=fname)
 
     # Write output for each signal (single and multi-signal files)
-    if write_output:
+    _can_write = write_output and _config_available()
+    if write_output and not _can_write:
+        _logger.warning(
+            "NexusLIMS config unavailable; skipping metadata file write "
+            "(pass write_output=False to suppress this warning)"
+        )
+
+    if _can_write:
         for i, nx_meta in enumerate(nx_meta_list):
             # For single-signal files, omit suffix for backward compatibility
             if signal_count == 1:
@@ -500,7 +520,14 @@ def parse_metadata(  # noqa: PLR0912
                     )
 
     # Generate previews for each signal
-    if generate_preview:
+    _can_preview = generate_preview and _config_available()
+    if generate_preview and not _can_preview:
+        _logger.warning(
+            "NexusLIMS config unavailable; skipping preview generation "
+            "(pass generate_preview=False to suppress this warning)"
+        )
+
+    if _can_preview:
         for i in range(signal_count):
             # For single-signal files, omit suffix for backward compatibility
             signal_idx = i if signal_count > 1 else None

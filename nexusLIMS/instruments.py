@@ -14,6 +14,7 @@ instrument_db : dict
 import logging
 from pathlib import Path
 
+from pydantic import ValidationError
 from sqlmodel import Session as DBSession
 from sqlmodel import create_engine, select
 
@@ -57,19 +58,26 @@ def _get_instrument_db(db_path: Path | str | None = None):
         instruments that were found in the ``instruments`` table of the
         NexusLIMS database
     """
-    # Use provided path or fall back to settings
-    _db_path = db_path if db_path is not None else settings.NX_DB_PATH
-
-    # Create temporary engine if non-default path (for testing)
-    if db_path is not None:
-        temp_engine = create_engine(f"sqlite:///{_db_path}")
-    else:
-        temp_engine = get_engine()
-
     try:
+        # Use provided path or fall back to settings
+        _db_path = db_path if db_path is not None else settings.NX_DB_PATH
+
+        # Create temporary engine if non-default path (for testing)
+        if db_path is not None:
+            temp_engine = create_engine(f"sqlite:///{_db_path}")
+        else:
+            temp_engine = get_engine()
+
         with DBSession(temp_engine) as session:
             instruments_list = session.exec(select(Instrument)).all()
             return {inst.instrument_pid: inst for inst in instruments_list}
+    except ValidationError as e:
+        _logger.debug(
+            "NexusLIMS config not available (standalone mode); "
+            "instrument database not loaded. Details: %s",
+            e,
+        )
+        return {}
     except Exception as e:
         _logger.warning(
             "Could not connect to database or retrieve instruments. "

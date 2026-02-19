@@ -716,6 +716,107 @@ Use the `extensions` dictionary when:
 
 See {ref}`Helper Functions <metadata-helper-functions>` for the `add_to_extensions()` helper function and {doc}`../dev_guide/writing_extractor_plugins` for complete guidance on using extensions in your own extractors.
 
+(standalone-extractor-usage)=
+## Standalone Library Usage
+
+The NexusLIMS extractor system can be used as a **standalone Python library**
+without a full NexusLIMS deployment.  No `.env` file, database, NEMO instance,
+or CDCS server is required.  This is useful for:
+
+- Quickly inspecting microscopy file metadata in a Jupyter notebook
+- Batch-processing files on a workstation that isn't connected to a NexusLIMS deployment
+- Prototyping new analysis workflows that read instrument metadata
+
+### Installation
+
+```bash
+pip install nexusLIMS
+# or, if using uv:
+uv add nexusLIMS
+```
+
+No environment variables need to be set for basic extraction.
+
+### Quickstart
+
+```python
+from pathlib import Path
+from nexusLIMS.extractors import parse_metadata
+
+# Works with no .env, no database, no NEMO / CDCS
+metadata_list, _ = parse_metadata(
+    Path("my_data.dm3"),
+    write_output=False,     # don't try to write a JSON sidecar
+    generate_preview=False, # don't try to generate a thumbnail
+)
+
+nx = metadata_list[0]["nx_meta"]
+print(nx["Creation Time"])       # ISO-8601 timestamp
+print(nx["DatasetType"])         # "Image", "Spectrum", etc.
+print(nx["Data Type"])           # e.g., "STEM_Imaging"
+```
+
+### Default behaviour when called with `write_output=True`
+
+`parse_metadata` defaults to `write_output=True` and `generate_preview=True`
+so that the full record-building pipeline works without any code changes.
+When NexusLIMS configuration is **not** available those two steps are silently
+skipped and a warning is logged:
+
+```
+WARNING nexusLIMS.extractors: NexusLIMS config unavailable; skipping metadata
+file write (pass write_output=False to suppress this warning)
+```
+
+Passing `write_output=False, generate_preview=False` suppresses the warnings
+and makes the intent explicit.
+
+### Low-level API
+
+You can also use the extractor registry directly for more control:
+
+```python
+from pathlib import Path
+from nexusLIMS.extractors.base import ExtractionContext
+from nexusLIMS.extractors.registry import get_registry
+
+path = Path("my_data.dm3")
+context = ExtractionContext(file_path=path, instrument=None)
+
+registry = get_registry()
+extractor = registry.get_extractor(context)
+
+print(f"Selected extractor: {extractor.name}")
+
+metadata_list = extractor.extract(context)
+for i, m in enumerate(metadata_list):
+    print(f"Signal {i}: {m['nx_meta']['DatasetType']}")
+```
+
+### What degrades gracefully
+
+| Feature | Without config | With config |
+|---------|---------------|-------------|
+| Metadata extraction | ✅ Full | ✅ Full |
+| Schema validation | ✅ Full | ✅ Full |
+| Instrument identification from DB | ⚠️ Returns `None` | ✅ Looks up DB |
+| JSON sidecar write (`write_output`) | ⚠️ Skipped + warning | ✅ Written |
+| Preview generation (`generate_preview`) | ⚠️ Skipped + warning | ✅ Generated |
+| Local instrument profiles | ⚠️ Skipped (built-in profiles active) | ✅ Loaded |
+
+### Supported formats
+
+All formats listed in the Quick Reference table at the top of this page work
+in standalone mode.  The extractor registry auto-discovers plugins on first
+use with no configuration needed.
+
+### Example notebook
+
+See {doc}`/notebooks/standalone_extractor_usage` for a complete, runnable
+Jupyter notebook that downloads real microscopy test files from the project
+repository and walks through both the high-level and low-level APIs, including
+the graceful-degradation behaviour when no config is present.
+
 ## Adding Support for New Formats
 
 See {doc}`../dev_guide/writing_extractor_plugins` for instructions on how to write a new extractor.

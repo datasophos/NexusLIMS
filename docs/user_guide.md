@@ -181,6 +181,7 @@ user_guide/record_building
 user_guide/instrument_manager
 user_guide/migrations
 user_guide/extractors
+notebooks/standalone_extractor_usage
 user_guide/exporters
 user_guide/taxonomy
 ```

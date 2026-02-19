@@ -790,6 +790,125 @@ class TestRegistryProperties:
         assert isinstance(names, list)
         assert len(names) == 0
 
+    def test_all_extractors_returns_instances_sorted_by_priority(self, registry):
+        """all_extractors returns instances sorted by priority descending."""
+
+        class HighExtractor:
+            name = "high"
+            priority = 200
+            supported_extensions: ClassVar = {"dm3"}
+
+            def supports(self, context):
+                return True
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        class LowExtractor:
+            name = "low"
+            priority = 50
+            supported_extensions: ClassVar = {"tif"}
+
+            def supports(self, context):
+                return True
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        try:
+            registry.register_extractor(LowExtractor)
+            registry.register_extractor(HighExtractor)
+
+            instances = registry.all_extractors
+
+            assert isinstance(instances, list)
+            assert len(instances) == 2
+            assert instances[0].name == "high"
+            assert instances[0].priority == 200
+            assert instances[1].name == "low"
+            assert instances[1].priority == 50
+        finally:
+            registry.clear()
+
+    def test_all_extractors_deduplicates_multi_extension(self, registry):
+        """all_extractors returns each extractor once even if registered for many exts."""  # noqa: E501
+
+        class MultiExtractor:
+            name = "multi"
+            priority = 100
+            supported_extensions: ClassVar = {"dm3", "dm4", "ser"}
+
+            def supports(self, context):
+                return True
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        try:
+            registry.register_extractor(MultiExtractor)
+
+            instances = registry.all_extractors
+
+            # Should appear exactly once despite three extensions
+            assert len(instances) == 1
+            assert instances[0].name == "multi"
+        finally:
+            registry.clear()
+
+    def test_all_extractors_includes_wildcards(self, registry):
+        """all_extractors includes wildcard extractors."""
+
+        class SpecificExtractor:
+            name = "specific"
+            priority = 100
+            supported_extensions: ClassVar = {"dm3"}
+
+            def supports(self, context):
+                return True
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        class WildcardExtractor:
+            name = "wildcard"
+            priority = 50
+            supported_extensions: ClassVar = None
+
+            def supports(self, context):
+                return True
+
+            def extract(self, context):
+                return {"nx_meta": {}}
+
+        try:
+            registry.register_extractor(SpecificExtractor)
+            registry.register_extractor(WildcardExtractor)
+
+            instances = registry.all_extractors
+
+            names = [e.name for e in instances]
+            assert "specific" in names
+            assert "wildcard" in names
+            assert len(instances) == 2
+        finally:
+            registry.clear()
+
+    def test_all_extractors_empty_when_no_extractors(self, registry):
+        """all_extractors returns empty list when nothing is registered."""
+        instances = registry.all_extractors
+        assert instances == []
+
+    def test_all_extractors_triggers_discovery(self, registry):
+        """all_extractors triggers auto-discovery if not yet done."""
+        try:
+            registry._discovered = False
+            instances = registry.all_extractors
+            assert registry._discovered
+            assert isinstance(instances, list)
+            assert len(instances) > 0
+        finally:
+            registry.clear()
+
 
 class TestExtensionQueries:
     """Test extension-related query methods."""

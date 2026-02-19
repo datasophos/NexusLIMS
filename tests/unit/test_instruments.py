@@ -180,6 +180,46 @@ class TestInstruments:
         assert result == {}
         assert "Could not connect to database or retrieve instruments" in caplog.text
 
+    def test_get_instruments_db_config_unavailable_logs_debug_not_warning(
+        self, monkeypatch, caplog
+    ):
+        """ValidationError from missing config logs at DEBUG, not WARNING."""
+        import logging
+
+        from pydantic import ValidationError
+        from pydantic_core import InitErrorDetails, PydanticCustomError
+
+        from nexusLIMS.instruments import _get_instrument_db
+
+        # Build a minimal ValidationError like pydantic raises for missing fields
+        validation_error = ValidationError.from_exception_data(
+            "Settings",
+            [
+                InitErrorDetails(
+                    type=PydanticCustomError("missing", "Field required"),
+                    loc=("NX_DB_PATH",),
+                    input={},
+                )
+            ],
+        )
+
+        class _BrokenSettings:
+            def __getattr__(self, name):
+                raise validation_error
+
+        monkeypatch.setattr("nexusLIMS.instruments.settings", _BrokenSettings())
+
+        with caplog.at_level("DEBUG"):
+            result = _get_instrument_db()
+
+        assert result == {}
+        assert "standalone mode" in caplog.text
+        # Must NOT appear at WARNING level
+        warning_records = [r for r in caplog.records if r.levelno >= logging.WARNING]
+        assert not any(
+            "Could not connect to database" in r.message for r in warning_records
+        )
+
     def test_get_instruments_db_key_error(self, tmp_path, caplog):
         """Test _get_instrument_db with KeyError from missing instrument_pid column."""
         import sqlite3

@@ -39,8 +39,6 @@ import logging
 import pkgutil
 from pathlib import Path
 
-from nexusLIMS import config
-
 _logger = logging.getLogger(__name__)
 
 __all__ = [
@@ -74,11 +72,21 @@ def register_all_profiles() -> None:
     profile_count = _load_profiles_from_directory(package_path, __name__)
 
     # Load local profiles if configured
-    if config.settings.NX_LOCAL_PROFILES_PATH:
-        local_path_obj = config.settings.NX_LOCAL_PROFILES_PATH
-        _logger.info("Loading local profiles from: %s", local_path_obj)
-        local_count = _load_profiles_from_directory(local_path_obj, module_prefix=None)
-        profile_count += local_count
+    try:
+        from nexusLIMS import config  # noqa: PLC0415
+
+        if config.settings.NX_LOCAL_PROFILES_PATH:
+            local_path_obj = config.settings.NX_LOCAL_PROFILES_PATH
+            _logger.info("Loading local profiles from: %s", local_path_obj)
+            local_count = _load_profiles_from_directory(
+                local_path_obj, module_prefix=None
+            )
+            profile_count += local_count
+    except Exception:
+        _logger.debug(
+            "NexusLIMS config unavailable; skipping local profile loading "
+            "(built-in profiles still active)"
+        )
 
     _logger.info("Loaded %d total instrument profile modules", profile_count)
 
