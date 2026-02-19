@@ -201,13 +201,14 @@ class CDCSDestination:
 
         return r.json()[0]["current"]
 
-    def _get_workspace_id(self) -> int:
+    def _get_workspace_id(self) -> int | None:
         """Get workspace ID from CDCS.
 
         Returns
         -------
-        int
-            Workspace ID
+        int or None
+            Workspace ID, or ``None`` if no workspaces are available (which
+            still means authentication succeeded).
 
         Raises
         ------
@@ -221,4 +222,5 @@ class CDCSDestination:
             msg = "Could not authenticate to CDCS"
             raise AuthenticationError(msg)
 
-        return r.json()[0]["id"]
+        workspaces = r.json()
+        return workspaces[0]["id"] if workspaces else None

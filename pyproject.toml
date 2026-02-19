@@ -228,12 +228,3 @@ typeCheckingMode = "basic"
 reportMissingImports = true
 reportMissingTypeStubs = false
 
-[tool.alembic]
-# Path to migration scripts (relative to pyproject.toml)
-script_location = "nexusLIMS/db/migrations"
-
-# Prepend current directory to sys.path for imports
-prepend_sys_path = ["."]
-
-# Use os.pathsep for cross-platform compatibility
-path_separator = "os"

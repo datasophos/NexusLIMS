@@ -5,8 +5,25 @@ from datetime import datetime as dt
 import pytest
 
 from nexusLIMS.builder import record_builder
+from nexusLIMS.builder.preflight import CheckResult
 from nexusLIMS.harvesters.reservation_event import ReservationEvent
 from tests.unit.test_instrument_factory import make_titan_tem
+
+
+@pytest.fixture
+def mock_preflight_pass(monkeypatch):
+    """Mock run_preflight_checks to return all-passing results.
+
+    Unit tests for process_new_records() test record-building logic, not
+    preflight checks.  This fixture bypasses preflight so the unit tests
+    don't require a fully-migrated DB or live NEMO credentials.
+    """
+    monkeypatch.setattr(
+        "nexusLIMS.builder.record_builder.run_preflight_checks",
+        lambda **_kwargs: [
+            CheckResult("all_checks", passed=True, severity="error", message="mocked")
+        ],
+    )
 
 
 @pytest.fixture(name="mock_nemo_reservation")

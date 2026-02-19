@@ -27,6 +27,7 @@ from sqlmodel import Session as DBSession
 from sqlmodel import select
 
 from nexusLIMS import version
+from nexusLIMS.builder.preflight import PreflightError, run_preflight_checks
 from nexusLIMS.config import settings
 from nexusLIMS.db.engine import get_engine
 from nexusLIMS.db.enums import RecordStatus
@@ -556,7 +557,7 @@ def _record_validation_flow(
     return xml_files, sessions_built
 
 
-def process_new_records(  # noqa: PLR0912
+def process_new_records(  # noqa: PLR0912, PLR0915
     *,
     dry_run: bool = False,
     dt_from: dt | None = None,
@@ -584,6 +585,19 @@ def process_new_records(  # noqa: PLR0912
         no date filtering will be performed. This parameter currently only
         has an effect for the NEMO harvester.
     """
+    results = run_preflight_checks(dry_run=dry_run)
+    for r in results:
+        if r.passed:
+            level = logging.DEBUG
+        else:
+            level = logging.ERROR if r.severity == "error" else logging.WARNING
+        status = "PASS" if r.passed else "FAIL"
+        _logger.log(level, "[preflight] %s: %s — %s", r.name, status, r.message)
+
+    failed_errors = [r for r in results if not r.passed and r.severity == "error"]
+    if failed_errors:
+        raise PreflightError(failed_errors)
+
     if dry_run:
         _logger.info("!!DRY RUN!! Only finding files, not building records")
         # get 'TO_BE_BUILT' sessions from the database

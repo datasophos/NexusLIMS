@@ -97,6 +97,7 @@ def skip_preview_generation(monkeypatch):
     instruments=["FEI-Titan-TEM", "JEOL-JEM-TEM", "TEST-TOOL"],
     sessions=True,
 )
+@pytest.mark.usefixtures("mock_preflight_pass")
 class TestRecordBuilder:
     """Tests the record building module."""
 

@@ -8,6 +8,7 @@ from unittest.mock import MagicMock, Mock, patch
 from click.testing import CliRunner
 from filelock import Timeout
 
+from nexusLIMS.builder.preflight import CheckResult, PreflightError
 from nexusLIMS.cli.process_records import (
     _format_version,
     check_log_for_errors,
@@ -608,6 +609,45 @@ class TestMainCLI:
 
         assert result.exit_code == 0
         assert "Error during record processing" in caplog.text
+
+    @patch("nexusLIMS.cli.process_records.send_error_notification")
+    @patch("nexusLIMS.utils.logging.setup_loggers")
+    def test_preflight_error_logged_with_details(
+        self,
+        mock_setup_loggers,
+        mock_send_email,
+        tmp_path,
+        monkeypatch,
+        caplog,
+    ):
+        """PreflightError is caught, logged with per-check details, run continues."""
+        mock_settings = Mock()
+        mock_settings.log_dir_path = tmp_path / "logs"
+        mock_settings.lock_file_path = tmp_path / ".builder.lock"
+        mock_settings.email_config = None
+
+        monkeypatch.setattr("nexusLIMS.config.settings", mock_settings)
+
+        failed_check = CheckResult(
+            name="db_reachable",
+            passed=False,
+            severity="error",
+            message="DB file not found",
+        )
+        preflight_exc = PreflightError([failed_check])
+
+        with patch(
+            "nexusLIMS.builder.record_builder.process_new_records",
+            side_effect=preflight_exc,
+        ):
+            runner = CliRunner()
+            with caplog.at_level(logging.ERROR):
+                result = runner.invoke(main, [])
+
+        assert result.exit_code == 0
+        assert "Preflight checks failed" in caplog.text
+        assert "db_reachable" in caplog.text
+        assert "DB file not found" in caplog.text
 
     @patch("nexusLIMS.builder.record_builder.process_new_records")
     @patch("nexusLIMS.cli.process_records.check_log_for_errors")

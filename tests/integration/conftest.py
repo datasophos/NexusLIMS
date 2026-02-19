@@ -374,6 +374,34 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
     engine = create_engine(f"sqlite:///{db_path}")
     SQLModel.metadata.create_all(engine)
 
+    # Seed alembic_version at the current head so _check_alembic_migration passes.
+    # The integration DB is created via SQLModel (no alembic run), so we must
+    # manually insert the head revision to avoid a hard PreflightError when
+    # tests call process_new_records().
+    from alembic.config import Config as AlembicConfig
+    from alembic.script import ScriptDirectory
+    from sqlalchemy import text
+
+    _alembic_ini = Path(__file__).parents[2] / "alembic.ini"
+    _cfg = AlembicConfig(str(_alembic_ini))
+    _cfg.set_main_option(
+        "script_location",
+        str(_alembic_ini.parent / "nexusLIMS" / "db" / "migrations"),
+    )
+    _head = ScriptDirectory.from_config(_cfg).get_current_head()
+    if _head:
+        with engine.connect() as _conn:
+            _conn.execute(
+                text(
+                    "CREATE TABLE IF NOT EXISTS alembic_version "
+                    "(version_num VARCHAR(32) NOT NULL)"
+                )
+            )
+            _conn.execute(text("DELETE FROM alembic_version"))
+            _conn.execute(text(f"INSERT INTO alembic_version VALUES ('{_head}')"))
+            _conn.commit()
+        print(f"[+] Seeded alembic_version at {_head}")
+
     print(f"[+] Initialized {db_path}")
 
     # Check if services are already running
