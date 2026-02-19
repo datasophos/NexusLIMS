@@ -17,6 +17,12 @@ uv run nexuslims instruments manage
 
 The TUI will automatically initialize the database if it doesn't exist yet.
 
+```{tip}
+Need a quick, scriptable summary of your instruments without opening the TUI?
+Use `nexuslims instruments list` for a plain-text table or JSON output.
+See the {ref}`nexuslims-instruments-list` section of the CLI reference for details.
+```
+
 ## Main Interface
 
 When you launch the instrument manager, you'll see a table listing all instruments in the database:
@@ -204,6 +210,6 @@ If form validation fails:
 
 ## See Also
 
-- {doc}`cli_reference` - Full CLI command reference
+- {doc}`cli_reference` - Full CLI command reference (includes `nexuslims instruments list`)
 - {doc}`/user_guide/migrations` - Database schema management
 - {doc}`/dev_guide/database` - Database schema documentation
