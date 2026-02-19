@@ -71,7 +71,7 @@ jobs:
           path: dist/
 
       - name: Run smoke test
-        run: ./scripts/smoke_test_package.sh dist/nexusLIMS-*.whl
+        run: ./scripts/smoke_test_package.sh dist/nexuslims-*.whl
 
       - name: Debug package contents on failure
         if: failure()
@@ -80,7 +80,7 @@ jobs:
           python -c "import nexusLIMS; from pathlib import Path; print(Path(nexusLIMS.__file__).parent)" || true
 
           echo "=== Wheel contents ==="
-          unzip -l dist/nexusLIMS-*.whl | grep -E "\.(xsd|owl|ttl|py)$" || true
+          unzip -l dist/nexuslims-*.whl | grep -E "\.(xsd|owl|ttl|py)$" || true
 
   publish-to-pypi:
     name: Publish to PyPI

@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git:*), Bash(uv:*), Bash(./scripts/release.sh:*), Bash(find:*), Bash(cat:*), Bash(grep:*)
+allowed-tools: Bash(git:*), Bash(uv:*), Bash(./scripts/release.sh:*)
 argument-hint: [version] [--dry-run] [--no-push]
 description: Prepare a NexusLIMS release with changelog review and upgrade instructions
 ---
@@ -8,20 +8,14 @@ description: Prepare a NexusLIMS release with changelog review and upgrade instr
 
 ## Current State
 
-**Current version:**
-!`grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/'`
+Use your tools to gather the following information before proceeding:
 
-**Current branch:**
-!`git branch --show-current`
+1. **Current version:** Read `pyproject.toml` and extract the `version = "..."` line.
+2. **Current branch:** Run `git branch --show-current`.
+3. **Pending changelog fragments:** Use Glob to find all `docs/changes/*.md` files (exclude `README.md`), then Read each one and display its filename and contents.
+4. **Changelog draft:** Run `uv run towncrier build --version=PREVIEW --draft` to preview the assembled changelog.
 
-**Pending changelog fragments:**
-!`find docs/changes -name '*.md' ! -name 'README.md' -exec echo "  {}" \; | sort`
-
-**Fragment contents:**
-!`for f in $(find docs/changes -name '*.md' ! -name 'README.md' | sort); do echo "### $f"; cat "$f"; echo; done`
-
-**Changelog draft (towncrier preview):**
-!`uv run towncrier build --version=PREVIEW --draft 2>/dev/null || echo "(no fragments found)"`
+Gather all four pieces of information before moving on to Step 1.
 
 ---
 
@@ -31,7 +25,7 @@ The user wants to cut a release. Work through the following steps in order.
 
 ### Step 1: Identify Breaking Changes
 
-Scan the fragment contents above. Look for:
+Scan the fragment contents you gathered. Look for:
 - Fragments with `.removal.md` in the filename
 - Any text mentioning "Breaking change", removed commands, renamed config keys, changed CLI behavior, or API removals
 

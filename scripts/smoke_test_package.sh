@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Smoke test for NexusLIMS package installation
-# Usage: ./scripts/smoke_test_package.sh dist/nexusLIMS-*.whl
+# Usage: ./scripts/smoke_test_package.sh dist/nexuslims-*.whl
 
 set -euo pipefail
 
-WHEEL_PATH="${1:-dist/nexusLIMS-*.whl}"
+WHEEL_PATH="${1:-dist/nexuslims-*.whl}"
 VENV_DIR="${SMOKE_TEST_VENV:-/tmp/nexuslims-smoke-test-$$}"
 
 # Detect Python command - prefer 3.12, 3.11, then fallback to python3/python

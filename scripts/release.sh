@@ -114,7 +114,7 @@ uv sync --quiet
 
 # Check for clean working directory (unless dry-run or draft)
 if [ "$DRY_RUN" = false ] && [ "$DRAFT_ONLY" = false ]; then
-    if [ -n "$(git status --porcelain)" ]; then
+    if [ -n "$(git diff --name-only)" ]; then
         error "Working directory is not clean. Commit or stash changes first."
     fi
 fi

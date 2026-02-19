@@ -14,6 +14,51 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.5.0 (2026-02-18)
+
+### New features
+
+- Added a generic user identity mapping system to support integration with external systems (NEMO, LabArchives, CDCS) that use different user identification schemes. This enables automatic exports to LabArchives and other external destinations without requiring interactive OAuth flows for each session. ([#48](https://github.com/datasophos/NexusLIMS/issues/48))
+- Alembic database migrations are now shipped inside the installed package and managed through the new `nexuslims db` CLI command. This user-friendly tool provides simple commands for common database operations: `init` (initialize a new database), `upgrade` (apply migrations), `current` (show version), `check` (detect pending migrations), and `downgrade` (roll back changes). Advanced users can access the full Alembic CLI via `nexuslims db alembic [COMMAND]`. The tool automatically locates migrations whether NexusLIMS is installed via pip, uv, or run from source, eliminating manual path configuration. The existing `uv run alembic` workflow continues to work for development. ([#50](https://github.com/datasophos/NexusLIMS/issues/50))
+- Added a new `nexuslims instruments manage` CLI tool with an interactive terminal UI for managing the instruments database. The tool provides list, add, edit, and delete operations with real-time validation, eliminating the need for direct SQLite access or ad-hoc scripts. This release also introduces a shared TUI infrastructure (`nexusLIMS.tui`) to support future interactive terminal applications, promoting code reuse and consistent user experience across all NexusLIMS TUI tools. The TUI supports theme switching (dark/light modes), provides field validation with helpful error messages, and includes confirmation prompts for destructive actions. ([#51](https://github.com/datasophos/NexusLIMS/issues/51))
+- Added `nexuslims config edit` subcommand that opens an interactive Textual TUI for editing the NexusLIMS `.env` configuration file. The form is organized into seven tabs (Core Paths, CDCS, File Processing, NEMO Harvesters, eLabFTW, Email, and SSL/Certs), pre-populates all fields from the existing `.env`, validates input before saving, and writes the updated file on Ctrl+S. NEMO harvester instances can be added, edited, and deleted as individual groups for each harvester. The eLabFTW and email sections include an enable/disable toggle that omits the section from the written `.env` when turned off. ([#55](https://github.com/datasophos/NexusLIMS/issues/55))
+- Added preflight checks that run at the start of `nexuslims build-records`. Common misconfigurations — such as a missing or outdated database schema, invalid instrument timezones, unwritable data directories, and unreachable export destinations — are now detected and reported with actionable error messages before any harvesting or record-building work begins. ([#57](https://github.com/datasophos/NexusLIMS/issues/57))
+- NexusLIMS can now be installed as a standard Python package via `pip install nexusLIMS` or `uv pip install nexusLIMS`, eliminating the need for source checkouts. All CLI commands (including `nexuslims config edit`) work immediately after installation without requiring a pre-existing `.env` file, enabling a smooth first-run configuration experience. Package data files (schemas, migrations) are automatically included, and all entry points are properly wired. ([#58](https://github.com/datasophos/NexusLIMS/issues/58))
+- The extractor plugin system can now be used as a standalone library without a
+  fully configured NexusLIMS deployment. Calling `parse_metadata()` on a
+  microscopy file (e.g., from a Jupyter notebook) no longer requires a `.env`
+  file, database, or NEMO/CDCS configuration. When configuration is unavailable,
+  metadata is extracted and returned normally; JSON sidecar writing and preview
+  generation are skipped with a log warning. The low-level registry API
+  (`ExtractionContext` + `get_registry()`) also works config-free. ([#59](https://github.com/datasophos/NexusLIMS/issues/59))
+- All CLI commands are now accessible through a single unified `nexuslims` entrypoint with subcommands (e.g., `nexuslims build-records`, `nexuslims config edit`, `nexuslims db`). The previous standalone commands (`nexuslims-process-records`, `nexuslims-config`, `nexuslims-migrate`, `nexuslims-manage-instruments`) have been removed. Tab completion is available for NexusLIMS commands. Run `nexuslims completion` to set it up. ([#71](https://github.com/datasophos/NexusLIMS/issues/71))
+- Added `nexuslims instruments list` command to print a summary table of all
+  instruments in the database, including session and completed-record counts.
+  Supports `--format json` for scripting. ([#79](https://github.com/datasophos/NexusLIMS/issues/79))
+
+### Bug fixes
+
+- Fixed module-level settings access in `nexusLIMS/harvesters/__init__.py` that caused validation errors when importing NexusLIMS code without configuring `.env`. Certificate authority bundle configuration is now loaded lazily via `get_ca_bundle_path()` and `get_ca_bundle_content()` functions, allowing modules to be imported before environment variables are set while still providing helpful error messages when configuration is actually accessed. ([#75](https://github.com/datasophos/NexusLIMS/issues/75))
+
+### Documentation improvements
+
+- Added auto-generated database schema diagrams to the developer documentation. The diagrams are automatically regenerated when documentation is built, ensuring they always reflect the current database schema. Includes both a modern PNG diagram (via Graphviz) and an interactive Mermaid ER diagram with field descriptions extracted from model docstrings. ([#48](https://github.com/datasophos/NexusLIMS/issues/48))
+- Added an example Jupyter notebook to the documentation demonstrating standalone
+  extractor usage across all supported file formats (DM3/DM4, TIFF, SPC, MSA),
+  including multi-signal files and the `registry.all_extractors` API for
+  inspecting registered extractors. The notebook can be downloaded directly from
+  the documentation page to run locally. ([#59](https://github.com/datasophos/NexusLIMS/issues/59))
+
+### Miscellaneous/Development changes
+
+- Implemented comprehensive test infrastructure unification to prevent test pollution and improve reliability. Added centralized singleton management via `SingletonResetter` class, unified test data across unit and integration tests with single-source-of-truth instrument configurations, and enhanced cleanup fixtures to reset module-level state between tests. All test instrument PIDs now use the unified "TEST-TOOL" identifier. Tests now automatically marked by location (unit/integration) for easier filtering. ([#31](https://github.com/datasophos/NexusLIMS/issues/31))
+
+### Deprecations and/or Removals
+
+- **Breaking change:** The manual `NexusLIMS_db_creation_script.sql` file and legacy `migrate_db.py` dev scripts have been removed. Database creation and schema management now use fully automated ORM-based workflows via SQLModel and Alembic. New databases are created with `nexuslims db init` (which uses `SQLModel.metadata.create_all()` and stamps the database at the current schema version). Existing databases continue using `nexuslims db upgrade` for schema migrations. This consolidates database lifecycle management in a single source of truth, eliminating the risk of drift between SQL scripts and ORM models. The test suite's `DatabaseFactory` fixture was updated accordingly and no longer requires a SQL schema file path parameter. ([#49](https://github.com/datasophos/NexusLIMS/issues/49))
+- **Breaking change:** The standalone `nexuslims-process-records` command has been removed. All NexusLIMS functionality is now available through the unified `nexuslims` command, which has been greatly expanded (e.g., `nexuslims build-records`, `nexuslims config edit`, `nexuslims db init`, `nexuslims instruments manage`). You will need to update any scripts or cron jobs that invoke the old command. ([#71](https://github.com/datasophos/NexusLIMS/issues/71))
+
+
 ## 2.4.1 (2026-02-06)
 
 ### New features
