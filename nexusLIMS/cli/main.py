@@ -15,6 +15,7 @@ Usage
     nexuslims config [dump|load|edit]
     nexuslims db [init|upgrade|...]
     nexuslims instruments manage
+    nexuslims instruments list
 """
 
 from __future__ import annotations
@@ -112,6 +113,26 @@ def _build_instruments_group() -> click.Group:
 
         _ensure_database_initialized()
         _run_instrument_manager()
+
+    @instruments.command(name="list")
+    @click.option(
+        "--format",
+        "-f",
+        "output_format",
+        type=click.Choice(["table", "json"]),
+        default="table",
+        show_default=True,
+        help="Output format.",
+    )
+    def list_instruments(output_format: str) -> None:
+        """List all instruments in the database."""
+        from nexusLIMS.cli.manage_instruments import (  # noqa: PLC0415
+            _ensure_database_initialized,
+            _list_instruments,
+        )
+
+        _ensure_database_initialized()
+        _list_instruments(output_format=output_format)
 
     return instruments
 

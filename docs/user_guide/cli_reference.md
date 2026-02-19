@@ -465,6 +465,105 @@ For a complete guide with screenshots and demonstrations, see the {doc}`instrume
 
 ---
 
+(nexuslims-instruments-list)=
+## `nexuslims instruments list`
+
+Print a summary of all instruments in the database without launching the full
+TUI. Useful for quick status checks and scripting.
+
+### Basic Usage
+
+```bash
+nexuslims instruments list --help
+```
+
+```text
+Usage: nexuslims instruments list [OPTIONS]
+
+  List all instruments in the database.
+
+Options:
+  -f, --format [table|json]  Output format.  [default: table]
+  --help                     Show this message and exit.
+```
+
+### Output Formats
+
+#### Table (default)
+
+```bash
+nexuslims instruments list
+```
+
+```text
+                    NexusLIMS Instruments (2 total)
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┓
+┃ ID               ┃ Display Name     ┃ Location ┃ API URL              ┃ Sessions ┃ Last Session         ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━┩
+│ FEI-Titan-TEM-01 │ FEI Titan TEM    │ Room 123 │ https://ne…?id=1     │       15 │ 2025-11-03 14:22 EST │
+│ JEOL-ARM-200F-67 │ JEOL ARM 200F    │ Room 456 │ https://ne…?id=42    │        8 │ 2025-09-15 09:05 EDT │
+└──────────────────┴──────────────────┴──────────┴──────────────────────┴──────────┴──────────────────────┘
+```
+
+Columns:
+
+- **ID** — the `instrument_pid` (primary key in the database)
+- **Display Name** — human-readable name shown in NexusLIMS records
+- **Location** — physical location (building and room)
+- **API URL** — NEMO tool API endpoint (long URLs are middle-truncated so both
+  the server host and the query parameters remain visible)
+- **Sessions** — number of distinct sessions recorded for this instrument (based
+  on `END` events in `session_log`)
+- **Last Session** — timestamp of the most recent session end, localized to the
+  instrument's configured timezone; `—` if no sessions exist yet
+
+#### JSON (`--format json`)
+
+```bash
+nexuslims instruments list --format json
+```
+
+```json
+[
+  {
+    "instrument_pid": "FEI-Titan-TEM-01",
+    "display_name": "FEI Titan TEM",
+    "location": "Room 123",
+    "api_url": "https://nemo.example.com/api/tools/?id=1",
+    "harvester": "nemo",
+    "sessions_total": 15,
+    "last_session": "2025-11-03T14:22:00-05:00"
+  }
+]
+```
+
+The `last_session` field is an ISO-8601 string with timezone offset, localized
+to each instrument's configured timezone, or `null` if no sessions exist.
+
+### Examples
+
+```bash
+# Print table to terminal
+nexuslims instruments list
+
+# Pipe JSON to jq for scripting
+nexuslims instruments list --format json | jq '.[].instrument_pid'
+
+# Count total instruments
+nexuslims instruments list --format json | jq 'length'
+
+# Find instruments with no sessions yet
+nexuslims instruments list --format json | jq '[.[] | select(.sessions_total == 0)]'
+```
+
+```{note}
+`nexuslims instruments list` is a read-only command — it never modifies the
+database. To add, edit, or delete instruments, use
+`nexuslims instruments manage`.
+```
+
+---
+
 ## `nexuslims config`
 
 Configuration management utility for viewing and exporting NexusLIMS configuration.
