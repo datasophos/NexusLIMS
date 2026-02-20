@@ -14,6 +14,21 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.5.1 (2026-02-19)
+
+### Bug fixes
+
+- Fixed issue where NexusLIMS could not install easily on
+  a Raspberry Pi device without significant compilation effort
+  due to an outdated pinned dependency on `lxml`. ([#85](https://github.com/datasophos/NexusLIMS/issues/85))
+
+### Miscellaneous/Development changes
+
+- Updated dependencies: bumped lxml to v6, requests to v2.32+,
+  python-dotenv to v1, textual to v8, Sphinx to v9, and ruff to v0.9;
+  removed deprecated `requests-ntlm` and `defusedxml` dependencies. ([#85](https://github.com/datasophos/NexusLIMS/issues/85))
+
+
 ## 2.5.0 (2026-02-18)
 
 ### New features

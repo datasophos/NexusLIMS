@@ -44,8 +44,8 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=3ce10a4d"></script>
-    <script src="../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
@@ -547,7 +547,7 @@ actionable messages.</p>
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="nexusLIMS.builder.preflight.CheckResult">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.builder.preflight.</span></span><span class="sig-name descname"><span class="pre">CheckResult</span></span><a class="reference internal" href="../../_modules/nexusLIMS/builder/preflight.html#CheckResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.builder.preflight.CheckResult" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">nexusLIMS.builder.preflight.</span></span><span class="sig-name descname"><span class="pre">CheckResult</span></span><a class="reference internal" href="../../_modules/nexusLIMS/builder/preflight.html#CheckResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.builder.preflight.CheckResult" title="Link to this definition">#</a></dt>
 <dd><p>Result of a single preflight check.</p>
 <dl class="myst field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -588,7 +588,7 @@ actionable messages.</p>
 
 <dl class="py exception">
 <dt class="sig sig-object py" id="nexusLIMS.builder.preflight.PreflightError">
-<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">nexusLIMS.builder.preflight.</span></span><span class="sig-name descname"><span class="pre">PreflightError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">failed_checks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#nexusLIMS.builder.preflight.CheckResult" title="nexusLIMS.builder.preflight.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/builder/preflight.html#PreflightError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.builder.preflight.PreflightError" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">nexusLIMS.builder.preflight.</span></span><span class="sig-name descname"><span class="pre">PreflightError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">failed_checks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#nexusLIMS.builder.preflight.CheckResult" title="nexusLIMS.builder.preflight.CheckResult"><span class="pre">CheckResult</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/builder/preflight.html#PreflightError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.builder.preflight.PreflightError" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.11/library/exceptions.html#Exception" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 <p>Raised when one or more preflight checks with severity=’error’ fail.</p>
 <dl class="myst field-list simple">
