@@ -1,0 +1,1656 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nexusLIMS.schemas.metadata &#8212; NexusLIMS pr-86 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=e8fcafad"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nexusLIMS/schemas/metadata';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-86';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../../../_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-86/_modules/nexusLIMS/schemas/metadata.html" />
+    <link rel="icon" href="../../../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="pr-86" />
+    <meta name="docbuild:last-update" content="Feb, 20, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS pr-86 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS pr-86 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.schemas.metadata</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for nexusLIMS.schemas.metadata</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Type-specific metadata schemas for NexusLIMS extractor plugins.</span>
+
+<span class="sd">This module defines Pydantic models for validating metadata extracted from different</span>
+<span class="sd">types of microscopy data (Image, Spectrum, SpectrumImage, Diffraction). Each schema</span>
+<span class="sd">uses Pint Quantity objects for physical measurements, EM Glossary field names, and</span>
+<span class="sd">supports flexible extension fields.</span>
+
+<span class="sd">The schemas follow a hierarchical structure:</span>
+<span class="sd">- :class:`NexusMetadata` - Base schema with common fields</span>
+<span class="sd">- :class:`ImageMetadata` - SEM/TEM/STEM image data</span>
+<span class="sd">- :class:`SpectrumMetadata` - EDS/EELS spectral data</span>
+<span class="sd">- :class:`SpectrumImageMetadata` - Hyperspectral data (inherits from both)</span>
+<span class="sd">- :class:`DiffractionMetadata` - Diffraction pattern data</span>
+
+<span class="sd">**Key Features:**</span>
+<span class="sd">- Pint Quantity fields for machine-actionable units</span>
+<span class="sd">- EM Glossary v2.0.0 terminology (see :doc:`/dev_guide/em_glossary_reference`)</span>
+<span class="sd">- Automatic unit normalization to preferred units</span>
+<span class="sd">- Flexible extensions section for instrument-specific metadata</span>
+<span class="sd">- Strict validation of core fields</span>
+
+<span class="sd">Examples</span>
+<span class="sd">--------</span>
+<span class="sd">Validate SEM image metadata:</span>
+
+<span class="sd">&gt;&gt;&gt; from nexusLIMS.schemas.metadata import ImageMetadata</span>
+<span class="sd">&gt;&gt;&gt; from nexusLIMS.schemas.units import ureg</span>
+<span class="sd">&gt;&gt;&gt;</span>
+<span class="sd">&gt;&gt;&gt; meta = ImageMetadata(</span>
+<span class="sd">...     creation_time=&quot;2024-01-15T10:30:00-05:00&quot;,</span>
+<span class="sd">...     data_type=&quot;SEM_Imaging&quot;,</span>
+<span class="sd">...     dataset_type=&quot;Image&quot;,</span>
+<span class="sd">...     acceleration_voltage=ureg.Quantity(10, &quot;kilovolt&quot;),</span>
+<span class="sd">...     working_distance=ureg.Quantity(10, &quot;millimeter&quot;),</span>
+<span class="sd">...     beam_current=ureg.Quantity(100, &quot;picoampere&quot;),</span>
+<span class="sd">... )</span>
+<span class="sd">&gt;&gt;&gt; print(meta.acceleration_voltage)</span>
+<span class="sd">10.0 kilovolt</span>
+
+<span class="sd">Validate spectrum metadata:</span>
+
+<span class="sd">&gt;&gt;&gt; from nexusLIMS.schemas.metadata import SpectrumMetadata</span>
+<span class="sd">&gt;&gt;&gt;</span>
+<span class="sd">&gt;&gt;&gt; spec_meta = SpectrumMetadata(</span>
+<span class="sd">...     creation_time=&quot;2024-01-15T10:30:00-05:00&quot;,</span>
+<span class="sd">...     data_type=&quot;EDS_Spectrum&quot;,</span>
+<span class="sd">...     dataset_type=&quot;Spectrum&quot;,</span>
+<span class="sd">...     acquisition_time=ureg.Quantity(30, &quot;second&quot;),</span>
+<span class="sd">...     live_time=ureg.Quantity(28.5, &quot;second&quot;),</span>
+<span class="sd">... )</span>
+
+<span class="sd">Use extensions for instrument-specific fields:</span>
+
+<span class="sd">&gt;&gt;&gt; meta_with_ext = ImageMetadata(</span>
+<span class="sd">...     creation_time=&quot;2024-01-15T10:30:00-05:00&quot;,</span>
+<span class="sd">...     data_type=&quot;SEM_Imaging&quot;,</span>
+<span class="sd">...     dataset_type=&quot;Image&quot;,</span>
+<span class="sd">...     extensions={</span>
+<span class="sd">...         &quot;facility&quot;: &quot;Nexus Microscopy Center&quot;,</span>
+<span class="sd">...         &quot;detector_brightness&quot;: 50.0,</span>
+<span class="sd">...         &quot;scan_speed&quot;: 6,</span>
+<span class="sd">...     }</span>
+<span class="sd">... )</span>
+
+<span class="sd">For detailed documentation on the metadata schema system, see:</span>
+
+<span class="sd">- :doc:`/dev_guide/nexuslims_internal_schema` - Schema architecture,</span>
+<span class="sd">  migration guide, and usage examples</span>
+<span class="sd">- :doc:`/dev_guide/em_glossary_reference` - Complete EM Glossary field</span>
+<span class="sd">  reference and mapping tables</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Literal</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">field_validator</span><span class="p">,</span> <span class="n">model_validator</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas</span><span class="w"> </span><span class="kn">import</span> <span class="n">em_glossary</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.pint_types</span><span class="w"> </span><span class="kn">import</span> <span class="n">PintQuantity</span>
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="emg_field">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.emg_field">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">emg_field</span><span class="p">(</span>
+    <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a Pydantic Field with EM Glossary metadata.</span>
+
+<span class="sd">    This helper automatically adds EM Glossary semantic annotations to field</span>
+<span class="sd">    definitions, including EMG ID, URI, and label. It pulls metadata from the</span>
+<span class="sd">    :mod:`~nexusLIMS.schemas.em_glossary` module to maintain a single source</span>
+<span class="sd">    of truth.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    field_name : str</span>
+<span class="sd">        Internal field name (e.g., &quot;acceleration_voltage&quot;). Used to look up</span>
+<span class="sd">        EMG metadata from :mod:`~nexusLIMS.schemas.em_glossary` module.</span>
+
+<span class="sd">    default : Any, optional</span>
+<span class="sd">        Default value for the field. Use `...` for required fields, `None`</span>
+<span class="sd">        for optional fields.</span>
+
+<span class="sd">    description : str, optional</span>
+<span class="sd">        Field description. If not provided, uses description from</span>
+<span class="sd">        :mod:`~nexusLIMS.schemas.em_glossary` module.</span>
+
+<span class="sd">    **kwargs : Any</span>
+<span class="sd">        Additional keyword arguments passed to :func:`pydantic.fields.Field`, such as:</span>
+<span class="sd">        - `alias`: Override display name (default from em_glossary)</span>
+<span class="sd">        - `gt`, `ge`, `lt`, `le`: Numeric constraints</span>
+<span class="sd">        - `examples`: Example values for documentation</span>
+<span class="sd">        - `json_schema_extra`: Additional JSON schema metadata (merged with EMG data)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :class:`pydantic.fields.FieldInfo`</span>
+<span class="sd">        Configured Pydantic field with EMG metadata</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Create a field with automatic EMG metadata:</span>
+
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.metadata import emg_field</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.pint_types import PintQuantity</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; class MySchema(BaseModel):</span>
+<span class="sd">    ...     dwell_time: PintQuantity | None = emg_field(&quot;dwell_time&quot;)</span>
+
+<span class="sd">    The field automatically gets:</span>
+<span class="sd">    - `alias`: &quot;Dwell Time&quot; (display name)</span>
+<span class="sd">    - `description`: &quot;Time period during which the beam remains at one position.&quot;</span>
+<span class="sd">    - `json_schema_extra`: `{&quot;emg_id&quot;: &quot;EMG_00000015&quot;, &quot;emg_uri&quot;: &quot;...&quot;, ...}`</span>
+
+<span class="sd">    Override description:</span>
+
+<span class="sd">    &gt;&gt;&gt; acceleration_voltage: PintQuantity | None = emg_field(</span>
+<span class="sd">    ...     &quot;dwell_time&quot;,</span>
+<span class="sd">    ...     description=&quot;Custom description&quot;,</span>
+<span class="sd">    ... )</span>
+
+<span class="sd">    Add additional JSON schema metadata:</span>
+
+<span class="sd">    &gt;&gt;&gt; beam_current: PintQuantity | None = emg_field(</span>
+<span class="sd">    ...     &quot;beam_current&quot;,</span>
+<span class="sd">    ...     json_schema_extra={&quot;units&quot;: &quot;second&quot;, &quot;typical_range&quot;: &quot;1e-3 to 1&quot;},</span>
+<span class="sd">    ... )</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Fields without EMG mappings still get display names and descriptions</span>
+<span class="sd">    - EMG metadata is only added if the field has a valid EMG ID</span>
+<span class="sd">    - The alias (display name) comes from em_glossary for consistency</span>
+<span class="sd">    - All EMG metadata is stored in json_schema_extra for JSON schema export</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Get EMG metadata</span>
+    <span class="n">emg_id</span> <span class="o">=</span> <span class="n">em_glossary</span><span class="o">.</span><span class="n">get_emg_id</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+    <span class="n">emg_uri</span> <span class="o">=</span> <span class="n">em_glossary</span><span class="o">.</span><span class="n">get_emg_uri</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+    <span class="n">display_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;alias&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">em_glossary</span><span class="o">.</span><span class="n">get_display_name</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+    <span class="n">field_description</span> <span class="o">=</span> <span class="n">description</span> <span class="ow">or</span> <span class="n">em_glossary</span><span class="o">.</span><span class="n">get_description</span><span class="p">(</span><span class="n">field_name</span><span class="p">)</span>
+
+    <span class="c1"># Build json_schema_extra with EMG metadata</span>
+    <span class="n">extra</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;json_schema_extra&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="k">if</span> <span class="n">emg_id</span><span class="p">:</span>
+        <span class="n">emg_label</span> <span class="o">=</span> <span class="n">em_glossary</span><span class="o">.</span><span class="n">get_emg_label</span><span class="p">(</span><span class="n">emg_id</span><span class="p">)</span>
+        <span class="n">extra</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;emg_id&quot;</span><span class="p">:</span> <span class="n">emg_id</span><span class="p">,</span>
+                <span class="s2">&quot;emg_uri&quot;</span><span class="p">:</span> <span class="n">emg_uri</span><span class="p">,</span>
+                <span class="s2">&quot;emg_label&quot;</span><span class="p">:</span> <span class="n">emg_label</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="n">display_name</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="n">field_description</span><span class="p">,</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="n">extra</span> <span class="k">if</span> <span class="n">extra</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ExtractionDetails">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ExtractionDetails">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExtractionDetails</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Metadata about the NexusLIMS extraction process.</span>
+
+<span class="sd">    Records when metadata was extracted, which extractor module was used,</span>
+<span class="sd">    and the NexusLIMS version.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">date</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Date&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ISO-8601 timestamp when extraction occurred&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ISO-8601 formatted timestamp with timezone indicating when the</span>
+<span class="sd">       metadata extraction occurred.&quot;&quot;&quot;</span>
+
+    <span class="n">module</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Module&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Extractor module name&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fully qualified Python module name of the extractor that processed</span>
+<span class="sd">    this file. Examples: `&#39;nexusLIMS.extractors.plugins.digital_micrograph&#39;`,</span>
+<span class="sd">    `&#39;nexusLIMS.extractors.plugins.quanta_tif&#39;`&quot;&quot;&quot;</span>
+
+    <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Version&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;NexusLIMS version&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;NexusLIMS version string used for extraction. Example: `&#39;1.2.3&#39;`&quot;&quot;&quot;</span>
+
+    <span class="n">extractor_warnings</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Extractor Warnings&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Warning or error messages from the extraction process&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warning or error messages from the extraction process&quot;&quot;&quot;</span>
+
+    <span class="n">model_config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;populate_by_name&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic model configuration:</span>
+
+<span class="sd">    - ``populate_by_name: True`` -- Accept both Python field names and JSON aliases</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="StagePosition">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.StagePosition">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StagePosition</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stage position with coordinates and tilt angles.</span>
+
+<span class="sd">    Represents the physical position and orientation of the microscope stage.</span>
+<span class="sd">    All fields use Pint Quantity objects with appropriate units and are optional</span>
+<span class="sd">    to accommodate different stage configurations.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.metadata import StagePosition</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.units import ureg</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; pos = StagePosition(</span>
+<span class="sd">    ...     x=ureg.Quantity(100, &quot;um&quot;),</span>
+<span class="sd">    ...     y=ureg.Quantity(200, &quot;um&quot;),</span>
+<span class="sd">    ...     z=ureg.Quantity(5, &quot;mm&quot;),</span>
+<span class="sd">    ...     tilt_alpha=ureg.Quantity(10, &quot;degree&quot;),</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; print(pos.x)</span>
+<span class="sd">    100 micrometer</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Some microscopes may not have all degrees of freedom. Single-tilt stages</span>
+<span class="sd">    will only have tilt_alpha, while dual-tilt stages (e.g., tomography holders)</span>
+<span class="sd">    will have both tilt_alpha and tilt_beta.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">x</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stage X coordinate&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stage X coordinate. Preferred unit: micrometer (µm)&quot;&quot;&quot;</span>
+
+    <span class="n">y</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stage Y coordinate&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stage Y coordinate. Preferred unit: micrometer (µm)&quot;&quot;&quot;</span>
+
+    <span class="n">z</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stage Z coordinate (height)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stage Z coordinate (height). Preferred unit: millimeter (mm)&quot;&quot;&quot;</span>
+
+    <span class="n">rotation</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stage rotation angle around Z axis&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stage rotation angle around Z axis. Preferred unit: degree (°)&quot;&quot;&quot;</span>
+
+    <span class="n">tilt_alpha</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Tilt angle along primary tilt axis (alpha)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tilt angle along the stage&#39;s primary tilt axis (alpha).</span>
+<span class="sd">    Preferred unit: degree (°)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">tilt_beta</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Tilt angle along secondary tilt axis (beta), if capable&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tilt angle along the stage&#39;s secondary tilt axis (beta), if the stage</span>
+<span class="sd">    is capable of dual-axis tilting. Preferred unit: degree (°)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;extra&quot;</span><span class="p">:</span> <span class="s2">&quot;allow&quot;</span><span class="p">,</span>  <span class="c1"># Allow additional vendor-specific coordinates</span>
+    <span class="p">}</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic model configuration:</span>
+
+<span class="sd">    - ``extra: &quot;allow&quot;`` -- Allow additional vendor-specific stage positions</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="NexusMetadata">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NexusMetadata</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base schema for all NexusLIMS metadata.</span>
+
+<span class="sd">    This is the foundation schema that all type-specific schemas inherit from.</span>
+<span class="sd">    It defines the required fields common to all dataset types and provides</span>
+<span class="sd">    the extension mechanism for instrument-specific metadata.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The extensions section allows arbitrary metadata while maintaining strict</span>
+<span class="sd">    validation on core fields. This hybrid approach ensures:</span>
+
+<span class="sd">    - Core fields are consistent and validated</span>
+<span class="sd">    - Instrument-specific metadata is preserved</span>
+<span class="sd">    - No data loss during extraction</span>
+
+<span class="sd">    Extensions should use descriptive key names and avoid conflicts with core</span>
+<span class="sd">    field names.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Required fields (common to all types)</span>
+    <span class="n">creation_time</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Creation Time&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ISO-8601 timestamp with timezone&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ISO-8601 formatted timestamp with timezone indicating when the data</span>
+<span class="sd">    was acquired. Must include timezone offset (+00:00, -05:00) or &#39;Z&#39;.</span>
+<span class="sd">    Examples: &quot;2024-01-15T10:30:00-05:00&quot;, &quot;2024-01-15T15:30:00Z&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Data Type&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human-readable data type description&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Human-readable description of the data type using underscore-separated</span>
+<span class="sd">    components. Examples: &quot;STEM_Imaging&quot;, &quot;TEM_EDS&quot;, &quot;SEM_Imaging&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dataset_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span>
+        <span class="s2">&quot;Image&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Spectrum&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SpectrumImage&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Diffraction&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Misc&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Unknown&quot;</span><span class="p">,</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="o">...</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Schema-defined dataset category&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Schema-defined category matching the Nexus Experiment XML schema type</span>
+<span class="sd">    attribute.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Common optional fields</span>
+    <span class="n">data_dimensions</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Data Dimensions&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;String representation of data shape&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    String representation of data shape as a tuple.</span>
+<span class="sd">    Examples: &quot;(1024, 1024)&quot;, &quot;(2048,)&quot;, &quot;(12, 1024, 1024)&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">instrument_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Instrument ID&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;NexusLIMS persistent instrument identifier&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    NexusLIMS persistent identifier for the instrument.</span>
+<span class="sd">    Examples: &quot;FEI-Titan-TEM-635816&quot;, &quot;Quanta-FEG-650-SEM-555555&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">warnings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Field names flagged as unreliable&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Field names flagged as unreliable. These are marked with warning=&quot;true&quot;</span>
+<span class="sd">    in the XML output.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nexuslims_extraction</span><span class="p">:</span> <span class="n">ExtractionDetails</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;NexusLIMS Extraction&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;NexusLIMS extraction metadata (date, module, version, warnings)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    NexusLIMS extraction metadata containing date, module, and version</span>
+<span class="sd">    information about when and how the metadata was extracted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">extensions</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Instrument-specific metadata extensions&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Flexible container for instrument-specific metadata that doesn&#39;t fit</span>
+<span class="sd">    the core schema. Use this for vendor-specific fields, facility metadata,</span>
+<span class="sd">    or experimental parameters not covered by EM Glossary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Configuration</span>
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;populate_by_name&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Accept both Python names and aliases</span>
+        <span class="s2">&quot;extra&quot;</span><span class="p">:</span> <span class="s2">&quot;forbid&quot;</span><span class="p">,</span>  <span class="c1"># Force use of extensions for extra fields</span>
+    <span class="p">}</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pydantic model configuration:</span>
+
+<span class="sd">    - ``populate_by_name: True`` -- Accept both Python field names and JSON aliases</span>
+<span class="sd">    - ``extra: &quot;forbid&quot;`` -- Forbid extra fields (forces use of extensions dict</span>
+<span class="sd">      for additional data)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="NexusMetadata.validate_iso_timestamp">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.validate_iso_timestamp">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;creation_time&quot;</span><span class="p">)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_iso_timestamp</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate ISO-8601 timestamp with timezone.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">datetime</span><span class="o">.</span><span class="n">fromisoformat</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Invalid ISO-8601 timestamp format: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
+        <span class="c1"># Require timezone information</span>
+        <span class="n">min_dashes_for_tz</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="s2">&quot;+&quot;</span> <span class="ow">in</span> <span class="n">v</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;Z&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">v</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_dashes_for_tz</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Timestamp must include timezone: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Use format like &#39;2024-01-15T10:30:00-05:00&#39; or &#39;...Z&#39;&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">v</span></div>
+
+
+<div class="viewcode-block" id="NexusMetadata.validate_data_type_not_empty">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.NexusMetadata.validate_data_type_not_empty">[docs]</a>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;data_type&quot;</span><span class="p">)</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_data_type_not_empty</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate ``data_type`` is not empty.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Data Type cannot be empty&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ImageMetadata">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.ImageMetadata">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ImageMetadata</span><span class="p">(</span><span class="n">NexusMetadata</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Schema for image dataset metadata (SEM, TEM, STEM, FIB, HIM).</span>
+
+<span class="sd">    Extends :class:`NexusMetadata` with fields specific to 2D image acquisition.</span>
+<span class="sd">    Uses Pint Quantity objects for all physical measurements.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.metadata import ImageMetadata</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.units import ureg</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; meta = ImageMetadata(</span>
+<span class="sd">    ...     creation_time=&quot;2024-01-15T10:30:00-05:00&quot;,</span>
+<span class="sd">    ...     data_type=&quot;SEM_Imaging&quot;,</span>
+<span class="sd">    ...     dataset_type=&quot;Image&quot;,</span>
+<span class="sd">    ...     acceleration_voltage=ureg.Quantity(15, &quot;kV&quot;),</span>
+<span class="sd">    ...     working_distance=ureg.Quantity(10.5, &quot;mm&quot;),</span>
+<span class="sd">    ...     beam_current=ureg.Quantity(50, &quot;pA&quot;),</span>
+<span class="sd">    ...     magnification=5000.0,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dataset_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;Image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="s2">&quot;Image&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Must be &#39;Image&#39; for this schema&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Image-specific fields (using EM Glossary names)</span>
+    <span class="n">acceleration_voltage</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Accelerating voltage of the electron/ion beam.</span>
+<span class="sd">    Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">working_distance</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;working_distance&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Distance between final lens and sample surface.</span>
+<span class="sd">    Preferred unit: millimeter (mm). EM Glossary: EMG_00000050</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">beam_current</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;beam_current&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Electron beam current.</span>
+<span class="sd">    Preferred unit: picoampere (pA). EM Glossary: EMG_00000006</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">emission_current</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;emission_current&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Emission current from electron source.</span>
+<span class="sd">    Preferred unit: microampere (µA). EM Glossary: EMG_00000025</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dwell_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;dwell_time&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Time the beam dwells on each pixel during scanning.</span>
+<span class="sd">    Preferred unit: microsecond (µs). EM Glossary: EMG_00000015</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">magnification</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;magnification&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Nominal magnification (dimensionless).&quot;&quot;&quot;</span>
+
+    <span class="n">horizontal_field_width</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;horizontal_field_width&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Width of the scanned area. Preferred unit: micrometer (µm)&quot;&quot;&quot;</span>
+
+    <span class="n">vertical_field_width</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;vertical_field_width&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Height of the scanned area. Preferred unit: micrometer (µm)&quot;&quot;&quot;</span>
+
+    <span class="n">pixel_width</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;pixel_width&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Physical width of a single pixel. Preferred unit: nanometer (nm)&quot;&quot;&quot;</span>
+
+    <span class="n">pixel_height</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;pixel_height&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Physical height of a single pixel. Preferred unit: nanometer (nm)&quot;&quot;&quot;</span>
+
+    <span class="n">scan_rotation</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;scan_rotation&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rotation angle of the scan frame. Preferred unit: degree (°)&quot;&quot;&quot;</span>
+
+    <span class="n">detector_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;detector_type&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Type or name of detector used. Examples: &quot;ETD&quot;, &quot;InLens&quot;, &quot;HAADF&quot;, &quot;BF&quot; &quot;&quot;&quot;</span>
+
+    <span class="n">acquisition_device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acquisition_device&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Name of the acquisition device or camera.</span>
+<span class="sd">    Examples: &quot;BM-UltraScan&quot;, &quot;K2 Summit&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">stage_position</span><span class="p">:</span> <span class="n">StagePosition</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stage coordinates and tilt angles&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stage coordinates and tilt angles. See :class:`StagePosition` for details.</span>
+<span class="sd">    Preferred units: x/y in µm, z in mm, angles in degrees</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="SpectrumMetadata">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumMetadata">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SpectrumMetadata</span><span class="p">(</span><span class="n">NexusMetadata</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Schema for spectrum dataset metadata (EDS, EELS, etc.).</span>
+
+<span class="sd">    Extends :class:`NexusMetadata` with fields specific to spectral data acquisition.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.metadata import SpectrumMetadata</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.units import ureg</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; meta = SpectrumMetadata(</span>
+<span class="sd">    ...     creation_time=&quot;2024-01-15T10:30:00-05:00&quot;,</span>
+<span class="sd">    ...     data_type=&quot;EDS_Spectrum&quot;,</span>
+<span class="sd">    ...     dataset_type=&quot;Spectrum&quot;,</span>
+<span class="sd">    ...     acquisition_time=ureg.Quantity(30, &quot;s&quot;),</span>
+<span class="sd">    ...     live_time=ureg.Quantity(28.5, &quot;s&quot;),</span>
+<span class="sd">    ...     channel_size=ureg.Quantity(10, &quot;eV&quot;),</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dataset_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;Spectrum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="s2">&quot;Spectrum&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Must be &#39;Spectrum&#39; for this schema&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Spectrum-specific fields</span>
+    <span class="n">acquisition_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acquisition_time&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Total time for spectrum acquisition.</span>
+<span class="sd">    Preferred unit: second (s). EM Glossary: EMG_00000055</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">live_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;live_time&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Live time excluding dead time. Preferred unit: second (s)&quot;&quot;&quot;</span>
+
+    <span class="n">detector_energy_resolution</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span>
+        <span class="s2">&quot;detector_energy_resolution&quot;</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Energy resolution of the detector. Preferred unit: electronvolt (eV)&quot;&quot;&quot;</span>
+
+    <span class="n">channel_size</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;channel_size&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Energy width of each channel. Preferred unit: electronvolt (eV)&quot;&quot;&quot;</span>
+
+    <span class="n">starting_energy</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;starting_energy&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Starting energy of the spectrum. Preferred unit: kiloelectronvolt (keV)&quot;&quot;&quot;</span>
+
+    <span class="n">azimuthal_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;azimuthal_angle&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Azimuthal angle of the detector. Preferred unit: degree (°)&quot;&quot;&quot;</span>
+
+    <span class="n">elevation_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;elevation_angle&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Elevation angle of the detector. Preferred unit: degree (°)&quot;&quot;&quot;</span>
+
+    <span class="n">takeoff_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;takeoff_angle&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;X-ray takeoff angle. Preferred unit: degree (°)&quot;&quot;&quot;</span>
+
+    <span class="n">elements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Detected elements&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Detected elements (e.g., [&quot;Fe&quot;, &quot;Cr&quot;, &quot;Ni&quot;])&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="SpectrumImageMetadata">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumImageMetadata">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SpectrumImageMetadata</span><span class="p">(</span><span class="n">ImageMetadata</span><span class="p">,</span> <span class="n">SpectrumMetadata</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Schema for spectrum image (hyperspectral) dataset metadata.</span>
+
+<span class="sd">    Combines fields from both :class:`ImageMetadata` and :class:`SpectrumMetadata`</span>
+<span class="sd">    since spectrum images have both spatial and spectral dimensions. Inherits all</span>
+<span class="sd">    fields from both parent classes.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.metadata import SpectrumImageMetadata</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.units import ureg</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; meta = SpectrumImageMetadata(</span>
+<span class="sd">    ...     creation_time=&quot;2024-01-15T10:30:00-05:00&quot;,</span>
+<span class="sd">    ...     data_type=&quot;STEM_EDS_SpectrumImage&quot;,</span>
+<span class="sd">    ...     dataset_type=&quot;SpectrumImage&quot;,</span>
+<span class="sd">    ...     acceleration_voltage=ureg.Quantity(200, &quot;kV&quot;),  # Image field</span>
+<span class="sd">    ...     acquisition_time=ureg.Quantity(1200, &quot;s&quot;),  # Spectrum field</span>
+<span class="sd">    ...     pixel_time=ureg.Quantity(0.5, &quot;s&quot;),  # SpectrumImage specific</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dataset_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;SpectrumImage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="s2">&quot;SpectrumImage&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Must be &#39;SpectrumImage&#39; for this schema&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># SpectrumImage-specific fields</span>
+    <span class="n">pixel_time</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Time per pixel for spectrum acquisition&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Time spent acquiring spectrum at each pixel. Preferred unit: second (s)&quot;&quot;&quot;</span>
+
+    <span class="n">scan_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Scanning mode (raster, serpentine, etc.)&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Scanning mode used for acquisition.</span>
+<span class="sd">    Examples: &quot;raster&quot;, &quot;serpentine&quot;, &quot;fly-back&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SpectrumImageMetadata.validate_spectrum_image_fields">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.SpectrumImageMetadata.validate_spectrum_image_fields">[docs]</a>
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_spectrum_image_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SpectrumImageMetadata&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure SpectrumImage has both image and spectrum metadata.&quot;&quot;&quot;</span>
+        <span class="c1"># Just a placeholder - could add validation logic here if needed</span>
+        <span class="k">return</span> <span class="bp">self</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DiffractionMetadata">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.schemas.metadata.html#nexusLIMS.schemas.metadata.DiffractionMetadata">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DiffractionMetadata</span><span class="p">(</span><span class="n">NexusMetadata</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Schema for diffraction pattern dataset metadata (TEM, EBSD, etc.).</span>
+
+<span class="sd">    Extends :class:`NexusMetadata` with fields specific to diffraction data.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.metadata import DiffractionMetadata</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.schemas.units import ureg</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; meta = DiffractionMetadata(</span>
+<span class="sd">    ...     creation_time=&quot;2024-01-15T10:30:00-05:00&quot;,</span>
+<span class="sd">    ...     data_type=&quot;TEM_Diffraction&quot;,</span>
+<span class="sd">    ...     dataset_type=&quot;Diffraction&quot;,</span>
+<span class="sd">    ...     camera_length=ureg.Quantity(200, &quot;mm&quot;),</span>
+<span class="sd">    ...     convergence_angle=ureg.Quantity(0.5, &quot;mrad&quot;),</span>
+<span class="sd">    ...     acceleration_voltage=ureg.Quantity(200, &quot;kV&quot;),</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">dataset_type</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;Diffraction&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="s2">&quot;Diffraction&quot;</span><span class="p">,</span>
+        <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Must be &#39;Diffraction&#39; for this schema&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Diffraction-specific fields</span>
+    <span class="n">camera_length</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;camera_length&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Camera length for diffraction pattern.</span>
+<span class="sd">    Preferred unit: millimeter (mm). EM Glossary: EMG_00000008</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">convergence_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;convergence_angle&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convergence angle of the electron beam.</span>
+<span class="sd">    Preferred unit: milliradian (mrad). EM Glossary: EMG_00000010</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">acceleration_voltage</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Accelerating voltage (also relevant for diffraction).</span>
+<span class="sd">    Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">acquisition_device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acquisition_device&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Name of the detector/camera used.&quot;&quot;&quot;</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
