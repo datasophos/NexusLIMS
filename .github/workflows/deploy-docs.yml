@@ -77,7 +77,8 @@ jobs:
           if ! command -v vhs &> /dev/null; then
             echo "Installing VHS..."
             wget https://github.com/charmbracelet/vhs/releases/download/v0.10.0/vhs_0.10.0_amd64.deb -O /tmp/vhs.deb
-            sudo apt install ffmpeg ttyd graphviz
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg ttyd graphviz
             sudo dpkg -i /tmp/vhs.deb
             vhs --version
           else
