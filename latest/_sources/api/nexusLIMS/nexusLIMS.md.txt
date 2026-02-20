@@ -14,15 +14,15 @@
 :titlesonly:
 :maxdepth: 3
 
-nexusLIMS.schemas
-nexusLIMS.cli
-nexusLIMS.harvesters
-nexusLIMS.builder
+nexusLIMS.db
 nexusLIMS.utils
 nexusLIMS.tui
-nexusLIMS.exporters
+nexusLIMS.builder
 nexusLIMS.extractors
-nexusLIMS.db
+nexusLIMS.cli
+nexusLIMS.harvesters
+nexusLIMS.schemas
+nexusLIMS.exporters
 ```
 
 ## Submodules
@@ -31,6 +31,6 @@ nexusLIMS.db
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.config
 nexusLIMS.instruments
+nexusLIMS.config
 ```

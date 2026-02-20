@@ -23,11 +23,11 @@ nexusLIMS.extractors.plugins
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.extractors.base
+nexusLIMS.extractors.profiles
 nexusLIMS.extractors.utils
 nexusLIMS.extractors.xml_serialization
-nexusLIMS.extractors.profiles
 nexusLIMS.extractors.registry
+nexusLIMS.extractors.base
 ```
 
 ## Package Contents

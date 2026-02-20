@@ -14,7 +14,7 @@
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.extractors.plugins.preview_generators.image_preview
-nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview
 nexusLIMS.extractors.plugins.preview_generators.text_preview
+nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview
+nexusLIMS.extractors.plugins.preview_generators.image_preview
 ```

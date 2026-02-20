@@ -14,7 +14,7 @@
 :titlesonly:
 :maxdepth: 1
 
+nexusLIMS.tui.apps.config.validators
 nexusLIMS.tui.apps.config.screens
 nexusLIMS.tui.apps.config.app
-nexusLIMS.tui.apps.config.validators
 ```
