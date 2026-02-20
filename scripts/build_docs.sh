@@ -57,7 +57,7 @@ else
     if [[ -n "$STRICT_MODE" ]]; then
         echo "Running in strict mode (warnings as errors)..."
     fi
-    uv run python -m sphinx.cmd.build ./docs ./_build -n -E -a -j auto -b html $STRICT_MODE
+    OBJC_DISABLE_INITIALIZE_FORK_SAFETY=YES uv run python -m sphinx.cmd.build ./docs ./_build -n -E -a -j auto -b html $STRICT_MODE
 
     echo "✓ Documentation built in ./_build/"
     echo "Open ./_build/index.html in your browser to view"

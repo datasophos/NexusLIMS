@@ -20,6 +20,11 @@ import warnings
 from datetime import datetime
 from pathlib import Path
 
+# Suppress myst-nb's use of the deprecated Sphinx 9 Parser.env API.
+# myst-nb 1.3.0 (latest) hasn't been updated yet; this can be removed once
+# a myst-nb release fixes the RemovedInSphinx10Warning deprecations.
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="myst_nb")
+
 # Suppress the specific database connection warning before any imports
 # This filter will catch the warning at the source before it's logged
 logging.basicConfig()

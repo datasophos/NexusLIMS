@@ -669,62 +669,62 @@ class TestRecordBuilder:
             # Updated for simplified test sessions with URL-based session identifiers
             # Titan TEM session (id=101)
             "2018-11-13_FEI-Titan-TEM_101.xml": {
-                f"/{{{NX_NS}}}title": "Microstructure analysis of steel alloys",
-                f"//{{{NX_NS}}}acquisitionActivity": 3,
-                f"//{{{NX_NS}}}dataset": 11,
-                f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation": (
+                f"./{{{NX_NS}}}title": "Microstructure analysis of steel alloys",
+                f".//{{{NX_NS}}}acquisitionActivity": 3,
+                f".//{{{NX_NS}}}dataset": 11,
+                f"./{{{NX_NS}}}summary/{{{NX_NS}}}motivation": (
                     "Characterize phase transformations in heat-treated steel"
                 ),
-                f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument": "FEI-Titan-TEM",
-                f"//{{{NX_NS}}}sample": 1,
+                f"./{{{NX_NS}}}summary/{{{NX_NS}}}instrument": "FEI-Titan-TEM",
+                f".//{{{NX_NS}}}sample": 1,
             },
             # JEOL TEM session (id=202)
             "2019-07-24_JEOL-JEM-TEM_202.xml": {
-                f"/{{{NX_NS}}}title": "EELS mapping of multilayer thin films",
-                f"//{{{NX_NS}}}acquisitionActivity": 1,
-                f"//{{{NX_NS}}}dataset": 8,
-                f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation": (
+                f"./{{{NX_NS}}}title": "EELS mapping of multilayer thin films",
+                f".//{{{NX_NS}}}acquisitionActivity": 1,
+                f".//{{{NX_NS}}}dataset": 8,
+                f"./{{{NX_NS}}}summary/{{{NX_NS}}}motivation": (
                     "Study layer intermixing in deposited thin films"
                 ),
-                f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument": "JEOL-JEM-TEM",
-                f"//{{{NX_NS}}}sample": 1,
+                f"./{{{NX_NS}}}summary/{{{NX_NS}}}instrument": "JEOL-JEM-TEM",
+                f".//{{{NX_NS}}}sample": 1,
             },
             # Nexus Test Instrument session (id=303)
             "2021-08-02_TEST-TOOL_303.xml": {
-                f"/{{{NX_NS}}}title": "EDX spectroscopy of platinum-nickel alloys",
-                f"//{{{NX_NS}}}acquisitionActivity": 1,
-                f"//{{{NX_NS}}}dataset": 4,
-                f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation": (
+                f"./{{{NX_NS}}}title": "EDX spectroscopy of platinum-nickel alloys",
+                f".//{{{NX_NS}}}acquisitionActivity": 1,
+                f".//{{{NX_NS}}}dataset": 4,
+                f"./{{{NX_NS}}}summary/{{{NX_NS}}}motivation": (
                     "Determine composition of Pt-Ni alloy samples"
                 ),
-                f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument": ("TEST-TOOL"),
-                f"//{{{NX_NS}}}sample": 1,
+                f"./{{{NX_NS}}}summary/{{{NX_NS}}}instrument": ("TEST-TOOL"),
+                f".//{{{NX_NS}}}sample": 1,
             },
         }
         for f in sorted(xmls):
             base_f = f.name
             root = etree.parse(f)
 
-            xpath = f"/{{{NX_NS}}}title"
+            xpath = f"./{{{NX_NS}}}title"
             if root.find(xpath) is not None:
                 assert root.find(xpath).text == expected[base_f][xpath]
 
-            xpath = f"//{{{NX_NS}}}acquisitionActivity"
+            xpath = f".//{{{NX_NS}}}acquisitionActivity"
             assert len(root.findall(xpath)) == expected[base_f][xpath]
 
-            xpath = f"//{{{NX_NS}}}dataset"
+            xpath = f".//{{{NX_NS}}}dataset"
             assert len(root.findall(xpath)) == expected[base_f][xpath]
 
-            xpath = f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation"
+            xpath = f"./{{{NX_NS}}}summary/{{{NX_NS}}}motivation"
             if root.find(xpath) is not None:
                 assert root.find(xpath).text == expected[base_f][xpath]
             else:
                 assert root.find(xpath) == expected[base_f][xpath]
 
-            xpath = f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument"
+            xpath = f"./{{{NX_NS}}}summary/{{{NX_NS}}}instrument"
             assert root.find(xpath).get("pid") == expected[base_f][xpath]
 
-            xpath = f"//{{{NX_NS}}}sample"
+            xpath = f".//{{{NX_NS}}}sample"
             assert len(root.findall(xpath)) == expected[base_f][xpath]
 
             # remove record
@@ -794,20 +794,20 @@ class TestRecordBuilder:
         aa_count = 3  # Three temporal clusters based on file timestamps
 
         assert (
-            root.find(f"/{{{NX_NS}}}title").text
+            root.find(f"./{{{NX_NS}}}title").text
             == "Microstructure analysis of steel alloys"
         )
-        assert len(root.findall(f"//{{{NX_NS}}}acquisitionActivity")) == aa_count
-        assert len(root.findall(f"//{{{NX_NS}}}dataset")) == expected_datasets
+        assert len(root.findall(f".//{{{NX_NS}}}acquisitionActivity")) == aa_count
+        assert len(root.findall(f".//{{{NX_NS}}}dataset")) == expected_datasets
         assert (
-            root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation").text
+            root.find(f"./{{{NX_NS}}}summary/{{{NX_NS}}}motivation").text
             == "Characterize phase transformations in heat-treated steel"
         )
         assert (
-            root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
+            root.find(f"./{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
             == "FEI-Titan-TEM"
         )
-        assert len(root.findall(f"//{{{NX_NS}}}sample")) == 1
+        assert len(root.findall(f".//{{{NX_NS}}}sample")) == 1
 
         # remove record
         f.unlink()
@@ -1006,17 +1006,17 @@ class TestRecordBuilder:
 
         # Verify it used the mock_nemo_reservation data for TEST-TOOL
         assert (
-            root.find(f"/{{{NX_NS}}}title").text
+            root.find(f"./{{{NX_NS}}}title").text
             == "EDX spectroscopy of platinum-nickel alloys"
         )
-        assert len(root.findall(f"//{{{NX_NS}}}acquisitionActivity")) == aa_count
-        assert len(root.findall(f"//{{{NX_NS}}}dataset")) == dataset_count
+        assert len(root.findall(f".//{{{NX_NS}}}acquisitionActivity")) == aa_count
+        assert len(root.findall(f".//{{{NX_NS}}}dataset")) == dataset_count
         assert (
-            root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation").text
+            root.find(f"./{{{NX_NS}}}summary/{{{NX_NS}}}motivation").text
             == "Determine composition of Pt-Ni alloy samples"
         )
         assert (
-            root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
+            root.find(f"./{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
             == "TEST-TOOL"
         )
 
@@ -1089,17 +1089,19 @@ class TestRecordBuilder:
         root = etree.parse(f)
 
         assert (
-            root.find(f"/{{{NX_NS}}}title").text
+            root.find(f"./{{{NX_NS}}}title").text
             == "Test reservation for multiple samples, some with elements, some not"
         )
-        assert len(root.findall(f"//{{{NX_NS}}}acquisitionActivity")) == aa_count
-        assert len(root.findall(f"//{{{NX_NS}}}dataset")) == dataset_count
-        assert root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}motivation").text == "testing"
+        assert len(root.findall(f".//{{{NX_NS}}}acquisitionActivity")) == aa_count
+        assert len(root.findall(f".//{{{NX_NS}}}dataset")) == dataset_count
         assert (
-            root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
+            root.find(f"./{{{NX_NS}}}summary/{{{NX_NS}}}motivation").text == "testing"
+        )
+        assert (
+            root.find(f"./{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
             == "TEST-TOOL"
         )
-        assert len(root.findall(f"//{{{NX_NS}}}sample")) == sample_count
+        assert len(root.findall(f".//{{{NX_NS}}}sample")) == sample_count
 
         # test sample element tags
         expected = [
@@ -1113,7 +1115,7 @@ class TestRecordBuilder:
             ],
             [f"{{{NX_NS}}}Ir"],
         ]
-        sample_elements = root.findall(f"//{{{NX_NS}}}sample")
+        sample_elements = root.findall(f".//{{{NX_NS}}}sample")
         for exp, element in zip(expected, sample_elements):
             this_element = element.find(f"{{{NX_NS}}}elements")
             if exp is None:
@@ -1214,13 +1216,13 @@ class TestRecordBuilder:
 
         # Verify the XML record was generated with title from mock reservation
         assert (
-            root.find(f"/{{{NX_NS}}}title").text
+            root.find(f"./{{{NX_NS}}}title").text
             == "EDX spectroscopy of platinum-nickel alloys"
         )
 
         # Check that we have acquisition activities and datasets
-        acquisition_activities = root.findall(f"//{{{NX_NS}}}acquisitionActivity")
-        datasets = root.findall(f"//{{{NX_NS}}}dataset")
+        acquisition_activities = root.findall(f".//{{{NX_NS}}}acquisitionActivity")
+        datasets = root.findall(f".//{{{NX_NS}}}dataset")
 
         assert len(acquisition_activities) == 1
 
@@ -1278,7 +1280,7 @@ class TestRecordBuilder:
 
         # Verify instrument information
         assert (
-            root.find(f"/{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
+            root.find(f"./{{{NX_NS}}}summary/{{{NX_NS}}}instrument").get("pid")
             == "TEST-TOOL"
         )
 

@@ -7,11 +7,6 @@ import pytest
 from nexusLIMS.harvesters.nemo.connector import NemoConnector
 
 warnings.filterwarnings(
-    action="ignore",
-    message=r"DeprecationWarning: Using Ntlm()*",
-    category=DeprecationWarning,
-)
-warnings.filterwarnings(
     "ignore",
     r"Manually creating the cbt stuct from the cert hash will be removed",
     DeprecationWarning,
