@@ -1,0 +1,1224 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Production Deployment &#8212; NexusLIMS 2.5.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=983e91d6"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=30646c52"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'frontend_guide/production';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.5.1';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../_static/custom.js?v=ba087cdf"></script>
+    <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Local Test Deployment" href="local-test-deployment.html" />
+    <link rel="prev" title="Development Setup" href="development.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2.5.1" />
+    <meta name="docbuild:last-update" content="Feb, 20, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.5.1 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.5.1 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development Setup</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Production Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="local-test-deployment.html">Local Test Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="customization.html">Branding and Customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="administration.html">Administration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../frontend_guide.html" class="nav-link">Frontend Guide</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Production Deployment</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="production-deployment">
+<span id="cdcs-production"></span><h1>Production Deployment<a class="headerlink" href="#production-deployment" title="Link to this heading">#</a></h1>
+<p>This guide covers deploying NexusLIMS-CDCS to a production environment with proper security, SSL certificates, and data management.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h2>
+<section id="required-knowledge">
+<h3>Required Knowledge<a class="headerlink" href="#required-knowledge" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Linux system administration</p></li>
+<li><p>Docker and Docker Compose</p></li>
+<li><p>Basic understanding of DNS and SSL/TLS certificates</p></li>
+<li><p>Basic PostgreSQL database administration</p></li>
+<li><p>Web server/reverse proxy concepts</p></li>
+</ul>
+</section>
+<section id="required-access">
+<h3>Required Access<a class="headerlink" href="#required-access" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Root or sudo access to production server</p></li>
+<li><p>DNS management for your domain</p></li>
+<li><p>(Optional) CIFS/SMB or NFS for data files</p></li>
+<li><p>(Optional) SMTP server for application notifications</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="system-requirements">
+<h2>System Requirements<a class="headerlink" href="#system-requirements" title="Link to this heading">#</a></h2>
+<section id="minimum-hardware">
+<h3>Minimum Hardware<a class="headerlink" href="#minimum-hardware" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Resource</p></th>
+<th class="head"><p>Minimum</p></th>
+<th class="head"><p>Recommended</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>CPU</strong></p></td>
+<td><p>4 cores</p></td>
+<td><p>8 cores</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>RAM</strong></p></td>
+<td><p>8 GB</p></td>
+<td><p>16 GB</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Disk</strong></p></td>
+<td><p>20 GB SSD</p></td>
+<td><p>100+ GB SSD</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Network</strong></p></td>
+<td><p>100 Mbps</p></td>
+<td><p>1 Gbps</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="software-requirements">
+<h3>Software Requirements<a class="headerlink" href="#software-requirements" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Software</p></th>
+<th class="head"><p>Version</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>OS</strong></p></td>
+<td><p>Ubuntu 22.04 LTS or RHEL 8+</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Docker</strong></p></td>
+<td><p>24.0+</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Docker Compose</strong></p></td>
+<td><p>2.20+</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Git</strong></p></td>
+<td><p>2.0+</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="network-requirements">
+<h3>Network Requirements<a class="headerlink" href="#network-requirements" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Firewall</strong>: Ports 80 and 443 open (for ACME certificate validation)</p></li>
+<li><p><strong>DNS</strong>: Ability to create A records pointing to your server</p></li>
+<li><p><strong>Optional</strong>: Firewall rules for database ports if external access needed</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="pre-deployment-checklist">
+<h2>Pre-Deployment Checklist<a class="headerlink" href="#pre-deployment-checklist" title="Link to this heading">#</a></h2>
+<p>Before deploying, ensure you have:</p>
+<ul class="simple">
+<li><p>Production server provisioned and accessible via SSH</p></li>
+<li><p>Domain name(s) registered and DNS configured</p></li>
+<li><p>SSL certificate strategy determined (either self-managed certs or automatic ACME/Let’s Encrypt)</p></li>
+<li><p>Data storage locations identified and accessible</p></li>
+<li><p>Backup strategy planned</p></li>
+<li><p>Strong passwords generated for database and Redis</p></li>
+<li><p>Django secret key generated (minimum 50 characters)</p></li>
+<li><p>(Optional) SMTP server configured for email notifications</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="domain-and-dns-setup">
+<h2>Domain and DNS Setup<a class="headerlink" href="#domain-and-dns-setup" title="Link to this heading">#</a></h2>
+<section id="required-dns-records">
+<h3>Required DNS Records<a class="headerlink" href="#required-dns-records" title="Link to this heading">#</a></h3>
+<p>You need two subdomains (replace <code class="docutils literal notranslate"><span class="pre">nexuslims.example.com</span></code> with your domain):</p>
+<ol class="arabic simple">
+<li><p><strong>Main application</strong>: <code class="docutils literal notranslate"><span class="pre">nexuslims.example.com</span></code></p></li>
+<li><p><strong>File server</strong>: <code class="docutils literal notranslate"><span class="pre">files.nexuslims.example.com</span></code></p></li>
+</ol>
+</section>
+<section id="dns-configuration">
+<h3>DNS Configuration<a class="headerlink" href="#dns-configuration" title="Link to this heading">#</a></h3>
+<p>Create A records pointing to your server’s public IP:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nexuslims</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">.</span>       <span class="n">A</span>    <span class="mf">203.0.113.42</span>
+<span class="n">files</span><span class="o">.</span><span class="n">nexuslims</span><span class="o">.</span><span class="n">example</span><span class="o">.</span><span class="n">com</span><span class="o">.</span> <span class="n">A</span>    <span class="mf">203.0.113.42</span>
+</pre></div>
+</div>
+</section>
+<section id="verify-dns-propagation">
+<h3>Verify DNS Propagation<a class="headerlink" href="#verify-dns-propagation" title="Link to this heading">#</a></h3>
+<p>Before deployment, verify DNS is working:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dig<span class="w"> </span>nexuslims.example.com
+dig<span class="w"> </span>files.nexuslims.example.com
+</pre></div>
+</div>
+<p>Both should return your server’s IP address.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ssl-certificate-options">
+<h2>SSL Certificate Options<a class="headerlink" href="#ssl-certificate-options" title="Link to this heading">#</a></h2>
+<section id="option-1-automatic-acme-recommended">
+<h3>Option 1: Automatic ACME (Recommended)<a class="headerlink" href="#option-1-automatic-acme-recommended" title="Link to this heading">#</a></h3>
+<p><strong>Best for</strong>: Production deployments with public network access</p>
+<p>Caddy automatically obtains and renews certificates from Let’s Encrypt:</p>
+<ol class="arabic simple">
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">CADDY_ACME_EMAIL</span></code> in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file</p></li>
+<li><p>Ensure ports 80 and 443 are accessible from the internet</p></li>
+<li><p>Caddy handles everything else automatically</p></li>
+</ol>
+<p><strong>Advantages:</strong></p>
+<ul class="simple">
+<li><p>Fully automated certificate issuance and renewal</p></li>
+<li><p>Free certificates from Let’s Encrypt</p></li>
+<li><p>Trusted by all browsers</p></li>
+<li><p>No manual intervention required</p></li>
+</ul>
+</section>
+<section id="option-2-manual-certificates">
+<h3>Option 2: Manual Certificates<a class="headerlink" href="#option-2-manual-certificates" title="Link to this heading">#</a></h3>
+<p><strong>Best for</strong>: Organizations with existing PKI or certificate vendors</p>
+<ol class="arabic">
+<li><p>Obtain certificates from your CA (you need <code class="docutils literal notranslate"><span class="pre">fullchain.pem</span></code> and <code class="docutils literal notranslate"><span class="pre">privkey.pem</span></code>)</p></li>
+<li><p>Create certificate directory and copy certificates:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/nexuslims/certs
+chmod<span class="w"> </span><span class="m">700</span><span class="w"> </span>/opt/nexuslims/certs
+cp<span class="w"> </span>fullchain.pem<span class="w"> </span>/opt/nexuslims/certs/
+cp<span class="w"> </span>privkey.pem<span class="w"> </span>/opt/nexuslims/certs/
+chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>/opt/nexuslims/certs/*
+</pre></div>
+</div>
+</li>
+<li><p>Set the certificate path in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">CADDY_CERTS_HOST_PATH</span><span class="o">=</span>/opt/nexuslims/certs
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">docker-compose.prod.yml</span></code> already includes a volume mount that uses this variable:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${CADDY_CERTS_HOST_PATH}:/etc/caddy/certs:ro</span>
+</pre></div>
+</div>
+</li>
+<li><p>Update <code class="docutils literal notranslate"><span class="pre">caddy/Caddyfile.prod</span></code> to use the certificates:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>https://{$DOMAIN} {
+    tls /etc/caddy/certs/fullchain.pem /etc/caddy/certs/privkey.pem
+    # ... rest of config
+}
+
+https://{$FILES_DOMAIN} {
+    tls /etc/caddy/certs/fullchain.pem /etc/caddy/certs/privkey.pem
+    # ... rest of config
+}
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using manual certificates, you are responsible for renewing them before expiration.</p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="environment-configuration">
+<h2>Environment Configuration<a class="headerlink" href="#environment-configuration" title="Link to this heading">#</a></h2>
+<section id="clone-repository">
+<h3>1. Clone Repository<a class="headerlink" href="#clone-repository" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/nexuslims
+<span class="nb">cd</span><span class="w"> </span>/opt/nexuslims
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/datasophos/NexusLIMS-CDCS.git
+<span class="nb">cd</span><span class="w"> </span>NexusLIMS-CDCS/deployment
+</pre></div>
+</div>
+</section>
+<section id="create-environment-file">
+<h3>2. Create Environment File<a class="headerlink" href="#create-environment-file" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>.env.prod.example<span class="w"> </span>.env
+chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>.env
+</pre></div>
+</div>
+</section>
+<section id="configure-environment-variables">
+<h3>3. Configure Environment Variables<a class="headerlink" href="#configure-environment-variables" title="Link to this heading">#</a></h3>
+<p>Edit <code class="docutils literal notranslate"><span class="pre">.env</span></code> with your production values. See <a class="reference internal" href="configuration.html"><span class="doc">Configuration</span></a> for detailed documentation of all variables.</p>
+<p><strong>Critical variables to set:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Domain configuration</span>
+<span class="nv">DOMAIN</span><span class="o">=</span>nexuslims.example.com
+<span class="nv">FILES_DOMAIN</span><span class="o">=</span>files.nexuslims.example.com
+
+<span class="c1"># Security (generate strong values!)</span>
+<span class="nv">SECRET_KEY</span><span class="o">=</span>your-50-character-minimum-secret-key
+<span class="nv">POSTGRES_PASS</span><span class="o">=</span>strong-database-password
+<span class="nv">REDIS_PASS</span><span class="o">=</span>strong-redis-password
+
+<span class="c1"># ACME certificate email</span>
+<span class="nv">CADDY_ACME_EMAIL</span><span class="o">=</span>admin@example.com
+
+<span class="c1"># File paths (adjust to your storage locations)</span>
+<span class="nv">NX_DATA_HOST_PATH</span><span class="o">=</span>/mnt/nexuslims/data
+<span class="nv">NX_INSTRUMENT_DATA_HOST_PATH</span><span class="o">=</span>/mnt/nexuslims/instrument-data
+<span class="nv">NX_CDCS_BACKUPS_HOST_PATH</span><span class="o">=</span>/opt/nexuslims/backups
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Never commit <code class="docutils literal notranslate"><span class="pre">.env</span></code> to version control! It contains secrets.</p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="file-storage-setup">
+<h2>File Storage Setup<a class="headerlink" href="#file-storage-setup" title="Link to this heading">#</a></h2>
+<p>NexusLIMS-CDCS serves two types of files:</p>
+<ul class="simple">
+<li><p><strong>NexusLIMS data</strong>: Thumbnail images, metadata files</p></li>
+<li><p><strong>Instrument data</strong>: Raw microscopy data files</p></li>
+</ul>
+<section id="option-1-local-storage">
+<h3>Option 1: Local Storage<a class="headerlink" href="#option-1-local-storage" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/mnt/nexuslims/data
+sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/mnt/nexuslims/instrument-data
+sudo<span class="w"> </span>chown<span class="w"> </span>-R<span class="w"> </span><span class="nv">$USER</span>:<span class="nv">$USER</span><span class="w"> </span>/mnt/nexuslims
+sudo<span class="w"> </span>chmod<span class="w"> </span>-R<span class="w"> </span><span class="m">755</span><span class="w"> </span>/mnt/nexuslims
+</pre></div>
+</div>
+</section>
+<section id="option-2-nfs-mount">
+<h3>Option 2: NFS Mount<a class="headerlink" href="#option-2-nfs-mount" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install NFS client</span>
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>nfs-common<span class="w">  </span><span class="c1"># Ubuntu/Debian</span>
+
+<span class="c1"># Create mount points</span>
+sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/mnt/nexuslims/data
+sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/mnt/nexuslims/instrument-data
+
+<span class="c1"># Mount NFS shares</span>
+sudo<span class="w"> </span>mount<span class="w"> </span>-t<span class="w"> </span>nfs<span class="w"> </span>nfs-server:/export/nexuslims/data<span class="w"> </span>/mnt/nexuslims/data
+sudo<span class="w"> </span>mount<span class="w"> </span>-t<span class="w"> </span>nfs<span class="w"> </span>nfs-server:/export/nexuslims/instrument-data<span class="w"> </span>/mnt/nexuslims/instrument-data
+
+<span class="c1"># Add to /etc/fstab for persistence</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;nfs-server:/export/nexuslims/data /mnt/nexuslims/data nfs defaults 0 0&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/fstab
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;nfs-server:/export/nexuslims/instrument-data /mnt/nexuslims/instrument-data nfs defaults 0 0&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/fstab
+</pre></div>
+</div>
+</section>
+<section id="option-3-cifs-smb-mount">
+<h3>Option 3: CIFS/SMB Mount<a class="headerlink" href="#option-3-cifs-smb-mount" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install CIFS utilities</span>
+sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>cifs-utils<span class="w">  </span><span class="c1"># Ubuntu/Debian</span>
+
+<span class="c1"># Create credentials file</span>
+sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/etc/smbcredentials
+sudo<span class="w"> </span>touch<span class="w"> </span>/etc/smbcredentials/nexuslims.cred
+sudo<span class="w"> </span>chmod<span class="w"> </span><span class="m">600</span><span class="w"> </span>/etc/smbcredentials/nexuslims.cred
+
+sudo<span class="w"> </span>tee<span class="w"> </span>/etc/smbcredentials/nexuslims.cred<span class="w"> </span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="s">&lt;&lt; EOF</span>
+<span class="s">username=your_smb_username</span>
+<span class="s">password=your_smb_password</span>
+<span class="s">domain=WORKGROUP</span>
+<span class="s">EOF</span>
+
+<span class="c1"># Create mount points and mount</span>
+sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/mnt/nexuslims/data
+sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/mnt/nexuslims/instrument-data
+
+sudo<span class="w"> </span>mount<span class="w"> </span>-t<span class="w"> </span>cifs<span class="w"> </span>//nas-server/nexuslims-data<span class="w"> </span>/mnt/nexuslims/data<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="nv">credentials</span><span class="o">=</span>/etc/smbcredentials/nexuslims.cred,uid<span class="o">=</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span>,gid<span class="o">=</span><span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span>
+
+sudo<span class="w"> </span>mount<span class="w"> </span>-t<span class="w"> </span>cifs<span class="w"> </span>//nas-server/nexuslims-instrument-data<span class="w"> </span>/mnt/nexuslims/instrument-data<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-o<span class="w"> </span><span class="nv">credentials</span><span class="o">=</span>/etc/smbcredentials/nexuslims.cred,uid<span class="o">=</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span>,gid<span class="o">=</span><span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="deployment">
+<h2>Deployment<a class="headerlink" href="#deployment" title="Link to this heading">#</a></h2>
+<section id="load-admin-commands">
+<h3>1. Load Admin Commands<a class="headerlink" href="#load-admin-commands" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/opt/nexuslims/NexusLIMS-CDCS/deployment
+<span class="nb">source</span><span class="w"> </span>admin-commands.sh
+</pre></div>
+</div>
+<p>This provides the <code class="docutils literal notranslate"><span class="pre">dc-prod</span></code> alias (shortcut for <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">-f</span> <span class="pre">docker-compose.base.yml</span> <span class="pre">-f</span> <span class="pre">docker-compose.prod.yml</span></code>).</p>
+</section>
+<section id="build-and-pull-images">
+<h3>2. Build and Pull Images<a class="headerlink" href="#build-and-pull-images" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dc-prod<span class="w"> </span>build<span class="w">  </span><span class="c1"># Build CDCS and Caddy images</span>
+dc-prod<span class="w"> </span>pull<span class="w">   </span><span class="c1"># Pull PostgreSQL and Redis images</span>
+</pre></div>
+</div>
+</section>
+<section id="start-services">
+<h3>3. Start Services<a class="headerlink" href="#start-services" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dc-prod<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="monitor-startup">
+<h3>4. Monitor Startup<a class="headerlink" href="#monitor-startup" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Watch logs</span>
+dc-prod<span class="w"> </span>logs<span class="w"> </span>-f
+
+<span class="c1"># Check service status</span>
+dc-prod<span class="w"> </span>ps
+</pre></div>
+</div>
+<p>All services should show <code class="docutils literal notranslate"><span class="pre">Up</span></code> and <code class="docutils literal notranslate"><span class="pre">healthy</span></code>.</p>
+</section>
+<section id="verify-certificate-acquisition">
+<h3>5. Verify Certificate Acquisition<a class="headerlink" href="#verify-certificate-acquisition" title="Link to this heading">#</a></h3>
+<p>If using ACME, watch Caddy logs for certificate issuance:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dc-prod<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>caddy
+</pre></div>
+</div>
+<p>You should see: <code class="docutils literal notranslate"><span class="pre">certificate</span> <span class="pre">obtained</span> <span class="pre">successfully</span></code></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="post-deployment-setup">
+<h2>Post-Deployment Setup<a class="headerlink" href="#post-deployment-setup" title="Link to this heading">#</a></h2>
+<section id="run-initialization-script">
+<h3>1. Run Initialization Script<a class="headerlink" href="#run-initialization-script" title="Link to this heading">#</a></h3>
+<p>The initialization script sets up the superuser, schema, and XSLT stylesheets:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>admin-init
+</pre></div>
+</div>
+<p>This will:</p>
+<ol class="arabic simple">
+<li><p>Verify database migrations are complete</p></li>
+<li><p>Create superuser (prompts for credentials)</p></li>
+<li><p>Upload NexusLIMS schema</p></li>
+<li><p>Load and configure XSLT stylesheets</p></li>
+<li><p>Load data exporters</p></li>
+</ol>
+</section>
+<section id="verify-installation">
+<h3>2. Verify Installation<a class="headerlink" href="#verify-installation" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>admin-stats
+</pre></div>
+</div>
+<p>Expected output:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">============================================================</span>
+<span class="n">NexusLIMS</span><span class="o">-</span><span class="n">CDCS</span> <span class="n">System</span> <span class="n">Statistics</span>
+<span class="o">============================================================</span>
+
+<span class="n">Users</span><span class="p">:</span>
+  <span class="n">Total</span><span class="p">:</span>      <span class="mi">1</span>
+  <span class="n">Superusers</span><span class="p">:</span> <span class="mi">1</span>
+
+<span class="n">Templates</span><span class="p">:</span>
+  <span class="n">Total</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="o">-</span> <span class="n">Nexus</span> <span class="n">Experiment</span> <span class="n">Schema</span> <span class="p">(</span><span class="n">Version</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">XSLT</span> <span class="n">Stylesheets</span><span class="p">:</span>
+  <span class="n">Total</span><span class="p">:</span> <span class="mi">2</span>
+    <span class="o">-</span> <span class="n">detail_stylesheet</span><span class="o">.</span><span class="n">xsl</span>
+    <span class="o">-</span> <span class="n">list_stylesheet</span><span class="o">.</span><span class="n">xsl</span>
+
+<span class="o">============================================================</span>
+</pre></div>
+</div>
+</section>
+<section id="test-file-serving">
+<h3>3. Test File Serving<a class="headerlink" href="#test-file-serving" title="Link to this heading">#</a></h3>
+<p>Navigate to:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">https://files.nexuslims.example.com/data/</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">https://files.nexuslims.example.com/instrument-data/</span></code></p></li>
+</ul>
+<p>Both should show directory listings.</p>
+</section>
+<section id="create-backup-directory">
+<h3>4. Create Backup Directory<a class="headerlink" href="#create-backup-directory" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/nexuslims/backups
+sudo<span class="w"> </span>chown<span class="w"> </span><span class="nv">$USER</span>:<span class="nv">$USER</span><span class="w"> </span>/opt/nexuslims/backups
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The backup directory must be owned by the user running Docker, not root. Otherwise backup scripts will fail with permission errors.</p>
+</div>
+<p>Restart services to pick up the mount:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dc-prod<span class="w"> </span>down
+dc-prod<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="configure-automated-backups">
+<h3>5. Configure Automated Backups<a class="headerlink" href="#configure-automated-backups" title="Link to this heading">#</a></h3>
+<p>Create a daily backup script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>&gt;<span class="w"> </span>/opt/nexuslims-backup.sh<span class="w"> </span><span class="s">&lt;&lt; &#39;EOF&#39;</span>
+<span class="s">#!/bin/bash</span>
+<span class="s">set -e</span>
+
+<span class="s">cd /opt/nexuslims/NexusLIMS-CDCS/deployment</span>
+<span class="s">source admin-commands.sh</span>
+
+<span class="s"># Run backup</span>
+<span class="s">admin-backup</span>
+
+<span class="s"># Also create a database dump</span>
+<span class="s">admin-db-dump</span>
+
+<span class="s"># Remove backups older than 30 days</span>
+<span class="s">find /opt/nexuslims/backups -type d -name &quot;backup_*&quot; -mtime +30 -exec rm -rf {} \; 2&gt;/dev/null || true</span>
+<span class="s">find /opt/nexuslims/backups -type f -name &quot;backup_*.sql&quot; -mtime +30 -delete 2&gt;/dev/null || true</span>
+<span class="s">EOF</span>
+
+chmod<span class="w"> </span>+x<span class="w"> </span>/opt/nexuslims-backup.sh
+
+<span class="c1"># Add to crontab (daily at 2 AM)</span>
+<span class="o">(</span>crontab<span class="w"> </span>-l<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="p">;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;0 2 * * * /opt/nexuslims-backup.sh&quot;</span><span class="o">)</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>crontab<span class="w"> </span>-
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="security-hardening">
+<h2>Security Hardening<a class="headerlink" href="#security-hardening" title="Link to this heading">#</a></h2>
+<section id="firewall-configuration">
+<h3>Firewall Configuration<a class="headerlink" href="#firewall-configuration" title="Link to this heading">#</a></h3>
+<p><strong>UFW (Ubuntu):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="m">22</span>/tcp<span class="w">   </span><span class="c1"># SSH</span>
+sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="m">80</span>/tcp<span class="w">   </span><span class="c1"># HTTP (for ACME)</span>
+sudo<span class="w"> </span>ufw<span class="w"> </span>allow<span class="w"> </span><span class="m">443</span>/tcp<span class="w">  </span><span class="c1"># HTTPS</span>
+sudo<span class="w"> </span>ufw<span class="w"> </span><span class="nb">enable</span>
+</pre></div>
+</div>
+<p><strong>firewalld (RHEL):</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>firewall-cmd<span class="w"> </span>--permanent<span class="w"> </span>--add-service<span class="o">=</span>http
+sudo<span class="w"> </span>firewall-cmd<span class="w"> </span>--permanent<span class="w"> </span>--add-service<span class="o">=</span>https
+sudo<span class="w"> </span>firewall-cmd<span class="w"> </span>--permanent<span class="w"> </span>--add-service<span class="o">=</span>ssh
+sudo<span class="w"> </span>firewall-cmd<span class="w"> </span>--reload
+</pre></div>
+</div>
+</section>
+<section id="database-security">
+<h3>Database Security<a class="headerlink" href="#database-security" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Don’t expose PostgreSQL port externally unless necessary</p></li>
+<li><p>Use strong passwords (already set in <code class="docutils literal notranslate"><span class="pre">.env</span></code>)</p></li>
+<li><p>Keep PostgreSQL container updated</p></li>
+</ul>
+</section>
+<section id="container-security">
+<h3>Container Security<a class="headerlink" href="#container-security" title="Link to this heading">#</a></h3>
+<p>Keep images updated regularly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dc-prod<span class="w"> </span>pull
+dc-prod<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</section>
+<section id="log-rotation">
+<h3>Log Rotation<a class="headerlink" href="#log-rotation" title="Link to this heading">#</a></h3>
+<p>Configure Docker log rotation in <code class="docutils literal notranslate"><span class="pre">/etc/docker/daemon.json</span></code>:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;log-driver&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;json-file&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;log-opts&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;max-size&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;10m&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;max-file&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Restart Docker: <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">docker</span></code></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="upgrading">
+<h2>Upgrading<a class="headerlink" href="#upgrading" title="Link to this heading">#</a></h2>
+<section id="application-updates">
+<h3>Application Updates<a class="headerlink" href="#application-updates" title="Link to this heading">#</a></h3>
+<ol class="arabic">
+<li><p><strong>Backup current deployment:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>admin-commands.sh
+admin-backup
+</pre></div>
+</div>
+</li>
+<li><p><strong>Pull latest code:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/opt/nexuslims/NexusLIMS-CDCS
+git<span class="w"> </span>fetch
+git<span class="w"> </span>checkout<span class="w"> </span>v3.19.0<span class="w">  </span><span class="c1"># or desired version</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Review changelog</strong> for breaking changes</p></li>
+<li><p><strong>Check for new environment variables</strong> in <code class="docutils literal notranslate"><span class="pre">.env.prod.example</span></code></p></li>
+<li><p><strong>Rebuild and restart:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>deployment
+<span class="nb">source</span><span class="w"> </span>admin-commands.sh
+dc-prod<span class="w"> </span>build
+dc-prod<span class="w"> </span>down
+dc-prod<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+</li>
+<li><p><strong>Run migrations:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>nexuslims_prod_cdcs<span class="w"> </span>python<span class="w"> </span>manage.py<span class="w"> </span>migrate
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="rollback">
+<h3>Rollback<a class="headerlink" href="#rollback" title="Link to this heading">#</a></h3>
+<p>If upgrade fails:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dc-prod<span class="w"> </span>down
+git<span class="w"> </span>checkout<span class="w"> </span>v3.18.0<span class="w">  </span><span class="c1"># Previous version</span>
+<span class="nb">cd</span><span class="w"> </span>deployment
+dc-prod<span class="w"> </span>build
+dc-prod<span class="w"> </span>up<span class="w"> </span>-d
+</pre></div>
+</div>
+<p>If database schema changed, restore from backup:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>admin-db-restore<span class="w"> </span>/opt/nexuslims/backups/backup_20260109_120000.sql
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="configuration.html"><span class="doc">Configuration</span></a> - Detailed environment variable reference</p></li>
+<li><p><a class="reference internal" href="administration.html"><span class="doc">Administration</span></a> - Backup, restore, and maintenance procedures</p></li>
+<li><p><a class="reference internal" href="troubleshooting.html"><span class="doc">Troubleshooting</span></a> - Common issues and solutions</p></li>
+<li><p><a class="reference internal" href="local-test-deployment.html"><span class="doc">Local Test Deployment</span></a> - Test production config locally with mkcert</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="development.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Development Setup</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="local-test-deployment.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Local Test Deployment</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#required-knowledge">Required Knowledge</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#required-access">Required Access</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-requirements">System Requirements</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#minimum-hardware">Minimum Hardware</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#software-requirements">Software Requirements</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#network-requirements">Network Requirements</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-deployment-checklist">Pre-Deployment Checklist</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#domain-and-dns-setup">Domain and DNS Setup</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#required-dns-records">Required DNS Records</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dns-configuration">DNS Configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-dns-propagation">Verify DNS Propagation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ssl-certificate-options">SSL Certificate Options</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-automatic-acme-recommended">Option 1: Automatic ACME (Recommended)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-manual-certificates">Option 2: Manual Certificates</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#environment-configuration">Environment Configuration</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clone-repository">1. Clone Repository</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-environment-file">2. Create Environment File</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-environment-variables">3. Configure Environment Variables</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#file-storage-setup">File Storage Setup</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-local-storage">Option 1: Local Storage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-nfs-mount">Option 2: NFS Mount</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-3-cifs-smb-mount">Option 3: CIFS/SMB Mount</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deployment">Deployment</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-admin-commands">1. Load Admin Commands</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#build-and-pull-images">2. Build and Pull Images</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#start-services">3. Start Services</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#monitor-startup">4. Monitor Startup</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-certificate-acquisition">5. Verify Certificate Acquisition</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#post-deployment-setup">Post-Deployment Setup</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#run-initialization-script">1. Run Initialization Script</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-installation">2. Verify Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test-file-serving">3. Test File Serving</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#create-backup-directory">4. Create Backup Directory</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configure-automated-backups">5. Configure Automated Backups</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#security-hardening">Security Hardening</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#firewall-configuration">Firewall Configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#database-security">Database Security</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#container-security">Container Security</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#log-rotation">Log Rotation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#upgrading">Upgrading</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#application-updates">Application Updates</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rollback">Rollback</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/frontend_guide/production.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
