@@ -158,6 +158,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          # Save switcher.json before stash/branch-switch since it's gitignored
+          # and checkout behavior for ignored files can be unpredictable in CI
+          cp docs/_static/switcher.json /tmp/switcher.json
+
           # Stash any local changes (e.g., uv.lock modifications from uv sync)
           git stash --include-untracked || true
 
@@ -170,7 +174,7 @@ jobs:
           mkdir -p latest
           rsync -avr _build/ latest/
           mkdir -p latest/_static
-          cp docs/_static/switcher.json latest/_static/switcher.json
+          cp /tmp/switcher.json latest/_static/switcher.json
 
           # Add coverage if available
           if [ -d "tests/coverage" ]; then
@@ -191,7 +195,7 @@ jobs:
               dir_clean="${dir%/}"
               if [ -d "$dir_clean/_static" ]; then
                 mkdir -p "$dir_clean/_static"
-                cp docs/_static/switcher.json "$dir_clean/_static/switcher.json"
+                cp /tmp/switcher.json "$dir_clean/_static/switcher.json"
                 echo "  Updated switcher.json in $dir"
               fi
             fi

@@ -215,9 +215,13 @@ def build_switcher_json(dirs, current_pr_num=None):
     # Add stable link at the top (if it exists)
     stable_version = None
     if "stable" in dirs:
-        # Get the version number of the latest release
-        # Use the actual version (not "stable") for PyData theme banner comparison
-        stable_version = filtered_versions[0] if filtered_versions else "stable"
+        # Get the version number of the latest release tag (most authoritative source).
+        # Fall back to the highest-numbered deployed directory if no tag is found.
+        # Using git tags avoids CI race conditions where gh-pages dirs may lag behind
+        # the actual latest release.
+        stable_version = get_latest_release_version() or (
+            filtered_versions[0] if filtered_versions else "stable"
+        )
         entries.append(
             {
                 "name": f"v{stable_version} (stable)",
