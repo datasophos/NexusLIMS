@@ -40,11 +40,13 @@ If there are no breaking changes, state that explicitly and skip the Upgrade Ins
 
 Write the complete release notes for this version using this structure:
 
-```markdown
-## vX.Y.Z (YYYY-MM-DD)
+````markdown
+## Welcome to version X.Y.Z of NexusLIMS!
 
 ### Highlights
 (2–4 sentence plain-English summary of the most important changes)
+
+(Include the following text in every release:) As always, if you are looking for assistance with configuration or deployment of NexusLIMS, please contact [Datasophos](https://datasophos.co/#contact) to discuss your needs!
 
 ### Upgrade Instructions
 (Only include this section if there are breaking changes)
@@ -52,18 +54,46 @@ Write the complete release notes for this version using this structure:
 #### [Title of breaking change]
 [Concrete steps users must take — commands, file edits, etc.]
 
-### What's New
-(User-focused bullet list of features and enhancements)
+### New Features
+(User-focused bullet list of features and enhancements. Reference the pull request in the header line. Use a format such as the following:
+ 
+**Feature title** ([#00](https://github.com/datasophos/NexusLIMS/pull/00))
+  - Feature detail 1
+  - Feature detail 2
+  - Feature detail 3
+  - Feature detail 4
+)
 
 ### Bug Fixes
-(Bullet list of bug fixes, if any)
+(Bullet list of bug fixes, if any; include relevant PR link)
 
 ### Documentation Improvements
-(Doc fragments, condensed, if any)
+(Doc fragments, condensed, if any; include relevant PR link)
 
 ### Internal / Miscellaneous
-(Misc fragments, one line each, if any)
+(Misc fragments, one line each, if any; include relevant PR link)
+
+### Installation
+
+```bash
+# if upgrading an existing uv tool install, run:
+uv tool upgrade nexuslims
+
+# for a new installation:
+uv tool install nexuslims==x.y.z
+
+# or
+pip install nexuslims==x.y.z
+
+# or, if installed from source:
+git fetch
+git checkout vx.y.z
+uv sync
 ```
+
+### Full changelog
+(include the github changelog link between this tag and the last one, such as: https://github.com/datasophos/NexusLIMS/compare/v2.4.0...v2.4.1 )
+````
 
 Base the content strictly on the fragments shown above — do not invent changes that are not in the fragments.
 
