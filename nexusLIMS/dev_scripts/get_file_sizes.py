@@ -14,7 +14,7 @@ from typing import Dict, Union
 from urllib.parse import unquote
 
 import requests
-from defusedxml import ElementTree
+from lxml import etree as ElementTree
 from dotenv import load_dotenv
 from urllib3.exceptions import InsecureRequestWarning
 
