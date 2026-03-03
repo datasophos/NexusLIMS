@@ -1,24 +1,44 @@
-# ruff: noqa: SLF001
 """Unit tests for the LabArchives export destination plugin."""
 
+from __future__ import annotations
+
 from datetime import datetime
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
-from nexusLIMS.exporters.base import ExportContext
-from nexusLIMS.exporters.destinations.labarchives import LabArchivesDestination
+from nexusLIMS.exporters.base import ExportContext, ExportResult
+from nexusLIMS.exporters.destinations.labarchives import (
+    LabArchivesDestination,
+    _build_entry_url,
+    _find_node_by_text,
+)
+from nexusLIMS.utils.labarchives import LabArchivesError
+
+# ---------------------------------------------------------------------------
+# Fixtures
+# ---------------------------------------------------------------------------
 
 
 @pytest.fixture
 def mock_config_enabled():
-    """Mock settings with LabArchives enabled."""
+    """Mock settings with LabArchives fully enabled."""
     with patch(
         "nexusLIMS.exporters.destinations.labarchives.settings"
     ) as mock_settings:
-        mock_settings.NX_LABARCHIVES_API_KEY = "test_api_key"
+        mock_settings.NX_LABARCHIVES_ACCESS_KEY_ID = "test_akid"
+        mock_settings.NX_LABARCHIVES_ACCESS_PASSWORD = "test_password"
+        mock_settings.NX_LABARCHIVES_USER_ID = "test_uid"
         mock_settings.NX_LABARCHIVES_URL = "http://localhost:9000"
+        mock_settings.NX_LABARCHIVES_NOTEBOOK_ID = None
         yield mock_settings
+
+
+@pytest.fixture
+def mock_config_with_notebook(mock_config_enabled):
+    """Extend mock_config_enabled with a notebook ID."""
+    mock_config_enabled.NX_LABARCHIVES_NOTEBOOK_ID = "nb_42"
+    return mock_config_enabled
 
 
 @pytest.fixture
@@ -27,8 +47,11 @@ def mock_config_disabled():
     with patch(
         "nexusLIMS.exporters.destinations.labarchives.settings"
     ) as mock_settings:
-        mock_settings.NX_LABARCHIVES_API_KEY = None
+        mock_settings.NX_LABARCHIVES_ACCESS_KEY_ID = None
+        mock_settings.NX_LABARCHIVES_ACCESS_PASSWORD = None
+        mock_settings.NX_LABARCHIVES_USER_ID = None
         mock_settings.NX_LABARCHIVES_URL = None
+        mock_settings.NX_LABARCHIVES_NOTEBOOK_ID = None
         yield mock_settings
 
 
@@ -53,201 +76,338 @@ def export_context(tmp_path):
     )
 
 
+def _make_mock_client(
+    *,
+    get_tree_level_returns=None,
+    insert_node_side_effect=None,
+    add_entry_returns="eid_001",
+    add_attachment_returns="eid_002",
+) -> MagicMock:
+    """Build a mock LabArchivesClient."""
+    client = MagicMock()
+    if get_tree_level_returns is not None:
+        client.get_tree_level.side_effect = get_tree_level_returns
+    client.insert_node.side_effect = insert_node_side_effect or (
+        lambda _nbid, _parent, text, **_kw: f"tree_{text[:10]}"
+    )
+    client.add_entry.return_value = add_entry_returns
+    client.add_attachment.return_value = add_attachment_returns
+    return client
+
+
+# ---------------------------------------------------------------------------
+# TestLabArchivesDestinationConfiguration
+# ---------------------------------------------------------------------------
+
+
 class TestLabArchivesDestinationConfiguration:
-    """Test LabArchives destination configuration and validation."""
+    """Test configuration checks."""
 
     def test_name_and_priority(self):
-        """Test that LabArchives destination has correct name and priority."""
         dest = LabArchivesDestination()
         assert dest.name == "labarchives"
         assert dest.priority == 90
 
-    def test_enabled_with_config(self, mock_config_enabled):
-        """Test that destination is enabled when configured."""
+    def test_enabled_when_fully_configured(self, mock_config_enabled):
         dest = LabArchivesDestination()
         assert dest.enabled is True
 
-    def test_enabled_without_api_key(self):
-        """Test that destination is disabled without API key."""
-        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as mock_cfg:
-            mock_cfg.NX_LABARCHIVES_API_KEY = None
-            mock_cfg.NX_LABARCHIVES_URL = "http://localhost:9000"
+    def test_disabled_without_akid(self):
+        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as cfg:
+            cfg.NX_LABARCHIVES_ACCESS_KEY_ID = None
+            cfg.NX_LABARCHIVES_ACCESS_PASSWORD = "pw"
+            cfg.NX_LABARCHIVES_USER_ID = "uid"
+            cfg.NX_LABARCHIVES_URL = "http://localhost:9000"
+            assert LabArchivesDestination().enabled is False
 
-            dest = LabArchivesDestination()
-            assert dest.enabled is False
+    def test_disabled_without_password(self):
+        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as cfg:
+            cfg.NX_LABARCHIVES_ACCESS_KEY_ID = "akid"
+            cfg.NX_LABARCHIVES_ACCESS_PASSWORD = None
+            cfg.NX_LABARCHIVES_USER_ID = "uid"
+            cfg.NX_LABARCHIVES_URL = "http://localhost:9000"
+            assert LabArchivesDestination().enabled is False
 
-    def test_enabled_without_url(self):
-        """Test that destination is disabled without URL."""
-        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as mock_cfg:
-            mock_cfg.NX_LABARCHIVES_API_KEY = "test_api_key"
-            mock_cfg.NX_LABARCHIVES_URL = None
+    def test_disabled_without_uid(self):
+        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as cfg:
+            cfg.NX_LABARCHIVES_ACCESS_KEY_ID = "akid"
+            cfg.NX_LABARCHIVES_ACCESS_PASSWORD = "pw"
+            cfg.NX_LABARCHIVES_USER_ID = None
+            cfg.NX_LABARCHIVES_URL = "http://localhost:9000"
+            assert LabArchivesDestination().enabled is False
 
-            dest = LabArchivesDestination()
-            assert dest.enabled is False
+    def test_disabled_without_url(self):
+        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as cfg:
+            cfg.NX_LABARCHIVES_ACCESS_KEY_ID = "akid"
+            cfg.NX_LABARCHIVES_ACCESS_PASSWORD = "pw"
+            cfg.NX_LABARCHIVES_USER_ID = "uid"
+            cfg.NX_LABARCHIVES_URL = None
+            assert LabArchivesDestination().enabled is False
 
-    def test_enabled_without_any_config(self, mock_config_disabled):
-        """Test that destination is disabled without any config."""
-        dest = LabArchivesDestination()
-        assert dest.enabled is False
+    def test_disabled_when_all_none(self, mock_config_disabled):
+        assert LabArchivesDestination().enabled is False
 
-    def test_validate_config_missing_api_key(self):
-        """Test validate_config when API key is missing."""
-        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as mock_cfg:
-            # Remove API key attribute entirely
-            if hasattr(mock_cfg, "NX_LABARCHIVES_API_KEY"):
-                delattr(mock_cfg, "NX_LABARCHIVES_API_KEY")
+    def test_validate_config_missing_akid(self):
+        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as cfg:
+            cfg.NX_LABARCHIVES_ACCESS_KEY_ID = None
+            is_valid, msg = LabArchivesDestination().validate_config()
+        assert is_valid is False
+        assert "ACCESS_KEY_ID" in msg
 
-            dest = LabArchivesDestination()
-            is_valid, error_msg = dest.validate_config()
+    def test_validate_config_missing_password(self):
+        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as cfg:
+            cfg.NX_LABARCHIVES_ACCESS_KEY_ID = "akid"
+            cfg.NX_LABARCHIVES_ACCESS_PASSWORD = None
+            is_valid, msg = LabArchivesDestination().validate_config()
+        assert is_valid is False
+        assert "ACCESS_PASSWORD" in msg
 
-            assert is_valid is False
-            assert "NX_LABARCHIVES_API_KEY not configured" in error_msg
-
-    def test_validate_config_empty_api_key(self):
-        """Test validate_config when API key is empty."""
-        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as mock_cfg:
-            mock_cfg.NX_LABARCHIVES_API_KEY = ""
-            mock_cfg.NX_LABARCHIVES_URL = "http://localhost:9000"
-
-            dest = LabArchivesDestination()
-            is_valid, error_msg = dest.validate_config()
-
-            assert is_valid is False
-            assert "NX_LABARCHIVES_API_KEY is empty" in error_msg
+    def test_validate_config_missing_uid(self):
+        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as cfg:
+            cfg.NX_LABARCHIVES_ACCESS_KEY_ID = "akid"
+            cfg.NX_LABARCHIVES_ACCESS_PASSWORD = "pw"
+            cfg.NX_LABARCHIVES_USER_ID = None
+            is_valid, msg = LabArchivesDestination().validate_config()
+        assert is_valid is False
+        assert "USER_ID" in msg
 
     def test_validate_config_missing_url(self):
-        """Test validate_config when URL is missing."""
-        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as mock_cfg:
-            mock_cfg.NX_LABARCHIVES_API_KEY = "test_api_key"
-            # Remove URL attribute entirely
-            if hasattr(mock_cfg, "NX_LABARCHIVES_URL"):
-                delattr(mock_cfg, "NX_LABARCHIVES_URL")
+        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as cfg:
+            cfg.NX_LABARCHIVES_ACCESS_KEY_ID = "akid"
+            cfg.NX_LABARCHIVES_ACCESS_PASSWORD = "pw"
+            cfg.NX_LABARCHIVES_USER_ID = "uid"
+            cfg.NX_LABARCHIVES_URL = None
+            is_valid, msg = LabArchivesDestination().validate_config()
+        assert is_valid is False
+        assert "URL" in msg
 
-            dest = LabArchivesDestination()
-            is_valid, error_msg = dest.validate_config()
 
-            assert is_valid is False
-            assert "NX_LABARCHIVES_URL not configured" in error_msg
-
-    def test_validate_config_empty_url(self):
-        """Test validate_config when URL is empty."""
-        with patch("nexusLIMS.exporters.destinations.labarchives.settings") as mock_cfg:
-            mock_cfg.NX_LABARCHIVES_API_KEY = "test_api_key"
-            mock_cfg.NX_LABARCHIVES_URL = ""
-
-            dest = LabArchivesDestination()
-            is_valid, error_msg = dest.validate_config()
-
-            assert is_valid is False
-            assert "NX_LABARCHIVES_URL is empty" in error_msg
-
-    def test_validate_config_success_without_auth_check(self, mock_config_enabled):
-        """Test validate_config with valid config (auth check not yet implemented)."""
-        dest = LabArchivesDestination()
-        is_valid, error_msg = dest.validate_config()
-
-        # Should pass basic validation but log warning about auth
-        assert is_valid is True
-        assert error_msg is None
+# ---------------------------------------------------------------------------
+# TestLabArchivesDestinationExport
+# ---------------------------------------------------------------------------
 
 
 class TestLabArchivesDestinationExport:
-    """Test LabArchives destination export functionality."""
+    """Test export functionality."""
 
-    def test_export_not_yet_implemented(self, mock_config_enabled, export_context):
-        """Test that export raises NotImplementedError (skeleton implementation)."""
+    def test_export_success_inbox(self, mock_config_enabled, export_context):
+        """Export without notebook ID goes to Inbox (nbid='0', page_tree_id='0')."""
+        mock_client = _make_mock_client()
         dest = LabArchivesDestination()
 
-        # Export should catch the NotImplementedError and return failed result
-        result = dest.export(export_context)
+        with patch(
+            "nexusLIMS.exporters.destinations.labarchives.get_labarchives_client",
+            return_value=mock_client,
+        ):
+            result = dest.export(export_context)
 
-        assert result.success is False
+        assert result.success is True
         assert result.destination_name == "labarchives"
-        assert result.record_id is None
-        assert result.record_url is None
-        assert "not yet implemented" in result.error_message.lower()
+        assert result.record_id == "eid_001"
+        mock_client.add_entry.assert_called_once()
+        mock_client.add_attachment.assert_called_once()
 
-    def test_export_never_raises_exception(self, mock_config_enabled, export_context):
-        """Test that export never raises exceptions (catches all errors)."""
-        dest = LabArchivesDestination()
-
-        # Even though _upload_to_labarchives raises NotImplementedError,
-        # export() should catch it and return a failed result
-        result = dest.export(export_context)
-        assert result.success is False
-        assert result.error_message is not None
-
-    def test_export_file_read_error(self, mock_config_enabled, tmp_path):
-        """Test export failure when XML file cannot be read."""
-        dest = LabArchivesDestination()
-
-        # Create context with non-existent file
-        xml_file = tmp_path / "nonexistent.xml"
-        context = ExportContext(
-            xml_file_path=xml_file,
-            session_identifier="test-session",
-            instrument_pid="test-instrument",
-            dt_from=datetime.now(),
-            dt_to=datetime.now(),
-        )
-
-        result = dest.export(context)
-
-        assert result.success is False
-        assert result.destination_name == "labarchives"
-        assert result.error_message is not None
-
-    def test_export_includes_cdcs_url_if_available(
-        self, mock_config_enabled, export_context
+    def test_export_success_with_notebook(
+        self, mock_config_with_notebook, export_context
     ):
-        """Test that export method can access CDCS URL from context."""
-        from nexusLIMS.exporters.base import ExportResult
+        """Export with notebook ID creates folder hierarchy and page."""
+        nexuslims_nodes: list[dict] = []  # "NexusLIMS Records" not yet created
+        instrument_nodes: list[dict] = []  # instrument folder not yet created
 
+        call_count = [0]
+
+        def tree_level_side_effect(nbid, parent_tree_id):
+            call_count[0] += 1
+            if call_count[0] == 1:
+                return nexuslims_nodes  # root — no NexusLIMS Records folder yet
+            if call_count[0] == 2:
+                return instrument_nodes  # NexusLIMS Records — no instrument folder yet
+            return []
+
+        mock_client = _make_mock_client(
+            get_tree_level_returns=tree_level_side_effect,
+        )
         dest = LabArchivesDestination()
 
-        # Add a successful CDCS result to the context
+        with patch(
+            "nexusLIMS.exporters.destinations.labarchives.get_labarchives_client",
+            return_value=mock_client,
+        ):
+            result = dest.export(export_context)
+
+        assert result.success is True
+        # insert_node called 3x: NexusLIMS Records folder, instrument folder, page
+        assert mock_client.insert_node.call_count == 3
+
+    def test_export_reuses_existing_folders(
+        self, mock_config_with_notebook, export_context
+    ):
+        """When folders already exist, no new ones are created."""
+        existing_nodes_root = [
+            {"tree_id": "100", "display_text": "NexusLIMS Records", "is_page": False}
+        ]
+        existing_nodes_instrument = [
+            {"tree_id": "200", "display_text": "test-instrument", "is_page": False}
+        ]
+
+        call_count = [0]
+
+        def tree_level_side_effect(nbid, parent_tree_id):
+            call_count[0] += 1
+            if call_count[0] == 1:
+                return existing_nodes_root
+            if call_count[0] == 2:
+                return existing_nodes_instrument
+            return []
+
+        mock_client = _make_mock_client(
+            get_tree_level_returns=tree_level_side_effect,
+        )
+        dest = LabArchivesDestination()
+
+        with patch(
+            "nexusLIMS.exporters.destinations.labarchives.get_labarchives_client",
+            return_value=mock_client,
+        ):
+            result = dest.export(export_context)
+
+        assert result.success is True
+        # Only the page should be created — not the existing folders
+        assert mock_client.insert_node.call_count == 1
+
+    def test_export_propagates_cdcs_url(self, mock_config_enabled, export_context):
+        """HTML body should include CDCS link when CDCS export succeeded."""
         cdcs_result = ExportResult(
             success=True,
             destination_name="cdcs",
             record_id="123",
-            record_url="http://localhost:8000/data?id=123",
+            record_url="http://cdcs.example.com/data?id=123",
         )
         export_context.previous_results["cdcs"] = cdcs_result
 
-        # Export will fail (NotImplementedError), but we can verify the context
-        # has the CDCS result available
-        result = dest.export(export_context)
+        captured_html: list[str] = []
 
-        # Verify CDCS result was accessible (even though export failed)
-        cdcs_result_from_context = export_context.get_result("cdcs")
-        assert cdcs_result_from_context is not None
-        assert cdcs_result_from_context.success is True
-        assert (
-            cdcs_result_from_context.record_url == "http://localhost:8000/data?id=123"
+        mock_client = _make_mock_client()
+        mock_client.add_entry.side_effect = lambda _n, _p, html, **_kw: (
+            captured_html.append(html) or "eid_xyz"
         )
 
-        # Export itself fails (not implemented)
+        dest = LabArchivesDestination()
+        with patch(
+            "nexusLIMS.exporters.destinations.labarchives.get_labarchives_client",
+            return_value=mock_client,
+        ):
+            result = dest.export(export_context)
+
+        assert result.success is True
+        assert captured_html
+        assert "http://cdcs.example.com/data?id=123" in captured_html[0]
+
+    def test_export_handles_client_error(self, mock_config_enabled, export_context):
+        """A LabArchivesError in the client should produce success=False."""
+        mock_client = MagicMock()
+        mock_client.add_entry.side_effect = LabArchivesError("API unreachable")
+
+        dest = LabArchivesDestination()
+        with patch(
+            "nexusLIMS.exporters.destinations.labarchives.get_labarchives_client",
+            return_value=mock_client,
+        ):
+            result = dest.export(export_context)
+
+        assert result.success is False
+        assert result.destination_name == "labarchives"
+        assert result.error_message is not None
+
+    def test_export_never_raises(self, mock_config_enabled, export_context):
+        """export() must never raise exceptions."""
+        mock_client = MagicMock()
+        mock_client.add_entry.side_effect = RuntimeError("unexpected boom")
+
+        dest = LabArchivesDestination()
+        with patch(
+            "nexusLIMS.exporters.destinations.labarchives.get_labarchives_client",
+            return_value=mock_client,
+        ):
+            result = dest.export(export_context)
+
         assert result.success is False
 
-
-class TestLabArchivesDestinationHelperMethods:
-    """Test LabArchives destination helper methods."""
-
-    def test_get_notebook_id_not_implemented(self, mock_config_enabled):
-        """Test _get_notebook_id raises NotImplementedError (skeleton)."""
+    def test_export_file_read_error(self, mock_config_enabled, tmp_path):
+        """Missing XML file produces success=False."""
+        context = ExportContext(
+            xml_file_path=tmp_path / "nonexistent.xml",
+            session_identifier="sess",
+            instrument_pid="inst",
+            dt_from=datetime.now(),
+            dt_to=datetime.now(),
+        )
         dest = LabArchivesDestination()
+        mock_client = MagicMock()
+        with patch(
+            "nexusLIMS.exporters.destinations.labarchives.get_labarchives_client",
+            return_value=mock_client,
+        ):
+            result = dest.export(context)
 
-        with pytest.raises(NotImplementedError, match="not yet implemented"):
-            dest._get_notebook_id("test-instrument")
+        assert result.success is False
 
-    def test_upload_to_labarchives_not_implemented(self, mock_config_enabled):
-        """Test _upload_to_labarchives raises NotImplementedError (skeleton)."""
+    def test_export_url_with_notebook(self, mock_config_with_notebook, export_context):
+        """record_url should include notebook and page tree IDs when notebook is set."""
+        mock_client = _make_mock_client(
+            get_tree_level_returns=lambda _nbid, _pid: [],
+        )
         dest = LabArchivesDestination()
+        with patch(
+            "nexusLIMS.exporters.destinations.labarchives.get_labarchives_client",
+            return_value=mock_client,
+        ):
+            result = dest.export(export_context)
 
-        with pytest.raises(NotImplementedError, match="not yet implemented"):
-            dest._upload_to_labarchives(
-                xml_content="<test/>",
-                title="test",
-                session_id="session-123",
-                instrument_id="instrument-456",
-            )
+        assert result.success is True
+        assert result.record_url is not None
+        assert "nb_42" in result.record_url
+
+
+# ---------------------------------------------------------------------------
+# TestLabArchivesHelpers
+# ---------------------------------------------------------------------------
+
+
+class TestLabArchivesHelpers:
+    """Test module-level helper functions."""
+
+    def test_find_node_by_text_found(self):
+        nodes = [
+            {"tree_id": "1", "display_text": "Alpha", "is_page": False},
+            {"tree_id": "2", "display_text": "Beta", "is_page": False},
+        ]
+        assert _find_node_by_text(nodes, "Beta") == "2"
+
+    def test_find_node_by_text_not_found(self):
+        nodes = [{"tree_id": "1", "display_text": "Alpha", "is_page": False}]
+        assert _find_node_by_text(nodes, "Gamma") is None
+
+    def test_find_node_by_text_empty(self):
+        assert _find_node_by_text([], "anything") is None
+
+    def test_build_entry_url_with_notebook(self):
+        url = _build_entry_url("https://la.example.com", "nb123", "page456")
+        assert "nb123" in url
+        assert "page456" in url
+
+    def test_build_entry_url_inbox(self):
+        url = _build_entry_url("https://la.example.com", "0", "0")
+        assert url == "https://la.example.com"
+
+    def test_build_entry_url_strips_trailing_slash(self):
+        url = _build_entry_url("https://la.example.com/", "nb1", "p1")
+        assert not url.startswith("https://la.example.com//")
+
+    def test_build_entry_url_cloud_uses_web_host(self):
+        url = _build_entry_url("https://api.labarchives.com/api", "nb123", "page456")
+        assert url == "https://mynotebook.labarchives.com/#/nb123/page456"
+
+    def test_build_entry_url_cloud_with_trailing_slash(self):
+        url = _build_entry_url("https://api.labarchives.com/api/", "nb123", "page456")
+        assert url == "https://mynotebook.labarchives.com/#/nb123/page456"

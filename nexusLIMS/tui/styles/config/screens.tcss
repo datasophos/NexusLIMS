@@ -204,11 +204,28 @@ ConfigScreen FormField {
     margin-right: 1;
 }
 
+/* Input + inline action button on the same row (e.g. User ID + Get My UID) */
+.field-with-button {
+    height: 3;
+    align: left middle;
+}
+
+.field-with-button Input {
+    width: 1fr;
+}
+
+.field-with-button Button {
+    width: auto;
+    min-width: 16;
+    margin-left: 1;
+}
+
 /* =========================================================================
    FieldDetailScreen — field help popup modal
    ========================================================================= */
 
-FieldDetailScreen {
+FieldDetailScreen,
+LabArchivesGetUidDialog {
     align: center middle;
 }
 
