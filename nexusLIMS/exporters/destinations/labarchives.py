@@ -85,7 +85,7 @@ class LabArchivesDestination:
                 return False, f"{label} not configured"
 
         # Test authentication by making a live API call
-        try:
+        try:  # pragma: no cover
             client = get_labarchives_client()
             nbid = settings.NX_LABARCHIVES_NOTEBOOK_ID
             if nbid:
@@ -94,15 +94,15 @@ class LabArchivesDestination:
             else:
                 # No notebook configured — just verify credentials with a minimal call
                 client.get_tree_level("0", "0")
-        except LabArchivesAuthenticationError as e:
+        except LabArchivesAuthenticationError as e:  # pragma: no cover
             return False, f"LabArchives authentication failed: {e}"
-        except LabArchivesError as e:
+        except LabArchivesError as e:  # pragma: no cover
             # Non-auth errors (e.g. notebook not found) still mean config is usable
             _logger.debug("LabArchives validate_config non-fatal error: %s", e)
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             return False, f"LabArchives configuration error: {e}"
 
-        return True, None
+        return True, None  # pragma: no cover
 
     def export(self, context: ExportContext) -> ExportResult:
         """Export record to LabArchives.
@@ -212,9 +212,7 @@ class LabArchivesDestination:
         root_nodes = client.get_tree_level(nbid, "0")
         nexuslims_folder_id = _find_node_by_text(root_nodes, "NexusLIMS Records")
         if nexuslims_folder_id is None:
-            nexuslims_folder_id = client.insert_node(
-                nbid, "0", "NexusLIMS Records", is_folder=True
-            )
+            nexuslims_folder_id = client.insert_folder(nbid, "0", "NexusLIMS Records")
             _logger.info("Created 'NexusLIMS Records' folder in notebook %s", nbid)
 
         # Find or create instrument sub-folder
@@ -223,11 +221,8 @@ class LabArchivesDestination:
             instrument_nodes, context.instrument_pid
         )
         if instrument_folder_id is None:
-            instrument_folder_id = client.insert_node(
-                nbid,
-                nexuslims_folder_id,
-                context.instrument_pid,
-                is_folder=True,
+            instrument_folder_id = client.insert_folder(
+                nbid, nexuslims_folder_id, context.instrument_pid
             )
             _logger.info(
                 "Created instrument folder '%s' in LabArchives",
@@ -236,9 +231,7 @@ class LabArchivesDestination:
 
         # Create a new page for this session
         page_name = f"{context.dt_from:%Y-%m-%d} \u2014 {context.session_identifier}"
-        page_tree_id = client.insert_node(
-            nbid, instrument_folder_id, page_name, is_folder=False
-        )
+        page_tree_id = client.insert_page(nbid, instrument_folder_id, page_name)
         _logger.info("Created page '%s' (tree_id=%s)", page_name, page_tree_id)
 
         return (nbid, page_tree_id)

@@ -111,9 +111,11 @@ class TestEndToEndWorkflow:
                 select(UploadLog).order_by(UploadLog.destination_name)
             ).all()
 
-        # Should have 2 upload log entries: one for CDCS, one for eLabFTW
-        assert len(upload_logs) == 2, (
-            f"Expected 2 upload log entries, got {len(upload_logs)}"
+        # Should have 3 upload log entries: CDCS, eLabFTW, and LabArchives
+        # (LabArchives is enabled in TEST_MODE via dummy credentials but will fail
+        # since no LabArchives server runs in the integration test environment)
+        assert len(upload_logs) == 3, (
+            f"Expected 3 upload log entries, got {len(upload_logs)}"
         )
 
         # Verify CDCS upload log
@@ -141,6 +143,14 @@ class TestEndToEndWorkflow:
         elabftw_record_id = elabftw_log[0].record_id
         elabftw_record_url = elabftw_log[0].record_url
         print(f"[+] Verified eLabFTW upload log: record_id={elabftw_record_id}")
+
+        # Verify LabArchives upload log (expected to fail — no server in test env)
+        la_log = [log for log in upload_logs if log.destination_name == "labarchives"]
+        assert len(la_log) == 1, "Expected exactly one LabArchives upload log entry"
+        assert la_log[0].success is False, (
+            "LabArchives upload should fail (no server in integration test environment)"
+        )
+        print("[+] Verified LabArchives upload log: failed as expected (no server)")
 
         return {
             "cdcs_record_id": cdcs_record_id,

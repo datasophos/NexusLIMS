@@ -2415,6 +2415,10 @@ def pytest_runtest_makereport(item, call):
     if "integration" not in [mark.name for mark in item.iter_markers()]:
         return
 
+    # Skip docker logs for xfail/xpass tests — failures there are expected
+    if item.get_closest_marker("xfail"):
+        return
+
     # Only capture logs for failed tests
     if call.excinfo and call.excinfo.value:
         # Import here to avoid issues if Docker isn't available

@@ -263,7 +263,8 @@ Create a new folder or page node in the notebook tree.
 </response>
 ```
 
-**NexusLIMS method:** `LabArchivesClient.insert_node(nbid, parent_tree_id, display_text, *, is_folder)`
+**NexusLIMS methods:** `LabArchivesClient.insert_folder(nbid, parent_tree_id, name)` /
+`LabArchivesClient.insert_page(nbid, parent_tree_id, name)`
 
 Returns the `tree_id` of the newly created node.
 

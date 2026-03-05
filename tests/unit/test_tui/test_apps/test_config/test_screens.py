@@ -1427,4 +1427,615 @@ class TestGuardContinueBranches:
             assert config == {}
 
 
+# --------------------------------------------------------------------------- #
+# TestLabArchivesToggleHandler                                                 #
+# --------------------------------------------------------------------------- #
+
+
+class TestLabArchivesToggleHandler:
+    """Tests for the LabArchives toggle switch and credential-change handlers."""
+
+    async def test_labarchives_toggle_enables_fields(self, tmp_path):
+        """Enabling the LabArchives switch enables the LabArchives input fields."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+
+            screen.query_one("#labarchives-enabled", Switch).value = True
+            await pilot.pause(0.1)
+
+            assert not screen.query_one("#nx-labarchives-url", Input).disabled
+            assert not screen.query_one("#nx-labarchives-access-key-id", Input).disabled
+            assert not screen.query_one(
+                "#nx-labarchives-access-password", Input
+            ).disabled
+            assert not screen.query_one("#nx-labarchives-user-id", Input).disabled
+            assert not screen.query_one("#nx-labarchives-notebook-id", Input).disabled
+
+    async def test_labarchives_toggle_disables_fields(self, tmp_path):
+        """Disabling the LabArchives switch disables the LabArchives input fields."""
+        env_file = tmp_path / "empty.env"
+        env_file.write_text(
+            "NX_LABARCHIVES_URL='https://api.labarchives.com/api'\n"
+            "NX_LABARCHIVES_ACCESS_KEY_ID='some-akid'\n"
+            "NX_LABARCHIVES_ACCESS_PASSWORD='some-secret'\n"
+            "NX_LABARCHIVES_USER_ID='12345'\n"
+        )
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+
+            # Was enabled from env; now disable
+            screen.query_one("#labarchives-enabled", Switch).value = False
+            await pilot.pause(0.1)
+
+            assert screen.query_one("#nx-labarchives-url", Input).disabled
+            assert screen.query_one("#nx-labarchives-access-key-id", Input).disabled
+            assert screen.query_one("#nx-labarchives-access-password", Input).disabled
+            assert screen.query_one("#nx-labarchives-user-id", Input).disabled
+            assert screen.query_one("#nx-labarchives-notebook-id", Input).disabled
+
+    async def test_labarchives_toggle_adds_on_class(self, tmp_path):
+        """Enabling the switch adds the '-on' class to the toggle row."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+
+            screen.query_one("#labarchives-enabled", Switch).value = True
+            await pilot.pause(0.1)
+
+            assert screen.query_one("#labarchives-toggle-row").has_class("-on")
+
+    async def test_labarchives_toggle_removes_on_class(self, tmp_path):
+        """Disabling the switch removes the '-on' class from the toggle row."""
+        env_file = tmp_path / "empty.env"
+        env_file.write_text(
+            "NX_LABARCHIVES_URL='https://api.labarchives.com/api'\n"
+            "NX_LABARCHIVES_ACCESS_KEY_ID='some-akid'\n"
+            "NX_LABARCHIVES_ACCESS_PASSWORD='some-secret'\n"
+            "NX_LABARCHIVES_USER_ID='12345'\n"
+        )
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+
+            screen.query_one("#labarchives-enabled", Switch).value = False
+            await pilot.pause(0.1)
+
+            assert not screen.query_one("#labarchives-toggle-row").has_class("-on")
+
+    async def test_get_uid_btn_enabled_when_all_creds_set(self, tmp_path):
+        """'Get My UID' button is enabled when all three credentials are filled."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+
+            screen.query_one("#labarchives-enabled", Switch).value = True
+            await pilot.pause(0.05)
+            screen.query_one(
+                "#nx-labarchives-url", Input
+            ).value = "https://api.labarchives.com/api"
+            screen.query_one("#nx-labarchives-access-key-id", Input).value = "akid"
+            screen.query_one("#nx-labarchives-access-password", Input).value = "secret"
+            await pilot.pause(0.1)
+
+            # Trigger the credential-changed handler by calling it directly
+            screen._update_la_get_uid_btn()
+            await pilot.pause(0.05)
+
+            assert not screen.query_one("#labarchives-get-uid-btn", Button).disabled
+
+    async def test_get_uid_btn_disabled_when_missing_cred(self, tmp_path):
+        """'Get My UID' button is disabled when any credential is missing."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+
+            screen.query_one("#labarchives-enabled", Switch).value = True
+            await pilot.pause(0.05)
+            screen.query_one(
+                "#nx-labarchives-url", Input
+            ).value = "https://api.labarchives.com/api"
+            # Intentionally leave akid empty
+            screen.query_one("#nx-labarchives-access-key-id", Input).value = ""
+            screen.query_one("#nx-labarchives-access-password", Input).value = "secret"
+            screen._update_la_get_uid_btn()
+            await pilot.pause(0.05)
+
+            assert screen.query_one("#labarchives-get-uid-btn", Button).disabled
+
+
+# --------------------------------------------------------------------------- #
+# TestLabArchivesGetUidDialogDirect                                            #
+# --------------------------------------------------------------------------- #
+
+
+class TestLabArchivesGetUidDialogDirect:
+    """Tests for LabArchivesGetUidDialog by pushing it onto a running app."""
+
+    async def test_dialog_stores_credentials_in_init(self, tmp_path):
+        """__init__ stores base_url, akid, and access_password on the instance."""
+        from nexusLIMS.tui.apps.config.screens import LabArchivesGetUidDialog
+
+        dialog = LabArchivesGetUidDialog(
+            base_url="https://api.labarchives.com/api",
+            akid="my-akid",
+            access_password="my-secret",
+        )
+        assert dialog._base_url == "https://api.labarchives.com/api"
+        assert dialog._akid == "my-akid"
+        assert dialog._access_password == "my-secret"
+
+    async def test_lookup_btn_disabled_until_both_fields_filled(self, tmp_path):
+        """Look Up button is disabled until email and password are both non-empty."""
+        from nexusLIMS.tui.apps.config.screens import LabArchivesGetUidDialog
+
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+
+            await app.push_screen(
+                LabArchivesGetUidDialog(
+                    base_url="https://api.labarchives.com/api",
+                    akid="akid",
+                    access_password="secret",
+                )
+            )
+            await pilot.pause(0.1)
+
+            dialog = app.screen
+            assert isinstance(dialog, LabArchivesGetUidDialog)
+
+            # Both empty → button disabled
+            assert dialog.query_one("#la-uid-lookup-btn", Button).disabled
+
+            # Fill email only → still disabled
+            dialog.query_one("#la-uid-email", Input).value = "user@example.com"
+            dialog._update_lookup_btn.__func__(
+                dialog, None
+            ) if False else dialog._update_lookup_btn(
+                type(
+                    "E",
+                    (),
+                    {"value": "user@example.com"},
+                )()
+            )
+            await pilot.pause(0.05)
+            assert dialog.query_one("#la-uid-lookup-btn", Button).disabled
+
+            # Fill both → enabled
+            dialog.query_one("#la-uid-password", Input).value = "my-password"
+            # Directly trigger the handler
+            dialog.query_one("#la-uid-email", Input).post_message(
+                Input.Changed(
+                    dialog.query_one("#la-uid-email", Input), "user@example.com"
+                )
+            )
+            await pilot.pause(0.1)
+            assert not dialog.query_one("#la-uid-lookup-btn", Button).disabled
+
+    async def test_cancel_button_dismisses_with_none(self, tmp_path):
+        """Clicking Cancel dismisses the dialog with None."""
+        from nexusLIMS.tui.apps.config.screens import LabArchivesGetUidDialog
+
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        dismissed_value = []
+
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+
+            await app.push_screen(
+                LabArchivesGetUidDialog(
+                    base_url="https://api.labarchives.com/api",
+                    akid="akid",
+                    access_password="secret",
+                ),
+                dismissed_value.append,
+            )
+            await pilot.pause(0.1)
+
+            dialog = app.screen
+            assert isinstance(dialog, LabArchivesGetUidDialog)
+            dialog._on_cancel_btn()
+            await pilot.pause(0.1)
+
+        assert len(dismissed_value) == 1
+        assert dismissed_value[0] is None
+
+    async def test_action_cancel_dialog_dismisses_with_none(self, tmp_path):
+        """action_cancel_dialog (Escape) dismisses the dialog with None."""
+        from nexusLIMS.tui.apps.config.screens import LabArchivesGetUidDialog
+
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        dismissed_value = []
+
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+
+            await app.push_screen(
+                LabArchivesGetUidDialog(
+                    base_url="https://api.labarchives.com/api",
+                    akid="akid",
+                    access_password="secret",
+                ),
+                dismissed_value.append,
+            )
+            await pilot.pause(0.1)
+
+            dialog = app.screen
+            assert isinstance(dialog, LabArchivesGetUidDialog)
+            dialog.action_cancel_dialog()
+            await pilot.pause(0.1)
+
+        assert len(dismissed_value) == 1
+        assert dismissed_value[0] is None
+
+    async def test_lookup_shows_error_on_api_failure(self, tmp_path):
+        """API error populates and reveals the error widget."""
+        from unittest.mock import patch
+
+        from textual.widgets import Static
+
+        from nexusLIMS.tui.apps.config.screens import LabArchivesGetUidDialog
+        from nexusLIMS.utils.labarchives import LabArchivesClient, LabArchivesError
+
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+
+            await app.push_screen(
+                LabArchivesGetUidDialog(
+                    base_url="https://api.labarchives.com/api",
+                    akid="akid",
+                    access_password="secret",
+                )
+            )
+            await pilot.pause(0.1)
+
+            dialog = app.screen
+            assert isinstance(dialog, LabArchivesGetUidDialog)
+
+            dialog.query_one("#la-uid-email", Input).value = "user@example.com"
+            dialog.query_one("#la-uid-password", Input).value = "wrong-pw"
+
+            with patch.object(
+                LabArchivesClient,
+                "get_user_info",
+                side_effect=LabArchivesError("invalid credentials"),
+            ):
+                dialog._on_lookup()
+            await pilot.pause(0.1)
+
+            error_widget = dialog.query_one("#la-uid-error", Static)
+            assert error_widget.has_class("visible")
+
+    async def test_lookup_shows_error_when_no_uid_returned(self, tmp_path):
+        """Missing uid in API response populates and reveals the error widget."""
+        from unittest.mock import patch
+
+        from textual.widgets import Static
+
+        from nexusLIMS.tui.apps.config.screens import LabArchivesGetUidDialog
+        from nexusLIMS.utils.labarchives import LabArchivesClient
+
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+
+            await app.push_screen(
+                LabArchivesGetUidDialog(
+                    base_url="https://api.labarchives.com/api",
+                    akid="akid",
+                    access_password="secret",
+                )
+            )
+            await pilot.pause(0.1)
+
+            dialog = app.screen
+            assert isinstance(dialog, LabArchivesGetUidDialog)
+
+            dialog.query_one("#la-uid-email", Input).value = "user@example.com"
+            dialog.query_one("#la-uid-password", Input).value = "some-pw"
+
+            with patch.object(
+                LabArchivesClient,
+                "get_user_info",
+                return_value={"uid": None},
+            ):
+                dialog._on_lookup()
+            await pilot.pause(0.1)
+
+            error_widget = dialog.query_one("#la-uid-error", Static)
+            assert error_widget.has_class("visible")
+
+    async def test_lookup_success_dismisses_with_uid(self, tmp_path):
+        """Successful API call dismisses the dialog with the UID string."""
+        from unittest.mock import patch
+
+        from nexusLIMS.tui.apps.config.screens import LabArchivesGetUidDialog
+        from nexusLIMS.utils.labarchives import LabArchivesClient
+
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        dismissed_value = []
+
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+
+            await app.push_screen(
+                LabArchivesGetUidDialog(
+                    base_url="https://api.labarchives.com/api",
+                    akid="akid",
+                    access_password="secret",
+                ),
+                dismissed_value.append,
+            )
+            await pilot.pause(0.1)
+
+            dialog = app.screen
+            assert isinstance(dialog, LabArchivesGetUidDialog)
+
+            dialog.query_one("#la-uid-email", Input).value = "user@example.com"
+            dialog.query_one("#la-uid-password", Input).value = "correct-pw"
+
+            with patch.object(
+                LabArchivesClient,
+                "get_user_info",
+                return_value={"uid": "99887"},
+            ):
+                dialog._on_lookup()
+            await pilot.pause(0.1)
+
+        assert dismissed_value == ["99887"]
+
+
+# --------------------------------------------------------------------------- #
+# TestLabArchivesGetUidHandler                                                 #
+# --------------------------------------------------------------------------- #
+
+
+class TestLabArchivesGetUidHandler:
+    """Tests for _on_labarchives_get_uid and _on_uid_lookup_result on ConfigScreen."""
+
+    async def test_on_uid_lookup_result_populates_user_id_field(self, tmp_path):
+        """_on_uid_lookup_result fills #nx-labarchives-user-id when uid is truthy."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+            assert isinstance(screen, ConfigScreen)
+
+            # Enable LabArchives so the field is accessible
+            screen.query_one("#labarchives-enabled", Switch).value = True
+            await pilot.pause(0.05)
+
+            screen._on_uid_lookup_result("55443")
+            await pilot.pause(0.05)
+
+            assert screen.query_one("#nx-labarchives-user-id", Input).value == "55443"
+
+    async def test_on_uid_lookup_result_does_nothing_for_none(self, tmp_path):
+        """_on_uid_lookup_result is a no-op when uid is None."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+            assert isinstance(screen, ConfigScreen)
+
+            screen.query_one("#labarchives-enabled", Switch).value = True
+            await pilot.pause(0.05)
+            screen.query_one("#nx-labarchives-user-id", Input).value = "original"
+
+            screen._on_uid_lookup_result(None)
+            await pilot.pause(0.05)
+
+            # Value should be unchanged
+            assert (
+                screen.query_one("#nx-labarchives-user-id", Input).value == "original"
+            )
+
+    async def test_on_labarchives_get_uid_pushes_dialog(self, tmp_path):
+        """_on_labarchives_get_uid pushes LabArchivesGetUidDialog onto the stack."""
+        from nexusLIMS.tui.apps.config.screens import LabArchivesGetUidDialog
+
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+            assert isinstance(screen, ConfigScreen)
+
+            screen.query_one("#labarchives-enabled", Switch).value = True
+            await pilot.pause(0.05)
+            screen.query_one(
+                "#nx-labarchives-url", Input
+            ).value = "https://api.labarchives.com/api"
+            screen.query_one("#nx-labarchives-access-key-id", Input).value = "akid"
+            screen.query_one("#nx-labarchives-access-password", Input).value = "secret"
+            screen._update_la_get_uid_btn()
+            await pilot.pause(0.05)
+
+            screen._on_labarchives_get_uid()
+            await pilot.pause(0.1)
+
+            assert isinstance(app.screen, LabArchivesGetUidDialog)
+
+
+# --------------------------------------------------------------------------- #
+# TestValidateLabArchives                                                      #
+# --------------------------------------------------------------------------- #
+
+
+class TestValidateLabArchives:
+    """Tests for _validate_labarchives on ConfigScreen."""
+
+    async def test_labarchives_disabled_returns_no_errors(self, tmp_path):
+        """Returns empty list when LabArchives is disabled."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+            assert isinstance(screen, ConfigScreen)
+
+            # Keep disabled (default)
+            errors = screen._validate_labarchives()
+            assert errors == []
+
+    async def test_labarchives_enabled_all_valid_returns_no_errors(self, tmp_path):
+        """Returns empty list when LabArchives is enabled and all fields are valid."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+            assert isinstance(screen, ConfigScreen)
+
+            screen.query_one("#labarchives-enabled", Switch).value = True
+            await pilot.pause(0.05)
+            screen.query_one(
+                "#nx-labarchives-url", Input
+            ).value = "https://api.labarchives.com/api"
+            screen.query_one("#nx-labarchives-access-key-id", Input).value = "some-akid"
+            screen.query_one("#nx-labarchives-access-password", Input).value = "secret"
+            screen.query_one("#nx-labarchives-user-id", Input).value = "12345"
+
+            errors = screen._validate_labarchives()
+            assert errors == []
+
+    async def test_labarchives_enabled_invalid_url_produces_error(self, tmp_path):
+        """Invalid URL returns a validation error."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+            assert isinstance(screen, ConfigScreen)
+
+            screen.query_one("#labarchives-enabled", Switch).value = True
+            await pilot.pause(0.05)
+            screen.query_one("#nx-labarchives-url", Input).value = "not-a-url"
+            screen.query_one("#nx-labarchives-access-key-id", Input).value = "akid"
+            screen.query_one("#nx-labarchives-access-password", Input).value = "secret"
+            screen.query_one("#nx-labarchives-user-id", Input).value = "12345"
+
+            errors = screen._validate_labarchives()
+            assert any("NX_LABARCHIVES_URL" in e for e in errors)
+
+    async def test_labarchives_enabled_missing_required_fields_produces_errors(
+        self, tmp_path
+    ):
+        """Missing required text fields return validation errors."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+            assert isinstance(screen, ConfigScreen)
+
+            screen.query_one("#labarchives-enabled", Switch).value = True
+            await pilot.pause(0.05)
+            # Leave all fields empty
+            errors = screen._validate_labarchives()
+
+            # Expect errors for at least akid, password, user-id
+            assert any("NX_LABARCHIVES_ACCESS_KEY_ID" in e for e in errors)
+            assert any("NX_LABARCHIVES_ACCESS_PASSWORD" in e for e in errors)
+            assert any("NX_LABARCHIVES_USER_ID" in e for e in errors)
+
+
+# --------------------------------------------------------------------------- #
+# TestBuildLabArchivesConfig                                                   #
+# --------------------------------------------------------------------------- #
+
+
+class TestBuildLabArchivesConfig:
+    """Tests for _build_labarchives_config on ConfigScreen."""
+
+    async def test_labarchives_disabled_returns_empty_dict(self, tmp_path):
+        """Returns empty dict when LabArchives is disabled."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+            assert isinstance(screen, ConfigScreen)
+
+            config = screen._build_labarchives_config()
+            assert config == {}
+
+    async def test_labarchives_enabled_returns_all_filled_fields(self, tmp_path):
+        """Returns dict with all non-empty field values when enabled."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+            assert isinstance(screen, ConfigScreen)
+
+            screen.query_one("#labarchives-enabled", Switch).value = True
+            await pilot.pause(0.05)
+            screen.query_one(
+                "#nx-labarchives-url", Input
+            ).value = "https://api.labarchives.com/api"
+            screen.query_one("#nx-labarchives-access-key-id", Input).value = "my-akid"
+            screen.query_one(
+                "#nx-labarchives-access-password", Input
+            ).value = "my-secret"
+            screen.query_one("#nx-labarchives-user-id", Input).value = "uid-777"
+            screen.query_one("#nx-labarchives-notebook-id", Input).value = "nb-123"
+
+            config = screen._build_labarchives_config()
+
+            assert config["NX_LABARCHIVES_URL"] == "https://api.labarchives.com/api"
+            assert config["NX_LABARCHIVES_ACCESS_KEY_ID"] == "my-akid"
+            assert config["NX_LABARCHIVES_ACCESS_PASSWORD"] == "my-secret"
+            assert config["NX_LABARCHIVES_USER_ID"] == "uid-777"
+            assert config["NX_LABARCHIVES_NOTEBOOK_ID"] == "nb-123"
+
+    async def test_labarchives_enabled_omits_empty_optional_fields(self, tmp_path):
+        """Empty optional fields (notebook ID) are omitted from the config dict."""
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+            assert isinstance(screen, ConfigScreen)
+
+            screen.query_one("#labarchives-enabled", Switch).value = True
+            await pilot.pause(0.05)
+            screen.query_one(
+                "#nx-labarchives-url", Input
+            ).value = "https://api.labarchives.com/api"
+            screen.query_one("#nx-labarchives-access-key-id", Input).value = "my-akid"
+            screen.query_one(
+                "#nx-labarchives-access-password", Input
+            ).value = "my-secret"
+            screen.query_one("#nx-labarchives-user-id", Input).value = "uid-777"
+            # Leave notebook-id empty
+
+            config = screen._build_labarchives_config()
+
+            assert "NX_LABARCHIVES_NOTEBOOK_ID" not in config
+
+
 pytestmark = pytest.mark.unit

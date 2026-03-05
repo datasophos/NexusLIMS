@@ -202,20 +202,20 @@ class TestLabArchivesClientRequests:
 
     def test_get_tree_level_returns_nodes(self, client):
         item_a = (
-            "<tree_item>"
-            "<tree_id>10</tree_id>"
-            "<display_text>Folder A</display_text>"
-            "<type>folder</type>"
-            "</tree_item>"
+            "<level-node>"
+            "<tree-id>10</tree-id>"
+            "<display-text>Folder A</display-text>"
+            "<is-page type='boolean'>false</is-page>"
+            "</level-node>"
         )
         item_b = (
-            "<tree_item>"
-            "<tree_id>20</tree_id>"
-            "<display_text>Page B</display_text>"
-            "<type>page</type>"
-            "</tree_item>"
+            "<level-node>"
+            "<tree-id>20</tree-id>"
+            "<display-text>Page B</display-text>"
+            "<is-page type='boolean'>true</is-page>"
+            "</level-node>"
         )
-        xml = _xml(f"<tree_items>{item_a}{item_b}</tree_items>")
+        xml = _xml(f"<level-nodes>{item_a}{item_b}</level-nodes>")
         with self._patch_get(client, xml):
             nodes = client.get_tree_level("nbid123", "0")
 
@@ -228,24 +228,30 @@ class TestLabArchivesClientRequests:
         assert nodes[1] == {"tree_id": "20", "display_text": "Page B", "is_page": True}
 
     def test_get_tree_level_empty(self, client):
-        xml = _xml("<tree_items></tree_items>")
+        xml = _xml("<level-nodes></level-nodes>")
         with self._patch_get(client, xml):
             nodes = client.get_tree_level("nbid123", "0")
         assert nodes == []
 
-    def test_insert_node_returns_tree_id(self, client):
-        xml = _xml("<node><tree_id>99</tree_id></node>")
-        with self._patch_post(client, xml):
-            tree_id = client.insert_node("nbid123", "0", "New Folder", is_folder=True)
+    def test_insert_folder_returns_tree_id(self, client):
+        xml = _xml("<level-node><tree-id>99</tree-id></level-node>")
+        with self._patch_get(client, xml):
+            tree_id = client.insert_folder("nbid123", "0", "New Folder")
         assert tree_id == "99"
 
-    def test_insert_node_missing_tree_id_raises(self, client):
-        xml = _xml("<node><other>stuff</other></node>")
+    def test_insert_page_returns_tree_id(self, client):
+        xml = _xml("<level-node><tree-id>77</tree-id></level-node>")
+        with self._patch_get(client, xml):
+            tree_id = client.insert_page("nbid123", "parent_id", "New Page")
+        assert tree_id == "77"
+
+    def test_insert_folder_missing_tree_id_raises(self, client):
+        xml = _xml("<level-node><other>stuff</other></level-node>")
         with (
-            self._patch_post(client, xml),
-            pytest.raises(LabArchivesError, match="missing tree_id"),
+            self._patch_get(client, xml),
+            pytest.raises(LabArchivesError, match="missing tree-id"),
         ):
-            client.insert_node("nbid123", "0", "New Folder", is_folder=True)
+            client.insert_folder("nbid123", "0", "New Folder")
 
     def test_add_entry_returns_eid(self, client):
         xml = _xml("<entry><eid>456</eid></entry>")

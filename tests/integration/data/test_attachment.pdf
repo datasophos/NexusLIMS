@@ -1,0 +1,52 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R
+   /MediaBox [0 0 612 792]
+   /Contents 4 0 R
+   /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 411 >>
+stream
+q
+0.25 0.47 0.75 rg
+50 680 500 80 re f
+1 1 1 rg
+BT /F1 28 Tf 80 710 Td (NexusLIMS Integration Test) Tj ET
+0 0 0 rg
+BT /F1 16 Tf 50 650 Td (This is a test PDF attachment.) Tj ET
+BT /F1 14 Tf 50 625 Td (Generated for LabArchives upload testing.) Tj ET
+0.85 0.85 0.85 rg
+50 50 500 550 re f
+0 0 0 rg
+50 50 500 550 re S
+BT /F1 12 Tf 60 585 Td (Page size: 612 x 792 pt  |  Fixture file for integration tests) Tj ET
+Q
+
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1
+   /BaseFont /Helvetica
+   /Encoding /WinAnsiEncoding >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000256 00000 n 
+0000000718 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+821
+%%EOF

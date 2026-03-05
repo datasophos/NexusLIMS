@@ -79,7 +79,8 @@ def export_context(tmp_path):
 def _make_mock_client(
     *,
     get_tree_level_returns=None,
-    insert_node_side_effect=None,
+    insert_folder_side_effect=None,
+    insert_page_side_effect=None,
     add_entry_returns="eid_001",
     add_attachment_returns="eid_002",
 ) -> MagicMock:
@@ -87,8 +88,11 @@ def _make_mock_client(
     client = MagicMock()
     if get_tree_level_returns is not None:
         client.get_tree_level.side_effect = get_tree_level_returns
-    client.insert_node.side_effect = insert_node_side_effect or (
-        lambda _nbid, _parent, text, **_kw: f"tree_{text[:10]}"
+    client.insert_folder.side_effect = insert_folder_side_effect or (
+        lambda _nbid, _parent, text: f"tree_{text[:10]}"
+    )
+    client.insert_page.side_effect = insert_page_side_effect or (
+        lambda _nbid, _parent, text: f"tree_{text[:10]}"
     )
     client.add_entry.return_value = add_entry_returns
     client.add_attachment.return_value = add_attachment_returns
@@ -236,8 +240,9 @@ class TestLabArchivesDestinationExport:
             result = dest.export(export_context)
 
         assert result.success is True
-        # insert_node called 3x: NexusLIMS Records folder, instrument folder, page
-        assert mock_client.insert_node.call_count == 3
+        # 2 folders (NexusLIMS Records + instrument) + 1 page
+        assert mock_client.insert_folder.call_count == 2
+        assert mock_client.insert_page.call_count == 1
 
     def test_export_reuses_existing_folders(
         self, mock_config_with_notebook, export_context
@@ -273,7 +278,8 @@ class TestLabArchivesDestinationExport:
 
         assert result.success is True
         # Only the page should be created — not the existing folders
-        assert mock_client.insert_node.call_count == 1
+        assert mock_client.insert_folder.call_count == 0
+        assert mock_client.insert_page.call_count == 1
 
     def test_export_propagates_cdcs_url(self, mock_config_enabled, export_context):
         """HTML body should include CDCS link when CDCS export succeeded."""

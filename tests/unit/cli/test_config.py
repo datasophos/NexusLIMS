@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+from typing import ClassVar
 from unittest.mock import MagicMock, Mock, patch
 
 from click.testing import CliRunner
@@ -609,3 +610,153 @@ class TestEditCommand:
         assert result.exit_code == 0, result.output
         mock_cls.assert_called_once_with(env_path=Path(".env"))
         mock_app.run.assert_called_once()
+
+
+# ===========================================================================
+# TestLabArchivesGetUidCommand
+# ===========================================================================
+
+
+class TestLabArchivesGetUidCommand:
+    """Tests for the ``nexuslims config labarchives-get-uid`` command."""
+
+    _BASE_LA_ENV: ClassVar[dict] = {
+        "NX_LABARCHIVES_ACCESS_KEY_ID": "test-akid",
+        "NX_LABARCHIVES_ACCESS_PASSWORD": "test-secret",
+        "NX_LABARCHIVES_URL": "https://api.labarchives.com/api",
+        "NX_LABARCHIVES_NOTEBOOK_ID": None,
+        "NX_LABARCHIVES_USER_ID": None,
+    }
+
+    def _invoke(self, extra_args=None, la_env=None):
+        """Invoke the command with default required options."""
+        runner = CliRunner()
+        args = [
+            "labarchives-get-uid",
+            "--email",
+            "user@example.com",
+            "--la-password",
+            "my-password",
+        ]
+        if extra_args:
+            args.extend(extra_args)
+        env = la_env if la_env is not None else self._BASE_LA_ENV
+        with patch(
+            "nexusLIMS.config.read_labarchives_env",
+            return_value=env,
+        ):
+            return runner.invoke(main, args, catch_exceptions=False)
+
+    def test_missing_access_key_id_raises_click_exception(self):
+        """Missing NX_LABARCHIVES_ACCESS_KEY_ID raises a ClickException."""
+        la_env = {**self._BASE_LA_ENV, "NX_LABARCHIVES_ACCESS_KEY_ID": None}
+        result = self._invoke(la_env=la_env)
+        assert result.exit_code != 0
+        assert "NX_LABARCHIVES_ACCESS_KEY_ID" in result.output
+
+    def test_missing_access_password_raises_click_exception(self):
+        """Missing NX_LABARCHIVES_ACCESS_PASSWORD raises a ClickException."""
+        la_env = {**self._BASE_LA_ENV, "NX_LABARCHIVES_ACCESS_PASSWORD": None}
+        result = self._invoke(la_env=la_env)
+        assert result.exit_code != 0
+        assert "NX_LABARCHIVES_ACCESS_PASSWORD" in result.output
+
+    def test_missing_url_raises_click_exception(self):
+        """Missing NX_LABARCHIVES_URL raises a ClickException."""
+        la_env = {**self._BASE_LA_ENV, "NX_LABARCHIVES_URL": None}
+        result = self._invoke(la_env=la_env)
+        assert result.exit_code != 0
+        assert "NX_LABARCHIVES_URL" in result.output
+
+    def test_successful_uid_lookup_prints_uid(self):
+        """Successful lookup prints the UID and env-var line."""
+        from nexusLIMS.utils.labarchives import LabArchivesClient
+
+        with patch.object(
+            LabArchivesClient,
+            "get_user_info",
+            return_value={"uid": "12345"},
+        ):
+            result = self._invoke()
+
+        assert result.exit_code == 0, result.output
+        assert "12345" in result.output
+        assert "NX_LABARCHIVES_USER_ID=12345" in result.output
+
+    def test_api_error_raises_click_exception(self):
+        """LabArchivesError from get_user_info raises a ClickException."""
+        from nexusLIMS.utils.labarchives import LabArchivesClient, LabArchivesError
+
+        with patch.object(
+            LabArchivesClient,
+            "get_user_info",
+            side_effect=LabArchivesError("bad credentials"),
+        ):
+            result = self._invoke()
+
+        assert result.exit_code != 0
+        assert "bad credentials" in result.output
+
+    def test_no_uid_in_response_raises_click_exception(self):
+        """Empty uid in get_user_info response raises a ClickException."""
+        from nexusLIMS.utils.labarchives import LabArchivesClient
+
+        with patch.object(
+            LabArchivesClient,
+            "get_user_info",
+            return_value={"uid": None},
+        ):
+            result = self._invoke()
+
+        assert result.exit_code != 0
+        assert "no UID" in result.output
+
+    def test_verbose_flag_enables_debug_logging(self):
+        """Passing --verbose sets the logger level to DEBUG."""
+        import logging
+
+        from nexusLIMS.utils.labarchives import LabArchivesClient
+
+        with patch.object(
+            LabArchivesClient,
+            "get_user_info",
+            return_value={"uid": "99999"},
+        ):
+            result = self._invoke(extra_args=["--verbose"])
+
+        assert result.exit_code == 0, result.output
+        # Logger level should have been set; just verify no crash
+        logger = logging.getLogger("nexusLIMS.utils.labarchives")
+        assert logger.level == logging.DEBUG
+
+    def test_connecting_message_printed_to_stderr(self):
+        """The 'Connecting to ...' message is written to stderr."""
+        from nexusLIMS.utils.labarchives import LabArchivesClient
+
+        runner = CliRunner(mix_stderr=False)
+        with (
+            patch(
+                "nexusLIMS.config.read_labarchives_env",
+                return_value=self._BASE_LA_ENV,
+            ),
+            patch.object(
+                LabArchivesClient,
+                "get_user_info",
+                return_value={"uid": "42"},
+            ),
+        ):
+            result = runner.invoke(
+                main,
+                [
+                    "labarchives-get-uid",
+                    "--email",
+                    "user@example.com",
+                    "--la-password",
+                    "pw",
+                ],
+                catch_exceptions=False,
+            )
+
+        assert result.exit_code == 0, result.output
+        assert "Connecting to" in result.stderr
+        assert "labarchives.com" in result.stderr

@@ -194,9 +194,13 @@ class TestPreflightExportDestinations:
         """
         from nexusLIMS.exporters.destinations.cdcs import CDCSDestination
         from nexusLIMS.exporters.destinations.elabftw import ELabFTWDestination
+        from nexusLIMS.exporters.destinations.labarchives import LabArchivesDestination
 
         monkeypatch.setattr(CDCSDestination, "enabled", property(lambda _: False))
         monkeypatch.setattr(ELabFTWDestination, "enabled", property(lambda _: False))
+        monkeypatch.setattr(
+            LabArchivesDestination, "enabled", property(lambda _: False)
+        )
 
         result = _check_export_destinations()
 
