@@ -115,10 +115,10 @@ class LabArchivesClient:
         uid : str
             LabArchives user ID
         """
-        self.base_url = base_url.rstrip("/")
-        self.akid = akid
-        self.password = password
-        self.uid = uid
+        self.base_url: str = base_url.rstrip("/")
+        self.akid: str = akid
+        self.password: str = password
+        self.uid: str = uid
         self._last_call_time: float = 0.0
 
     def _sign(self, method: str) -> tuple[str, str]:
@@ -937,7 +937,7 @@ class LabArchivesClient:
 
         Calls the ``users/user_info_via_id`` endpoint, which requires only the
         uid (no login password).  When *uid* is omitted the client's own
-        :attr:`uid` is used.
+        ``uid`` is used.
 
         Parameters
         ----------

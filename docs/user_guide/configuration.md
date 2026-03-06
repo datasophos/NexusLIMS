@@ -389,7 +389,9 @@ commercial electronic lab notebook system. Each NexusLIMS session creates one no
 with an HTML session summary and the full XML record attached as a file.
 
 LabArchives authentication uses HMAC-SHA-512 signed requests. You need four credentials:
-an Access Key ID, an Access Password, a User ID (uid), and the instance URL.
+an Access Key ID (provided by LabArchives), an Access Password (provided by LabArchives),
+a User ID (uid), and the instance URL (most likely can stay as the default unless you are
+in a different region).
 
 (config-labarchives-url)=
 #### `NX_LABARCHIVES_URL`
@@ -436,8 +438,12 @@ NX_LABARCHIVES_USER_ID=your-uid-here
 ```
 
 ```{note}
-To obtain your uid, use the LabArchives `user_access_info` API call with your login
-and token. The returned `uid` value is stable and does not change over time.
+To obtain your UID, use the `nexuslims config labarchives-get-uid` command, or use
+the button on the LabArchives page of the `nexuslims config edit` application. You will need to sign in
+manually via the LabArchives web interface and generate a fresh **Password Token for
+External Applications** (valid for 1 hour only), which will be exchanged for your
+stable UID. This only has to be done once, as the
+returned `uid` value is stable and does not change over time.
 ```
 
 (config-labarchives-notebook-id)=

@@ -1183,7 +1183,7 @@ def read_labarchives_env(env_path: str | Path = ".env") -> dict[str, str | None]
 
     Parameters
     ----------
-    env_path : str or Path, optional
+    env_path : str or pathlib.Path, optional
         Path to the ``.env`` file.  Missing files are silently ignored.
 
     Returns

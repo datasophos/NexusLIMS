@@ -107,9 +107,9 @@ eLabFTW exports have **priority 85** and run after CDCS to enable cross-linking.
 [**LabArchives**](https://www.labarchives.com/) is a commercial electronic lab notebook
 system. NexusLIMS supports exporting session records to LabArchives with:
 
-- HTML-formatted session summary as a text entry
-- Full XML record attached as a file
-- Auto-created instrument folder hierarchy within the target notebook
+- HTML-formatted session summary with a gallery of preview images
+- A list of all data files contained in the experiment
+- The full XML record attached as a file
 - Cross-link to CDCS record (if CDCS export enabled)
 
 **Configuration:** See {ref}`LabArchives Integration <config-labarchives>` for settings:
