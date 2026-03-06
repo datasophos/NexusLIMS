@@ -51,7 +51,7 @@ import pytest
 from dotenv import dotenv_values
 
 from nexusLIMS.config import read_labarchives_env, refresh_settings
-from nexusLIMS.exporters.base import ExportContext
+from nexusLIMS.exporters.base import ExportContext, ExportResult
 from nexusLIMS.exporters.destinations.labarchives import LabArchivesDestination
 from nexusLIMS.utils.labarchives import (
     LabArchivesAuthenticationError,
@@ -579,11 +579,14 @@ class TestLabArchivesFullRecordExport:
         1. Patch settings with live LA credentials and refresh.
         2. Write a valid NexusLIMS XML record to a temp file.
         3. Build an ExportContext with an activity that has a preview image.
+           Simulate a prior CDCS export by injecting a fake ``ExportResult``
+           into ``previous_results`` so the HTML summary includes a CDCS link.
         4. Call ``LabArchivesDestination().export(context)``.
         5. Assert the returned ``ExportResult`` indicates success.
         6. Navigate the live notebook tree to find the created page.
-        7. Verify the HTML summary contains the instrument PID and a base64 preview
-           gallery, and that the XML attachment round-trips byte-for-byte.
+        7. Verify the HTML summary contains the instrument PID, a base64 preview
+           gallery, and a link to the simulated CDCS record; and that the XML
+           attachment round-trips byte-for-byte.
         """
         import base64
         from dataclasses import dataclass
@@ -693,6 +696,17 @@ class TestLabArchivesFullRecordExport:
         dt_from = datetime(2025, 2, 1, 9, 0, 0, tzinfo=UTC)
         dt_to = datetime(2025, 2, 1, 12, 0, 0, tzinfo=UTC)
 
+        # Simulate a prior CDCS export result so the HTML summary includes a
+        # "View in CDCS" link — exercises the inter-destination dependency path
+        # without requiring a live CDCS instance.
+        fake_cdcs_url = "https://cdcs.example.com/record/labarchives-e2e-test-001"
+        fake_cdcs_result = ExportResult(
+            success=True,
+            destination_name="cdcs",
+            record_id="labarchives-e2e-test-001",
+            record_url=fake_cdcs_url,
+        )
+
         # 4. Build ExportContext and run export
         context = ExportContext(
             xml_file_path=xml_file,
@@ -702,6 +716,7 @@ class TestLabArchivesFullRecordExport:
             dt_to=dt_to,
             user="test_user",
             activities=activities,
+            previous_results={"cdcs": fake_cdcs_result},
         )
         result = LabArchivesDestination().export(context)
 
@@ -769,6 +784,10 @@ class TestLabArchivesFullRecordExport:
         )
         assert self._INSTRUMENT_PID in html_content, (
             f"Expected {self._INSTRUMENT_PID!r} in HTML entry content: {html_content!r}"
+        )
+        assert fake_cdcs_url in html_content, (
+            f"Expected simulated CDCS link {fake_cdcs_url!r} in HTML entry content. "
+            f"HTML content (first 500 chars): {html_content[:500]!r}"
         )
         expected_b64 = base64.b64encode(preview_bytes).decode()
         gallery_count = html_content.count("data:image/png;base64,")
