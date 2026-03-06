@@ -7,9 +7,12 @@ attached as a file.
 
 from __future__ import annotations
 
+import base64
 import logging
 import re
 import traceback
+from collections import Counter
+from pathlib import Path
 
 from nexusLIMS.config import settings
 from nexusLIMS.exporters.base import ExportContext, ExportResult
@@ -129,8 +132,11 @@ class LabArchivesDestination:
             # Find or create target page
             nbid, page_tree_id = self._find_or_create_page(client, context)
 
+            # Collect preview images from activities
+            previews = self._collect_previews(context)
+
             # Build and upload HTML summary entry
-            html_summary = self._build_html_summary(context)
+            html_summary = self._build_html_summary(context, previews=previews)
             entry_id = client.add_entry(nbid, page_tree_id, html_summary)
             _logger.info(
                 "Created LabArchives entry %s on page %s", entry_id, page_tree_id
@@ -236,13 +242,54 @@ class LabArchivesDestination:
 
         return (nbid, page_tree_id)
 
-    def _build_html_summary(self, context: ExportContext) -> str:
+    def _collect_previews(self, context: ExportContext) -> list[tuple[str, bytes]]:
+        """Collect (name, image_bytes) pairs from context activities.
+
+        Iterates over all activities and their preview paths, reading image
+        bytes for each available preview. Multi-signal files that appear more
+        than once in an activity's file list are labelled ``"(N of M)"``.
+
+        Parameters
+        ----------
+        context : ExportContext
+            Export context with activities
+
+        Returns
+        -------
+        list[tuple[str, bytes]]
+            List of ``(caption_name, image_bytes)`` pairs, one per available preview.
+        """
+        previews: list[tuple[str, bytes]] = []
+        for act in context.activities:
+            file_counts: Counter = Counter(act.files)
+            file_seen: Counter = Counter()
+            for fname, preview_path in zip(act.files, act.previews):
+                file_seen[fname] += 1
+                if not preview_path or not Path(preview_path).exists():
+                    continue
+                name = Path(fname).name
+                if file_counts[fname] > 1:
+                    name = f"{name} ({file_seen[fname]} of {file_counts[fname]})"
+                try:
+                    previews.append((name, Path(preview_path).read_bytes()))
+                except Exception:
+                    _logger.debug("Could not read preview: %s", preview_path)
+        return previews
+
+    def _build_html_summary(
+        self,
+        context: ExportContext,
+        previews: list[tuple[str, bytes]] | None = None,
+    ) -> str:
         """Build HTML summary content for the notebook entry.
 
         Parameters
         ----------
         context : ExportContext
             Export context with session metadata
+        previews : list[tuple[str, bytes]] | None
+            Optional list of ``(caption, image_bytes)`` pairs to embed as a
+            preview gallery (4 images per row, base64 data URIs).
 
         Returns
         -------
@@ -280,12 +327,44 @@ class LabArchivesDestination:
                 ]
             )
 
-        lines.extend(
-            [
-                "<h2>Files</h2>",
-                "<p>The complete NexusLIMS XML record is attached to this page.</p>",
-            ]
-        )
+        if previews:
+            lines.append("<h2>Preview Images</h2>")
+            lines.append('<table style="border-collapse:collapse;">')
+            for i, (name, img_bytes) in enumerate(previews):
+                if i % 4 == 0:
+                    if i > 0:
+                        lines.append("</tr>")
+                    lines.append("<tr>")
+                b64 = base64.b64encode(img_bytes).decode()
+                lines.append(
+                    f'<td style="padding:8px;text-align:center;vertical-align:top;">'
+                    f'<img src="data:image/png;base64,{b64}" alt="{name}" '
+                    f'style="max-width:250px;max-height:250px;border:1px solid #ccc;">'
+                    f"<br><small>{name}</small></td>"
+                )
+            lines.append("</tr></table>")
+
+        lines.append("<h2>Files</h2>")
+        lines.append("<p>The following data files are referenced in this record:</p>")
+
+        # Collect unique file locations across all activities, preserving order.
+        # Strip NX_INSTRUMENT_DATA_PATH prefix so paths match the XML <location>
+        # element (relative to the instrument storage root).
+        instr_root = str(settings.NX_INSTRUMENT_DATA_PATH)
+        seen: set[str] = set()
+        file_names: list[str] = []
+        for act in context.activities:
+            for fname in act.files:
+                if fname not in seen:
+                    seen.add(fname)
+                    rel = fname.replace(instr_root, "")
+                    file_names.append(rel)
+
+        if file_names:
+            lines.append("<ul>")
+            for name in file_names:
+                lines.append(f"<li>{name}</li>")
+            lines.append("</ul>")
 
         return "\n".join(lines)
 

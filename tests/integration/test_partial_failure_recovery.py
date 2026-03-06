@@ -96,7 +96,7 @@ class TestPartialFailureRecovery:
         assert len(sessions_to_build) == 1
 
         # Build the record (this will succeed)
-        xml_files, sessions_built = record_builder.build_new_session_records(
+        xml_files, sessions_built, *_ = record_builder.build_new_session_records(
             generate_previews=False
         )
         assert len(xml_files) == 1
@@ -213,7 +213,9 @@ class TestPartialFailureRecovery:
         )
 
         # Build records
-        xml_files, _ = record_builder.build_new_session_records(generate_previews=False)
+        xml_files, *_ = record_builder.build_new_session_records(
+            generate_previews=False
+        )
         assert len(xml_files) == 1
 
         # Create a second dummy XML file to test partial failure

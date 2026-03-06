@@ -2295,7 +2295,7 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
 
     # Run record building (skip NEMO harvesting since we already created the sessions)
     print("\n[*] Running record builder...")
-    xml_files, sessions_built = record_builder.build_new_session_records(
+    xml_files, sessions_built, *_ = record_builder.build_new_session_records(
         generate_previews=True
     )
 

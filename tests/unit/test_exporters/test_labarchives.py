@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
@@ -14,6 +15,19 @@ from nexusLIMS.exporters.destinations.labarchives import (
     _find_node_by_text,
 )
 from nexusLIMS.utils.labarchives import LabArchivesError
+
+# ---------------------------------------------------------------------------
+# Minimal stub for AcquisitionActivity used in preview tests
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class _StubActivity:
+    """Minimal stub that mimics AcquisitionActivity for preview testing."""
+
+    files: list = field(default_factory=list)
+    previews: list = field(default_factory=list)
+
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -417,3 +431,230 @@ class TestLabArchivesHelpers:
     def test_build_entry_url_cloud_with_trailing_slash(self):
         url = _build_entry_url("https://api.labarchives.com/api/", "nb123", "page456")
         assert url == "https://mynotebook.labarchives.com/#/nb123/page456"
+
+
+# ---------------------------------------------------------------------------
+# TestCollectPreviews
+# ---------------------------------------------------------------------------
+
+
+class TestCollectPreviews:
+    """Test LabArchivesDestination._collect_previews()."""
+
+    def _make_context(self, activities, tmp_path):
+        """Build a minimal ExportContext with the given stub activities."""
+        xml_file = tmp_path / "record.xml"
+        xml_file.write_text("<record/>")
+        return ExportContext(
+            xml_file_path=xml_file,
+            session_identifier="sess",
+            instrument_pid="inst",
+            dt_from=datetime.now(),
+            dt_to=datetime.now(),
+            activities=activities,
+        )
+
+    def test_no_activities_returns_empty(self, tmp_path):
+        context = self._make_context([], tmp_path)
+        dest = LabArchivesDestination()
+        result = dest._collect_previews(context)
+        assert result == []
+
+    def test_activity_with_no_previews_returns_empty(self, tmp_path):
+        act = _StubActivity(files=["file.dm3"], previews=[None])
+        context = self._make_context([act], tmp_path)
+        dest = LabArchivesDestination()
+        result = dest._collect_previews(context)
+        assert result == []
+
+    def test_activity_with_missing_preview_file_returns_empty(self, tmp_path):
+        act = _StubActivity(
+            files=["file.dm3"],
+            previews=[str(tmp_path / "nonexistent.png")],
+        )
+        context = self._make_context([act], tmp_path)
+        dest = LabArchivesDestination()
+        result = dest._collect_previews(context)
+        assert result == []
+
+    def test_activity_with_valid_preview(self, tmp_path):
+        img_bytes = b"\x89PNG fake image data"
+        preview_file = tmp_path / "preview.png"
+        preview_file.write_bytes(img_bytes)
+
+        act = _StubActivity(
+            files=["my_image.dm3"],
+            previews=[str(preview_file)],
+        )
+        context = self._make_context([act], tmp_path)
+        dest = LabArchivesDestination()
+        result = dest._collect_previews(context)
+
+        assert len(result) == 1
+        name, data = result[0]
+        assert name == "my_image.dm3"
+        assert data == img_bytes
+
+    def test_multi_signal_file_gets_numbered_captions(self, tmp_path):
+        """Files that appear multiple times get '(N of M)' captions."""
+        img1 = tmp_path / "preview1.png"
+        img2 = tmp_path / "preview2.png"
+        img1.write_bytes(b"img1")
+        img2.write_bytes(b"img2")
+
+        # Same filename appears twice (multi-signal)
+        act = _StubActivity(
+            files=["scan.dm4", "scan.dm4"],
+            previews=[str(img1), str(img2)],
+        )
+        context = self._make_context([act], tmp_path)
+        dest = LabArchivesDestination()
+        result = dest._collect_previews(context)
+
+        assert len(result) == 2
+        assert result[0][0] == "scan.dm4 (1 of 2)"
+        assert result[1][0] == "scan.dm4 (2 of 2)"
+
+    def test_preview_read_error_is_skipped(self, tmp_path):
+        """If read_bytes() raises, the preview is silently skipped."""
+        preview_file = tmp_path / "preview.png"
+        preview_file.write_bytes(b"data")
+
+        act = _StubActivity(files=["file.dm3"], previews=[str(preview_file)])
+        context = self._make_context([act], tmp_path)
+        dest = LabArchivesDestination()
+
+        with patch("pathlib.Path.read_bytes", side_effect=OSError("permission denied")):
+            result = dest._collect_previews(context)
+
+        assert result == []
+
+    def test_multiple_activities(self, tmp_path):
+        img1 = tmp_path / "p1.png"
+        img2 = tmp_path / "p2.png"
+        img1.write_bytes(b"a")
+        img2.write_bytes(b"b")
+
+        act1 = _StubActivity(files=["f1.dm3"], previews=[str(img1)])
+        act2 = _StubActivity(files=["f2.dm3"], previews=[str(img2)])
+        context = self._make_context([act1, act2], tmp_path)
+        dest = LabArchivesDestination()
+        result = dest._collect_previews(context)
+
+        assert len(result) == 2
+        assert result[0][0] == "f1.dm3"
+        assert result[1][0] == "f2.dm3"
+
+
+# ---------------------------------------------------------------------------
+# TestBuildHtmlSummaryWithPreviews
+# ---------------------------------------------------------------------------
+
+
+class TestBuildHtmlSummaryWithPreviews:
+    """Test that _build_html_summary embeds base64 preview gallery."""
+
+    @pytest.fixture
+    def minimal_context(self, tmp_path):
+        xml_file = tmp_path / "record.xml"
+        xml_file.write_text("<record/>")
+        return ExportContext(
+            xml_file_path=xml_file,
+            session_identifier="sess-abc",
+            instrument_pid="TEST-INST",
+            dt_from=datetime(2025, 1, 1, 10, 0, 0),
+            dt_to=datetime(2025, 1, 1, 12, 0, 0),
+        )
+
+    def test_no_previews_no_gallery_section(self, minimal_context):
+        dest = LabArchivesDestination()
+        html = dest._build_html_summary(minimal_context, previews=None)
+        assert "Preview Images" not in html
+        assert "data:image/png;base64," not in html
+
+    def test_empty_previews_no_gallery_section(self, minimal_context):
+        dest = LabArchivesDestination()
+        html = dest._build_html_summary(minimal_context, previews=[])
+        assert "Preview Images" not in html
+        assert "data:image/png;base64," not in html
+
+    def test_with_previews_includes_gallery(self, minimal_context):
+        import base64
+
+        img_bytes = b"\x89PNG fake image"
+        previews = [("my_file.dm3", img_bytes)]
+        dest = LabArchivesDestination()
+        html = dest._build_html_summary(minimal_context, previews=previews)
+
+        assert "Preview Images" in html
+        assert "data:image/png;base64," in html
+        b64_expected = base64.b64encode(img_bytes).decode()
+        assert b64_expected in html
+        assert "my_file.dm3" in html
+
+    def test_gallery_uses_table_layout(self, minimal_context):
+        img_bytes = b"x"
+        previews = [("img.dm3", img_bytes)]
+        dest = LabArchivesDestination()
+        html = dest._build_html_summary(minimal_context, previews=previews)
+
+        assert "<table" in html
+        assert "<tr>" in html
+        assert "<td" in html
+
+    def test_gallery_wraps_every_four_images(self, minimal_context):
+        img_bytes = b"x"
+        previews = [(f"f{i}.dm3", img_bytes) for i in range(5)]
+        dest = LabArchivesDestination()
+        html = dest._build_html_summary(minimal_context, previews=previews)
+
+        # Should have 2 <tr> opening tags (row 0..3 and row 4)
+        assert html.count("<tr>") == 2
+
+    def test_files_section_lists_unique_locations(self, tmp_path, monkeypatch):
+        """File list shows relative paths (NX_INSTRUMENT_DATA_PATH stripped)."""
+        from unittest.mock import MagicMock
+
+        import nexusLIMS.exporters.destinations.labarchives as la_mod
+
+        instr_root = "/data/inst"
+        mock_settings = MagicMock()
+        mock_settings.NX_INSTRUMENT_DATA_PATH = instr_root
+        monkeypatch.setattr(la_mod, "settings", mock_settings)
+
+        xml_file = tmp_path / "record.xml"
+        xml_file.write_text("<record/>")
+        act = _StubActivity(
+            files=[
+                "/data/inst/scan.dm4",
+                "/data/inst/scan.dm4",
+                "/data/inst/subdir/map.dm3",
+            ],
+            previews=[None, None, None],
+        )
+        context = ExportContext(
+            xml_file_path=xml_file,
+            session_identifier="s",
+            instrument_pid="inst",
+            dt_from=datetime.now(),
+            dt_to=datetime.now(),
+            activities=[act],
+        )
+        dest = LabArchivesDestination()
+        html = dest._build_html_summary(context)
+
+        # Absolute prefix stripped; deduplication keeps each relative path once
+        assert html.count("<li>/scan.dm4</li>") == 1
+        assert "<li>/subdir/map.dm3</li>" in html
+        assert "/data/inst" not in html.split("<h2>Files</h2>", 1)[1]
+
+    def test_files_section_no_activities(self, minimal_context):
+        """Files section shows attachment note but no list when no activities."""
+        dest = LabArchivesDestination()
+        html = dest._build_html_summary(minimal_context)
+
+        assert "Files" in html
+        assert "referenced in this record" in html
+        # The Files section should not have any <li> items after it
+        files_section = html.split("<h2>Files</h2>", 1)[1]
+        assert "<li>" not in files_section

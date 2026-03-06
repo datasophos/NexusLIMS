@@ -34,6 +34,8 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from nexusLIMS.db.session_handler import Session
+    from nexusLIMS.harvesters.reservation_event import ReservationEvent
+    from nexusLIMS.schemas.activity import AcquisitionActivity
 
 _logger = logging.getLogger(__name__)
 
@@ -41,6 +43,8 @@ _logger = logging.getLogger(__name__)
 def export_records(
     xml_files: list[Path],
     sessions: list[Session],
+    activities_per_session: list[list[AcquisitionActivity]] | None = None,
+    reservation_events: list[ReservationEvent | None] | None = None,
 ) -> dict[Path, list[ExportResult]]:
     """Export NexusLIMS records to all enabled destinations.
 
@@ -55,6 +59,12 @@ def export_records(
         List of XML record file paths to export
     sessions
         Corresponding Session objects (same length and order as xml_files)
+    activities_per_session
+        Corresponding AcquisitionActivity lists for each session (optional).
+        If None, each session will have an empty activities list.
+    reservation_events
+        Corresponding ReservationEvent for each session (optional).
+        If None, each session will have reservation_event=None.
 
     Returns
     -------
@@ -68,6 +78,9 @@ def export_records(
         )
         raise ValueError(msg)
 
+    acts = activities_per_session or [[] for _ in xml_files]
+    res_events = reservation_events or [None] * len(xml_files)
+
     registry = get_registry()
     strategy = settings.NX_EXPORT_STRATEGY
 
@@ -78,7 +91,9 @@ def export_records(
     )
 
     results = {}
-    for xml_file, session in zip(xml_files, sessions, strict=True):
+    for xml_file, session, activities, res_event in zip(
+        xml_files, sessions, acts, res_events, strict=True
+    ):
         # Build export context
         context = ExportContext(
             xml_file_path=xml_file,
@@ -87,6 +102,8 @@ def export_records(
             dt_from=session.dt_from,
             dt_to=session.dt_to,
             user=session.user,
+            activities=activities,
+            reservation_event=res_event,
         )
 
         # Export to all destinations

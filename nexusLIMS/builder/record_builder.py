@@ -13,6 +13,7 @@ import argparse
 import logging
 import shutil
 import sys
+from dataclasses import dataclass, field
 from datetime import datetime as dt
 from datetime import timedelta as td
 from importlib import import_module, util
@@ -54,12 +55,31 @@ _logger = logging.getLogger(__name__)
 XSD_PATH: Path = Path(activity.__file__).parent / "nexus-experiment.xsd"
 
 
+@dataclass
+class RecordBuildResult:
+    """Result of building a NexusLIMS XML record.
+
+    Parameters
+    ----------
+    xml_text
+        The serialized XML record string
+    activities
+        The AcquisitionActivity objects built during record construction
+    reservation_event
+        The ReservationEvent used to populate the record header
+    """
+
+    xml_text: str
+    activities: List[AcquisitionActivity] = field(default_factory=list)
+    reservation_event: ReservationEvent | None = None
+
+
 def build_record(
     session: Session,
     sample_id: str | None = None,
     *,
     generate_previews: bool = True,
-) -> str:
+) -> RecordBuildResult:
     """
     Build a NexusLIMS XML record of an Experiment.
 
@@ -84,9 +104,9 @@ def build_record(
 
     Returns
     -------
-    xml_record : str
-        A formatted string containing a well-formed and valid XML document
-        for the data contained in the provided path
+    result : RecordBuildResult
+        A :class:`RecordBuildResult` containing the XML string, activities,
+        and reservation event
     """
     if sample_id is None:
         sample_id = str(uuid4())
@@ -129,12 +149,17 @@ def build_record(
         a_xml = this_activity.as_xml(i, sample_id)
         xml.append(a_xml)
 
-    return etree.tostring(
+    xml_text = etree.tostring(
         xml,
         xml_declaration=True,
         encoding="UTF-8",
         pretty_print=True,
     ).decode()
+    return RecordBuildResult(
+        xml_text=xml_text,
+        activities=activities,
+        reservation_event=res_event,
+    )
 
 
 def get_reservation_event(session: Session) -> ReservationEvent:
@@ -397,8 +422,8 @@ def dump_record(
         )
     filename.parent.mkdir(parents=True, exist_ok=True)
     with filename.open(mode="w", encoding="utf-8") as f:
-        text = build_record(session=session, generate_previews=generate_previews)
-        f.write(text)
+        result = build_record(session=session, generate_previews=generate_previews)
+        f.write(result.xml_text)
     return filename
 
 
@@ -426,7 +451,12 @@ def validate_record(xml_filename):
 
 def build_new_session_records(
     generate_previews: bool = True,  # noqa: FBT002, FBT001
-) -> tuple[List[Path], List[Session]]:
+) -> tuple[
+    List[Path],
+    List[Session],
+    List[List[AcquisitionActivity]],
+    List[ReservationEvent | None],
+]:
     """
     Build records for new sessions from the database.
 
@@ -441,6 +471,10 @@ def build_new_session_records(
         centralized storage
     sessions_built : typing.List[Session]
         Corresponding Session objects for each built XML file (same length and order)
+    activities_built : typing.List[typing.List[AcquisitionActivity]]
+        Corresponding AcquisitionActivity lists for each built session
+    res_events_built : typing.List[ReservationEvent | None]
+        Corresponding ReservationEvent for each built session
     """
     # get the list of sessions with 'TO_BE_BUILT' status; does not fetch new
     # usage events from any NEMO instances;
@@ -451,11 +485,14 @@ def build_new_session_records(
         sys.exit("No 'TO_BE_BUILT' sessions were found. Exiting.")
     xml_files = []
     sessions_built = []
+    activities_built = []
+    res_events_built = []
     # loop through the sessions
     for s in sessions:
         try:
             db_row = s.insert_record_generation_event()
-            record_text = build_record(session=s, generate_previews=generate_previews)
+            result = build_record(session=s, generate_previews=generate_previews)
+            record_text = result.xml_text
         except (  # pylint: disable=broad-exception-caught
             FileNotFoundError,
             Exception,
@@ -515,16 +552,37 @@ def build_new_session_records(
                 _logger.exception('Marking %s as "ERROR"', s.session_identifier)
                 s.update_session_status(RecordStatus.ERROR)
         else:
-            xml_files, sessions_built = _record_validation_flow(
-                record_text, s, xml_files, sessions_built
+            xml_files, sessions_built, activities_built, res_events_built = (
+                _record_validation_flow(
+                    record_text,
+                    s,
+                    xml_files,
+                    sessions_built,
+                    result.activities,
+                    result.reservation_event,
+                    activities_built,
+                    res_events_built,
+                )
             )
 
-    return xml_files, sessions_built
+    return xml_files, sessions_built, activities_built, res_events_built
 
 
-def _record_validation_flow(
-    record_text, s, xml_files, sessions_built
-) -> tuple[List[Path], List[Session]]:
+def _record_validation_flow(  # noqa: PLR0913
+    record_text,
+    s,
+    xml_files,
+    sessions_built,
+    result_activities,
+    result_res_event,
+    activities_built,
+    res_events_built,
+) -> tuple[
+    List[Path],
+    List[Session],
+    List[List[AcquisitionActivity]],
+    List[ReservationEvent | None],
+]:
     if validate_record(BytesIO(bytes(record_text, "UTF-8"))):
         _logger.info("Validated newly generated record")
         # generate filename for saved record and make sure path exists
@@ -545,6 +603,8 @@ def _record_validation_flow(
         _logger.info("Wrote record to %s", filename)
         xml_files.append(Path(filename))
         sessions_built.append(s)
+        activities_built.append(result_activities)
+        res_events_built.append(result_res_event)
         # Note: Session status will be updated after export attempt
         _logger.info(
             "Built record for %s, will export to destinations", s.session_identifier
@@ -554,7 +614,7 @@ def _record_validation_flow(
         _logger.error("Could not validate record, did not write to disk")
         s.update_session_status(RecordStatus.ERROR)
 
-    return xml_files, sessions_built
+    return xml_files, sessions_built, activities_built, res_events_built
 
 
 def process_new_records(  # noqa: PLR0912, PLR0915
@@ -634,12 +694,16 @@ def process_new_records(  # noqa: PLR0912, PLR0915
             dry_run_file_find(s)
     else:
         nemo_utils.add_all_usage_events_to_db(dt_from=dt_from, dt_to=dt_to)
-        xml_files, sessions_built = build_new_session_records()
+        xml_files, sessions_built, activities_built, res_events_built = (
+            build_new_session_records()
+        )
         if len(xml_files) == 0:
             _logger.warning("No XML files built, so no files exported")
         else:
             # Export records to all configured destinations
-            export_results = export_records(xml_files, sessions_built)
+            export_results = export_records(
+                xml_files, sessions_built, activities_built, res_events_built
+            )
 
             # Update session status based on export results
             sessions_by_file = dict(zip(xml_files, sessions_built, strict=True))

@@ -43,13 +43,16 @@ from __future__ import annotations
 
 import os
 import uuid
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 import pytest
 from dotenv import dotenv_values
 
-from nexusLIMS.config import read_labarchives_env
+from nexusLIMS.config import read_labarchives_env, refresh_settings
+from nexusLIMS.exporters.base import ExportContext
+from nexusLIMS.exporters.destinations.labarchives import LabArchivesDestination
 from nexusLIMS.utils.labarchives import (
     LabArchivesAuthenticationError,
     LabArchivesClient,
@@ -539,3 +542,448 @@ class TestLabArchivesClientFactory:
 
         info = client.get_user_info_by_uid()
         assert info["uid"]
+
+
+# ---------------------------------------------------------------------------
+# TestLabArchivesFullRecordExport
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.labarchives_live
+class TestLabArchivesFullRecordExport:
+    """End-to-end test: build an ExportContext and export via LabArchivesDestination.
+
+    This test exercises the full production export path — ``_find_or_create_page()``,
+    ``add_entry()``, and ``add_attachment()`` — against a live LabArchives server,
+    then verifies the result by querying the server directly with ``la_client``.
+
+    **Cleanup**: LabArchives provides no delete API. After running these tests,
+    manually delete the ``NexusLIMS Records`` folder in the LabArchives UI to
+    clean up the created pages. Re-running creates a new page per session
+    (the destination always creates new pages).
+    """
+
+    _INSTRUMENT_PID = "FEI-Titan-TEM"
+
+    def test_export_record_to_labarchives(  # noqa: PLR0915
+        self,
+        la_client: LabArchivesClient,
+        nbid: str,
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ):
+        """Export a NexusLIMS XML record to LabArchives and verify on the server.
+
+        Steps
+        -----
+        1. Patch settings with live LA credentials and refresh.
+        2. Write a valid NexusLIMS XML record to a temp file.
+        3. Build an ExportContext with an activity that has a preview image.
+        4. Call ``LabArchivesDestination().export(context)``.
+        5. Assert the returned ``ExportResult`` indicates success.
+        6. Navigate the live notebook tree to find the created page.
+        7. Verify the HTML summary contains the instrument PID and a base64 preview
+           gallery, and that the XML attachment round-trips byte-for-byte.
+        """
+        import base64
+        from dataclasses import dataclass
+        from dataclasses import field as dc_field
+
+        # 1. Patch settings so LabArchivesDestination.enabled is True
+        monkeypatch.setenv("NX_LABARCHIVES_URL", _LA["NX_LABARCHIVES_URL"])  # type: ignore[arg-type]
+        monkeypatch.setenv(
+            "NX_LABARCHIVES_ACCESS_KEY_ID",
+            _LA["NX_LABARCHIVES_ACCESS_KEY_ID"],  # type: ignore[arg-type]
+        )
+        monkeypatch.setenv(
+            "NX_LABARCHIVES_ACCESS_PASSWORD",
+            _LA["NX_LABARCHIVES_ACCESS_PASSWORD"],  # type: ignore[arg-type]
+        )
+        monkeypatch.setenv("NX_LABARCHIVES_USER_ID", _LA["NX_LABARCHIVES_USER_ID"])  # type: ignore[arg-type]
+        monkeypatch.setenv("NX_LABARCHIVES_NOTEBOOK_ID", nbid)
+        refresh_settings()
+
+        # 2. Write valid NexusLIMS XML record
+        xml_content = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<nx:Experiment
+    xmlns:nx="https://data.nist.gov/od/dm/nexus/experiment/v1.0"
+    pid="labarchives-e2e-test-001">
+    <nx:title>LabArchives E2E Export Test</nx:title>
+    <nx:summary>
+        <nx:experimenter>test_user</nx:experimenter>
+        <nx:instrument pid="FEI-Titan-TEM">FEI Titan TEM</nx:instrument>
+        <nx:reservationStart>2025-02-01T09:00:00+00:00</nx:reservationStart>
+        <nx:reservationEnd>2025-02-01T12:00:00+00:00</nx:reservationEnd>
+        <nx:motivation>
+            End-to-end integration test of LabArchives export functionality.
+        </nx:motivation>
+    </nx:summary>
+    <nx:acquisitionActivity seqno="1">
+        <nx:startTime>2025-02-01T09:15:00+00:00</nx:startTime>
+        <nx:dataset type="Image">
+            <nx:name>test_image.dm3</nx:name>
+            <nx:location>researcher/project/test_image.dm3</nx:location>
+        </nx:dataset>
+    </nx:acquisitionActivity>
+</nx:Experiment>"""
+        xml_file = tmp_path / "test_nexuslims_record.xml"
+        xml_file.write_text(xml_content, encoding="utf-8")
+
+        # 3. Set up stub activities with 24 preview images across 3 activities,
+        #    mirroring a realistic session: 3 activities x ~8 files each.
+        #    All previews re-use the same test PNG (content doesn't matter for layout).
+        preview_src = _DATA_DIR / "test_attachment.png"
+        preview_bytes = preview_src.read_bytes()
+
+        @dataclass
+        class _StubActivity:
+            files: list = dc_field(default_factory=list)
+            previews: list = dc_field(default_factory=list)
+
+        def _make_activity(names: list[str]) -> _StubActivity:
+            previews = []
+            for name in names:
+                p = tmp_path / f"preview_{name}"
+                p.write_bytes(preview_bytes)
+                previews.append(str(p))
+            return _StubActivity(files=names, previews=previews)
+
+        activities = [
+            _make_activity(
+                [
+                    "image_001.dm3",
+                    "image_002.dm3",
+                    "image_003.dm3",
+                    "image_004.dm3",
+                    "image_005.dm3",
+                    "image_006.dm3",
+                    "image_007.dm3",
+                    "image_008.dm3",
+                ]
+            ),
+            _make_activity(
+                [
+                    "spectrum_001.dm3",
+                    "spectrum_002.dm3",
+                    "spectrum_003.dm3",
+                    "spectrum_004.dm3",
+                    "spectrum_005.dm3",
+                    "spectrum_006.dm3",
+                    "spectrum_007.dm3",
+                    "spectrum_008.dm3",
+                ]
+            ),
+            _make_activity(
+                [
+                    "diffraction_001.dm3",
+                    "diffraction_002.dm3",
+                    "diffraction_003.dm3",
+                    "diffraction_004.dm3",
+                    "diffraction_005.dm3",
+                    "diffraction_006.dm3",
+                    "diffraction_007.dm3",
+                    "diffraction_008.dm3",
+                ]
+            ),
+        ]
+
+        # Use a unique session ID so re-runs create distinct pages
+        session_id = f"labarchives-live-e2e-{uuid.uuid4().hex[:8]}"
+        dt_from = datetime(2025, 2, 1, 9, 0, 0, tzinfo=UTC)
+        dt_to = datetime(2025, 2, 1, 12, 0, 0, tzinfo=UTC)
+
+        # 4. Build ExportContext and run export
+        context = ExportContext(
+            xml_file_path=xml_file,
+            session_identifier=session_id,
+            instrument_pid=self._INSTRUMENT_PID,
+            dt_from=dt_from,
+            dt_to=dt_to,
+            user="test_user",
+            activities=activities,
+        )
+        result = LabArchivesDestination().export(context)
+
+        # 5. Assert ExportResult indicates success
+        assert result.success is True, (
+            f"Export failed with error: {result.error_message}"
+        )
+        assert result.record_id, "ExportResult.record_id should be a non-empty string"
+        assert result.record_url, "ExportResult.record_url should be a non-empty string"
+        assert nbid in result.record_url, (
+            f"Expected nbid {nbid!r} in record_url {result.record_url!r}"
+        )
+
+        # Extract page_tree_id from the URL (format: {base}/#/{nbid}/{page_tree_id})
+        page_tree_id = result.record_url.rstrip("/").rsplit("/", 1)[-1]
+        assert page_tree_id and page_tree_id != nbid, (  # noqa: PT018
+            f"Could not parse page_tree_id from record_url {result.record_url!r}"
+        )
+
+        # 6. Verify page exists in the notebook tree
+        #    Navigate: root -> "NexusLIMS Records" -> instrument folder -> page
+        root_nodes = la_client.get_tree_level(nbid, "0")
+        nexuslims_folder = next(
+            (n for n in root_nodes if n["display_text"] == "NexusLIMS Records"), None
+        )
+        assert nexuslims_folder is not None, (
+            "'NexusLIMS Records' folder not found at notebook root"
+        )
+
+        instrument_nodes = la_client.get_tree_level(nbid, nexuslims_folder["tree_id"])
+        instrument_folder = next(
+            (n for n in instrument_nodes if n["display_text"] == self._INSTRUMENT_PID),
+            None,
+        )
+        assert instrument_folder is not None, (
+            f"Instrument folder {self._INSTRUMENT_PID!r} not found under "
+            f"'NexusLIMS Records'"
+        )
+
+        page_nodes = la_client.get_tree_level(nbid, instrument_folder["tree_id"])
+        expected_page_name = f"{dt_from:%Y-%m-%d} \u2014 {session_id}"
+        matching_pages = [
+            n for n in page_nodes if n["display_text"] == expected_page_name
+        ]
+        assert matching_pages, (
+            f"Page {expected_page_name!r} not found under instrument folder. "
+            f"Pages found: {[n['display_text'] for n in page_nodes]}"
+        )
+
+        # 7. Verify entries on the page
+        entries = la_client.get_page_entries(nbid, page_tree_id, include_content=True)
+        assert len(entries) >= 2, (
+            f"Expected at least 2 entries (HTML summary + XML attachment), "
+            f"got {len(entries)}: {entries}"
+        )
+
+        # HTML text entry — should contain the instrument PID and a preview gallery
+        text_entries = [e for e in entries if "text" in e.get("part_type", "").lower()]
+        assert text_entries, (
+            f"No text entry found among entries: {[e['part_type'] for e in entries]}"
+        )
+        html_content = text_entries[0]["entry_data"]
+        assert "NexusLIMS" in html_content, (
+            f"Expected 'NexusLIMS' in HTML entry content: {html_content!r}"
+        )
+        assert self._INSTRUMENT_PID in html_content, (
+            f"Expected {self._INSTRUMENT_PID!r} in HTML entry content: {html_content!r}"
+        )
+        expected_b64 = base64.b64encode(preview_bytes).decode()
+        gallery_count = html_content.count("data:image/png;base64,")
+        assert gallery_count == 24, (
+            f"Expected 24 base64 preview images in HTML entry, got {gallery_count}. "
+            f"HTML content (first 500 chars): {html_content[:500]!r}"
+        )
+        assert expected_b64 in html_content, (
+            "Base64-encoded preview bytes not found in HTML entry"
+        )
+
+        # XML attachment — verify byte-for-byte round-trip
+        file_entries = [
+            e for e in entries if "attachment" in e.get("part_type", "").lower()
+        ]
+        assert file_entries, (
+            f"No file attachment found among entries: "
+            f"{[e['part_type'] for e in entries]}"
+        )
+        downloaded = la_client.get_attachment_content(file_entries[0]["eid"])
+        assert downloaded == xml_file.read_bytes(), (
+            "Downloaded attachment content does not match original XML file bytes"
+        )
+
+    def test_export_real_record_to_labarchives(  # noqa: PLR0915
+        self,
+        la_client: LabArchivesClient,
+        nbid: str,
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ):
+        """Export a record built from real DM3 files to LabArchives.
+
+        Steps
+        -----
+        1. Extract the TEST_RECORD_FILES archive to a temp directory.
+        2. Point NX_INSTRUMENT_DATA_PATH / NX_DATA_PATH at that directory and refresh.
+        3. Mock ``res_event_from_session`` and ``get_instr_from_filepath``.
+        4. Call ``build_record()`` with a real ``Session`` and
+           ``generate_previews=True``.
+        5. Export the resulting ``RecordBuildResult`` via ``LabArchivesDestination``.
+        6. Assert success and verify the live HTML entry contains real preview images.
+        """
+        import tarfile
+
+        import nexusLIMS.extractors
+        import nexusLIMS.extractors.plugins.digital_micrograph
+        import nexusLIMS.extractors.plugins.fei_emi
+        import nexusLIMS.extractors.utils
+        from nexusLIMS.builder.record_builder import RecordBuildResult, build_record
+        from nexusLIMS.db.session_handler import Session
+        from nexusLIMS.harvesters.reservation_event import ReservationEvent
+        from tests.unit.test_instrument_factory import make_test_tool
+        from tests.unit.utils import tars
+
+        instrument_pid = "TEST-TOOL"
+
+        # 1. Patch settings with live LA credentials
+        monkeypatch.setenv("NX_LABARCHIVES_URL", _LA["NX_LABARCHIVES_URL"])  # type: ignore[arg-type]
+        monkeypatch.setenv(
+            "NX_LABARCHIVES_ACCESS_KEY_ID",
+            _LA["NX_LABARCHIVES_ACCESS_KEY_ID"],  # type: ignore[arg-type]
+        )
+        monkeypatch.setenv(
+            "NX_LABARCHIVES_ACCESS_PASSWORD",
+            _LA["NX_LABARCHIVES_ACCESS_PASSWORD"],  # type: ignore[arg-type]
+        )
+        monkeypatch.setenv("NX_LABARCHIVES_USER_ID", _LA["NX_LABARCHIVES_USER_ID"])  # type: ignore[arg-type]
+        monkeypatch.setenv("NX_LABARCHIVES_NOTEBOOK_ID", nbid)
+
+        # 2. Set up NexusLIMS data paths pointing at tmp_path
+        instr_data_path = tmp_path / "InstrumentData"
+        nexuslims_data_path = tmp_path / "NexusLIMS"
+        instr_data_path.mkdir()
+        nexuslims_data_path.mkdir()
+        monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(instr_data_path))
+        monkeypatch.setenv("NX_DATA_PATH", str(nexuslims_data_path))
+        monkeypatch.setenv("NX_FILE_STRATEGY", "exclusive")
+        monkeypatch.setenv("NX_IGNORE_PATTERNS", '["*.mib", "*.db", "*.emi"]')
+        refresh_settings()
+
+        # 3. Extract the TEST_RECORD_FILES archive
+        #    (Produces Nexus_Test_Instrument/test_files/sample_00[1-4].dm3)
+        with tarfile.open(tars["TEST_RECORD_FILES"], "r:gz") as tar:
+            tar.extractall(path=instr_data_path)
+
+        # 4. Build the instrument and session objects
+        instrument = make_test_tool()
+        dt_from = datetime.fromisoformat("2021-08-02T09:00:00-07:00")
+        dt_to = datetime.fromisoformat("2021-08-02T11:00:00-07:00")
+
+        # 5. Mock res_event_from_session (avoids live NEMO dependency)
+        def _mock_res_event(session):
+            return ReservationEvent(
+                experiment_title="EDX spectroscopy of platinum-nickel alloys",
+                instrument=session.instrument,
+                username=session.user,
+                user_full_name="Test User",
+                start_time=session.dt_from,
+                end_time=session.dt_to,
+                experiment_purpose="Determine composition of Pt-Ni alloy samples",
+                reservation_type="User session",
+                sample_details=["Platinum-nickel alloy nanoparticles"],
+                sample_pid=["sample-ptni-042"],
+                sample_name=["Pt-Ni"],
+                project_name=["Catalyst Development"],
+                project_id=["project-042"],
+            )
+
+        monkeypatch.setattr(
+            "nexusLIMS.harvesters.nemo.res_event_from_session",
+            _mock_res_event,
+        )
+
+        # 6. Mock get_instr_from_filepath in all extractor modules (avoids DB lookup)
+        monkeypatch.setattr(
+            nexusLIMS.extractors.plugins.digital_micrograph,
+            "get_instr_from_filepath",
+            lambda _: instrument,
+        )
+        monkeypatch.setattr(
+            nexusLIMS.extractors.utils,
+            "get_instr_from_filepath",
+            lambda _: instrument,
+        )
+        monkeypatch.setattr(
+            nexusLIMS.extractors.plugins.fei_emi,
+            "get_instr_from_filepath",
+            lambda _: instrument,
+        )
+        monkeypatch.setattr(
+            nexusLIMS.extractors,
+            "get_instr_from_filepath",
+            lambda _: instrument,
+        )
+
+        # 7. Build a real NexusLIMS record from the extracted DM3 files
+        session_id = f"real-record-e2e-{uuid.uuid4().hex[:8]}"
+        session = Session(
+            session_identifier=session_id,
+            instrument=instrument,
+            dt_range=(dt_from, dt_to),
+            user="test_user",
+        )
+        result = build_record(session=session, generate_previews=True)
+
+        assert isinstance(result, RecordBuildResult)
+        assert result.xml_text, "build_record should return non-empty XML"
+        assert result.activities, "build_record should return at least one activity"
+
+        # Write the XML record to a temp file for attachment
+        xml_file = tmp_path / f"{session_id}.xml"
+        xml_file.write_text(result.xml_text, encoding="utf-8")
+
+        # 8. Build ExportContext with the real activities and reservation event
+        context = ExportContext(
+            xml_file_path=xml_file,
+            session_identifier=session_id,
+            instrument_pid=instrument_pid,
+            dt_from=dt_from,
+            dt_to=dt_to,
+            user="test_user",
+            activities=result.activities,
+            reservation_event=result.reservation_event,
+        )
+
+        # 9. Export to LabArchives via the production code path
+        export_result = LabArchivesDestination().export(context)
+
+        assert export_result.success is True, (
+            f"Export failed with error: {export_result.error_message}"
+        )
+        assert export_result.record_url, (
+            "ExportResult.record_url should be set after a successful export"
+        )
+
+        page_tree_id = export_result.record_url.rstrip("/").rsplit("/", 1)[-1]
+        assert page_tree_id and page_tree_id != nbid, (  # noqa: PT018
+            f"Could not parse page_tree_id from record_url {export_result.record_url!r}"
+        )
+
+        # 10. Verify the page and its entries on the live LabArchives server
+        entries = la_client.get_page_entries(nbid, page_tree_id, include_content=True)
+        assert len(entries) >= 2, (
+            f"Expected at least 2 entries (HTML summary + XML attachment), "
+            f"got {len(entries)}: {entries}"
+        )
+
+        text_entries = [e for e in entries if "text" in e.get("part_type", "").lower()]
+        assert text_entries, (
+            f"No text entry found among entries: {[e['part_type'] for e in entries]}"
+        )
+        html_content = text_entries[0]["entry_data"]
+
+        assert "NexusLIMS" in html_content, "Expected 'NexusLIMS' in HTML entry"
+        assert instrument_pid in html_content, (
+            f"Expected {instrument_pid!r} in HTML entry"
+        )
+
+        # The real DM3 files should have produced at least one preview image
+        gallery_count = html_content.count("data:image/png;base64,")
+        assert gallery_count >= 1, (
+            f"Expected at least one base64 preview in HTML entry, got 0. "
+            f"HTML (first 500 chars): {html_content[:500]!r}"
+        )
+
+        # XML attachment — verify byte-for-byte round-trip
+        file_entries = [
+            e for e in entries if "attachment" in e.get("part_type", "").lower()
+        ]
+        assert file_entries, (
+            f"No file attachment found among entries: "
+            f"{[e['part_type'] for e in entries]}"
+        )
+        downloaded = la_client.get_attachment_content(file_entries[0]["eid"])
+        assert downloaded == xml_file.read_bytes(), (
+            "Downloaded attachment content does not match original XML file bytes"
+        )

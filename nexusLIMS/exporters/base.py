@@ -16,6 +16,9 @@ from typing import TYPE_CHECKING, Any, Protocol
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from nexusLIMS.harvesters.reservation_event import ReservationEvent
+    from nexusLIMS.schemas.activity import AcquisitionActivity
+
 _logger = logging.getLogger(__name__)
 
 
@@ -97,6 +100,8 @@ class ExportContext:
     user: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
     previous_results: dict[str, ExportResult] = field(default_factory=dict)
+    activities: list[AcquisitionActivity] = field(default_factory=list)
+    reservation_event: ReservationEvent | None = None
 
     def get_result(self, destination_name: str) -> ExportResult | None:
         """Get result from a specific destination, if it has already run.
