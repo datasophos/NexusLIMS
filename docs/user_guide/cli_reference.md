@@ -707,13 +707,15 @@ Options:
   --help     Show this message and exit.
 
 Commands:
-  alembic    Run Alembic commands directly (advanced usage).
-  check      Check if the database has pending migrations.
-  current    Show the current database migration version.
-  downgrade  Downgrade database to an earlier version.
-  history    Show migration history.
-  init       Initialize a new NexusLIMS database.
-  upgrade    Upgrade database to a later version.
+  alembic      Run Alembic commands directly (advanced usage).
+  check        Check if the database has pending migrations.
+  create-demo  Create a demo database pre-populated with sample instruments.
+  current      Show the current database migration version.
+  downgrade    Downgrade database to an earlier version.
+  history      Show migration history.
+  init         Initialize a new NexusLIMS database.
+  upgrade      Upgrade database to a later version.
+  view         Open a read-only TUI browser for the NexusLIMS database.
 ```
 
 ### Commands
@@ -893,6 +895,115 @@ nexuslims db history
 # Show verbose history with current revision marked
 nexuslims db history -v -i
 ```
+
+#### `view`
+
+Open a read-only TUI browser for the NexusLIMS database.
+
+Launches a Textual-based interactive browser pointed at the database configured
+via `NX_DB_PATH`. The browser is **read-only** — no SQL execution or data
+modification is possible.
+
+**Usage:**
+```bash
+nexuslims db view
+```
+
+![DB Browser — Table Viewer showing the instruments table](../images/tui/screenshots/db_browser_table_viewer.svg)
+
+**Tabs available inside the browser:**
+
+- **Table Viewer** — Browse rows in any table with a live filter input and
+  sortable column headers. Click any column header to sort ascending; click
+  again to sort descending; click a third time to clear sorting. Type in the
+  filter box to narrow results across all columns simultaneously (up to 1 000
+  rows shown at once).
+- **Database Structure** — Inspect the schema: tables, columns, types, and
+  indexes.
+
+**Keybindings (inside the browser):**
+
+| Key | Action |
+|-----|--------|
+| `Tab` / `Shift+Tab` | Navigate between panels |
+| `Enter` | Select / confirm |
+| `q` / `Ctrl+Q` | Quit |
+
+**Prerequisites:**
+
+- `NX_DB_PATH` must be set (via `.env` or environment)
+- The database file must already exist (run `nexuslims db init` first)
+
+**Examples:**
+```bash
+# Open the database browser
+nexuslims db view
+```
+
+**Error handling:**
+- Exits with a clear error message if `NX_DB_PATH` is not set
+- Exits with a clear error message if the database file does not exist
+
+```{note}
+`nexuslims db view` is a read-only command — it cannot modify the database.
+To manage instruments, use `nexuslims instruments manage`. To explore a
+pre-populated example database, create one first with `nexuslims db
+create-demo`.
+```
+
+---
+
+#### `create-demo`
+
+Create a demo SQLite database pre-populated with 10 sample instruments.
+
+Useful for exploring NexusLIMS without a live NEMO instance, testing the TUI,
+or generating documentation screenshots.
+
+**Usage:**
+```bash
+nexuslims db create-demo [PATH] [OPTIONS]
+```
+
+**Arguments:**
+- `PATH` (optional) — destination file path for the demo database. Defaults to
+  `nexuslims_demo.db` in the current working directory.
+
+**Options:**
+- `--force` — Overwrite the file if it already exists
+
+**Examples:**
+```bash
+# Create demo database in the current directory (nexuslims_demo.db)
+nexuslims db create-demo
+
+# Create at a specific path
+nexuslims db create-demo /tmp/demo.db
+
+# Overwrite an existing file
+nexuslims db create-demo ./my_demo.db --force
+```
+
+**Typical workflow — browse the demo database:**
+```bash
+# 1. Create a demo database
+nexuslims db create-demo
+
+# 2. Browse it in the TUI
+NX_DB_PATH=./nexuslims_demo.db nexuslims db view
+
+# 3. Or explore instruments in the instrument manager
+NX_DB_PATH=./nexuslims_demo.db nexuslims instruments manage
+```
+
+```{note}
+The demo database is a self-contained SQLite file that can be opened with any
+SQLite client (e.g. [DB Browser for SQLite](https://sqlitebrowser.org/) or the
+`sqlite3` CLI). It is not connected to any NEMO instance and contains no real
+session data.
+```
+
+---
 
 #### `alembic`
 

@@ -23,6 +23,12 @@ Usage
     # Downgrade one migration
     nexuslims db downgrade
 
+    # Browse the database interactively
+    nexuslims db view
+
+    # Create a demo database with sample instruments
+    nexuslims db create-demo [PATH]
+
     # Advanced: Run any Alembic command
     nexuslims db alembic history --verbose
 
@@ -487,6 +493,101 @@ def _cli():  # noqa: PLR0915
             # Clean up the temporary config file
             with contextlib.suppress(OSError):
                 tmp_config_path.unlink()
+
+    @cli.command("create-demo")
+    @click.argument(
+        "path",
+        type=click.Path(dir_okay=False, path_type=Path),
+        default=None,
+        required=False,
+    )
+    @click.option(
+        "--force",
+        is_flag=True,
+        help="Overwrite the file if it already exists.",
+    )
+    def create_demo(path, force):
+        """Create a demo database pre-populated with sample instruments.
+
+        Creates a SQLite database containing 10 sample instruments with
+        diverse configurations, useful for testing the TUI, generating
+        documentation screenshots, or exploring NexusLIMS without a live
+        NEMO instance.
+
+        PATH defaults to a file named ``nexuslims_demo.db`` in the current
+        working directory when not supplied.
+
+        \b
+        Examples:
+          nexuslims db create-demo
+          nexuslims db create-demo /tmp/demo.db
+          nexuslims db create-demo ./my_demo.db --force
+        """  # noqa: D301
+        import sys
+
+        from nexusLIMS.tui.demo_helpers import create_demo_database
+
+        if path is None:
+            path = Path.cwd() / "nexuslims_demo.db"
+
+        if path.exists() and not force:
+            click.secho(f"Error: file already exists at {path}", fg="red", err=True)
+            click.echo("Use --force to overwrite it.", err=True)
+            sys.exit(1)
+
+        if force and path.exists():
+            path.unlink()
+        click.echo(f"Creating demo database at {path}\u2026")
+        try:
+            create_demo_database(path)
+            click.secho(f"\u2713 Demo database created at {path}", fg="green")
+        except Exception as e:
+            click.secho(f"Error: {e}", fg="red", err=True)
+            sys.exit(1)
+
+    @cli.command()
+    def view():
+        """Open a read-only TUI browser for the NexusLIMS database.
+
+        Launches a Textual-based SQLite browser pointed at the database
+        configured via NX_DB_PATH.  You can browse tables and inspect rows
+        across all NexusLIMS tables (instruments, session_log, upload_log,
+        external_user_identifiers).
+
+        \b
+        Keybindings (inside the browser):
+        ----------------------------------
+          - Tab / Shift+Tab   Navigate between panels
+          - Enter             Select / confirm
+          - q / Ctrl+Q        Quit
+        """  # noqa: D301
+        import os
+        import sys
+        from argparse import Namespace
+
+        db_path_str = os.getenv("NX_DB_PATH")
+        if not db_path_str:
+            click.secho(
+                "Error: NX_DB_PATH environment variable is not set.", fg="red", err=True
+            )
+            click.echo(
+                "Run 'nexuslims config edit' or set NX_DB_PATH manually.", err=True
+            )
+            sys.exit(1)
+
+        if not Path(db_path_str).exists():
+            click.secho(
+                f"Error: Database does not exist at {db_path_str}",
+                fg="red",
+                err=True,
+            )
+            click.echo("Run 'nexuslims db init' to create the database.", err=True)
+            sys.exit(1)
+
+        from nexusLIMS.tui.apps.db_browser import NexusLIMSDBApp
+
+        app = NexusLIMSDBApp(Namespace(filepath=db_path_str))
+        app.run()
 
     return cli
 
