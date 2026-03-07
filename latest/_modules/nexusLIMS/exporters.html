@@ -857,6 +857,8 @@ window.addEventListener("load", load);
     <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.session_handler</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters.reservation_event</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReservationEvent</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.activity</span><span class="w"> </span><span class="kn">import</span> <span class="n">AcquisitionActivity</span>
 
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -866,6 +868,8 @@ window.addEventListener("load", load);
 <span class="k">def</span><span class="w"> </span><span class="nf">export_records</span><span class="p">(</span>
     <span class="n">xml_files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span>
     <span class="n">sessions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Session</span><span class="p">],</span>
+    <span class="n">activities_per_session</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">AcquisitionActivity</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">reservation_events</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ReservationEvent</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">ExportResult</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Export NexusLIMS records to all enabled destinations.</span>
 
@@ -880,6 +884,12 @@ window.addEventListener("load", load);
 <span class="sd">        List of XML record file paths to export</span>
 <span class="sd">    sessions</span>
 <span class="sd">        Corresponding Session objects (same length and order as xml_files)</span>
+<span class="sd">    activities_per_session</span>
+<span class="sd">        Corresponding AcquisitionActivity lists for each session (optional).</span>
+<span class="sd">        If None, each session will have an empty activities list.</span>
+<span class="sd">    reservation_events</span>
+<span class="sd">        Corresponding ReservationEvent for each session (optional).</span>
+<span class="sd">        If None, each session will have reservation_event=None.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -893,6 +903,9 @@ window.addEventListener("load", load);
         <span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
+    <span class="n">acts</span> <span class="o">=</span> <span class="n">activities_per_session</span> <span class="ow">or</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">xml_files</span><span class="p">]</span>
+    <span class="n">res_events</span> <span class="o">=</span> <span class="n">reservation_events</span> <span class="ow">or</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">xml_files</span><span class="p">)</span>
+
     <span class="n">registry</span> <span class="o">=</span> <span class="n">get_registry</span><span class="p">()</span>
     <span class="n">strategy</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_EXPORT_STRATEGY</span>
 
@@ -903,7 +916,9 @@ window.addEventListener("load", load);
     <span class="p">)</span>
 
     <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">xml_file</span><span class="p">,</span> <span class="n">session</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">xml_file</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">activities</span><span class="p">,</span> <span class="n">res_event</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions</span><span class="p">,</span> <span class="n">acts</span><span class="p">,</span> <span class="n">res_events</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">):</span>
         <span class="c1"># Build export context</span>
         <span class="n">context</span> <span class="o">=</span> <span class="n">ExportContext</span><span class="p">(</span>
             <span class="n">xml_file_path</span><span class="o">=</span><span class="n">xml_file</span><span class="p">,</span>
@@ -912,6 +927,8 @@ window.addEventListener("load", load);
             <span class="n">dt_from</span><span class="o">=</span><span class="n">session</span><span class="o">.</span><span class="n">dt_from</span><span class="p">,</span>
             <span class="n">dt_to</span><span class="o">=</span><span class="n">session</span><span class="o">.</span><span class="n">dt_to</span><span class="p">,</span>
             <span class="n">user</span><span class="o">=</span><span class="n">session</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
+            <span class="n">activities</span><span class="o">=</span><span class="n">activities</span><span class="p">,</span>
+            <span class="n">reservation_event</span><span class="o">=</span><span class="n">res_event</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="c1"># Export to all destinations</span>

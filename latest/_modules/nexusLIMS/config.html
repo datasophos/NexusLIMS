@@ -1260,6 +1260,100 @@ window.addEventListener("load", load);
             <span class="p">),</span>
         <span class="p">},</span>
     <span class="p">)</span>
+    <span class="n">NX_LABARCHIVES_ACCESS_KEY_ID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="s2">&quot;test_la_akid&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Access Key ID (akid) assigned by LabArchives for API access. &quot;</span>
+            <span class="s2">&quot;Required for LabArchives export. If not configured, LabArchives &quot;</span>
+            <span class="s2">&quot;export will be disabled.&quot;</span>
+        <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The Access Key ID (akid) provided by LabArchives for your API &quot;</span>
+                <span class="s2">&quot;integration. This is the public identifier used alongside &quot;</span>
+                <span class="s2">&quot;`NX_LABARCHIVES_ACCESS_PASSWORD` to sign API requests with &quot;</span>
+                <span class="s2">&quot;HMAC-SHA-512.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Obtain this from your LabArchives account under API settings. &quot;</span>
+                <span class="s2">&quot;Both the Access Key ID and Access Password are required for &quot;</span>
+                <span class="s2">&quot;LabArchives export to be enabled.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">NX_LABARCHIVES_ACCESS_PASSWORD</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="s2">&quot;test_la_password&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Access password (provided by LabArchives) for the API. &quot;</span>
+            <span class="s2">&quot;Used to generate HMAC-SHA-512 signatures for authenticated requests. &quot;</span>
+            <span class="s2">&quot;If not configured, LabArchives export will be disabled.&quot;</span>
+        <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;display_default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The access password provided by LabArchives for your API &quot;</span>
+                <span class="s2">&quot;integration. This secret is used to generate HMAC-SHA-512 &quot;</span>
+                <span class="s2">&quot;signatures that authenticate all API requests.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Keep this value secret — it is equivalent to a password and &quot;</span>
+                <span class="s2">&quot;allows full API access to the configured LabArchives account. &quot;</span>
+                <span class="s2">&quot;Used together with `NX_LABARCHIVES_ACCESS_KEY_ID`.&quot;</span>
+            <span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">NX_LABARCHIVES_USER_ID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="s2">&quot;test_la_uid&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;LabArchives user ID (uid) for the account that owns records. &quot;</span>
+            <span class="s2">&quot;Obtain once via the `user_access_info` API call. &quot;</span>
+            <span class="s2">&quot;Required for LabArchives export.&quot;</span>
+        <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The persistent user ID (uid) for the LabArchives account that &quot;</span>
+                <span class="s2">&quot;will own uploaded notebook entries. This is obtained once via &quot;</span>
+                <span class="s2">&quot;the LabArchives `user_access_info` API call.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;To get the uid: call the LabArchives API endpoint &quot;</span>
+                <span class="s2">&quot;`users/user_access_info` with your login and token. &quot;</span>
+                <span class="s2">&quot;The returned `uid` value is what you need here.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;This uid is stable and does not change, so you only need to &quot;</span>
+                <span class="s2">&quot;retrieve it once.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">NX_LABARCHIVES_URL</span><span class="p">:</span> <span class="n">TestAwareHttpUrl</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>  <span class="c1"># type: ignore[valid-type]</span>
+        <span class="s2">&quot;http://localhost:9000&quot;</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="s2">&quot;https://api.labarchives.com/api&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Base URL for the LabArchives API (including the /api path). &quot;</span>
+            <span class="s2">&quot;Defaults to https://api.labarchives.com/api for cloud LabArchives. &quot;</span>
+            <span class="s2">&quot;If not configured, LabArchives export will be disabled.&quot;</span>
+        <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The base URL for LabArchives API calls, including the `/api` path &quot;</span>
+                <span class="s2">&quot;segment. For the standard cloud service this is &quot;</span>
+                <span class="s2">&quot;`https://api.labarchives.com/api`. For self-hosted instances use &quot;</span>
+                <span class="s2">&quot;`https://your-instance.example.com/api`.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;All API requests are sent to `</span><span class="si">{NX_LABARCHIVES_URL}</span><span class="s2">/</span><span class="si">{class}</span><span class="s2">/</span><span class="si">{method}</span><span class="s2">`, &quot;</span>
+                <span class="s2">&quot;so the `/api` suffix must be included here.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">NX_LABARCHIVES_NOTEBOOK_ID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Target notebook ID (nbid) for LabArchives uploads. If not set, &quot;</span>
+            <span class="s2">&quot;records are uploaded to the user&#39;s Inbox notebook.&quot;</span>
+        <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;The notebook ID (nbid) of the target LabArchives notebook where &quot;</span>
+                <span class="s2">&quot;NexusLIMS records will be stored. When configured, NexusLIMS &quot;</span>
+                <span class="s2">&quot;automatically creates a `NexusLIMS Records/</span><span class="si">{instrument}</span><span class="s2">/` folder &quot;</span>
+                <span class="s2">&quot;hierarchy within this notebook.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;If not set, records are uploaded to the user&#39;s default Inbox.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;To find the nbid: open the notebook in LabArchives and check &quot;</span>
+                <span class="s2">&quot;the URL — it typically appears as a parameter in the notebook URL.&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
     <span class="n">NX_EXPORT_STRATEGY</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;first_success&quot;</span><span class="p">,</span> <span class="s2">&quot;best_effort&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="s2">&quot;all&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
@@ -1912,6 +2006,49 @@ window.addEventListener("load", load);
 
 <span class="n">settings</span> <span class="o">=</span> <span class="n">_SettingsProxy</span><span class="p">()</span>
 <span class="sd">&quot;&quot;&quot;The settings &quot;singleton&quot; - accessed like a normal object in the application&quot;&quot;&quot;</span>
+
+
+<span class="n">_LA_KEYS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;NX_LABARCHIVES_ACCESS_KEY_ID&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NX_LABARCHIVES_ACCESS_PASSWORD&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NX_LABARCHIVES_URL&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NX_LABARCHIVES_NOTEBOOK_ID&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NX_LABARCHIVES_USER_ID&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="read_labarchives_env">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.read_labarchives_env">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_labarchives_env</span><span class="p">(</span><span class="n">env_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">=</span> <span class="s2">&quot;.env&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read LabArchives settings without triggering full Settings validation.</span>
+
+<span class="sd">    Merges values from the given ``.env`` file and the process environment</span>
+<span class="sd">    (environment variables take precedence), returning only the five</span>
+<span class="sd">    ``NX_LABARCHIVES_*`` keys.  No other configuration is read or validated.</span>
+
+<span class="sd">    This is intended for CLI helper commands (e.g. ``labarchives-get-uid``)</span>
+<span class="sd">    that need only LabArchives credentials and must not fail due to missing</span>
+<span class="sd">    core NexusLIMS settings (``NX_INSTRUMENT_DATA_PATH`` etc.).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    env_path : str or pathlib.Path, optional</span>
+<span class="sd">        Path to the ``.env`` file.  Missing files are silently ignored.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict[str, str | None]</span>
+<span class="sd">        Mapping of the five ``NX_LABARCHIVES_*`` env-var names to their</span>
+<span class="sd">        values (or ``None`` if not set).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Start with file values, then let process env override.</span>
+    <span class="n">file_values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">dotenv_values</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">env_path</span><span class="p">))</span>
+    <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_LA_KEYS</span><span class="p">:</span>
+        <span class="c1"># os.getenv permitted here — this IS nexusLIMS/config.py</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">or</span> <span class="n">file_values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
 </pre></div>
 
                 </article>

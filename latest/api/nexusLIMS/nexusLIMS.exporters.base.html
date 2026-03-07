@@ -437,6 +437,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/NEMO_Reference.html">NEMO System Reference for NexusLIMS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/eLabFTW_metadata_reference.html">eLabFTW Metadata Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/LabArchives_API_reference.html">LabArchives API Reference</a></li>
 </ul>
 </div>
 </nav></div>
@@ -670,6 +671,19 @@ dependencies (e.g., LabArchives including a CDCS link).</p></li>
 <p><strong>Type:</strong> dict[str, nexusLIMS.exporters.base.ExportResult]</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.exporters.base.ExportContext.activities">
+<span class="sig-name descname"><span class="pre">activities</span></span><a class="headerlink" href="#nexusLIMS.exporters.base.ExportContext.activities" title="Link to this definition">#</a></dt>
+<dd><p>‘field(…)’</p>
+<p><strong>Type:</strong> list[nexusLIMS.schemas.activity.AcquisitionActivity]</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.exporters.base.ExportContext.reservation_event">
+<span class="sig-name descname"><span class="pre">reservation_event</span></span><a class="headerlink" href="#nexusLIMS.exporters.base.ExportContext.reservation_event" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.harvesters.reservation_event.ReservationEvent | None</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.exporters.base.ExportContext.get_result">
 <span class="sig-name descname"><span class="pre">get_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">destination_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#nexusLIMS.exporters.base.ExportResult" title="nexusLIMS.exporters.base.ExportResult"><span class="pre">ExportResult</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/exporters/base.html#ExportContext.get_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.exporters.base.ExportContext.get_result" title="Link to this definition">#</a></dt>
@@ -890,6 +904,8 @@ results from higher-priority destinations</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.base.ExportContext.user"><code class="docutils literal notranslate"><span class="pre">ExportContext.user</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.base.ExportContext.metadata"><code class="docutils literal notranslate"><span class="pre">ExportContext.metadata</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.base.ExportContext.previous_results"><code class="docutils literal notranslate"><span class="pre">ExportContext.previous_results</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.base.ExportContext.activities"><code class="docutils literal notranslate"><span class="pre">ExportContext.activities</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.base.ExportContext.reservation_event"><code class="docutils literal notranslate"><span class="pre">ExportContext.reservation_event</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.base.ExportContext.get_result"><code class="docutils literal notranslate"><span class="pre">ExportContext.get_result()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.base.ExportContext.add_result"><code class="docutils literal notranslate"><span class="pre">ExportContext.add_result()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.base.ExportContext.has_successful_export"><code class="docutils literal notranslate"><span class="pre">ExportContext.has_successful_export()</span></code></a></li>

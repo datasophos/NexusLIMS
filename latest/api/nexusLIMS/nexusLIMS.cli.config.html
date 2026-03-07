@@ -438,6 +438,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/NEMO_Reference.html">NEMO System Reference for NexusLIMS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/eLabFTW_metadata_reference.html">eLabFTW Metadata Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/LabArchives_API_reference.html">LabArchives API Reference</a></li>
 </ul>
 </div>
 </nav></div>
@@ -553,7 +554,10 @@ back up any pre-existing <code class="docutils literal notranslate"><span class=
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.edit" title="nexusLIMS.cli.config.edit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edit</span></code></a></p></td>
 <td><p>Interactively edit the NexusLIMS configuration in a terminal UI.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.load" title="nexusLIMS.cli.config.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.labarchives_get_uid" title="nexusLIMS.cli.config.labarchives_get_uid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">labarchives_get_uid</span></code></a></p></td>
+<td><p>Look up your LabArchives user ID (UID) using your login credentials.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.load" title="nexusLIMS.cli.config.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a></p></td>
 <td><p>Load a previously dumped JSON config into a .env file.</p></td>
 </tr>
 </tbody>
@@ -602,6 +606,22 @@ secret.  Use <code class="docutils literal notranslate"><span class="pre">load</
 <p>Opens a tabbed form pre-populated from the existing .env file (if any).
 Press Ctrl+S to save and write the .env file, or Escape to cancel without
 saving.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.cli.config.labarchives_get_uid">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.config.</span></span><span class="sig-name descname"><span class="pre">labarchives_get_uid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">la_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.config.labarchives_get_uid" title="Link to this definition">#</a></dt>
+<dd><p>Look up your LabArchives user ID (UID) using your login credentials.</p>
+<p>Reads NX_LABARCHIVES_ACCESS_KEY_ID, NX_LABARCHIVES_ACCESS_PASSWORD, and
+NX_LABARCHIVES_URL from your .env file (or environment), then calls the
+LabArchives API to retrieve the UID for the provided email address.</p>
+<p>This command does NOT require a fully-configured NexusLIMS environment —
+only the three NX_LABARCHIVES_* fields listed above need to be set.</p>
+<p>The UID is printed along with a ready-to-paste .env line:</p>
+<p>
+NX_LABARCHIVES_USER_ID=<uid></p>
+<p>Note: –la-password is your personal LabArchives account password or
+app token, NOT the NX_LABARCHIVES_ACCESS_PASSWORD signing secret.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -674,6 +694,7 @@ before it is overwritten.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.dump"><code class="docutils literal notranslate"><span class="pre">dump()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.edit"><code class="docutils literal notranslate"><span class="pre">edit()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.labarchives_get_uid"><code class="docutils literal notranslate"><span class="pre">labarchives_get_uid()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.load"><code class="docutils literal notranslate"><span class="pre">load()</span></code></a></li>
 </ul>
 </li>

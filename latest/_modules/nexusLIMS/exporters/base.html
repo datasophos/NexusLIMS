@@ -842,6 +842,9 @@ window.addEventListener("load", load);
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.harvesters.reservation_event</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReservationEvent</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.activity</span><span class="w"> </span><span class="kn">import</span> <span class="n">AcquisitionActivity</span>
+
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
@@ -928,6 +931,8 @@ window.addEventListener("load", load);
     <span class="n">user</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
     <span class="n">previous_results</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ExportResult</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">activities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">AcquisitionActivity</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">reservation_event</span><span class="p">:</span> <span class="n">ReservationEvent</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="ExportContext.get_result">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.exporters.base.html#nexusLIMS.exporters.base.ExportContext.get_result">[docs]</a>

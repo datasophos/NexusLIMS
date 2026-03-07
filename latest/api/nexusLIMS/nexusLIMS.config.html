@@ -431,6 +431,7 @@
 </details></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/NEMO_Reference.html">NEMO System Reference for NexusLIMS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../reference/eLabFTW_metadata_reference.html">eLabFTW Metadata Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../reference/LabArchives_API_reference.html">LabArchives API Reference</a></li>
 </ul>
 </div>
 </nav></div>
@@ -535,6 +536,9 @@ environment variables.</p>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.config.clear_settings" title="nexusLIMS.config.clear_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear_settings</span></code></a></p></td>
 <td><p>Clear the settings cache without immediately creating a new instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.read_labarchives_env" title="nexusLIMS.config.read_labarchives_env"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_labarchives_env</span></code></a></p></td>
+<td><p>Read LabArchives settings without triggering full Settings validation.</p></td>
 </tr>
 </tbody>
 </table>
@@ -707,6 +711,36 @@ that settings are loaded with proper types and provides descriptions for each.</
 <dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_CDCS_URL">
 <span class="sig-name descname"><span class="pre">NX_CDCS_URL</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_CDCS_URL" title="Link to this definition">#</a></dt>
 <dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareHttpUrl</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_KEY_ID">
+<span class="sig-name descname"><span class="pre">NX_LABARCHIVES_ACCESS_KEY_ID</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_KEY_ID" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_PASSWORD">
+<span class="sig-name descname"><span class="pre">NX_LABARCHIVES_ACCESS_PASSWORD</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_PASSWORD" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_LABARCHIVES_USER_ID">
+<span class="sig-name descname"><span class="pre">NX_LABARCHIVES_USER_ID</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_USER_ID" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_LABARCHIVES_URL">
+<span class="sig-name descname"><span class="pre">NX_LABARCHIVES_URL</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_URL" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.config.TestAwareHttpUrl | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_LABARCHIVES_NOTEBOOK_ID">
+<span class="sig-name descname"><span class="pre">NX_LABARCHIVES_NOTEBOOK_ID</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_NOTEBOOK_ID" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -924,6 +958,30 @@ Useful in test teardown to ensure clean state.</p>
 <p>The settings “singleton” - accessed like a normal object in the application</p>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.config.read_labarchives_env">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">read_labarchives_env</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.env'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#read_labarchives_env"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.read_labarchives_env" title="Link to this definition">#</a></dt>
+<dd><p>Read LabArchives settings without triggering full Settings validation.</p>
+<p>Merges values from the given <code class="docutils literal notranslate"><span class="pre">.env</span></code> file and the process environment
+(environment variables take precedence), returning only the five
+<code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_*</span></code> keys.  No other configuration is read or validated.</p>
+<p>This is intended for CLI helper commands (e.g. <code class="docutils literal notranslate"><span class="pre">labarchives-get-uid</span></code>)
+that need only LabArchives credentials and must not fail due to missing
+core NexusLIMS settings (<code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code> etc.).</p>
+<dl class="myst field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>env_path</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><em>Path</em></a><em>, </em><em>optional</em>) – Path to the <code class="docutils literal notranslate"><span class="pre">.env</span></code> file.  Missing files are silently ignored.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Mapping of the five <code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_*</span></code> env-var names to their
+values (or <code class="docutils literal notranslate"><span class="pre">None</span></code> if not set).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>, <a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a> | <em>None</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 </section>
@@ -1009,6 +1067,11 @@ Useful in test teardown to ensure clean state.</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_DB_PATH"><code class="docutils literal notranslate"><span class="pre">Settings.NX_DB_PATH</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CDCS_TOKEN"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CDCS_TOKEN</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CDCS_URL"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CDCS_URL</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_KEY_ID"><code class="docutils literal notranslate"><span class="pre">Settings.NX_LABARCHIVES_ACCESS_KEY_ID</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_PASSWORD"><code class="docutils literal notranslate"><span class="pre">Settings.NX_LABARCHIVES_ACCESS_PASSWORD</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_USER_ID"><code class="docutils literal notranslate"><span class="pre">Settings.NX_LABARCHIVES_USER_ID</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_URL"><code class="docutils literal notranslate"><span class="pre">Settings.NX_LABARCHIVES_URL</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_NOTEBOOK_ID"><code class="docutils literal notranslate"><span class="pre">Settings.NX_LABARCHIVES_NOTEBOOK_ID</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_EXPORT_STRATEGY"><code class="docutils literal notranslate"><span class="pre">Settings.NX_EXPORT_STRATEGY</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CERT_BUNDLE_FILE"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CERT_BUNDLE_FILE</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CERT_BUNDLE"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CERT_BUNDLE</span></code></a></li>
@@ -1033,6 +1096,7 @@ Useful in test teardown to ensure clean state.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.refresh_settings"><code class="docutils literal notranslate"><span class="pre">refresh_settings()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.clear_settings"><code class="docutils literal notranslate"><span class="pre">clear_settings()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.settings"><code class="docutils literal notranslate"><span class="pre">settings</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.read_labarchives_env"><code class="docutils literal notranslate"><span class="pre">read_labarchives_env()</span></code></a></li>
 </ul>
 </li>
 </ul>

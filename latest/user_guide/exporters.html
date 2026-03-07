@@ -575,6 +575,36 @@
 </pre></div>
 </div>
 </section>
+<section id="labarchives">
+<span id="labarchives-exporter"></span><h3>LabArchives<a class="headerlink" href="#labarchives" title="Link to this heading">#</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.6.0.</span></p>
+</div>
+<p><a class="reference external" href="https://www.labarchives.com/"><strong>LabArchives</strong></a> is a commercial electronic lab notebook
+system. NexusLIMS supports exporting session records to LabArchives with:</p>
+<ul class="simple">
+<li><p>HTML-formatted session summary with a gallery of preview images</p></li>
+<li><p>A list of all data files contained in the experiment</p></li>
+<li><p>The full XML record attached as a file</p></li>
+<li><p>Cross-link to CDCS record (if CDCS export enabled)</p></li>
+</ul>
+<p><strong>Configuration:</strong> See <a class="reference internal" href="configuration.html#config-labarchives"><span class="std std-ref">LabArchives Integration</span></a> for settings:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_URL</span></code> - LabArchives instance URL</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_KEY_ID</span></code> - API access key ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_PASSWORD</span></code> - API signing password</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_USER_ID</span></code> - Pre-authenticated user ID (uid)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_NOTEBOOK_ID</span></code> - Optional target notebook (uses Inbox if unset)</p></li>
+</ul>
+<p>LabArchives exports have <strong>priority 90</strong> and run after CDCS (to allow cross-linking).</p>
+<p><strong>What gets exported:</strong></p>
+<ul class="simple">
+<li><p><strong>Notebook structure:</strong> <code class="docutils literal notranslate"><span class="pre">NexusLIMS</span> <span class="pre">Records/{instrument_pid}/{YYYY-MM-DD</span> <span class="pre">—</span> <span class="pre">session_id}</span></code> page
+(auto-created if it doesn’t exist)</p></li>
+<li><p><strong>HTML summary:</strong> Session details and optional link to CDCS record</p></li>
+<li><p><strong>Attachment:</strong> Complete XML record file</p></li>
+</ul>
+</section>
 </section>
 <section id="export-workflow">
 <h2>Export Workflow<a class="headerlink" href="#export-workflow" title="Link to this heading">#</a></h2>
@@ -786,6 +816,7 @@
 <li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.exporters.registry.html#module-nexusLIMS.exporters.registry" title="nexusLIMS.exporters.registry"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters.registry</span></code></a> - Plugin discovery and management</p></li>
 <li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.exporters.destinations.cdcs.html#module-nexusLIMS.exporters.destinations.cdcs" title="nexusLIMS.exporters.destinations.cdcs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters.destinations.cdcs</span></code></a> - CDCS export implementation</p></li>
 <li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.exporters.destinations.elabftw.html#module-nexusLIMS.exporters.destinations.elabftw" title="nexusLIMS.exporters.destinations.elabftw"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters.destinations.elabftw</span></code></a> - eLabFTW export implementation</p></li>
+<li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.exporters.destinations.labarchives.html#module-nexusLIMS.exporters.destinations.labarchives" title="nexusLIMS.exporters.destinations.labarchives"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters.destinations.labarchives</span></code></a> - LabArchives export implementation</p></li>
 <li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#module-nexusLIMS.db.models" title="nexusLIMS.db.models"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.models</span></code></a> - Database models (UploadLog, SessionLog)</p></li>
 </ul>
 </section>
@@ -793,7 +824,7 @@
 <h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
 <p>The export framework provides:</p>
 <ul class="simple">
-<li><p>Multiple repository support (CDCS, eLabFTW, custom destinations)</p></li>
+<li><p>Multiple repository support (CDCS, eLabFTW, LabArchives, custom destinations)</p></li>
 <li><p>Automatic export after record building</p></li>
 <li><p>Configurable failure handling strategies</p></li>
 <li><p>Inter-destination cross-linking</p></li>

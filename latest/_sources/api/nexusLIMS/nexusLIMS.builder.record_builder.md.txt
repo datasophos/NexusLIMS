@@ -10,6 +10,19 @@
 
 ## Module Contents
 
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`RecordBuildResult <nexusLIMS.builder.record_builder.RecordBuildResult>`
+  - ```{autodoc2-docstring} nexusLIMS.builder.record_builder.RecordBuildResult
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
 ### Functions
 
 ````{list-table}
@@ -89,7 +102,51 @@
 
 ````
 
-````{py:function} build_record(session: nexusLIMS.db.session_handler.Session, sample_id: str | None = None, *, generate_previews: bool = True) -> str
+`````{py:class} RecordBuildResult
+:canonical: nexusLIMS.builder.record_builder.RecordBuildResult
+
+```{autodoc2-docstring} nexusLIMS.builder.record_builder.RecordBuildResult
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} xml_text
+:canonical: nexusLIMS.builder.record_builder.RecordBuildResult.xml_text
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.builder.record_builder.RecordBuildResult.xml_text
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} activities
+:canonical: nexusLIMS.builder.record_builder.RecordBuildResult.activities
+:value: >
+   'field(...)'
+
+**Type:** typing.List[nexusLIMS.schemas.activity.AcquisitionActivity]
+
+```{autodoc2-docstring} nexusLIMS.builder.record_builder.RecordBuildResult.activities
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} reservation_event
+:canonical: nexusLIMS.builder.record_builder.RecordBuildResult.reservation_event
+
+**Type:** nexusLIMS.harvesters.reservation_event.ReservationEvent | None
+
+```{autodoc2-docstring} nexusLIMS.builder.record_builder.RecordBuildResult.reservation_event
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+````{py:function} build_record(session: nexusLIMS.db.session_handler.Session, sample_id: str | None = None, *, generate_previews: bool = True) -> nexusLIMS.builder.record_builder.RecordBuildResult
 :canonical: nexusLIMS.builder.record_builder.build_record
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.build_record
@@ -137,7 +194,7 @@
 ```
 ````
 
-````{py:function} build_new_session_records(generate_previews: bool = True) -> tuple[typing.List[pathlib.Path], typing.List[nexusLIMS.db.session_handler.Session]]
+````{py:function} build_new_session_records(generate_previews: bool = True) -> tuple[typing.List[pathlib.Path], typing.List[nexusLIMS.db.session_handler.Session], typing.List[typing.List[nexusLIMS.schemas.activity.AcquisitionActivity]], typing.List[nexusLIMS.harvesters.reservation_event.ReservationEvent | None]]
 :canonical: nexusLIMS.builder.record_builder.build_new_session_records
 
 ```{autodoc2-docstring} nexusLIMS.builder.record_builder.build_new_session_records

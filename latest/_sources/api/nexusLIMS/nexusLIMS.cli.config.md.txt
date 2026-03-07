@@ -31,6 +31,11 @@
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
+* - {py:obj}`labarchives_get_uid <nexusLIMS.cli.config.labarchives_get_uid>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.config.labarchives_get_uid
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 * - {py:obj}`load <nexusLIMS.cli.config.load>`
   - ```{autodoc2-docstring} nexusLIMS.cli.config.load
     :parser: autodoc2_docstrings_parser
@@ -84,6 +89,14 @@
 :canonical: nexusLIMS.cli.config.edit
 
 ```{autodoc2-docstring} nexusLIMS.cli.config.edit
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} labarchives_get_uid(email: str, la_password: str, env_path: str, *, verbose: bool) -> None
+:canonical: nexusLIMS.cli.config.labarchives_get_uid
+
+```{autodoc2-docstring} nexusLIMS.cli.config.labarchives_get_uid
 :parser: autodoc2_docstrings_parser
 ```
 ````

@@ -49,6 +49,11 @@
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
+* - {py:obj}`read_labarchives_env <nexusLIMS.config.read_labarchives_env>`
+  - ```{autodoc2-docstring} nexusLIMS.config.read_labarchives_env
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 ````
 
 ### Data
@@ -341,6 +346,61 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 
 ````
 
+````{py:attribute} NX_LABARCHIVES_ACCESS_KEY_ID
+:canonical: nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_KEY_ID
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_KEY_ID
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} NX_LABARCHIVES_ACCESS_PASSWORD
+:canonical: nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_PASSWORD
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_PASSWORD
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} NX_LABARCHIVES_USER_ID
+:canonical: nexusLIMS.config.Settings.NX_LABARCHIVES_USER_ID
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_LABARCHIVES_USER_ID
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} NX_LABARCHIVES_URL
+:canonical: nexusLIMS.config.Settings.NX_LABARCHIVES_URL
+
+**Type:** nexusLIMS.config.TestAwareHttpUrl | None
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_LABARCHIVES_URL
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} NX_LABARCHIVES_NOTEBOOK_ID
+:canonical: nexusLIMS.config.Settings.NX_LABARCHIVES_NOTEBOOK_ID
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_LABARCHIVES_NOTEBOOK_ID
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:attribute} NX_EXPORT_STRATEGY
 :canonical: nexusLIMS.config.Settings.NX_EXPORT_STRATEGY
 
@@ -569,4 +629,12 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 :parser: autodoc2_docstrings_parser
 ```
 
+````
+
+````{py:function} read_labarchives_env(env_path: str | pathlib.Path = '.env') -> dict[str, str | None]
+:canonical: nexusLIMS.config.read_labarchives_env
+
+```{autodoc2-docstring} nexusLIMS.config.read_labarchives_env
+:parser: autodoc2_docstrings_parser
+```
 ````

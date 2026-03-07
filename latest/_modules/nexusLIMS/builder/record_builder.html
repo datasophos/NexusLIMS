@@ -836,6 +836,7 @@ window.addEventListener("load", load);
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dt</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timedelta</span> <span class="k">as</span> <span class="n">td</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">importlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">import_module</span><span class="p">,</span> <span class="n">util</span>
@@ -877,6 +878,28 @@ window.addEventListener("load", load);
 <span class="n">XSD_PATH</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">activity</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;nexus-experiment.xsd&quot;</span>
 
 
+<div class="viewcode-block" id="RecordBuildResult">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.RecordBuildResult">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RecordBuildResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of building a NexusLIMS XML record.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    xml_text</span>
+<span class="sd">        The serialized XML record string</span>
+<span class="sd">    activities</span>
+<span class="sd">        The AcquisitionActivity objects built during record construction</span>
+<span class="sd">    reservation_event</span>
+<span class="sd">        The ReservationEvent used to populate the record header</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">xml_text</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">activities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AcquisitionActivity</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">reservation_event</span><span class="p">:</span> <span class="n">ReservationEvent</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+
 <div class="viewcode-block" id="build_record">
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.build_record">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">build_record</span><span class="p">(</span>
@@ -884,7 +907,7 @@ window.addEventListener("load", load);
     <span class="n">sample_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">generate_previews</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RecordBuildResult</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build a NexusLIMS XML record of an Experiment.</span>
 
@@ -909,9 +932,9 @@ window.addEventListener("load", load);
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    xml_record : str</span>
-<span class="sd">        A formatted string containing a well-formed and valid XML document</span>
-<span class="sd">        for the data contained in the provided path</span>
+<span class="sd">    result : RecordBuildResult</span>
+<span class="sd">        A :class:`RecordBuildResult` containing the XML string, activities,</span>
+<span class="sd">        and reservation event</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">sample_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">sample_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">())</span>
@@ -954,12 +977,17 @@ window.addEventListener("load", load);
         <span class="n">a_xml</span> <span class="o">=</span> <span class="n">this_activity</span><span class="o">.</span><span class="n">as_xml</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">sample_id</span><span class="p">)</span>
         <span class="n">xml</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a_xml</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span>
+    <span class="n">xml_text</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span>
         <span class="n">xml</span><span class="p">,</span>
         <span class="n">xml_declaration</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">,</span>
         <span class="n">pretty_print</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
+    <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">RecordBuildResult</span><span class="p">(</span>
+        <span class="n">xml_text</span><span class="o">=</span><span class="n">xml_text</span><span class="p">,</span>
+        <span class="n">activities</span><span class="o">=</span><span class="n">activities</span><span class="p">,</span>
+        <span class="n">reservation_event</span><span class="o">=</span><span class="n">res_event</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 
@@ -1234,8 +1262,8 @@ window.addEventListener("load", load);
         <span class="p">)</span>
     <span class="n">filename</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">with</span> <span class="n">filename</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">build_record</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">generate_previews</span><span class="o">=</span><span class="n">generate_previews</span><span class="p">)</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">build_record</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">session</span><span class="p">,</span> <span class="n">generate_previews</span><span class="o">=</span><span class="n">generate_previews</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">xml_text</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">filename</span></div>
 
 
@@ -1269,7 +1297,12 @@ window.addEventListener("load", load);
 <a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.builder.record_builder.html#nexusLIMS.builder.record_builder.build_new_session_records">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">build_new_session_records</span><span class="p">(</span>
     <span class="n">generate_previews</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># noqa: FBT002, FBT001</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Session</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">Session</span><span class="p">],</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">AcquisitionActivity</span><span class="p">]],</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">ReservationEvent</span> <span class="o">|</span> <span class="kc">None</span><span class="p">],</span>
+<span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build records for new sessions from the database.</span>
 
@@ -1284,6 +1317,10 @@ window.addEventListener("load", load);
 <span class="sd">        centralized storage</span>
 <span class="sd">    sessions_built : typing.List[Session]</span>
 <span class="sd">        Corresponding Session objects for each built XML file (same length and order)</span>
+<span class="sd">    activities_built : typing.List[typing.List[AcquisitionActivity]]</span>
+<span class="sd">        Corresponding AcquisitionActivity lists for each built session</span>
+<span class="sd">    res_events_built : typing.List[ReservationEvent | None]</span>
+<span class="sd">        Corresponding ReservationEvent for each built session</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># get the list of sessions with &#39;TO_BE_BUILT&#39; status; does not fetch new</span>
     <span class="c1"># usage events from any NEMO instances;</span>
@@ -1294,11 +1331,14 @@ window.addEventListener("load", load);
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;No &#39;TO_BE_BUILT&#39; sessions were found. Exiting.&quot;</span><span class="p">)</span>
     <span class="n">xml_files</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">sessions_built</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">activities_built</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">res_events_built</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># loop through the sessions</span>
     <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sessions</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">db_row</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">insert_record_generation_event</span><span class="p">()</span>
-            <span class="n">record_text</span> <span class="o">=</span> <span class="n">build_record</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">generate_previews</span><span class="o">=</span><span class="n">generate_previews</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">build_record</span><span class="p">(</span><span class="n">session</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">generate_previews</span><span class="o">=</span><span class="n">generate_previews</span><span class="p">)</span>
+            <span class="n">record_text</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">xml_text</span>
         <span class="k">except</span> <span class="p">(</span>  <span class="c1"># pylint: disable=broad-exception-caught</span>
             <span class="ne">FileNotFoundError</span><span class="p">,</span>
             <span class="ne">Exception</span><span class="p">,</span>
@@ -1358,17 +1398,38 @@ window.addEventListener("load", load);
                 <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Marking </span><span class="si">%s</span><span class="s1"> as &quot;ERROR&quot;&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">)</span>
                 <span class="n">s</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="n">RecordStatus</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span> <span class="o">=</span> <span class="n">_record_validation_flow</span><span class="p">(</span>
-                <span class="n">record_text</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span>
+            <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span><span class="p">,</span> <span class="n">activities_built</span><span class="p">,</span> <span class="n">res_events_built</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">_record_validation_flow</span><span class="p">(</span>
+                    <span class="n">record_text</span><span class="p">,</span>
+                    <span class="n">s</span><span class="p">,</span>
+                    <span class="n">xml_files</span><span class="p">,</span>
+                    <span class="n">sessions_built</span><span class="p">,</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">activities</span><span class="p">,</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">reservation_event</span><span class="p">,</span>
+                    <span class="n">activities_built</span><span class="p">,</span>
+                    <span class="n">res_events_built</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span></div>
+    <span class="k">return</span> <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span><span class="p">,</span> <span class="n">activities_built</span><span class="p">,</span> <span class="n">res_events_built</span></div>
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_record_validation_flow</span><span class="p">(</span>
-    <span class="n">record_text</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Session</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_record_validation_flow</span><span class="p">(</span>  <span class="c1"># noqa: PLR0913</span>
+    <span class="n">record_text</span><span class="p">,</span>
+    <span class="n">s</span><span class="p">,</span>
+    <span class="n">xml_files</span><span class="p">,</span>
+    <span class="n">sessions_built</span><span class="p">,</span>
+    <span class="n">result_activities</span><span class="p">,</span>
+    <span class="n">result_res_event</span><span class="p">,</span>
+    <span class="n">activities_built</span><span class="p">,</span>
+    <span class="n">res_events_built</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">Path</span><span class="p">],</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">Session</span><span class="p">],</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">AcquisitionActivity</span><span class="p">]],</span>
+    <span class="n">List</span><span class="p">[</span><span class="n">ReservationEvent</span> <span class="o">|</span> <span class="kc">None</span><span class="p">],</span>
+<span class="p">]:</span>
     <span class="k">if</span> <span class="n">validate_record</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">record_text</span><span class="p">,</span> <span class="s2">&quot;UTF-8&quot;</span><span class="p">))):</span>
         <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Validated newly generated record&quot;</span><span class="p">)</span>
         <span class="c1"># generate filename for saved record and make sure path exists</span>
@@ -1389,6 +1450,8 @@ window.addEventListener("load", load);
         <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Wrote record to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
         <span class="n">xml_files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
         <span class="n">sessions_built</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">activities_built</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result_activities</span><span class="p">)</span>
+        <span class="n">res_events_built</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result_res_event</span><span class="p">)</span>
         <span class="c1"># Note: Session status will be updated after export attempt</span>
         <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
             <span class="s2">&quot;Built record for </span><span class="si">%s</span><span class="s2">, will export to destinations&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">session_identifier</span>
@@ -1398,7 +1461,7 @@ window.addEventListener("load", load);
         <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not validate record, did not write to disk&quot;</span><span class="p">)</span>
         <span class="n">s</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="n">RecordStatus</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span>
+    <span class="k">return</span> <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span><span class="p">,</span> <span class="n">activities_built</span><span class="p">,</span> <span class="n">res_events_built</span>
 
 
 <div class="viewcode-block" id="process_new_records">
@@ -1480,12 +1543,16 @@ window.addEventListener("load", load);
             <span class="n">dry_run_file_find</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">nemo_utils</span><span class="o">.</span><span class="n">add_all_usage_events_to_db</span><span class="p">(</span><span class="n">dt_from</span><span class="o">=</span><span class="n">dt_from</span><span class="p">,</span> <span class="n">dt_to</span><span class="o">=</span><span class="n">dt_to</span><span class="p">)</span>
-        <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span> <span class="o">=</span> <span class="n">build_new_session_records</span><span class="p">()</span>
+        <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span><span class="p">,</span> <span class="n">activities_built</span><span class="p">,</span> <span class="n">res_events_built</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">build_new_session_records</span><span class="p">()</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">xml_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No XML files built, so no files exported&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Export records to all configured destinations</span>
-            <span class="n">export_results</span> <span class="o">=</span> <span class="n">export_records</span><span class="p">(</span><span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span><span class="p">)</span>
+            <span class="n">export_results</span> <span class="o">=</span> <span class="n">export_records</span><span class="p">(</span>
+                <span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span><span class="p">,</span> <span class="n">activities_built</span><span class="p">,</span> <span class="n">res_events_built</span>
+            <span class="p">)</span>
 
             <span class="c1"># Update session status based on export results</span>
             <span class="n">sessions_by_file</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">xml_files</span><span class="p">,</span> <span class="n">sessions_built</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>

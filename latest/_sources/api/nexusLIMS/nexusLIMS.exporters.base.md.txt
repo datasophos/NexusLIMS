@@ -224,6 +224,30 @@
 
 ````
 
+````{py:attribute} activities
+:canonical: nexusLIMS.exporters.base.ExportContext.activities
+:value: >
+   'field(...)'
+
+**Type:** list[nexusLIMS.schemas.activity.AcquisitionActivity]
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext.activities
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} reservation_event
+:canonical: nexusLIMS.exporters.base.ExportContext.reservation_event
+
+**Type:** nexusLIMS.harvesters.reservation_event.ReservationEvent | None
+
+```{autodoc2-docstring} nexusLIMS.exporters.base.ExportContext.reservation_event
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:method} get_result(destination_name: str) -> nexusLIMS.exporters.base.ExportResult | None
 :canonical: nexusLIMS.exporters.base.ExportContext.get_result
 

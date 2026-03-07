@@ -21,6 +21,11 @@
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
+* - {py:obj}`LabArchivesGetUidDialog <nexusLIMS.tui.apps.config.screens.LabArchivesGetUidDialog>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.config.screens.LabArchivesGetUidDialog
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 * - {py:obj}`ConfigScreen <nexusLIMS.tui.apps.config.screens.ConfigScreen>`
   - ```{autodoc2-docstring} nexusLIMS.tui.apps.config.screens.ConfigScreen
     :parser: autodoc2_docstrings_parser
@@ -76,6 +81,59 @@ Bases: {py:obj}`textual.screen.ModalScreen`
 :canonical: nexusLIMS.tui.apps.config.screens.FieldDetailScreen.action_dismiss_detail
 
 ```{autodoc2-docstring} nexusLIMS.tui.apps.config.screens.FieldDetailScreen.action_dismiss_detail
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+`````{py:class} LabArchivesGetUidDialog(base_url: str, akid: str, access_password: str, **kwargs)
+:canonical: nexusLIMS.tui.apps.config.screens.LabArchivesGetUidDialog
+
+Bases: {py:obj}`textual.screen.ModalScreen`\[{py:obj}`str | None`\]
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config.screens.LabArchivesGetUidDialog
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} CSS_PATH
+:canonical: nexusLIMS.tui.apps.config.screens.LabArchivesGetUidDialog.CSS_PATH
+
+**Type:** typing.ClassVar
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config.screens.LabArchivesGetUidDialog.CSS_PATH
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} BINDINGS
+:canonical: nexusLIMS.tui.apps.config.screens.LabArchivesGetUidDialog.BINDINGS
+:value: >
+   [('escape', 'cancel_dialog', 'Cancel')]
+
+**Type:** typing.ClassVar
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config.screens.LabArchivesGetUidDialog.BINDINGS
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} compose() -> textual.app.ComposeResult
+:canonical: nexusLIMS.tui.apps.config.screens.LabArchivesGetUidDialog.compose
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config.screens.LabArchivesGetUidDialog.compose
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} action_cancel_dialog() -> None
+:canonical: nexusLIMS.tui.apps.config.screens.LabArchivesGetUidDialog.action_cancel_dialog
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config.screens.LabArchivesGetUidDialog.action_cancel_dialog
 :parser: autodoc2_docstrings_parser
 ```
 

@@ -20,6 +20,7 @@ nexusLIMS.utils.dicts
 nexusLIMS.utils.paths
 nexusLIMS.utils.files
 nexusLIMS.utils.logging
+nexusLIMS.utils.labarchives
 nexusLIMS.utils.elabftw
 nexusLIMS.utils.time
 ```
