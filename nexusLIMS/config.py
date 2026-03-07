@@ -426,6 +426,100 @@ class Settings(BaseSettings):
             ),
         },
     )
+    NX_LABARCHIVES_ACCESS_KEY_ID: str | None = Field(
+        "test_la_akid" if TEST_MODE else None,
+        description=(
+            "Access Key ID (akid) assigned by LabArchives for API access. "
+            "Required for LabArchives export. If not configured, LabArchives "
+            "export will be disabled."
+        ),
+        json_schema_extra={
+            "detail": (
+                "The Access Key ID (akid) provided by LabArchives for your API "
+                "integration. This is the public identifier used alongside "
+                "`NX_LABARCHIVES_ACCESS_PASSWORD` to sign API requests with "
+                "HMAC-SHA-512.\n\n"
+                "Obtain this from your LabArchives account under API settings. "
+                "Both the Access Key ID and Access Password are required for "
+                "LabArchives export to be enabled."
+            )
+        },
+    )
+    NX_LABARCHIVES_ACCESS_PASSWORD: str | None = Field(
+        "test_la_password" if TEST_MODE else None,
+        description=(
+            "Access password (provided by LabArchives) for the API. "
+            "Used to generate HMAC-SHA-512 signatures for authenticated requests. "
+            "If not configured, LabArchives export will be disabled."
+        ),
+        json_schema_extra={
+            "display_default": None,
+            "detail": (
+                "The access password provided by LabArchives for your API "
+                "integration. This secret is used to generate HMAC-SHA-512 "
+                "signatures that authenticate all API requests.\n\n"
+                "Keep this value secret — it is equivalent to a password and "
+                "allows full API access to the configured LabArchives account. "
+                "Used together with `NX_LABARCHIVES_ACCESS_KEY_ID`."
+            ),
+        },
+    )
+    NX_LABARCHIVES_USER_ID: str | None = Field(
+        "test_la_uid" if TEST_MODE else None,
+        description=(
+            "LabArchives user ID (uid) for the account that owns records. "
+            "Obtain once via the `user_access_info` API call. "
+            "Required for LabArchives export."
+        ),
+        json_schema_extra={
+            "detail": (
+                "The persistent user ID (uid) for the LabArchives account that "
+                "will own uploaded notebook entries. This is obtained once via "
+                "the LabArchives `user_access_info` API call.\n\n"
+                "To get the uid: call the LabArchives API endpoint "
+                "`users/user_access_info` with your login and token. "
+                "The returned `uid` value is what you need here.\n\n"
+                "This uid is stable and does not change, so you only need to "
+                "retrieve it once."
+            )
+        },
+    )
+    NX_LABARCHIVES_URL: TestAwareHttpUrl | None = Field(  # type: ignore[valid-type]
+        "http://localhost:9000" if TEST_MODE else "https://api.labarchives.com/api",
+        description=(
+            "Base URL for the LabArchives API (including the /api path). "
+            "Defaults to https://api.labarchives.com/api for cloud LabArchives. "
+            "If not configured, LabArchives export will be disabled."
+        ),
+        json_schema_extra={
+            "detail": (
+                "The base URL for LabArchives API calls, including the `/api` path "
+                "segment. For the standard cloud service this is "
+                "`https://api.labarchives.com/api`. For self-hosted instances use "
+                "`https://your-instance.example.com/api`.\n\n"
+                "All API requests are sent to `{NX_LABARCHIVES_URL}/{class}/{method}`, "
+                "so the `/api` suffix must be included here."
+            )
+        },
+    )
+    NX_LABARCHIVES_NOTEBOOK_ID: str | None = Field(
+        None,
+        description=(
+            "Target notebook ID (nbid) for LabArchives uploads. If not set, "
+            "records are uploaded to the user's Inbox notebook."
+        ),
+        json_schema_extra={
+            "detail": (
+                "The notebook ID (nbid) of the target LabArchives notebook where "
+                "NexusLIMS records will be stored. When configured, NexusLIMS "
+                "automatically creates a `NexusLIMS Records/{instrument}/` folder "
+                "hierarchy within this notebook.\n\n"
+                "If not set, records are uploaded to the user's default Inbox.\n\n"
+                "To find the nbid: open the notebook in LabArchives and check "
+                "the URL — it typically appears as a parameter in the notebook URL."
+            )
+        },
+    )
     NX_EXPORT_STRATEGY: Literal["all", "first_success", "best_effort"] = Field(
         "all",
         description=(
@@ -1065,3 +1159,43 @@ def clear_settings() -> None:
 
 settings = _SettingsProxy()
 """The settings "singleton" - accessed like a normal object in the application"""
+
+
+_LA_KEYS = (
+    "NX_LABARCHIVES_ACCESS_KEY_ID",
+    "NX_LABARCHIVES_ACCESS_PASSWORD",
+    "NX_LABARCHIVES_URL",
+    "NX_LABARCHIVES_NOTEBOOK_ID",
+    "NX_LABARCHIVES_USER_ID",
+)
+
+
+def read_labarchives_env(env_path: str | Path = ".env") -> dict[str, str | None]:
+    """Read LabArchives settings without triggering full Settings validation.
+
+    Merges values from the given ``.env`` file and the process environment
+    (environment variables take precedence), returning only the five
+    ``NX_LABARCHIVES_*`` keys.  No other configuration is read or validated.
+
+    This is intended for CLI helper commands (e.g. ``labarchives-get-uid``)
+    that need only LabArchives credentials and must not fail due to missing
+    core NexusLIMS settings (``NX_INSTRUMENT_DATA_PATH`` etc.).
+
+    Parameters
+    ----------
+    env_path : str or pathlib.Path, optional
+        Path to the ``.env`` file.  Missing files are silently ignored.
+
+    Returns
+    -------
+    dict[str, str | None]
+        Mapping of the five ``NX_LABARCHIVES_*`` env-var names to their
+        values (or ``None`` if not set).
+    """
+    # Start with file values, then let process env override.
+    file_values: dict[str, str | None] = dotenv_values(str(env_path))
+    result: dict[str, str | None] = {}
+    for key in _LA_KEYS:
+        # os.getenv permitted here — this IS nexusLIMS/config.py
+        result[key] = os.getenv(key) or file_values.get(key) or None
+    return result

@@ -255,6 +255,44 @@ class TestExportContext:
         assert base_context.has_successful_export("labarchives") is True
         assert base_context.has_successful_export("elabftw") is False
 
+    def test_context_activities_default_empty(self, base_context):
+        """Activities defaults to an empty list."""
+        assert base_context.activities == []
+        assert base_context.reservation_event is None
+
+    def test_context_stores_activities(self, tmp_path):
+        """ExportContext stores provided activities list."""
+        xml_file = tmp_path / "test.xml"
+        xml_file.write_text("<record/>")
+
+        # Use a simple sentinel list
+        fake_activities = [object(), object()]
+        context = ExportContext(
+            xml_file_path=xml_file,
+            session_identifier="session-123",
+            instrument_pid="test-instrument",
+            dt_from=datetime.now(),
+            dt_to=datetime.now(),
+            activities=fake_activities,
+        )
+        assert context.activities is fake_activities
+
+    def test_context_stores_reservation_event(self, tmp_path):
+        """ExportContext stores provided reservation_event."""
+        xml_file = tmp_path / "test.xml"
+        xml_file.write_text("<record/>")
+
+        fake_event = object()
+        context = ExportContext(
+            xml_file_path=xml_file,
+            session_identifier="session-123",
+            instrument_pid="test-instrument",
+            dt_from=datetime.now(),
+            dt_to=datetime.now(),
+            reservation_event=fake_event,
+        )
+        assert context.reservation_event is fake_event
+
     def test_dependency_scenario(self, base_context):
         """Test a realistic dependency scenario (LabArchives accessing CDCS result)."""
         # Simulate CDCS export running first (priority 100)

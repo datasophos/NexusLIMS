@@ -587,3 +587,119 @@ def test_elabftw_experiment_status_as_int(monkeypatch):
 
     assert settings.NX_ELABFTW_EXPERIMENT_STATUS == 7
     assert isinstance(settings.NX_ELABFTW_EXPERIMENT_STATUS, int)
+
+
+# ===========================================================================
+# TestReadLabArchivesEnv
+# ===========================================================================
+
+
+class TestReadLabArchivesEnv:
+    """Unit tests for read_labarchives_env()."""
+
+    _LA_KEYS = (
+        "NX_LABARCHIVES_ACCESS_KEY_ID",
+        "NX_LABARCHIVES_ACCESS_PASSWORD",
+        "NX_LABARCHIVES_URL",
+        "NX_LABARCHIVES_NOTEBOOK_ID",
+        "NX_LABARCHIVES_USER_ID",
+    )
+
+    def test_returns_all_five_keys(self, tmp_path):
+        """Return dict always contains all five NX_LABARCHIVES_* keys."""
+        from nexusLIMS.config import read_labarchives_env
+
+        env_file = tmp_path / ".env"
+        env_file.write_text("")
+        result = read_labarchives_env(env_file)
+        for key in self._LA_KEYS:
+            assert key in result
+
+    def test_missing_file_is_silently_ignored(self, tmp_path, monkeypatch):
+        """A non-existent .env path returns None for all keys without error."""
+        from nexusLIMS.config import read_labarchives_env
+
+        # Clear any LA env vars that may have been loaded by other tests
+        # (e.g. cli/migrate.py's load_dotenv can pollute the process env)
+        for key in self._LA_KEYS:
+            monkeypatch.delenv(key, raising=False)
+
+        result = read_labarchives_env(tmp_path / "nonexistent.env")
+        assert result == dict.fromkeys(self._LA_KEYS)
+
+    def test_reads_values_from_env_file(self, tmp_path, monkeypatch):
+        """Values present in the .env file are returned."""
+        from nexusLIMS.config import read_labarchives_env
+
+        # Clear any LA env vars so file values aren't shadowed by process env
+        for key in self._LA_KEYS:
+            monkeypatch.delenv(key, raising=False)
+
+        env_file = tmp_path / ".env"
+        env_file.write_text(
+            "NX_LABARCHIVES_ACCESS_KEY_ID=file-akid\n"
+            "NX_LABARCHIVES_ACCESS_PASSWORD=file-secret\n"
+            "NX_LABARCHIVES_URL=https://api.labarchives.com/api\n"
+        )
+        result = read_labarchives_env(env_file)
+        assert result["NX_LABARCHIVES_ACCESS_KEY_ID"] == "file-akid"
+        assert result["NX_LABARCHIVES_ACCESS_PASSWORD"] == "file-secret"
+        assert result["NX_LABARCHIVES_URL"] == "https://api.labarchives.com/api"
+
+    def test_env_var_overrides_file_value(self, tmp_path, monkeypatch):
+        """Process environment takes precedence over .env file values."""
+        from nexusLIMS.config import read_labarchives_env
+
+        env_file = tmp_path / ".env"
+        env_file.write_text("NX_LABARCHIVES_ACCESS_KEY_ID=file-akid\n")
+        monkeypatch.setenv("NX_LABARCHIVES_ACCESS_KEY_ID", "env-akid")
+
+        result = read_labarchives_env(env_file)
+        assert result["NX_LABARCHIVES_ACCESS_KEY_ID"] == "env-akid"
+
+    def test_keys_not_in_file_or_env_are_none(self, tmp_path, monkeypatch):
+        """Keys absent from both file and environment are returned as None."""
+        from nexusLIMS.config import read_labarchives_env
+
+        env_file = tmp_path / ".env"
+        env_file.write_text("NX_LABARCHIVES_ACCESS_KEY_ID=some-id\n")
+        for key in self._LA_KEYS:
+            monkeypatch.delenv(key, raising=False)
+        # Override the key we wrote to make sure we test only the others
+        monkeypatch.setenv("NX_LABARCHIVES_ACCESS_KEY_ID", "some-id")
+
+        result = read_labarchives_env(env_file)
+        assert result["NX_LABARCHIVES_NOTEBOOK_ID"] is None
+        assert result["NX_LABARCHIVES_USER_ID"] is None
+
+    def test_all_five_keys_from_env_vars(self, tmp_path, monkeypatch):
+        """All five keys are returned when set only via environment variables."""
+        from nexusLIMS.config import read_labarchives_env
+
+        env_file = tmp_path / ".env"
+        env_file.write_text("")
+        monkeypatch.setenv("NX_LABARCHIVES_ACCESS_KEY_ID", "akid-val")
+        monkeypatch.setenv("NX_LABARCHIVES_ACCESS_PASSWORD", "pw-val")
+        monkeypatch.setenv("NX_LABARCHIVES_URL", "https://la.example.com/api")
+        monkeypatch.setenv("NX_LABARCHIVES_NOTEBOOK_ID", "nb-42")
+        monkeypatch.setenv("NX_LABARCHIVES_USER_ID", "uid-99")
+
+        result = read_labarchives_env(env_file)
+        assert result["NX_LABARCHIVES_ACCESS_KEY_ID"] == "akid-val"
+        assert result["NX_LABARCHIVES_ACCESS_PASSWORD"] == "pw-val"
+        assert result["NX_LABARCHIVES_URL"] == "https://la.example.com/api"
+        assert result["NX_LABARCHIVES_NOTEBOOK_ID"] == "nb-42"
+        assert result["NX_LABARCHIVES_USER_ID"] == "uid-99"
+
+    def test_accepts_string_path(self, tmp_path, monkeypatch):
+        """A plain string path is accepted without error."""
+        from nexusLIMS.config import read_labarchives_env
+
+        env_file = tmp_path / ".env"
+        env_file.write_text("NX_LABARCHIVES_URL=https://la.example.com/api\n")
+        for key in self._LA_KEYS:
+            monkeypatch.delenv(key, raising=False)
+        monkeypatch.setenv("NX_LABARCHIVES_URL", "https://la.example.com/api")
+
+        result = read_labarchives_env(str(env_file))
+        assert result["NX_LABARCHIVES_URL"] == "https://la.example.com/api"

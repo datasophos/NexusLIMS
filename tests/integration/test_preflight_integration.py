@@ -152,13 +152,17 @@ class TestPreflightExportDestinations:
         ``cdcs_client`` sets NX_CDCS_URL and NX_CDCS_TOKEN to the test
         instance values and calls refresh_settings().
 
-        In NX_TEST_MODE the eLabFTW settings have non-None defaults, so
-        eLabFTW is always enabled alongside CDCS.  We disable it here so the
-        check is purely about CDCS.
+        In NX_TEST_MODE the eLabFTW and LabArchives settings have non-None
+        defaults, so both are always enabled alongside CDCS.  We disable them
+        here so the check is purely about CDCS.
         """
         from nexusLIMS.exporters.destinations.elabftw import ELabFTWDestination
+        from nexusLIMS.exporters.destinations.labarchives import LabArchivesDestination
 
         monkeypatch.setattr(ELabFTWDestination, "enabled", property(lambda _: False))
+        monkeypatch.setattr(
+            LabArchivesDestination, "enabled", property(lambda _: False)
+        )
 
         result = _check_export_destinations()
 
@@ -194,9 +198,13 @@ class TestPreflightExportDestinations:
         """
         from nexusLIMS.exporters.destinations.cdcs import CDCSDestination
         from nexusLIMS.exporters.destinations.elabftw import ELabFTWDestination
+        from nexusLIMS.exporters.destinations.labarchives import LabArchivesDestination
 
         monkeypatch.setattr(CDCSDestination, "enabled", property(lambda _: False))
         monkeypatch.setattr(ELabFTWDestination, "enabled", property(lambda _: False))
+        monkeypatch.setattr(
+            LabArchivesDestination, "enabled", property(lambda _: False)
+        )
 
         result = _check_export_destinations()
 

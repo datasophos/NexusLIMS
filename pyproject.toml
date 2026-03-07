@@ -208,6 +208,7 @@ markers = [
     "harvester: Tests for harvester modules (NEMO, SharePoint)",
     "extractor: Tests for metadata extractor modules",
     "record_builder: Tests for record builder functionality",
+    "labarchives_live: Live integration tests against a real LabArchives server (requires NX_LABARCHIVES_* env vars)",
 ]
 filterwarnings = [
     "ignore:Using Ntlm\\(\\) is deprecated:DeprecationWarning",

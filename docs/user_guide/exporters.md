@@ -98,6 +98,35 @@ eLabFTW exports have **priority 85** and run after CDCS to enable cross-linking.
 </ul>
 ```
 
+(labarchives-exporter)=
+### LabArchives
+
+```{versionadded} 2.6.0
+```
+
+[**LabArchives**](https://www.labarchives.com/) is a commercial electronic lab notebook
+system. NexusLIMS supports exporting session records to LabArchives with:
+
+- HTML-formatted session summary with a gallery of preview images
+- A list of all data files contained in the experiment
+- The full XML record attached as a file
+- Cross-link to CDCS record (if CDCS export enabled)
+
+**Configuration:** See {ref}`LabArchives Integration <config-labarchives>` for settings:
+- `NX_LABARCHIVES_URL` - LabArchives instance URL
+- `NX_LABARCHIVES_ACCESS_KEY_ID` - API access key ID
+- `NX_LABARCHIVES_ACCESS_PASSWORD` - API signing password
+- `NX_LABARCHIVES_USER_ID` - Pre-authenticated user ID (uid)
+- `NX_LABARCHIVES_NOTEBOOK_ID` - Optional target notebook (uses Inbox if unset)
+
+LabArchives exports have **priority 90** and run after CDCS (to allow cross-linking).
+
+**What gets exported:**
+- **Notebook structure:** `NexusLIMS Records/{instrument_pid}/{YYYY-MM-DD — session_id}` page
+  (auto-created if it doesn't exist)
+- **HTML summary:** Session details and optional link to CDCS record
+- **Attachment:** Complete XML record file
+
 ## Export Workflow
 
 The export process runs automatically as part of {py:func}`~nexusLIMS.builder.record_builder.process_new_records` workflow:
@@ -259,13 +288,14 @@ Key modules for export functionality:
 - {py:mod}`nexusLIMS.exporters.registry` - Plugin discovery and management
 - {py:mod}`nexusLIMS.exporters.destinations.cdcs` - CDCS export implementation
 - {py:mod}`nexusLIMS.exporters.destinations.elabftw` - eLabFTW export implementation
+- {py:mod}`nexusLIMS.exporters.destinations.labarchives` - LabArchives export implementation
 - {py:mod}`nexusLIMS.db.models` - Database models (UploadLog, SessionLog)
 
 ## Summary
 
 The export framework provides:
 
-- Multiple repository support (CDCS, eLabFTW, custom destinations)
+- Multiple repository support (CDCS, eLabFTW, LabArchives, custom destinations)
 - Automatic export after record building
 - Configurable failure handling strategies
 - Inter-destination cross-linking

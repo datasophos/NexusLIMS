@@ -44,7 +44,7 @@ tests/**/*.xml
 !tests/integration/docker/cdcs/fixtures/test_record.xml
 !tests/unit/files/*metadata.xml
 tests/test_report.xml
-.env
+.env*
 .env.bak.*-*
 demo.env
 nexuslims_config.json
@@ -82,6 +82,7 @@ coverage.xml
 ._*
 *-checkpoint.ipynb
 Untitled.ipynb
+.playwright-mcp
 
 # Ignore auto-generated documentation artifacts
 docs/_static/switcher.json

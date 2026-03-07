@@ -202,6 +202,11 @@ _INPUT_ID_TO_FIELD: dict[str, tuple[str, str]] = {
     "nx-elabftw-api-key": ("settings", "NX_ELABFTW_API_KEY"),
     "nx-elabftw-category": ("settings", "NX_ELABFTW_EXPERIMENT_CATEGORY"),
     "nx-elabftw-status": ("settings", "NX_ELABFTW_EXPERIMENT_STATUS"),
+    "nx-labarchives-url": ("settings", "NX_LABARCHIVES_URL"),
+    "nx-labarchives-access-key-id": ("settings", "NX_LABARCHIVES_ACCESS_KEY_ID"),
+    "nx-labarchives-access-password": ("settings", "NX_LABARCHIVES_ACCESS_PASSWORD"),
+    "nx-labarchives-user-id": ("settings", "NX_LABARCHIVES_USER_ID"),
+    "nx-labarchives-notebook-id": ("settings", "NX_LABARCHIVES_NOTEBOOK_ID"),
     "nx-email-smtp-host": ("email", "smtp_host"),
     "nx-email-smtp-port": ("email", "smtp_port"),
     "nx-email-smtp-username": ("email", "smtp_username"),
@@ -265,6 +270,131 @@ class FieldDetailScreen(ModalScreen):
     @on(Button.Pressed, "#field-detail-close-btn")
     def _on_close_btn(self) -> None:
         self.dismiss()
+
+
+# --------------------------------------------------------------------------- #
+# LabArchivesGetUidDialog                                                      #
+# --------------------------------------------------------------------------- #
+
+
+class LabArchivesGetUidDialog(ModalScreen[str | None]):
+    """Modal dialog to look up a LabArchives user ID.
+
+    Prompts for the user's email and LabArchives account password/app token,
+    calls the ``user_access_info`` API endpoint, and dismisses with the
+    returned UID string on success or ``None`` on cancel / error.
+
+    Parameters
+    ----------
+    base_url : str
+        LabArchives API base URL including the ``/api`` path
+        (e.g. ``"https://api.labarchives.com/api"``).
+    akid : str
+        Access Key ID (NX_LABARCHIVES_ACCESS_KEY_ID).
+    access_password : str
+        HMAC signing secret (NX_LABARCHIVES_ACCESS_PASSWORD).
+    """
+
+    CSS_PATH: ClassVar = [
+        Path(__file__).parent.parent.parent / "styles" / "config" / "screens.tcss"
+    ]
+
+    BINDINGS: ClassVar = [
+        ("escape", "cancel_dialog", "Cancel"),
+    ]
+
+    def __init__(
+        self, base_url: str, akid: str, access_password: str, **kwargs
+    ) -> None:
+        """Initialize with API credentials."""
+        super().__init__(**kwargs)
+        self._base_url = base_url
+        self._akid = akid
+        self._access_password = access_password
+
+    def compose(self) -> ComposeResult:
+        """Compose the dialog layout."""
+        with Vertical(id="field-detail-dialog"):
+            yield Label("Look Up LabArchives User ID", id="field-detail-title")
+            with VerticalScroll(id="field-detail-body"):
+                yield Static(
+                    "Enter your LabArchives login credentials to retrieve your UID.\n\n"
+                    "[bold]Email[/bold]: your LabArchives account email address.\n"
+                    "[bold]LA Password[/bold]: your LabArchives external app password "
+                    "(click your username in the top-right of the LabArchives web UI → "
+                    "[italic]External App authentication[/italic]). "
+                    "This is NOT the NX_LABARCHIVES_ACCESS_PASSWORD signing secret.",
+                    id="field-detail-text",
+                )
+                yield Label("Email", classes="form-label")
+                yield Input(
+                    placeholder="you@example.com",
+                    id="la-uid-email",
+                )
+                yield Label("LabArchives Password / App Token", classes="form-label")
+                yield Input(
+                    placeholder="your LabArchives password or app token",
+                    password=True,
+                    id="la-uid-password",
+                )
+                yield Static("", id="la-uid-error", classes="form-error")
+            with Horizontal(id="field-detail-footer"):
+                yield Button(
+                    "Look Up",
+                    id="la-uid-lookup-btn",
+                    variant="primary",
+                    disabled=True,
+                )
+                yield Button(
+                    "Cancel (Esc)", id="field-detail-close-btn", variant="default"
+                )
+
+    @on(Input.Changed, "#la-uid-email")
+    @on(Input.Changed, "#la-uid-password")
+    def _update_lookup_btn(self, _event: Input.Changed) -> None:
+        email = self.query_one("#la-uid-email", Input).value.strip()
+        pw = self.query_one("#la-uid-password", Input).value.strip()
+        self.query_one("#la-uid-lookup-btn", Button).disabled = not (email and pw)
+
+    @on(Button.Pressed, "#la-uid-lookup-btn")
+    def _on_lookup(self) -> None:
+        from nexusLIMS.utils.labarchives import (  # noqa: PLC0415
+            LabArchivesClient,
+            LabArchivesError,
+        )
+
+        email = self.query_one("#la-uid-email", Input).value.strip()
+        password = self.query_one("#la-uid-password", Input).value.strip()
+        error_widget = self.query_one("#la-uid-error", Static)
+
+        client = LabArchivesClient(
+            base_url=self._base_url,
+            akid=self._akid,
+            password=self._access_password,
+            uid="",
+        )
+        try:
+            info = client.get_user_info(email, password)
+        except LabArchivesError as exc:
+            error_widget.update(f"API error: {exc}")
+            error_widget.add_class("visible")
+            return
+
+        uid = info.get("uid")
+        if not uid:
+            error_widget.update("No UID returned. Check your email and password.")
+            error_widget.add_class("visible")
+            return
+
+        self.dismiss(uid)
+
+    @on(Button.Pressed, "#field-detail-close-btn")
+    def _on_cancel_btn(self) -> None:
+        self.dismiss(None)
+
+    def action_cancel_dialog(self) -> None:
+        """Dismiss without a result."""
+        self.dismiss(None)
 
 
 # --------------------------------------------------------------------------- #
@@ -355,6 +485,12 @@ class ConfigScreen(Screen):
             or self._existing.get("NX_EMAIL_SENDER")
         )
 
+    def _has_labarchives(self) -> bool:
+        return bool(
+            self._existing.get("NX_LABARCHIVES_URL")
+            or self._existing.get("NX_LABARCHIVES_ACCESS_KEY_ID")
+        )
+
     # ---------------------------------------------------------------------- #
     # Compose                                                                 #
     # ---------------------------------------------------------------------- #
@@ -374,6 +510,8 @@ class ConfigScreen(Screen):
                 yield from self._compose_nemo()
             with TabPane("eLabFTW", id="tab-elabftw"):
                 yield from self._compose_elabftw()
+            with TabPane("LabArchives", id="tab-labarchives"):
+                yield from self._compose_labarchives()
             with TabPane("Email", id="tab-email"):
                 yield from self._compose_email()
             with TabPane("SSL / Certs", id="tab-ssl"):
@@ -739,6 +877,99 @@ class ConfigScreen(Screen):
                         help_text=_fdesc("NX_ELABFTW_EXPERIMENT_STATUS"),
                     )
 
+    def _compose_labarchives(self) -> ComposeResult:
+        with VerticalScroll():
+            yield Label(
+                "Export experiment records to a LabArchives notebook",
+                classes="tab-description",
+            )
+            with Horizontal(classes="section-toggle-row", id="labarchives-toggle-row"):
+                yield Label(
+                    "Enable LabArchives integration",
+                    classes="section-toggle-label",
+                )
+                yield Switch(
+                    value=self._has_labarchives(),
+                    id="labarchives-enabled",
+                )
+
+            enabled = self._has_labarchives()
+            _la_creds_ready = bool(
+                self._get("NX_LABARCHIVES_URL")
+                and self._get("NX_LABARCHIVES_ACCESS_KEY_ID")
+                and self._get("NX_LABARCHIVES_ACCESS_PASSWORD")
+            )
+            with Horizontal(classes="form-columns"):
+                with Vertical(classes="form-column"):
+                    yield FormField(
+                        "NX_LABARCHIVES_URL",
+                        Input(
+                            value=self._get(
+                                "NX_LABARCHIVES_URL",
+                                _fdefault("NX_LABARCHIVES_URL"),
+                            ),
+                            placeholder="https://api.labarchives.com/api",
+                            id="nx-labarchives-url",
+                            disabled=not enabled,
+                        ),
+                        help_text=_fdesc("NX_LABARCHIVES_URL"),
+                    )
+                    yield FormField(
+                        "NX_LABARCHIVES_ACCESS_KEY_ID",
+                        Input(
+                            value=self._get("NX_LABARCHIVES_ACCESS_KEY_ID"),
+                            placeholder="your-access-key-id",
+                            id="nx-labarchives-access-key-id",
+                            disabled=not enabled,
+                        ),
+                        help_text=_fdesc("NX_LABARCHIVES_ACCESS_KEY_ID"),
+                    )
+                with Vertical(classes="form-column"):
+                    yield FormField(
+                        "NX_LABARCHIVES_ACCESS_PASSWORD",
+                        Input(
+                            value=self._get("NX_LABARCHIVES_ACCESS_PASSWORD"),
+                            placeholder="your-access-password",
+                            password=True,
+                            id="nx-labarchives-access-password",
+                            disabled=not enabled,
+                        ),
+                        help_text=_fdesc("NX_LABARCHIVES_ACCESS_PASSWORD"),
+                    )
+                    with Vertical(classes="form-field"):
+                        yield Label("NX_LABARCHIVES_USER_ID", classes="field-label")
+                        yield Static(
+                            _fdesc("NX_LABARCHIVES_USER_ID"), classes="field-help"
+                        )
+                        with Horizontal(classes="field-with-button"):
+                            yield Input(
+                                value=self._get("NX_LABARCHIVES_USER_ID"),
+                                placeholder="your-uid",
+                                id="nx-labarchives-user-id",
+                                disabled=not enabled,
+                            )
+                            yield Button(
+                                "Get My UID",
+                                id="labarchives-get-uid-btn",
+                                variant="primary",
+                                disabled=not (enabled and _la_creds_ready),
+                            )
+                        yield Static(
+                            "",
+                            classes="field-error",
+                            id="nx-labarchives-user-id-error",
+                        )
+                    yield FormField(
+                        "NX_LABARCHIVES_NOTEBOOK_ID (optional)",
+                        Input(
+                            value=self._get("NX_LABARCHIVES_NOTEBOOK_ID"),
+                            placeholder="(leave blank to use Inbox)",
+                            id="nx-labarchives-notebook-id",
+                            disabled=not enabled,
+                        ),
+                        help_text=_fdesc("NX_LABARCHIVES_NOTEBOOK_ID"),
+                    )
+
     def _compose_email(self) -> ComposeResult:
         with VerticalScroll():
             yield Label(
@@ -879,6 +1110,9 @@ class ConfigScreen(Screen):
         for n, data in sorted(self._nemo_harvesters.items()):
             container.mount(self._nemo_group_widget(n, data))
         self.query_one("#elabftw-toggle-row").set_class(self._has_elabftw(), "-on")
+        self.query_one("#labarchives-toggle-row").set_class(
+            self._has_labarchives(), "-on"
+        )
         self.query_one("#email-toggle-row").set_class(self._has_email(), "-on")
 
     def _next_nemo_index(self) -> int:
@@ -929,6 +1163,58 @@ class ConfigScreen(Screen):
         ):
             with contextlib.suppress(Exception):
                 self.query_one(f"#{field_id}", Input).disabled = not enabled
+
+    @on(Switch.Changed, "#labarchives-enabled")
+    def _on_labarchives_toggle(self, event: Switch.Changed) -> None:
+        enabled = event.value
+        self.query_one("#labarchives-toggle-row").set_class(enabled, "-on")
+        for field_id in (
+            "nx-labarchives-url",
+            "nx-labarchives-access-key-id",
+            "nx-labarchives-access-password",
+            "nx-labarchives-user-id",
+            "nx-labarchives-notebook-id",
+        ):
+            with contextlib.suppress(Exception):
+                self.query_one(f"#{field_id}", Input).disabled = not enabled
+        self._update_la_get_uid_btn()
+
+    @on(Input.Changed, "#nx-labarchives-url")
+    @on(Input.Changed, "#nx-labarchives-access-key-id")
+    @on(Input.Changed, "#nx-labarchives-access-password")
+    def _on_labarchives_cred_changed(self, _event: Input.Changed) -> None:
+        self._update_la_get_uid_btn()
+
+    def _update_la_get_uid_btn(self) -> None:
+        """Enable the 'Get My UID' button only when all three credentials are set."""
+        with contextlib.suppress(Exception):
+            enabled = self.query_one("#labarchives-enabled", Switch).value
+            url = self.query_one("#nx-labarchives-url", Input).value.strip()
+            akid = self.query_one("#nx-labarchives-access-key-id", Input).value.strip()
+            pw = self.query_one("#nx-labarchives-access-password", Input).value.strip()
+            ready = enabled and bool(url and akid and pw)
+            self.query_one("#labarchives-get-uid-btn", Button).disabled = not ready
+
+    @on(Button.Pressed, "#labarchives-get-uid-btn")
+    def _on_labarchives_get_uid(self) -> None:
+        """Open the UID lookup dialog and populate the User ID field on success."""
+        with contextlib.suppress(Exception):
+            url = self.query_one("#nx-labarchives-url", Input).value.strip()
+            akid = self.query_one("#nx-labarchives-access-key-id", Input).value.strip()
+            pw = self.query_one("#nx-labarchives-access-password", Input).value.strip()
+            self.app.push_screen(
+                LabArchivesGetUidDialog(base_url=url, akid=akid, access_password=pw),
+                self._on_uid_lookup_result,
+            )
+
+    def _on_uid_lookup_result(self, uid: str | None) -> None:
+        """Populate the User ID input with the returned UID."""
+        if uid:
+            with contextlib.suppress(Exception):
+                self.query_one("#nx-labarchives-user-id", Input).value = uid
+            self.app.notify(
+                f"LabArchives UID retrieved: {uid}", severity="information", timeout=5
+            )
 
     @on(Switch.Changed, "#email-enabled")
     def _on_email_toggle(self, event: Switch.Changed) -> None:
@@ -1144,6 +1430,26 @@ class ConfigScreen(Screen):
                 errors.append(msg)
         return errors
 
+    def _validate_labarchives(self) -> list[str]:
+        if not self.query_one("#labarchives-enabled", Switch).value:
+            return []
+        errors: list[str] = []
+        url = self.query_one("#nx-labarchives-url", Input).value.strip()
+        ok, msg = validate_optional_url(url, "NX_LABARCHIVES_URL")
+        if not ok:
+            errors.append(msg)
+        for field_id, label in [
+            ("nx-labarchives-access-key-id", "NX_LABARCHIVES_ACCESS_KEY_ID"),
+            ("nx-labarchives-access-password", "NX_LABARCHIVES_ACCESS_PASSWORD"),
+            ("nx-labarchives-user-id", "NX_LABARCHIVES_USER_ID"),
+        ]:
+            ok, msg = validate_required(
+                self.query_one(f"#{field_id}", Input).value.strip(), label
+            )
+            if not ok:
+                errors.append(msg)
+        return errors
+
     def _validate_email(self) -> list[str]:
         if not self.query_one("#email-enabled", Switch).value:
             return []
@@ -1193,6 +1499,7 @@ class ConfigScreen(Screen):
             + self._validate_file_processing()
             + self._validate_nemo()
             + self._validate_elabftw()
+            + self._validate_labarchives()
             + self._validate_email()
         )
 
@@ -1266,6 +1573,22 @@ class ConfigScreen(Screen):
                 config[key] = int(val)
         return config
 
+    def _build_labarchives_config(self) -> dict:
+        if not self.query_one("#labarchives-enabled", Switch).value:
+            return {}
+        config: dict = {}
+        for field_id, key in [
+            ("nx-labarchives-url", "NX_LABARCHIVES_URL"),
+            ("nx-labarchives-access-key-id", "NX_LABARCHIVES_ACCESS_KEY_ID"),
+            ("nx-labarchives-access-password", "NX_LABARCHIVES_ACCESS_PASSWORD"),
+            ("nx-labarchives-user-id", "NX_LABARCHIVES_USER_ID"),
+            ("nx-labarchives-notebook-id", "NX_LABARCHIVES_NOTEBOOK_ID"),
+        ]:
+            val = self.query_one(f"#{field_id}", Input).value.strip()
+            if val:
+                config[key] = val
+        return config
+
     def _build_email_config(self) -> dict:
         if not self.query_one("#email-enabled", Switch).value:
             return {}
@@ -1335,6 +1658,7 @@ class ConfigScreen(Screen):
         config.update(self._build_file_config())
         config.update(self._build_nemo_config())
         config.update(self._build_elabftw_config())
+        config.update(self._build_labarchives_config())
         config.update(self._build_email_config())
         config.update(self._build_ssl_config())
         return config

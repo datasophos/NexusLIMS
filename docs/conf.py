@@ -302,6 +302,7 @@ exclude_patterns = [
     "README.rst",
     "dev_scripts",
     "_ext/README.md",
+    "reference/labarchives_api_docs",
 ]
 
 # Keep warnings as “system message” paragraphs in the built documents.
@@ -418,6 +419,10 @@ nitpick_ignore = [
     ("py:exc", "pydantic.ValidationError"),
     # SQLModel does not have intersphinx inventory
     ("py:obj", "sqlmodel.SQLModel"),
+    # bare Path reference (should be pathlib.Path but autodoc emits short form)
+    ("py:class", "Path"),
+    # PEP 604 union syntax used as generic parameter (e.g. ModalScreen[str | None])
+    ("py:obj", "str | None"),
 ]
 
 # Regex-based nitpick ignore: suppress all unresolvable references to third-party

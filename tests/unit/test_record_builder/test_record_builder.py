@@ -16,7 +16,7 @@ from sqlmodel import Session as DBSession
 from sqlmodel import select
 
 from nexusLIMS.builder import record_builder
-from nexusLIMS.builder.record_builder import build_record
+from nexusLIMS.builder.record_builder import RecordBuildResult, build_record
 from nexusLIMS.db import session_handler
 from nexusLIMS.db.engine import get_engine
 from nexusLIMS.db.enums import EventType, RecordStatus
@@ -36,7 +36,30 @@ NX_NS = "https://data.nist.gov/od/dm/nexus/experiment/v1.0"
 """Nexus Schema XML namespace for use throughout the tests"""
 
 
-def _mock_successful_export(xml_files, sessions):
+class TestRecordBuildResult:
+    """Tests for the RecordBuildResult dataclass."""
+
+    def test_minimal_construction(self):
+        result = RecordBuildResult(xml_text="<record/>")
+        assert result.xml_text == "<record/>"
+        assert result.activities == []
+        assert result.reservation_event is None
+
+    def test_with_activities_and_event(self):
+        fake_act = object()
+        fake_event = object()
+        result = RecordBuildResult(
+            xml_text="<record/>",
+            activities=[fake_act],
+            reservation_event=fake_event,
+        )
+        assert result.activities == [fake_act]
+        assert result.reservation_event is fake_event
+
+
+def _mock_successful_export(
+    xml_files, sessions, activities_per_session=None, reservation_events=None
+):
     """Create mock successful export results for testing.
 
     Returns a dict mapping each XML file to a list with one successful ExportResult.
@@ -57,7 +80,9 @@ def _mock_successful_export(xml_files, sessions):
     return results
 
 
-def _mock_failed_export(xml_files, sessions):
+def _mock_failed_export(
+    xml_files, sessions, activities_per_session=None, reservation_events=None
+):
     """Create mock failed export results for testing.
 
     Returns a dict mapping each XML file to a list with one failed ExportResult.
@@ -785,7 +810,7 @@ class TestRecordBuilder:
             monkeypatch.setattr(settings, "NX_FILE_STRATEGY", env_value)
 
         # Build the record
-        xml_files, _ = record_builder.build_new_session_records()
+        xml_files, *_ = record_builder.build_new_session_records()
         assert len(xml_files) == 1
         f = xml_files[0]
 
@@ -834,7 +859,7 @@ class TestRecordBuilder:
         monkeypatch.setattr(
             record_builder,
             "build_new_session_records",
-            lambda: (dummy_files, dummy_sessions),
+            lambda: (dummy_files, dummy_sessions, [], []),
         )
         monkeypatch.setattr(record_builder, "export_records", _mock_failed_export)
 
@@ -885,7 +910,9 @@ class TestRecordBuilder:
             *,
             generate_previews=True,
         ):
-            return "<xml>Record that will not validate against NexusLIMS Schema</xml>"
+            return RecordBuildResult(
+                xml_text="<xml>Record invalid against NexusLIMS Schema</xml>"
+            )
 
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
         monkeypatch.setattr(record_builder, "build_record", mock_build_record)
@@ -951,7 +978,7 @@ class TestRecordBuilder:
             ]
 
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
-        xml_files, _ = record_builder.build_new_session_records()
+        xml_files, *_ = record_builder.build_new_session_records()
 
         # Query session logs using SQLModel
         with DBSession(get_engine()) as db_session:
@@ -995,7 +1022,7 @@ class TestRecordBuilder:
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
         monkeypatch.setattr(record_builder, "export_records", _mock_successful_export)
 
-        xml_files, _ = record_builder.build_new_session_records()
+        xml_files, *_ = record_builder.build_new_session_records()
         assert len(xml_files) == 1
 
         aa_count = 1
@@ -1078,7 +1105,7 @@ class TestRecordBuilder:
             partial(build_record, generate_previews=False),
         )
 
-        xml_files, _ = record_builder.build_new_session_records()
+        xml_files, *_ = record_builder.build_new_session_records()
 
         aa_count = 1
         dataset_count = 4
@@ -1208,7 +1235,7 @@ class TestRecordBuilder:
         monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
         monkeypatch.setattr(record_builder, "export_records", _mock_successful_export)
 
-        xml_files, _ = record_builder.build_new_session_records()
+        xml_files, *_ = record_builder.build_new_session_records()
         assert len(xml_files) == 1
 
         f = xml_files[0]

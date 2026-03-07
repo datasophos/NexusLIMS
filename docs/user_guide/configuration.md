@@ -381,6 +381,91 @@ When eLabFTW export is enabled, experiments are created with:
 - **Attachment:** Full XML record file
 ```
 
+(config-labarchives)=
+### LabArchives Integration
+
+NexusLIMS can optionally export records to [LabArchives](https://www.labarchives.com/), a
+commercial electronic lab notebook system. Each NexusLIMS session creates one notebook page
+with an HTML session summary and the full XML record attached as a file.
+
+LabArchives authentication uses HMAC-SHA-512 signed requests. You need four credentials:
+an Access Key ID (provided by LabArchives), an Access Password (provided by LabArchives),
+a User ID (uid), and the instance URL (most likely can stay as the default unless you are
+in a different region).
+
+(config-labarchives-url)=
+#### `NX_LABARCHIVES_URL`
+
+```{config-detail} NX_LABARCHIVES_URL
+```
+
+**Example:**
+```bash
+NX_LABARCHIVES_URL=https://api.labarchives.com/api
+```
+
+(config-labarchives-access-key-id)=
+#### `NX_LABARCHIVES_ACCESS_KEY_ID`
+
+```{config-detail} NX_LABARCHIVES_ACCESS_KEY_ID
+```
+
+**Example:**
+```bash
+NX_LABARCHIVES_ACCESS_KEY_ID=your-access-key-id-here
+```
+
+(config-labarchives-access-password)=
+#### `NX_LABARCHIVES_ACCESS_PASSWORD`
+
+```{config-detail} NX_LABARCHIVES_ACCESS_PASSWORD
+```
+
+**Example:**
+```bash
+NX_LABARCHIVES_ACCESS_PASSWORD=your-access-password-here
+```
+
+(config-labarchives-user-id)=
+#### `NX_LABARCHIVES_USER_ID`
+
+```{config-detail} NX_LABARCHIVES_USER_ID
+```
+
+**Example:**
+```bash
+NX_LABARCHIVES_USER_ID=your-uid-here
+```
+
+```{note}
+To obtain your UID, use the `nexuslims config labarchives-get-uid` command, or use
+the button on the LabArchives page of the `nexuslims config edit` application. You will need to sign in
+manually via the LabArchives web interface and generate a fresh **Password Token for
+External Applications** (valid for 1 hour only), which will be exchanged for your
+stable UID. This only has to be done once, as the
+returned `uid` value is stable and does not change over time.
+```
+
+(config-labarchives-notebook-id)=
+#### `NX_LABARCHIVES_NOTEBOOK_ID`
+
+```{config-detail} NX_LABARCHIVES_NOTEBOOK_ID
+```
+
+**Example:**
+```bash
+NX_LABARCHIVES_NOTEBOOK_ID=12345  # optional
+```
+
+```{tip}
+When LabArchives export is enabled, the following structure is created automatically:
+- **Notebook:** The notebook specified by `NX_LABARCHIVES_NOTEBOOK_ID` (or Inbox if unset)
+- **Folder hierarchy:** `NexusLIMS Records/{instrument_pid}/` (created automatically if missing)
+- **Page:** `{YYYY-MM-DD} — {session_id}` (one page per session)
+- **Entry:** HTML session summary with optional CDCS cross-link
+- **Attachment:** Full XML record file
+```
+
 ### Export Configuration
 
 (config-export-strategy)=

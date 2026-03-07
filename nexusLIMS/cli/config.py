@@ -346,6 +346,117 @@ def edit(env_path: str) -> None:
     ConfiguratorApp(env_path=Path(env_path)).run()
 
 
+@main.command("labarchives-get-uid")
+@click.option(
+    "--email",
+    required=True,
+    help="Your LabArchives login email address.",
+)
+@click.option(
+    "--la-password",
+    required=True,
+    help=(
+        "Your LabArchives account password or app token (visible in LabArchives "
+        "under Settings > API). This is NOT the NX_LABARCHIVES_ACCESS_PASSWORD "
+        "(HMAC signing secret) — it is your personal LabArchives login credential."
+    ),
+)
+@click.option(
+    "--env-path",
+    type=click.Path(dir_okay=False),
+    default=".env",
+    show_default=True,
+    help="Path to the .env file to read LabArchives credentials from.",
+)
+@click.option(
+    "--verbose",
+    "-v",
+    is_flag=True,
+    default=False,
+    help="Enable debug logging to see full HTTP request/response details.",
+)
+def labarchives_get_uid(
+    email: str, la_password: str, env_path: str, *, verbose: bool
+) -> None:
+    """Look up your LabArchives user ID (UID) using your login credentials.
+
+    Reads NX_LABARCHIVES_ACCESS_KEY_ID, NX_LABARCHIVES_ACCESS_PASSWORD, and
+    NX_LABARCHIVES_URL from your .env file (or environment), then calls the
+    LabArchives API to retrieve the UID for the provided email address.
+
+    This command does NOT require a fully-configured NexusLIMS environment —
+    only the three NX_LABARCHIVES_* fields listed above need to be set.
+
+    The UID is printed along with a ready-to-paste .env line:
+
+    \b
+        NX_LABARCHIVES_USER_ID=<uid>
+
+    Note: --la-password is your personal LabArchives account password or
+    app token, NOT the NX_LABARCHIVES_ACCESS_PASSWORD signing secret.
+    """  # noqa: D301
+    import logging  # noqa: PLC0415
+
+    from nexusLIMS.config import read_labarchives_env  # noqa: PLC0415
+    from nexusLIMS.utils.labarchives import (  # noqa: PLC0415
+        LabArchivesClient,
+        LabArchivesError,
+    )
+
+    if verbose:
+        logging.basicConfig(level=logging.DEBUG)
+        logging.getLogger("nexusLIMS.utils.labarchives").setLevel(logging.DEBUG)
+
+    la = read_labarchives_env(env_path)
+
+    if not la["NX_LABARCHIVES_ACCESS_KEY_ID"]:
+        msg = (
+            "NX_LABARCHIVES_ACCESS_KEY_ID is not configured. "
+            "Run 'nexuslims config edit' to set it up."
+        )
+        raise click.ClickException(msg)
+    if not la["NX_LABARCHIVES_ACCESS_PASSWORD"]:
+        msg = (
+            "NX_LABARCHIVES_ACCESS_PASSWORD is not configured. "
+            "Run 'nexuslims config edit' to set it up."
+        )
+        raise click.ClickException(msg)
+    if not la["NX_LABARCHIVES_URL"]:
+        msg = (
+            "NX_LABARCHIVES_URL is not configured. "
+            "Run 'nexuslims config edit' to set it up."
+        )
+        raise click.ClickException(msg)
+
+    click.echo(f"Connecting to {la['NX_LABARCHIVES_URL']} ...", err=True)
+
+    # Use a placeholder uid since get_user_info does not require one
+    client = LabArchivesClient(
+        base_url=la["NX_LABARCHIVES_URL"],
+        akid=la["NX_LABARCHIVES_ACCESS_KEY_ID"],
+        password=la["NX_LABARCHIVES_ACCESS_PASSWORD"],
+        uid="",
+    )
+
+    try:
+        info = client.get_user_info(email, la_password)
+    except LabArchivesError as exc:
+        raise click.ClickException(str(exc)) from exc
+
+    uid = info.get("uid")
+    if not uid:
+        msg = (
+            "LabArchives returned no UID for the provided credentials. "
+            "Check your email and password."
+        )
+        raise click.ClickException(msg)
+
+    click.echo(f"UID:  {uid}")
+    click.echo()
+    click.echo("Add this line to your .env file:")
+    click.echo(f"  NX_LABARCHIVES_USER_ID={uid}")
+
+
 @main.command()
 @click.argument("input", type=click.Path(exists=True, dir_okay=False, readable=True))
 @click.option(

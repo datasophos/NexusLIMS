@@ -38,7 +38,9 @@ If there are no breaking changes, state that explicitly and skip the Upgrade Ins
 
 ### Step 2: Draft Release Notes
 
-Write the complete release notes for this version using this structure:
+Write the complete release notes for this version using this structure. When writing the release notes,
+do not hard wrap for long lines. Individual lines/paragraphs can be as long as the need so they are 
+wrapped naturally by Github's markdown formatter: 
 
 ````markdown
 ## Welcome to version X.Y.Z of NexusLIMS!
