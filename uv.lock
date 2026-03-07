@@ -1677,6 +1677,7 @@ dependencies = [
     { name = "rich" },
     { name = "scikit-learn" },
     { name = "sqlmodel" },
+    { name = "squall-sql" },
     { name = "textual" },
     { name = "tzlocal" },
 ]
@@ -1737,6 +1738,7 @@ requires-dist = [
     { name = "rich", specifier = ">=13.0.0" },
     { name = "scikit-learn", specifier = ">=1.2.0,<2.0.0" },
     { name = "sqlmodel", specifier = ">=0.0.31" },
+    { name = "squall-sql", specifier = ">=0.1.8" },
     { name = "textual", specifier = ">=8.0.0" },
     { name = "tzlocal", specifier = ">=5.3.1" },
 ]
@@ -3253,6 +3255,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/56/b8/e7cd6def4a773f25d6e29ffce63ccbfd6cf9488b804ab6fb9b80d334b39d/sqlmodel-0.0.31.tar.gz", hash = "sha256:2d41a8a9ee05e40736e2f9db8ea28cbfe9b5d4e5a18dd139e80605025e0c516c", size = 94952, upload-time = "2025-12-28T12:35:01.436Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/6c/72/5aa5be921800f6418a949a73c9bb7054890881143e6bc604a93d228a95a3/sqlmodel-0.0.31-py3-none-any.whl", hash = "sha256:6d946d56cac4c2db296ba1541357cee2e795d68174e2043cd138b916794b1513", size = 27093, upload-time = "2025-12-28T12:35:00.108Z" },
+]
+
+[[package]]
+name = "squall-sql"
+version = "0.1.8"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "rich" },
+    { name = "sqlalchemy" },
+    { name = "textual" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ad/6f/288bb063c1755774b95830e95bd89d3459204ad1b962e5efee50f67d4c58/squall_sql-0.1.8.tar.gz", hash = "sha256:a6c0adba3e6919e3fb2c05d7f9cce8260b6d8cc1ad5f71cb08ea5ccc7b70d974", size = 9269, upload-time = "2025-03-11T18:18:22.967Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ff/a6/f8802ba2e8cae7a345f488b21d821d8e3f99a35b64dcbc428a5e71e390f8/squall_sql-0.1.8-py3-none-any.whl", hash = "sha256:d9a932e3afdce4122ce64e9462005596d84d4ac5a3146bb184cabb51216be907", size = 11705, upload-time = "2025-03-11T18:18:21.419Z" },
 ]
 
 [[package]]

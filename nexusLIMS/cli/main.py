@@ -13,7 +13,7 @@ Usage
     nexuslims --version
     nexuslims build-records [OPTIONS]
     nexuslims config [dump|load|edit]
-    nexuslims db [init|upgrade|...]
+    nexuslims db [init|upgrade|view|...]
     nexuslims instruments manage
     nexuslims instruments list
 """

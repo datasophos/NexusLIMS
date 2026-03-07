@@ -238,6 +238,67 @@ def generate_svg_screenshots(demo_db_path: Path) -> None:
         raise
 
 
+def generate_db_browser_screenshots(demo_db_path: Path) -> None:
+    """Generate SVG screenshots for the database browser TUI.
+
+    Creates a static SVG screenshot of the Table Viewer tab with the
+    instruments table selected and columns sized to content via a mouse
+    hover over the DataTable.
+
+    Parameters
+    ----------
+    demo_db_path : Path
+        Path to the demo database to use for screenshots.
+    """
+    from argparse import Namespace
+
+    from nexusLIMS.tui.apps.db_browser import NexusLIMSDBApp, NexusLIMSTableViewerPane
+
+    print("Generating database browser SVG screenshots...")
+
+    try:
+        repo_root = Path(__file__).parent.parent
+        screenshots_dir = repo_root / "docs" / "images" / "tui" / "screenshots"
+        screenshots_dir.mkdir(parents=True, exist_ok=True)
+
+        app = NexusLIMSDBApp(Namespace(filepath=str(demo_db_path)))
+
+        async def capture_db_browser_screenshots():
+            """Async function to capture db browser screenshots."""
+            from textual.widgets import Select
+
+            async with app.run_test(size=(200, 50)) as pilot:
+                # Wait for app to fully load
+                await pilot.pause(0.5)
+
+                # Select the instruments table explicitly (it may not be first
+                # alphabetically if alembic_version or other tables exist)
+                pane = app.query_one(NexusLIMSTableViewerPane)
+                app.query_one("#table_names_select", Select).value = "instruments"
+                pane._load_table()
+                await pilot.pause(0.3)
+
+                # Sweep the mouse left-to-right across the DataTable so Textual
+                # recalculates column widths for each column as the cursor passes
+                # over it — the same effect as manually mousing across the widget.
+                terminal_width, _ = app.size
+                for x in range(0, terminal_width, 4):
+                    await pilot.hover("#sqlite_table_data", offset=(x, 5))
+                await pilot.pause(0.2)
+
+                screenshot_path = screenshots_dir / "db_browser_table_viewer.svg"
+                app.save_screenshot(screenshot_path)
+                print(f"  ✓ {screenshot_path.name}")
+
+        import asyncio
+
+        asyncio.run(capture_db_browser_screenshots())
+
+    except Exception as e:
+        print(f"✗ Failed to generate database browser screenshots: {e}")
+        raise
+
+
 def generate_config_svg_screenshots() -> None:
     """Generate SVG screenshots for the config TUI.
 
@@ -358,6 +419,9 @@ def main() -> int:
     # Generate SVG screenshots for instrument manager (always runs)
     _generate_instrument_screenshots_with_warnings(db_path)
 
+    # Generate SVG screenshots for db browser (always runs)
+    _generate_db_browser_screenshots_with_warnings(db_path)
+
     # Generate SVG screenshots for config TUI (always runs)
     _generate_config_screenshots_with_warnings()
 
@@ -423,6 +487,19 @@ def _generate_instrument_screenshots_with_warnings(db_path: Path) -> None:
         print()
     except Exception as e:
         print(f"! Warning: SVG screenshot generation failed: {e}")
+        import traceback
+
+        traceback.print_exc()
+        print()
+
+
+def _generate_db_browser_screenshots_with_warnings(db_path: Path) -> None:
+    """Generate db browser SVG screenshots with warnings on failure."""
+    try:
+        generate_db_browser_screenshots(db_path)
+        print()
+    except Exception as e:
+        print(f"! Warning: DB browser screenshot generation failed: {e}")
         import traceback
 
         traceback.print_exc()

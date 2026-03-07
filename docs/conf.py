@@ -432,6 +432,7 @@ nitpick_ignore_regex = [
     (r"py:(obj|class)", r"rich\..*"),
     (r"py:(obj|class)", r"sqlmodel\..*"),
     (r"py:(obj|class)", r"click\..*"),
+    (r"py:(obj|class)", r"squall\..*"),
 ]
 
 

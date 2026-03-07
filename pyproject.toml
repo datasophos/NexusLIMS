@@ -44,6 +44,7 @@ dependencies = [
     "sqlmodel>=0.0.31",
     "alembic>=1.17.2",
     "textual>=8.0.0",
+    "squall-sql>=0.1.8",
 ]
 
 [dependency-groups]
