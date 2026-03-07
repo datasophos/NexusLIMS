@@ -1,0 +1,1988 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nexusLIMS.utils.labarchives &#8212; NexusLIMS pr-88 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../_static/documentation_options.js?v=a49e8876"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nexusLIMS/utils/labarchives';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-88';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../../../_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-88/_modules/nexusLIMS/utils/labarchives.html" />
+    <link rel="icon" href="../../../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="pr-88" />
+    <meta name="docbuild:last-update" content="Mar, 07, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS pr-88 documentation - Home"/>
+    <img src="../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS pr-88 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.utils.labarchives</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for nexusLIMS.utils.labarchives</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Low-level API client for LabArchives electronic lab notebook.</span>
+
+<span class="sd">This module provides a reusable client for interacting with the LabArchives API.</span>
+<span class="sd">Authentication uses HMAC-SHA-512 signed requests (akid + method + expires, keyed</span>
+<span class="sd">with the access password).</span>
+
+<span class="sd">LabArchives API documentation:</span>
+<span class="sd">    https://api.labarchives.com/api_docs/</span>
+
+<span class="sd">Example usage:</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.utils.labarchives import get_labarchives_client</span>
+<span class="sd">    &gt;&gt;&gt; client = get_labarchives_client()</span>
+<span class="sd">    &gt;&gt;&gt; nodes = client.get_tree_level(&quot;12345&quot;, &quot;0&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; for node in nodes:</span>
+<span class="sd">    ...     print(f&quot;{node[&#39;tree_id&#39;]}: {node[&#39;display_text&#39;]}&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; folder_id = client.insert_folder(&quot;12345&quot;, &quot;0&quot;, &quot;My Folder&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; page_id = client.insert_page(&quot;12345&quot;, folder_id, &quot;My Page&quot;)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">base64</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hmac</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">xml.etree.ElementTree</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ET</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">http</span><span class="w"> </span><span class="kn">import</span> <span class="n">HTTPStatus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>  <span class="c1"># noqa: TC003</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># Minimum interval between API calls (seconds) per LabArchives ToS</span>
+<span class="n">_MIN_CALL_INTERVAL</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="c1"># Exponential backoff settings for 5xx errors</span>
+<span class="n">_MAX_RETRIES</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">_RETRY_BASE_DELAY</span> <span class="o">=</span> <span class="mf">2.0</span>
+
+
+<div class="viewcode-block" id="LabArchivesError">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LabArchivesError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base exception for LabArchives API errors.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="LabArchivesAuthenticationError">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesAuthenticationError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LabArchivesAuthenticationError</span><span class="p">(</span><span class="n">LabArchivesError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Authentication failed (invalid credentials or session expired).&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="LabArchivesPermissionError">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesPermissionError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LabArchivesPermissionError</span><span class="p">(</span><span class="n">LabArchivesError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Insufficient permissions for the requested operation.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="LabArchivesNotFoundError">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesNotFoundError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LabArchivesNotFoundError</span><span class="p">(</span><span class="n">LabArchivesError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Requested resource not found.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="LabArchivesRateLimitError">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesRateLimitError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LabArchivesRateLimitError</span><span class="p">(</span><span class="n">LabArchivesError</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Server error or rate limit exceeded (5xx response).&quot;&quot;&quot;</span></div>
+
+
+
+<span class="c1"># LabArchives error codes that indicate authentication failures.</span>
+<span class="c1"># 4514 = &quot;Login and/or password information is incorrect&quot; — returned on 404 for</span>
+<span class="c1"># user_access_info when the supplied user credentials are wrong.</span>
+<span class="n">_AUTH_ERROR_CODES</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;4504&quot;</span><span class="p">,</span> <span class="s2">&quot;4506&quot;</span><span class="p">,</span> <span class="s2">&quot;4507&quot;</span><span class="p">,</span> <span class="s2">&quot;4514&quot;</span><span class="p">,</span> <span class="s2">&quot;4520&quot;</span><span class="p">,</span> <span class="s2">&quot;4533&quot;</span><span class="p">}</span>
+<span class="c1"># LabArchives error codes that indicate permission failures</span>
+<span class="n">_PERM_ERROR_CODES</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;4501&quot;</span><span class="p">,</span> <span class="s2">&quot;4502&quot;</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="LabArchivesClient">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesClient">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LabArchivesClient</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Low-level client for the LabArchives API.</span>
+
+<span class="sd">    Authentication uses HMAC-SHA-512 signed requests. Each request includes:</span>
+<span class="sd">    - ``akid``: Access Key ID</span>
+<span class="sd">    - ``expires``: Unix timestamp in milliseconds</span>
+<span class="sd">    - ``sig``: URL-encoded base64 HMAC-SHA-512 signature of ``akid + method + expires``</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    base_url : str</span>
+<span class="sd">        API base URL including the ``/api`` path segment</span>
+<span class="sd">        (e.g., ``&quot;https://api.labarchives.com/api&quot;``).</span>
+<span class="sd">    akid : str</span>
+<span class="sd">        Access Key ID for API authentication.</span>
+<span class="sd">    password : str</span>
+<span class="sd">        Access password (HMAC signing secret).</span>
+<span class="sd">    uid : str</span>
+<span class="sd">        LabArchives user ID for the account that owns records.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; client = LabArchivesClient(</span>
+<span class="sd">    ...     base_url=&quot;https://api.labarchives.com/api&quot;,</span>
+<span class="sd">    ...     akid=&quot;your-akid&quot;,</span>
+<span class="sd">    ...     password=&quot;your-password&quot;,</span>
+<span class="sd">    ...     uid=&quot;your-uid&quot;,</span>
+<span class="sd">    ... )</span>
+<span class="sd">    &gt;&gt;&gt; nodes = client.get_tree_level(&quot;12345&quot;, &quot;0&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">akid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">uid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize LabArchives API client.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        base_url : str</span>
+<span class="sd">            Root URL of the LabArchives instance</span>
+<span class="sd">        akid : str</span>
+<span class="sd">            Access Key ID</span>
+<span class="sd">        password : str</span>
+<span class="sd">            Access password (HMAC signing secret)</span>
+<span class="sd">        uid : str</span>
+<span class="sd">            LabArchives user ID</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">base_url</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">akid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">akid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">password</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">uid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_call_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate HMAC-SHA-512 signature for an API method call.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        method : str</span>
+<span class="sd">            API method name only, without class prefix (e.g., &quot;tree_level&quot;)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple[str, str]</span>
+<span class="sd">            ``(expires_ms, sig)`` where ``expires_ms`` is the Unix timestamp</span>
+<span class="sd">            in milliseconds as a string and ``sig`` is the raw base64-encoded</span>
+<span class="sd">            HMAC-SHA-512 signature.  Do **not** pre-encode the signature —</span>
+<span class="sd">            ``requests`` URL-encodes query parameter values automatically, so</span>
+<span class="sd">            pre-encoding with ``urllib.parse.quote`` would double-encode it</span>
+<span class="sd">            and invalidate the signature on the wire.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">expires</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">))</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">akid</span> <span class="o">+</span> <span class="n">method</span> <span class="o">+</span> <span class="n">expires</span>
+        <span class="n">raw_sig</span> <span class="o">=</span> <span class="n">hmac</span><span class="o">.</span><span class="n">new</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span>
+            <span class="n">hashlib</span><span class="o">.</span><span class="n">sha512</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">expires</span><span class="p">,</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">raw_sig</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_auth_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build authentication parameters for a request.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        method : str</span>
+<span class="sd">            API method name</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict[str, str]</span>
+<span class="sd">            Dict with ``akid``, ``expires``, and ``sig`` keys</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">expires</span><span class="p">,</span> <span class="n">sig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sign</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;akid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">akid</span><span class="p">,</span> <span class="s2">&quot;expires&quot;</span><span class="p">:</span> <span class="n">expires</span><span class="p">,</span> <span class="s2">&quot;sig&quot;</span><span class="p">:</span> <span class="n">sig</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_throttle</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Enforce minimum interval between API calls per LabArchives ToS.&quot;&quot;&quot;</span>
+        <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_call_time</span>
+        <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&lt;</span> <span class="n">_MIN_CALL_INTERVAL</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">_MIN_CALL_INTERVAL</span> <span class="o">-</span> <span class="n">elapsed</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_last_call_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">api_class</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make an authenticated GET request and return parsed XML root.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        api_class : str</span>
+<span class="sd">            API class path (e.g., &quot;notebooks&quot;)</span>
+<span class="sd">        method : str</span>
+<span class="sd">            API method name (e.g., &quot;tree_level&quot;)</span>
+<span class="sd">        params : dict, optional</span>
+<span class="sd">            Additional query parameters</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ET.Element</span>
+<span class="sd">            Parsed XML root element from the response</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            For general API errors</span>
+<span class="sd">        LabArchivesAuthenticationError</span>
+<span class="sd">            For authentication failures</span>
+<span class="sd">        LabArchivesPermissionError</span>
+<span class="sd">            For permission failures</span>
+<span class="sd">        LabArchivesNotFoundError</span>
+<span class="sd">            For 404 responses</span>
+<span class="sd">        LabArchivesRateLimitError</span>
+<span class="sd">            For 5xx responses</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">full_method</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">api_class</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auth_params</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+        <span class="n">all_params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">auth</span><span class="p">,</span> <span class="o">**</span><span class="p">({</span><span class="s2">&quot;uid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">}</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="k">else</span> <span class="p">{})}</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
+            <span class="n">all_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">full_method</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_throttle</span><span class="p">()</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;LabArchives GET </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_MAX_RETRIES</span><span class="p">):</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">all_params</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;LabArchives GET </span><span class="si">%s</span><span class="s2"> → HTTP </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">&lt;</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">INTERNAL_SERVER_ERROR</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">_MAX_RETRIES</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">delay</span> <span class="o">=</span> <span class="n">_RETRY_BASE_DELAY</span> <span class="o">**</span> <span class="p">(</span><span class="n">attempt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;LabArchives GET </span><span class="si">%s</span><span class="s2"> returned </span><span class="si">%s</span><span class="s2">, retrying in </span><span class="si">%.1f</span><span class="s2">s&quot;</span><span class="p">,</span>
+                    <span class="n">url</span><span class="p">,</span>
+                    <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                    <span class="n">delay</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;LabArchives API server error after </span><span class="si">{</span><span class="n">_MAX_RETRIES</span><span class="si">}</span><span class="s2"> retries: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">LabArchivesRateLimitError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_response</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">full_method</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_raw</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">api_class</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make an authenticated GET request and return the raw response body.</span>
+
+<span class="sd">        Used for endpoints that return binary data rather than XML (e.g.,</span>
+<span class="sd">        ``entries/entry_attachment``).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        api_class : str</span>
+<span class="sd">            API class path (e.g., &quot;entries&quot;)</span>
+<span class="sd">        method : str</span>
+<span class="sd">            API method name (e.g., &quot;entry_attachment&quot;)</span>
+<span class="sd">        params : dict, optional</span>
+<span class="sd">            Additional query parameters</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bytes</span>
+<span class="sd">            Raw response body</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesNotFoundError</span>
+<span class="sd">            For HTTP 404 responses</span>
+<span class="sd">        LabArchivesRateLimitError</span>
+<span class="sd">            For HTTP 5xx responses after retries</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            For other non-2xx responses</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">full_method</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">api_class</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auth_params</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+        <span class="n">all_params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">auth</span><span class="p">,</span> <span class="o">**</span><span class="p">({</span><span class="s2">&quot;uid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">}</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="k">else</span> <span class="p">{})}</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
+            <span class="n">all_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">full_method</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_throttle</span><span class="p">()</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;LabArchives GET (raw) </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_MAX_RETRIES</span><span class="p">):</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">all_params</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;LabArchives GET (raw) </span><span class="si">%s</span><span class="s2"> → HTTP </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">&lt;</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">INTERNAL_SERVER_ERROR</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">_MAX_RETRIES</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">delay</span> <span class="o">=</span> <span class="n">_RETRY_BASE_DELAY</span> <span class="o">**</span> <span class="p">(</span><span class="n">attempt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;LabArchives GET (raw) </span><span class="si">%s</span><span class="s2"> returned </span><span class="si">%s</span><span class="s2">, retrying in </span><span class="si">%.1f</span><span class="s2">s&quot;</span><span class="p">,</span>
+                    <span class="n">url</span><span class="p">,</span>
+                    <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                    <span class="n">delay</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;LabArchives API server error after </span><span class="si">{</span><span class="n">_MAX_RETRIES</span><span class="si">}</span><span class="s2"> retries: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">LabArchivesRateLimitError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;LabArchives resource not found (HTTP 404): </span><span class="si">{</span><span class="n">full_method</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="n">LabArchivesNotFoundError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">resp</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;LabArchives request failed (HTTP </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">full_method</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="n">LabArchivesError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">resp</span><span class="o">.</span><span class="n">content</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_post</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">api_class</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">form</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Make an authenticated POST request and return parsed XML root.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        api_class : str</span>
+<span class="sd">            API class path (e.g., &quot;entries&quot;)</span>
+<span class="sd">        method : str</span>
+<span class="sd">            API method name (e.g., &quot;add_entry_to_page&quot;)</span>
+<span class="sd">        params : dict, optional</span>
+<span class="sd">            Additional query parameters (appended to URL)</span>
+<span class="sd">        data : bytes, optional</span>
+<span class="sd">            Raw binary data for the request body</span>
+<span class="sd">        form : dict, optional</span>
+<span class="sd">            Form data (``application/x-www-form-urlencoded``)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ET.Element</span>
+<span class="sd">            Parsed XML root element from the response</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">full_method</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">api_class</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">auth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_auth_params</span><span class="p">(</span><span class="n">method</span><span class="p">)</span>
+        <span class="n">all_params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">auth</span><span class="p">,</span> <span class="o">**</span><span class="p">({</span><span class="s2">&quot;uid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">}</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="k">else</span> <span class="p">{})}</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
+            <span class="n">all_params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">full_method</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_throttle</span><span class="p">()</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;LabArchives POST </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+
+        <span class="n">headers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;application/octet-stream&quot;</span>
+
+        <span class="k">for</span> <span class="n">attempt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">_MAX_RETRIES</span><span class="p">):</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+                <span class="n">url</span><span class="p">,</span>
+                <span class="n">params</span><span class="o">=</span><span class="n">all_params</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">data</span> <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="n">form</span> <span class="ow">or</span> <span class="p">{}),</span>
+                <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span>
+                <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">&lt;</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">INTERNAL_SERVER_ERROR</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="n">attempt</span> <span class="o">&lt;</span> <span class="n">_MAX_RETRIES</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="n">delay</span> <span class="o">=</span> <span class="n">_RETRY_BASE_DELAY</span> <span class="o">**</span> <span class="p">(</span><span class="n">attempt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;LabArchives POST </span><span class="si">%s</span><span class="s2"> returned </span><span class="si">%s</span><span class="s2">, retrying in </span><span class="si">%.1f</span><span class="s2">s&quot;</span><span class="p">,</span>
+                    <span class="n">url</span><span class="p">,</span>
+                    <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                    <span class="n">delay</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;LabArchives API server error after </span><span class="si">{</span><span class="n">_MAX_RETRIES</span><span class="si">}</span><span class="s2"> retries: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">LabArchivesRateLimitError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_response</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span> <span class="n">full_method</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resp</span><span class="p">:</span> <span class="n">requests</span><span class="o">.</span><span class="n">Response</span><span class="p">,</span> <span class="n">method</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse XML response and raise typed exceptions for errors.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        resp : requests.Response</span>
+<span class="sd">            HTTP response from the LabArchives API</span>
+<span class="sd">        method : str</span>
+<span class="sd">            API method that was called (for error messages)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ET.Element</span>
+<span class="sd">            Parsed XML root element</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesNotFoundError</span>
+<span class="sd">            For HTTP 404 responses</span>
+<span class="sd">        LabArchivesRateLimitError</span>
+<span class="sd">            For HTTP 5xx responses</span>
+<span class="sd">        LabArchivesAuthenticationError</span>
+<span class="sd">            For LA error codes indicating auth failures</span>
+<span class="sd">        LabArchivesPermissionError</span>
+<span class="sd">            For LA error codes indicating permission failures</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            For other API errors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">&gt;=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">INTERNAL_SERVER_ERROR</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;LabArchives </span><span class="si">%s</span><span class="s2"> body: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">[:</span><span class="mi">1000</span><span class="p">])</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;LabArchives server error HTTP </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="n">LabArchivesRateLimitError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">ET</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>  <span class="c1"># noqa: S314</span>
+        <span class="k">except</span> <span class="n">ET</span><span class="o">.</span><span class="n">ParseError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;LabArchives unparseable body: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">[:</span><span class="mi">1000</span><span class="p">])</span>
+            <span class="c1"># Fall back to HTTP-status-based errors when XML is unparseable.</span>
+            <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;LabArchives resource not found (HTTP 404): </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">raise</span> <span class="n">LabArchivesNotFoundError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Failed to parse LabArchives XML response for </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2"> &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(HTTP </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Response: </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">[:</span><span class="mi">500</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">LabArchivesError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+
+        <span class="c1"># Check for LabArchives error responses.</span>
+        <span class="c1"># The API uses two different element naming schemes:</span>
+        <span class="c1">#   legacy:  &lt;error&gt;&lt;code&gt;N&lt;/code&gt;&lt;msg&gt;…&lt;/msg&gt;&lt;/error&gt;</span>
+        <span class="c1">#   current: &lt;error&gt;&lt;error-code&gt;N&lt;/error-code&gt;</span>
+        <span class="c1">#              &lt;error-description&gt;…&lt;/error-description&gt;&lt;/error&gt;</span>
+        <span class="n">error_el</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.//error&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">error_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">code_el</span> <span class="o">=</span> <span class="n">error_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;error-code&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">code_el</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">code_el</span> <span class="o">=</span> <span class="n">error_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;code&quot;</span><span class="p">)</span>
+            <span class="n">msg_el</span> <span class="o">=</span> <span class="n">error_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;error-description&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">msg_el</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">msg_el</span> <span class="o">=</span> <span class="n">error_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;msg&quot;</span><span class="p">)</span>
+            <span class="n">code</span> <span class="o">=</span> <span class="n">code_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">code_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">code_el</span><span class="o">.</span><span class="n">text</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">msg_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">msg_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">msg_el</span><span class="o">.</span><span class="n">text</span>
+                <span class="k">else</span> <span class="s2">&quot;Unknown error&quot;</span>
+            <span class="p">)</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                <span class="s2">&quot;LabArchives error response (HTTP </span><span class="si">%s</span><span class="s2">, code </span><span class="si">%s</span><span class="s2">): </span><span class="si">%s</span><span class="se">\n</span><span class="s2">Body: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                <span class="n">code</span><span class="p">,</span>
+                <span class="n">msg</span><span class="p">,</span>
+                <span class="n">resp</span><span class="o">.</span><span class="n">text</span><span class="p">[:</span><span class="mi">1000</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">full_msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;HTTP </span><span class="si">{</span><span class="n">resp</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">, error code </span><span class="si">{</span><span class="n">code</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="k">if</span> <span class="n">code</span> <span class="ow">in</span> <span class="n">_AUTH_ERROR_CODES</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">LabArchivesAuthenticationError</span><span class="p">(</span><span class="n">full_msg</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">code</span> <span class="ow">in</span> <span class="n">_PERM_ERROR_CODES</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">LabArchivesPermissionError</span><span class="p">(</span><span class="n">full_msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">LabArchivesError</span><span class="p">(</span><span class="n">full_msg</span><span class="p">)</span>
+
+        <span class="c1"># No XML error element — fall back to HTTP status for 404.</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NOT_FOUND</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;LabArchives resource not found (HTTP 404): </span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="n">LabArchivesNotFoundError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">root</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pretty_print_response</span><span class="p">(</span><span class="n">root</span><span class="p">:</span> <span class="n">ET</span><span class="o">.</span><span class="n">Element</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Print a nicely formatted XML representation of an API response.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        root : ET.Element</span>
+<span class="sd">            Parsed XML root element (as returned by :meth:`_parse_response`)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ET</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ET</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;unicode&quot;</span><span class="p">))</span>  <span class="c1"># noqa: T201</span>
+
+    <span class="c1"># ------------------------------------------------------------------ #</span>
+    <span class="c1"># Public API methods                                                   #</span>
+    <span class="c1"># ------------------------------------------------------------------ #</span>
+
+<div class="viewcode-block" id="LabArchivesClient.get_tree_level">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesClient.get_tree_level">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_tree_level</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">nbid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">parent_tree_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get child nodes at a tree level in a notebook.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nbid : str</span>
+<span class="sd">            Notebook ID</span>
+<span class="sd">        parent_tree_id : str, optional</span>
+<span class="sd">            Parent tree node ID; &quot;0&quot; for the root level</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of dict</span>
+<span class="sd">            Each dict has ``tree_id``, ``display_text``, and ``is_page`` keys.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            If the API call fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span>
+            <span class="s2">&quot;tree_tools&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;get_tree_level&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;nbid&quot;</span><span class="p">:</span> <span class="n">nbid</span><span class="p">,</span> <span class="s2">&quot;parent_tree_id&quot;</span><span class="p">:</span> <span class="n">parent_tree_id</span><span class="p">},</span>
+        <span class="p">)</span>
+
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;.//level-node&quot;</span><span class="p">):</span>
+            <span class="n">tree_id_el</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;tree-id&quot;</span><span class="p">)</span>
+            <span class="n">text_el</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;display-text&quot;</span><span class="p">)</span>
+            <span class="n">is_page_el</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;is-page&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tree_id_el</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">text_el</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                <span class="k">continue</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;tree_id&quot;</span><span class="p">:</span> <span class="n">tree_id_el</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;display_text&quot;</span><span class="p">:</span> <span class="n">text_el</span><span class="o">.</span><span class="n">text</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;is_page&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">is_page_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">is_page_el</span><span class="o">.</span><span class="n">text</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">),</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">nodes</span></div>
+
+
+<div class="viewcode-block" id="LabArchivesClient.get_page_entries">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesClient.get_page_entries">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_page_entries</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">nbid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">page_tree_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">include_content</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all entries on a notebook page.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nbid : str</span>
+<span class="sd">            Notebook ID</span>
+<span class="sd">        page_tree_id : str</span>
+<span class="sd">            Tree ID of the page</span>
+<span class="sd">        include_content : bool, optional</span>
+<span class="sd">            When True, each entry dict will include an ``entry_data`` key</span>
+<span class="sd">            containing the raw HTML/text content of the entry.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of dict</span>
+<span class="sd">            Each dict has ``eid`` and ``part_type`` keys, plus ``entry_data``</span>
+<span class="sd">            when *include_content* is True.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            If the API call fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span>
+            <span class="s2">&quot;tree_tools&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;get_entries_for_page&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;nbid&quot;</span><span class="p">:</span> <span class="n">nbid</span><span class="p">,</span>
+                <span class="s2">&quot;page_tree_id&quot;</span><span class="p">:</span> <span class="n">page_tree_id</span><span class="p">,</span>
+                <span class="s2">&quot;entry_data&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span> <span class="k">if</span> <span class="n">include_content</span> <span class="k">else</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+
+        <span class="n">entries</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">entry_el</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;.//entry&quot;</span><span class="p">):</span>
+            <span class="n">eid_el</span> <span class="o">=</span> <span class="n">entry_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;eid&quot;</span><span class="p">)</span>
+            <span class="n">part_type_el</span> <span class="o">=</span> <span class="n">entry_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;part-type&quot;</span><span class="p">)</span>
+            <span class="n">entry</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;eid&quot;</span><span class="p">:</span> <span class="n">eid_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">eid_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">eid_el</span><span class="o">.</span><span class="n">text</span>
+                <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;part_type&quot;</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="n">part_type_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">part_type_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">part_type_el</span><span class="o">.</span><span class="n">text</span>
+                    <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                <span class="p">),</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="n">include_content</span><span class="p">:</span>
+                <span class="c1"># The API uses &lt;entry_data&gt; (underscore) per the docs</span>
+                <span class="n">data_el</span> <span class="o">=</span> <span class="n">entry_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;entry_data&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">data_el</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">data_el</span> <span class="o">=</span> <span class="n">entry_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;entry-data&quot;</span><span class="p">)</span>
+                <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;entry_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">data_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">data_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">data_el</span><span class="o">.</span><span class="n">text</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+                <span class="p">)</span>
+            <span class="n">entries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">entries</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_insert_node</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">nbid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">parent_tree_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">display_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">is_folder</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a folder or page node in a notebook tree.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nbid : str</span>
+<span class="sd">            Notebook ID</span>
+<span class="sd">        parent_tree_id : str</span>
+<span class="sd">            Parent tree node ID</span>
+<span class="sd">        display_text : str</span>
+<span class="sd">            Display name for the new node</span>
+<span class="sd">        is_folder : bool</span>
+<span class="sd">            True to create a folder; False to create a page</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The ``tree_id`` of the newly created node</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            If the API call fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span>
+            <span class="s2">&quot;tree_tools&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;insert_node&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;nbid&quot;</span><span class="p">:</span> <span class="n">nbid</span><span class="p">,</span>
+                <span class="s2">&quot;parent_tree_id&quot;</span><span class="p">:</span> <span class="n">parent_tree_id</span><span class="p">,</span>
+                <span class="s2">&quot;display_text&quot;</span><span class="p">:</span> <span class="n">display_text</span><span class="p">,</span>
+                <span class="s2">&quot;is_folder&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span> <span class="k">if</span> <span class="n">is_folder</span> <span class="k">else</span> <span class="s2">&quot;false&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+
+        <span class="n">tree_id_el</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.//tree-id&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tree_id_el</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">tree_id_el</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;insert_node response missing tree-id for &#39;</span><span class="si">{</span><span class="n">display_text</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
+            <span class="k">raise</span> <span class="n">LabArchivesError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">tree_id_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+<div class="viewcode-block" id="LabArchivesClient.insert_folder">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesClient.insert_folder">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">insert_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nbid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parent_tree_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a folder in a notebook tree.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nbid : str</span>
+<span class="sd">            Notebook ID</span>
+<span class="sd">        parent_tree_id : str</span>
+<span class="sd">            Parent tree node ID; ``&quot;0&quot;`` for the root level</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Display name for the new folder</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The ``tree_id`` of the newly created folder</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            If the API call fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insert_node</span><span class="p">(</span><span class="n">nbid</span><span class="p">,</span> <span class="n">parent_tree_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">is_folder</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LabArchivesClient.insert_page">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesClient.insert_page">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">insert_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nbid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">parent_tree_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a page in a notebook tree.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nbid : str</span>
+<span class="sd">            Notebook ID</span>
+<span class="sd">        parent_tree_id : str</span>
+<span class="sd">            Parent tree node ID (folder ``tree_id`` or ``&quot;0&quot;`` for root)</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Display name for the new page</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The ``tree_id`` of the newly created page</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            If the API call fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insert_node</span><span class="p">(</span><span class="n">nbid</span><span class="p">,</span> <span class="n">parent_tree_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">is_folder</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LabArchivesClient.add_entry">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesClient.add_entry">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_entry</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">nbid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">page_tree_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">entry_data</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">part_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;text entry&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a text/HTML entry to a notebook page.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nbid : str</span>
+<span class="sd">            Notebook ID</span>
+<span class="sd">        page_tree_id : str</span>
+<span class="sd">            Tree ID of the target page</span>
+<span class="sd">        entry_data : str</span>
+<span class="sd">            HTML or plain-text content for the entry</span>
+<span class="sd">        part_type : str, optional</span>
+<span class="sd">            Entry part type (default: &quot;text entry&quot;)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The ``eid`` (entry ID) of the newly created entry</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            If the API call fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span>
+            <span class="s2">&quot;entries&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;add_entry&quot;</span><span class="p">,</span>
+            <span class="n">form</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;nbid&quot;</span><span class="p">:</span> <span class="n">nbid</span><span class="p">,</span>
+                <span class="s2">&quot;pid&quot;</span><span class="p">:</span> <span class="n">page_tree_id</span><span class="p">,</span>
+                <span class="s2">&quot;entry_data&quot;</span><span class="p">:</span> <span class="n">entry_data</span><span class="p">,</span>
+                <span class="s2">&quot;part_type&quot;</span><span class="p">:</span> <span class="n">part_type</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+
+        <span class="n">eid_el</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.//eid&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">eid_el</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">eid_el</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;add_entry response missing eid for page </span><span class="si">{</span><span class="n">page_tree_id</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="n">LabArchivesError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">eid_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="LabArchivesClient.add_attachment">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesClient.add_attachment">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_attachment</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">nbid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">page_tree_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span>
+        <span class="n">caption</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Upload a file attachment to a notebook page.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nbid : str</span>
+<span class="sd">            Notebook ID</span>
+<span class="sd">        page_tree_id : str</span>
+<span class="sd">            Tree ID of the target page</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            Name to use for the uploaded file</span>
+<span class="sd">        data : bytes</span>
+<span class="sd">            Raw file content</span>
+<span class="sd">        caption : str, optional</span>
+<span class="sd">            Caption for the attachment</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The ``eid`` (entry ID) of the attachment entry</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            If the API call fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span><span class="p">(</span>
+            <span class="s2">&quot;entries&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;add_attachment&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;nbid&quot;</span><span class="p">:</span> <span class="n">nbid</span><span class="p">,</span>
+                <span class="s2">&quot;pid&quot;</span><span class="p">:</span> <span class="n">page_tree_id</span><span class="p">,</span>
+                <span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">filename</span><span class="p">,</span>
+                <span class="s2">&quot;caption&quot;</span><span class="p">:</span> <span class="n">caption</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">eid_el</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.//eid&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">eid_el</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">eid_el</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;add_attachment response missing eid for page </span><span class="si">{</span><span class="n">page_tree_id</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="n">LabArchivesError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">eid_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="LabArchivesClient.attach_file">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesClient.attach_file">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">attach_file</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">nbid</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">page_tree_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+        <span class="n">caption</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Upload a file from disk as an attachment to a notebook page.</span>
+
+<span class="sd">        Convenience wrapper around :meth:`add_attachment` that reads the file</span>
+<span class="sd">        and derives the filename from the path automatically.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nbid : str</span>
+<span class="sd">            Notebook ID</span>
+<span class="sd">        page_tree_id : str</span>
+<span class="sd">            Tree ID of the target page</span>
+<span class="sd">        path : Path</span>
+<span class="sd">            Local file to upload</span>
+<span class="sd">        caption : str, optional</span>
+<span class="sd">            Caption for the attachment</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The ``eid`` (entry ID) of the attachment entry</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            If the API call fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_attachment</span><span class="p">(</span>
+            <span class="n">nbid</span><span class="p">,</span> <span class="n">page_tree_id</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">read_bytes</span><span class="p">(),</span> <span class="n">caption</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LabArchivesClient.get_attachment_content">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesClient.get_attachment_content">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_attachment_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download the raw content of an attachment entry.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        eid : str</span>
+<span class="sd">            Entry ID of the attachment (as returned by :meth:`add_attachment`)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bytes</span>
+<span class="sd">            Raw file content of the attachment</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesNotFoundError</span>
+<span class="sd">            If the entry does not exist</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            If the API call fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_raw</span><span class="p">(</span><span class="s2">&quot;entries&quot;</span><span class="p">,</span> <span class="s2">&quot;entry_attachment&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;eid&quot;</span><span class="p">:</span> <span class="n">eid</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="LabArchivesClient.get_user_info">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesClient.get_user_info">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_user_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">login</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">password</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Exchange login credentials for user info and notebook list.</span>
+
+<span class="sd">        This method is used to obtain the ``uid`` for a LabArchives account.</span>
+<span class="sd">        The returned ``uid`` should be stored in ``NX_LABARCHIVES_USER_ID``</span>
+<span class="sd">        for subsequent API calls.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        login : str</span>
+<span class="sd">            LabArchives login (email address)</span>
+<span class="sd">        password : str</span>
+<span class="sd">            LabArchives account password</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            User info including ``uid``, ``email``, and ``notebooks`` list.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesAuthenticationError</span>
+<span class="sd">            If login credentials are invalid</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            If the API call fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Response root element IS &lt;users&gt; — _parse_response returns it directly.</span>
+        <span class="c1"># Structure:</span>
+        <span class="c1">#   &lt;users&gt;</span>
+        <span class="c1">#     &lt;id&gt;…&lt;/id&gt;</span>
+        <span class="c1">#     &lt;fullname&gt;…&lt;/fullname&gt;</span>
+        <span class="c1">#     &lt;email&gt;…&lt;/email&gt;</span>
+        <span class="c1">#     &lt;notebooks type=&quot;array&quot;&gt;</span>
+        <span class="c1">#       &lt;notebook&gt;&lt;id&gt;…&lt;/id&gt;&lt;name&gt;…&lt;/name&gt;&lt;/notebook&gt;</span>
+        <span class="c1">#     &lt;/notebooks&gt;</span>
+        <span class="c1">#   &lt;/users&gt;</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span>
+            <span class="s2">&quot;users&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;user_access_info&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;login_or_email&quot;</span><span class="p">:</span> <span class="n">login</span><span class="p">,</span> <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">password</span><span class="p">},</span>
+        <span class="p">)</span>
+
+        <span class="c1"># The &lt;users&gt; root may be a direct child of a &lt;response&gt; wrapper in</span>
+        <span class="c1"># tests; use a helper that finds it wherever it lives.</span>
+        <span class="n">users_el</span> <span class="o">=</span> <span class="n">root</span> <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s2">&quot;users&quot;</span> <span class="k">else</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.//users&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">users_el</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">users_el</span> <span class="o">=</span> <span class="n">root</span>
+
+        <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">id_el</span> <span class="o">=</span> <span class="n">users_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">id_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">id_el</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s2">&quot;uid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;fullname&quot;</span><span class="p">,</span> <span class="s2">&quot;first-name&quot;</span><span class="p">,</span> <span class="s2">&quot;last-name&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">):</span>
+            <span class="n">el</span> <span class="o">=</span> <span class="n">users_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">el</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="n">notebooks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">nb</span> <span class="ow">in</span> <span class="n">users_el</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;notebooks/notebook&quot;</span><span class="p">):</span>
+            <span class="n">nb_id_el</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+            <span class="n">nb_name_el</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+            <span class="n">nb_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">nb_id_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">nb_id_el</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                <span class="n">nb_data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_id_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">nb_name_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">nb_name_el</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                <span class="n">nb_data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_name_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">notebooks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nb_data</span><span class="p">)</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;notebooks&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">notebooks</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="LabArchivesClient.get_user_info_by_uid">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.LabArchivesClient.get_user_info_by_uid">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_user_info_by_uid</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">uid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>  <span class="c1"># pragma: no cover</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch user info for a LabArchives account using a uid.</span>
+
+<span class="sd">        Calls the ``users/user_info_via_id`` endpoint, which requires only the</span>
+<span class="sd">        uid (no login password).  When *uid* is omitted the client&#39;s own</span>
+<span class="sd">        ``uid`` is used.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        uid : str, optional</span>
+<span class="sd">            LabArchives user ID.  Defaults to the client&#39;s configured uid.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            User info including ``uid``, ``email``, and ``notebooks`` list.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        LabArchivesError</span>
+<span class="sd">            If the API call fails</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Structure mirrors user_access_info:</span>
+        <span class="c1">#   &lt;users&gt;</span>
+        <span class="c1">#     &lt;id&gt;…&lt;/id&gt;</span>
+        <span class="c1">#     &lt;fullname&gt;…&lt;/fullname&gt;</span>
+        <span class="c1">#     &lt;email&gt;…&lt;/email&gt;</span>
+        <span class="c1">#     &lt;notebooks type=&quot;array&quot;&gt;</span>
+        <span class="c1">#       &lt;notebook&gt;&lt;id&gt;…&lt;/id&gt;&lt;name&gt;…&lt;/name&gt;&lt;/notebook&gt;</span>
+        <span class="c1">#     &lt;/notebooks&gt;</span>
+        <span class="c1">#   &lt;/users&gt;</span>
+        <span class="n">lookup_uid</span> <span class="o">=</span> <span class="n">uid</span> <span class="k">if</span> <span class="n">uid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span>
+            <span class="s2">&quot;users&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;user_info_via_id&quot;</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;uid&quot;</span><span class="p">:</span> <span class="n">lookup_uid</span><span class="p">},</span>
+        <span class="p">)</span>
+
+        <span class="n">users_el</span> <span class="o">=</span> <span class="n">root</span> <span class="k">if</span> <span class="n">root</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s2">&quot;users&quot;</span> <span class="k">else</span> <span class="n">root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;.//users&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">users_el</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">users_el</span> <span class="o">=</span> <span class="n">root</span>
+
+        <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">id_el</span> <span class="o">=</span> <span class="n">users_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">id_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">id_el</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="s2">&quot;uid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;fullname&quot;</span><span class="p">,</span> <span class="s2">&quot;first-name&quot;</span><span class="p">,</span> <span class="s2">&quot;last-name&quot;</span><span class="p">,</span> <span class="s2">&quot;email&quot;</span><span class="p">):</span>
+            <span class="n">el</span> <span class="o">=</span> <span class="n">users_el</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">el</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                <span class="n">result</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+        <span class="n">notebooks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">nb</span> <span class="ow">in</span> <span class="n">users_el</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;notebooks/notebook&quot;</span><span class="p">):</span>
+            <span class="n">nb_id_el</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span>
+            <span class="n">nb_name_el</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+            <span class="n">nb_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">nb_id_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">nb_id_el</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                <span class="n">nb_data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_id_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">nb_name_el</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">nb_name_el</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+                <span class="n">nb_data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb_name_el</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">notebooks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nb_data</span><span class="p">)</span>
+        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;notebooks&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">notebooks</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="get_labarchives_client">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.utils.labarchives.html#nexusLIMS.utils.labarchives.get_labarchives_client">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_labarchives_client</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">LabArchivesClient</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get configured LabArchives client from settings.</span>
+
+<span class="sd">    Creates a :class:`LabArchivesClient` using credentials from the NexusLIMS</span>
+<span class="sd">    configuration (``NX_LABARCHIVES_*`` settings).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    LabArchivesClient</span>
+<span class="sd">        Configured client instance</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    LabArchivesError</span>
+<span class="sd">        If required settings are not configured</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from nexusLIMS.utils.labarchives import get_labarchives_client</span>
+<span class="sd">    &gt;&gt;&gt; client = get_labarchives_client()</span>
+<span class="sd">    &gt;&gt;&gt; nodes = client.get_tree_level(&quot;12345&quot;, &quot;0&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; folder_id = client.insert_folder(&quot;12345&quot;, &quot;0&quot;, &quot;My Folder&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; page_id = client.insert_page(&quot;12345&quot;, folder_id, &quot;My Page&quot;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_LABARCHIVES_ACCESS_KEY_ID</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;NX_LABARCHIVES_ACCESS_KEY_ID not configured&quot;</span>
+        <span class="k">raise</span> <span class="n">LabArchivesError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_LABARCHIVES_ACCESS_PASSWORD</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;NX_LABARCHIVES_ACCESS_PASSWORD not configured&quot;</span>
+        <span class="k">raise</span> <span class="n">LabArchivesError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_LABARCHIVES_USER_ID</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;NX_LABARCHIVES_USER_ID not configured&quot;</span>
+        <span class="k">raise</span> <span class="n">LabArchivesError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_LABARCHIVES_URL</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;NX_LABARCHIVES_URL not configured&quot;</span>
+        <span class="k">raise</span> <span class="n">LabArchivesError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">LabArchivesClient</span><span class="p">(</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_LABARCHIVES_URL</span><span class="p">),</span>
+        <span class="n">akid</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_LABARCHIVES_ACCESS_KEY_ID</span><span class="p">,</span>
+        <span class="n">password</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_LABARCHIVES_ACCESS_PASSWORD</span><span class="p">,</span>
+        <span class="n">uid</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_LABARCHIVES_USER_ID</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
