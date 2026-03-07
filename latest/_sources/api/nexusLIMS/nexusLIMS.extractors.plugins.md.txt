@@ -24,11 +24,11 @@ nexusLIMS.extractors.plugins.profiles
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.extractors.plugins.tescan_tif
-nexusLIMS.extractors.plugins.edax
 nexusLIMS.extractors.plugins.digital_micrograph
-nexusLIMS.extractors.plugins.quanta_tif
-nexusLIMS.extractors.plugins.fei_emi
-nexusLIMS.extractors.plugins.basic_metadata
 nexusLIMS.extractors.plugins.orion_HIM_tif
+nexusLIMS.extractors.plugins.basic_metadata
+nexusLIMS.extractors.plugins.tescan_tif
+nexusLIMS.extractors.plugins.fei_emi
+nexusLIMS.extractors.plugins.edax
+nexusLIMS.extractors.plugins.quanta_tif
 ```

@@ -14,6 +14,6 @@
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.exporters.destinations.elabftw
 nexusLIMS.exporters.destinations.cdcs
+nexusLIMS.exporters.destinations.elabftw
 ```
