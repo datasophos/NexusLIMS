@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS.tui.demo_helpers &#8212; NexusLIMS dev documentation</title>
+    <title>nexusLIMS.tui.apps.db_browser &#8212; NexusLIMS dev documentation</title>
   
   
   
@@ -49,7 +49,7 @@
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.tui.demo_helpers';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.tui.apps.db_browser';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
@@ -58,12 +58,12 @@
             true;
         </script>
     <script src="../../_static/custom.js?v=ba087cdf"></script>
-    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/api/nexusLIMS/nexusLIMS.tui.demo_helpers.html" />
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/api/nexusLIMS/nexusLIMS.tui.apps.db_browser.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="nexusLIMS.exporters" href="nexusLIMS.exporters.html" />
-    <link rel="prev" title="nexusLIMS.tui.apps.db_browser" href="nexusLIMS.tui.apps.db_browser.html" />
+    <link rel="next" title="nexusLIMS.tui.demo_helpers" href="nexusLIMS.tui.demo_helpers.html" />
+    <link rel="prev" title="nexusLIMS.tui.apps.instruments.validators" href="nexusLIMS.tui.apps.instruments.validators.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
@@ -421,8 +421,8 @@
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="nexusLIMS.tui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.tui.common.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui.common</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.tui.apps.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui.apps</span></code></a></li>
-<li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui.demo_helpers</span></code></a></li>
+<li class="toctree-l4 current active"><a class="reference internal" href="nexusLIMS.tui.apps.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui.apps</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.tui.demo_helpers.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui.demo_helpers</span></code></a></li>
 </ul>
 </details></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.exporters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></a></li>
@@ -489,7 +489,10 @@
     
     <li class="breadcrumb-item"><a href="nexusLIMS.tui.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui</span></code></a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui.demo_helpers</span></code></span></li>
+    
+    <li class="breadcrumb-item"><a href="nexusLIMS.tui.apps.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui.apps</span></code></a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui.apps.db_browser</span></code></span></li>
   </ul>
 </nav>
 </div>
@@ -506,19 +509,39 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-nexusLIMS.tui.demo_helpers">
-<span id="nexuslims-tui-demo-helpers"></span><h1><a class="reference internal" href="#module-nexusLIMS.tui.demo_helpers" title="nexusLIMS.tui.demo_helpers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui.demo_helpers</span></code></a><a class="headerlink" href="#module-nexusLIMS.tui.demo_helpers" title="Link to this heading">#</a></h1>
-<p>Helper utilities for generating TUI demos and screenshots.</p>
-<p>This module provides functionality to create reproducible demo databases
-with sample instrument data for documentation and testing purposes.</p>
+  <section id="module-nexusLIMS.tui.apps.db_browser">
+<span id="nexuslims-tui-apps-db-browser"></span><h1><a class="reference internal" href="#module-nexusLIMS.tui.apps.db_browser" title="nexusLIMS.tui.apps.db_browser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui.apps.db_browser</span></code></a><a class="headerlink" href="#module-nexusLIMS.tui.apps.db_browser" title="Link to this heading">#</a></h1>
+<p>Read-only NexusLIMS database browser TUI.</p>
+<p>Provides <a class="reference internal" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp" title="nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp"><code class="xref py py-class docutils literal notranslate"><span class="pre">NexusLIMSDBApp</span></code></a>, a Textual app that wraps Squall’s
+<code class="docutils literal notranslate"><span class="pre">SQLiteClientApp</span></code> to give a stripped-down, read-only view of the database:</p>
+<ul class="simple">
+<li><p>The “Open Database” button and “Execute SQL” tab are removed.</p></li>
+<li><p>The Table Viewer tab gains a live filter input and click-to-sort column
+headers, both implemented via parameterised SQL queries so they compose
+correctly and never expose the database to modification.</p></li>
+</ul>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
+<p>.. code-block:: python</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from argparse import Namespace
+from nexusLIMS.tui.apps.db_browser import NexusLIMSDBApp
+
+app = NexusLIMSDBApp(Namespace(filepath=&quot;/path/to/nexuslims.db&quot;))
+app.run()
+</pre></div>
+</div>
+</section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
+<section id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.tui.demo_helpers.create_demo_database" title="nexusLIMS.tui.demo_helpers.create_demo_database"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_demo_database</span></code></a></p></td>
-<td><p>Create a reproducible demo database with sample instruments.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane" title="nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NexusLIMSTableViewerPane</span></code></a></p></td>
+<td><p>Table viewer with live full-text filter and sortable column headers.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp" title="nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NexusLIMSDBApp</span></code></a></p></td>
+<td><p>Read-only NexusLIMS database browser.</p></td>
 </tr>
 </tbody>
 </table>
@@ -526,30 +549,61 @@ with sample instrument data for documentation and testing purposes.</p>
 </section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
-<dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.tui.demo_helpers.create_demo_database">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.tui.demo_helpers.</span></span><span class="sig-name descname"><span class="pre">create_demo_database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/tui/demo_helpers.html#create_demo_database"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.tui.demo_helpers.create_demo_database" title="Link to this definition">#</a></dt>
-<dd><p>Create a reproducible demo database with sample instruments.</p>
-<p>Creates a SQLite database with 10 sample instruments representing different
-configurations and use cases. This database is used for:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">nexusLIMS.tui.apps.db_browser.</span></span><span class="sig-name descname"><span class="pre">NexusLIMSTableViewerPane</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/tui/apps/db_browser.html#NexusLIMSTableViewerPane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">textual.widgets.TabPane</span></code></p>
+<p>Table viewer with live full-text filter and sortable column headers.</p>
+<p>All filtering and sorting is performed via parameterised SQL queries
+so they compose naturally and the database is never modified.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane.DEFAULT_CSS">
+<span class="sig-name descname"><span class="pre">DEFAULT_CSS</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Multiline-String&gt;</span></span><a class="headerlink" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane.DEFAULT_CSS" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane.compose">
+<span class="sig-name descname"><span class="pre">compose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">textual.app.ComposeResult</span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/tui/apps/db_browser.html#NexusLIMSTableViewerPane.compose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane.compose" title="Link to this definition">#</a></dt>
+<dd><p>Build the table viewer layout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane.on_mount">
+<span class="sig-name descname"><span class="pre">on_mount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/tui/apps/db_browser.html#NexusLIMSTableViewerPane.on_mount"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane.on_mount" title="Link to this definition">#</a></dt>
+<dd><p>Load the initial table on mount.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">nexusLIMS.tui.apps.db_browser.</span></span><span class="sig-name descname"><span class="pre">NexusLIMSDBApp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cli_args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/argparse.html#argparse.Namespace" title="(in Python v3.11)"><span class="pre">Namespace</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/tui/apps/db_browser.html#NexusLIMSDBApp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">squall.squall.SQLiteClientApp</span></code></p>
+<p>Read-only NexusLIMS database browser.</p>
+<p>Extends Squall’s <code class="docutils literal notranslate"><span class="pre">SQLiteClientApp</span></code> with:</p>
 <ul class="simple">
-<li><p>Documentation screenshots and recordings</p></li>
-<li><p>TUI testing with realistic data</p></li>
-<li><p>User guide examples</p></li>
+<li><p>The “Open Database” button hidden (path always comes from <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code>)</p></li>
+<li><p>The “Execute SQL” tab removed to prevent accidental modifications</p></li>
+<li><p>The Table Viewer replaced with <a class="reference internal" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane" title="nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane"><code class="xref py py-class docutils literal notranslate"><span class="pre">NexusLIMSTableViewerPane</span></code></a>, which
+adds a live filter input and sortable column headers</p></li>
 </ul>
-<p>The function also sets NX_DB_PATH to the created database and refreshes
-the configuration.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>db_path</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><em>Path</em></a>) – Path where the demo database should be created. Will be overwritten
-if it already exists.</p>
-</dd>
-</dl>
-<p><strong>Examples:</strong></p>
-<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">create_demo_database</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/tmp/demo.db&quot;</span><span class="p">))</span>
-</pre></div>
-</div>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp.CSS_PATH">
+<span class="sig-name descname"><span class="pre">CSS_PATH</span></span><a class="headerlink" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp.CSS_PATH" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp.DEFAULT_CSS">
+<span class="sig-name descname"><span class="pre">DEFAULT_CSS</span></span><a class="headerlink" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp.DEFAULT_CSS" title="Link to this definition">#</a></dt>
+<dd><p>‘#center { display: none; }’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp.update_ui">
+<span class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">update_ui</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/tui/apps/db_browser.html#NexusLIMSDBApp.update_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp.update_ui" title="Link to this definition">#</a></dt>
+<dd><p>Load the database into the read-only browser tabs.</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -567,20 +621,20 @@ if it already exists.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="nexusLIMS.tui.apps.db_browser.html"
+       href="nexusLIMS.tui.apps.instruments.validators.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui.apps.db_browser</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui.apps.instruments.validators</span></code></p>
       </div>
     </a>
     <a class="right-next"
-       href="nexusLIMS.exporters.html"
+       href="nexusLIMS.tui.demo_helpers.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui.demo_helpers</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -603,10 +657,22 @@ if it already exists.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage">Usage</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.demo_helpers.create_demo_database"><code class="docutils literal notranslate"><span class="pre">create_demo_database()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane"><code class="docutils literal notranslate"><span class="pre">NexusLIMSTableViewerPane</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane.DEFAULT_CSS"><code class="docutils literal notranslate"><span class="pre">NexusLIMSTableViewerPane.DEFAULT_CSS</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane.compose"><code class="docutils literal notranslate"><span class="pre">NexusLIMSTableViewerPane.compose()</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane.on_mount"><code class="docutils literal notranslate"><span class="pre">NexusLIMSTableViewerPane.on_mount()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp"><code class="docutils literal notranslate"><span class="pre">NexusLIMSDBApp</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp.CSS_PATH"><code class="docutils literal notranslate"><span class="pre">NexusLIMSDBApp.CSS_PATH</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp.DEFAULT_CSS"><code class="docutils literal notranslate"><span class="pre">NexusLIMSDBApp.DEFAULT_CSS</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp.update_ui"><code class="docutils literal notranslate"><span class="pre">NexusLIMSDBApp.update_ui()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -618,7 +684,7 @@ if it already exists.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../../_sources/api/nexusLIMS/nexusLIMS.tui.demo_helpers.md.txt"
+      <li><a href="../../_sources/api/nexusLIMS/nexusLIMS.tui.apps.db_browser.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

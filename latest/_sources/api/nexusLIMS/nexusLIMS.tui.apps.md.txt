@@ -17,3 +17,12 @@
 nexusLIMS.tui.apps.config
 nexusLIMS.tui.apps.instruments
 ```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.tui.apps.db_browser
+```

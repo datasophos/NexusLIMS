@@ -849,6 +849,12 @@ window.addEventListener("load", load);
 <span class="sd">    # Downgrade one migration</span>
 <span class="sd">    nexuslims db downgrade</span>
 
+<span class="sd">    # Browse the database interactively</span>
+<span class="sd">    nexuslims db view</span>
+
+<span class="sd">    # Create a demo database with sample instruments</span>
+<span class="sd">    nexuslims db create-demo [PATH]</span>
+
 <span class="sd">    # Advanced: Run any Alembic command</span>
 <span class="sd">    nexuslims db alembic history --verbose</span>
 
@@ -1313,6 +1319,101 @@ window.addEventListener("load", load);
             <span class="c1"># Clean up the temporary config file</span>
             <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">OSError</span><span class="p">):</span>
                 <span class="n">tmp_config_path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+
+    <span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s2">&quot;create-demo&quot;</span><span class="p">)</span>
+    <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span>
+        <span class="s2">&quot;path&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">dir_okay</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path_type</span><span class="o">=</span><span class="n">Path</span><span class="p">),</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+        <span class="s2">&quot;--force&quot;</span><span class="p">,</span>
+        <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Overwrite the file if it already exists.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_demo</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a demo database pre-populated with sample instruments.</span>
+
+<span class="sd">        Creates a SQLite database containing 10 sample instruments with</span>
+<span class="sd">        diverse configurations, useful for testing the TUI, generating</span>
+<span class="sd">        documentation screenshots, or exploring NexusLIMS without a live</span>
+<span class="sd">        NEMO instance.</span>
+
+<span class="sd">        PATH defaults to a file named ``nexuslims_demo.db`` in the current</span>
+<span class="sd">        working directory when not supplied.</span>
+
+<span class="sd">        \b</span>
+<span class="sd">        Examples:</span>
+<span class="sd">          nexuslims db create-demo</span>
+<span class="sd">          nexuslims db create-demo /tmp/demo.db</span>
+<span class="sd">          nexuslims db create-demo ./my_demo.db --force</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: D301</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.tui.demo_helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_demo_database</span>
+
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;nexuslims_demo.db&quot;</span>
+
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: file already exists at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Use --force to overwrite it.&quot;</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">force</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+        <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating demo database at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="se">\u2026</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">create_demo_database</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\u2713</span><span class="s2"> Demo database created at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="nd">@cli</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">view</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Open a read-only TUI browser for the NexusLIMS database.</span>
+
+<span class="sd">        Launches a Textual-based SQLite browser pointed at the database</span>
+<span class="sd">        configured via NX_DB_PATH.  You can browse tables and inspect rows</span>
+<span class="sd">        across all NexusLIMS tables (instruments, session_log, upload_log,</span>
+<span class="sd">        external_user_identifiers).</span>
+
+<span class="sd">        \b</span>
+<span class="sd">        Keybindings (inside the browser):</span>
+<span class="sd">        ----------------------------------</span>
+<span class="sd">          - Tab / Shift+Tab   Navigate between panels</span>
+<span class="sd">          - Enter             Select / confirm</span>
+<span class="sd">          - q / Ctrl+Q        Quit</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa: D301</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">argparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">Namespace</span>
+
+        <span class="n">db_path_str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;NX_DB_PATH&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">db_path_str</span><span class="p">:</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span>
+                <span class="s2">&quot;Error: NX_DB_PATH environment variable is not set.&quot;</span><span class="p">,</span> <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span>
+                <span class="s2">&quot;Run &#39;nexuslims config edit&#39; or set NX_DB_PATH manually.&quot;</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">db_path_str</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">secho</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Error: Database does not exist at </span><span class="si">{</span><span class="n">db_path_str</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">fg</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span>
+                <span class="n">err</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">click</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="s2">&quot;Run &#39;nexuslims db init&#39; to create the database.&quot;</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.tui.apps.db_browser</span><span class="w"> </span><span class="kn">import</span> <span class="n">NexusLIMSDBApp</span>
+
+        <span class="n">app</span> <span class="o">=</span> <span class="n">NexusLIMSDBApp</span><span class="p">(</span><span class="n">Namespace</span><span class="p">(</span><span class="n">filepath</span><span class="o">=</span><span class="n">db_path_str</span><span class="p">))</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">cli</span>
 
