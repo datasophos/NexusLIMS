@@ -259,6 +259,7 @@ def _create_default_sessions(instrument_keys: list[str]) -> list[dict]:
     - FEI-Titan-TEM: 2018-11-13 (matches Titan_TEM test files)
     - JEOL-JEM-TEM: 2019-07-24 (matches JEOL_TEM test files)
     - TEST-TOOL: 2021-08-02 (matches test tool files)
+    - Tofwerk-pFIB-TOFSIMS: 2025-12-03 (matches Tofwerk_pFIB_TOFSIMS test files)
     """
     from datetime import datetime
 
@@ -284,6 +285,12 @@ def _create_default_sessions(instrument_keys: list[str]) -> list[dict]:
             "start": datetime.fromisoformat("2021-08-02T10:00:00-06:00"),
             "end": datetime.fromisoformat("2021-08-02T18:00:00-06:00"),
             "user": "test_user",
+        },
+        "Tofwerk-pFIB-TOFSIMS": {
+            "session_id": "https://nemo.example.com/api/usage_events/?id=707",
+            "start": datetime.fromisoformat("2025-12-03T10:00:00-05:00"),
+            "end": datetime.fromisoformat("2025-12-03T15:00:00-05:00"),
+            "user": "researcher_e",
         },
     }
 

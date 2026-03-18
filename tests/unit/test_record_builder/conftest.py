@@ -60,6 +60,14 @@ def mock_nemo_reservation_fixture(monkeypatch):
             "sample_pid": "sample-ptni-042",
             "project": "Catalyst Development",
         },
+        "Tofwerk-pFIB-TOFSIMS": {
+            "title": "pFIB-ToF-SIMS depth profiling of multilayer film",
+            "user_name": "Emma Researcher",
+            "purpose": "Characterize elemental distribution in multilayer thin film",
+            "sample_details": "Multilayer thin film on silicon substrate",
+            "sample_pid": "sample-pfib-001",
+            "project": "FIB-SIMS Characterization",
+        },
     }
 
     def mock_res_event_from_session(session):

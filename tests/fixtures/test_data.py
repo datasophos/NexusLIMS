@@ -78,6 +78,17 @@ INSTRUMENTS = {
         "harvester": "nemo",
         "timezone": "America/Denver",
     },
+    "Tofwerk-pFIB-TOFSIMS": {
+        "instrument_pid": "Tofwerk-pFIB-TOFSIMS",
+        "api_url": "https://nemo.example.com/api/tools/?id=7",
+        "calendar_url": "https://nemo.example.com/calendar/tofwerk-pfib/",
+        "location": "Test Building Room 304",
+        "display_name": "Tofwerk pFIB-ToF-SIMS",
+        "property_tag": "TEST-PFIB-001",
+        "filestore_path": "./Tofwerk_pFIB_TOFSIMS",
+        "harvester": "nemo",
+        "timezone": "America/New_York",
+    },
     # Secondary test instrument for NEMO API testing (tool ID 10)
     "test-tool-10": {
         "instrument_pid": "test-tool-10",
@@ -128,6 +139,14 @@ SESSION_DATES = {
         "end": datetime(2021, 8, 2, 18, 0, 0, tzinfo=TZ_MOUNTAIN),
         "user": "test_user",
         "session_id": "https://nemo.example.com/api/usage_events/?id=505",
+    },
+    # Tofwerk pFIB-ToF-SIMS session (2025-12-03) - matches files in Tofwerk_pFIB_TOFSIMS
+    # archive
+    "Tofwerk-pFIB-TOFSIMS": {
+        "start": datetime(2025, 12, 3, 10, 0, 0, tzinfo=TZ_EASTERN),
+        "end": datetime(2025, 12, 3, 15, 0, 0, tzinfo=TZ_EASTERN),
+        "user": "researcher_e",
+        "session_id": "https://nemo.example.com/api/usage_events/?id=707",
     },
     "test-tool-10": {
         "start": datetime(2021, 9, 15, 11, 0, 0, tzinfo=TZ_MOUNTAIN),

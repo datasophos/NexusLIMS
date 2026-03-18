@@ -3,6 +3,10 @@
 import pytest
 
 from nexusLIMS import instruments
+from tests.unit.test_extractors.generate_tofwerk_test_files import (
+    make_opened_fixture,
+    make_raw_fixture,
+)
 
 
 def get_field(metadata, field_name, index=0):
@@ -68,3 +72,19 @@ def _fixture_titan_643_tem_db(monkeypatch):
         "nexusLIMS.extractors.digital_micrograph.get_instr_from_filepath",
         lambda _x: instruments.instrument_db["FEI-Titan-STEM"],
     )
+
+
+@pytest.fixture
+def tofwerk_raw_file(tmp_path):
+    """Generate a raw Tofwerk fibTOF HDF5 fixture in tmp_path."""
+    p = tmp_path / "fib_sims_raw.h5"
+    make_raw_fixture(p)
+    return p
+
+
+@pytest.fixture
+def tofwerk_opened_file(tmp_path):
+    """Generate an opened Tofwerk fibTOF HDF5 fixture in tmp_path."""
+    p = tmp_path / "fib_sims_opened.h5"
+    make_opened_fixture(p)
+    return p
