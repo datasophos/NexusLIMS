@@ -40,6 +40,15 @@ XSLT stylesheets transform raw XML into human-readable HTML:
 - **Preview images** display inline from the file server
 - **Links to raw data** for downloading original instrument files
 
+### Dataset Annotation
+
+Authenticated users can add free-text descriptions to individual datasets within a record:
+
+- **Annotate Record** button on the detail page opens a slide-in panel
+- Datasets are grouped by acquisition activity with preview thumbnails
+- Descriptions are stored directly in the XML record and appear in the dataset metadata modal
+- Controlled by the `NX_ENABLE_ANNOTATOR` feature flag (enabled by default)
+
 ### RESTful API
 
 Full programmatic access to CDCS functionality:
