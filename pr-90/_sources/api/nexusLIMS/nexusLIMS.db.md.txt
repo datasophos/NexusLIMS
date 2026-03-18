@@ -1,0 +1,30 @@
+# {py:mod}`nexusLIMS.db`
+
+```{py:module} nexusLIMS.db
+```
+
+```{autodoc2-docstring} nexusLIMS.db
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Subpackages
+
+```{toctree}
+:titlesonly:
+:maxdepth: 3
+
+nexusLIMS.db.migrations
+```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.db.models
+nexusLIMS.db.engine
+nexusLIMS.db.enums
+nexusLIMS.db.session_handler
+```
