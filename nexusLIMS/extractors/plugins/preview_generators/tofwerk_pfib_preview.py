@@ -421,9 +421,12 @@ def _generate_preview(  # noqa: PLR0912, PLR0915
         rgb_channels = []
         for i in range(n_top):
             rgb_channels.append(_norm_channel(spatial[:, :, top_idx[i]]))
-        # Pad to 3 channels if fewer than 3 peaks
+        # Pad to 3 channels if fewer than 3 peaks above min_mass
+        _zero_channel = np.zeros((ny, nx), dtype=float)
         while len(rgb_channels) < _N_RGB_CHANNELS:
-            rgb_channels.append(np.zeros_like(rgb_channels[0]))
+            rgb_channels.append(
+                np.zeros_like(rgb_channels[0]) if rgb_channels else _zero_channel
+            )
         rgb = np.stack(rgb_channels, axis=2)
         writes = np.arange(nwrites_pk) + 1
         mode_str = "Processed"
@@ -579,8 +582,10 @@ def _generate_preview(  # noqa: PLR0912, PLR0915
     ax_dep.grid(visible=True, linestyle="--", alpha=0.4)
     if len(writes) > 0:
         ax_dep.set_xlim(writes[0] - 0.5, writes[-1] + 0.5)
-    if has_peaks:
+    if has_peaks and len(top_idx) > 0:
         all_counts = np.concatenate([depth_prof[:, i] for i in top_idx])
+    elif has_peaks:
+        all_counts = depth_prof.sum(axis=1)
     else:
         all_counts = depth_counts
     if len(all_counts) > 0:
