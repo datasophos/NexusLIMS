@@ -327,7 +327,7 @@ class TofwerkPfibPreviewGenerator:
         try:
             output_path.parent.mkdir(parents=True, exist_ok=True)
             _generate_preview(str(context.file_path), output_path)
-            _pad_to_square(output_path, new_width=500)
+            _pad_to_square(output_path, new_width=1500)
         except Exception:
             _logger.exception("Failed to generate preview for %s", context.file_path)
             return False
@@ -555,7 +555,11 @@ def _generate_preview(  # noqa: PLR0912, PLR0915
             ax_dep.plot(writes, depth_prof[:, pidx], fmt, **kw)
         ax_dep.set_title("Depth Profiles\n(top 3 mass channels)", fontsize=9)
         ax_dep.set_ylabel("Integrated counts", fontsize=8)
-        ax_dep.legend(fontsize=7, framealpha=0.7)
+        if any(
+            a.get_label() and not a.get_label().startswith("_")
+            for a in ax_dep.get_lines()
+        ):
+            ax_dep.legend(fontsize=7, framealpha=0.7)
     else:
         kw = {"color": "steelblue", "linewidth": lw}
         if ms:
@@ -609,7 +613,11 @@ def _generate_preview(  # noqa: PLR0912, PLR0915
             "Summed Mass Spectrum -- top 3 peak integration windows highlighted",
             fontsize=9,
         )
-        ax_spec.legend(fontsize=7, framealpha=0.7)
+        if any(
+            a.get_label() and not a.get_label().startswith("_")
+            for a in ax_spec.get_lines()
+        ):  # pragma: no cover
+            ax_spec.legend(fontsize=7, framealpha=0.7)
     else:
         ax_spec.set_title(
             "Summed Mass Spectrum (all pixels, all depth slices)", fontsize=9

@@ -94,8 +94,8 @@ class TofwerkPfibExtractor:
                 _extract_spectral_params(f, nx_meta)
                 _extract_acquisition_params(f, nx_meta)
 
-                variant = "opened" if "PeakData/PeakData" in f else "raw"
-                add_to_extensions(nx_meta, "file_variant", variant)
+                variant = "pre-processed" if "PeakData/PeakData" in f else "raw"
+                add_to_extensions(nx_meta, "File Variant", variant)
 
         except Exception:
             _logger.exception("Failed to extract metadata from %s", context.file_path)
@@ -154,7 +154,7 @@ def _extract_fib_params(f: h5py.File, nx_meta: dict) -> None:
 
     fib_hw = _read_attr_scalar(fibparams, "FibHardware")
     if fib_hw is not None:
-        add_to_extensions(nx_meta, "fib_hardware", fib_hw)
+        add_to_extensions(nx_meta, "FIB Hardware", fib_hw)
 
     voltage = _read_attr_scalar(fibparams, "Voltage")
     if voltage is not None:
@@ -211,7 +211,7 @@ def _extract_spatial_dims(f: h5py.File, nx_meta: dict) -> None:
         nx_meta["Data Dimensions"] = f"({int(nwrites)}, {int(nsegs)}, {int(nx)})"
 
     if nbr_peaks is not None:
-        add_to_extensions(nx_meta, "number_of_peaks", int(nbr_peaks))
+        add_to_extensions(nx_meta, "Number of Peaks", int(nbr_peaks))
 
     # Pixel size from FIBParams.ViewField (mm) / nx
     with contextlib.suppress(Exception):
@@ -220,7 +220,7 @@ def _extract_spatial_dims(f: h5py.File, nx_meta: dict) -> None:
             pixel_size_um = (view_field_mm * 1e3) / int(nx)
             add_to_extensions(
                 nx_meta,
-                "pixel_size",
+                "Pixel Size",
                 ureg.Quantity(pixel_size_um, "micrometer"),
             )
 
@@ -229,29 +229,37 @@ def _extract_spectral_params(f: h5py.File, nx_meta: dict) -> None:
     """Extract spectral (mass axis) parameters."""
     with contextlib.suppress(Exception):
         mass_axis = f["FullSpectra/MassAxis"][:]
-        add_to_extensions(nx_meta, "mass_range_min_Da", float(mass_axis.min()))
-        add_to_extensions(nx_meta, "mass_range_max_Da", float(mass_axis.max()))
+        add_to_extensions(
+            nx_meta,
+            "Mass Range Minimum",
+            ureg.Quantity(float(mass_axis.min()), "dalton"),
+        )
+        add_to_extensions(
+            nx_meta,
+            "Mass Range Maximum",
+            ureg.Quantity(float(mass_axis.max()), "dalton"),
+        )
 
 
 def _extract_acquisition_params(f: h5py.File, nx_meta: dict) -> None:
     """Extract acquisition-wide parameters from root attributes and FibParams."""
     ion_mode = _read_attr_scalar(f, "IonMode")
     if ion_mode is not None:
-        add_to_extensions(nx_meta, "ion_mode", ion_mode)
+        add_to_extensions(nx_meta, "Ion Mode", ion_mode)
 
     gui_version = _read_attr_scalar(f, "FiblysGUIVersion")
     if gui_version is not None:
-        add_to_extensions(nx_meta, "fiblys_gui_version", gui_version)
+        add_to_extensions(nx_meta, "FibLys GUI Version", gui_version)
 
     daq_version = _read_attr_scalar(f, "TofDAQ Version")
     if daq_version is not None:
-        add_to_extensions(nx_meta, "tofdac_version", str(daq_version))
+        add_to_extensions(nx_meta, "TofDAQ Version", str(daq_version))
 
     # Chamber pressure — mean over all writes
     with contextlib.suppress(Exception):
         pressure_data = f["FibParams/FibPressure/TwData"][:]
         add_to_extensions(
             nx_meta,
-            "chamber_pressure",
+            "Chamber Pressure",
             ureg.Quantity(float(pressure_data.mean()), "pascal"),
         )

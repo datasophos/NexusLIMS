@@ -146,7 +146,7 @@ class TestTofwerkPfibExtractorExtract:
         assert "extensions" in nx_meta
         ext_keys = set(nx_meta["extensions"].keys())
         # These must be in extensions, not top-level
-        for key in ("fib_hardware", "accelerating_voltage", "ion_mode", "file_variant"):
+        for key in ("FIB Hardware", "accelerating_voltage", "Ion Mode", "File Variant"):
             assert key in ext_keys, f"Expected '{key}' in extensions"
             assert key not in nx_meta, f"'{key}' should not be at top level of nx_meta"
 
@@ -168,33 +168,33 @@ class TestTofwerkPfibExtractorExtract:
     def test_pixel_size_derived_correctly(self, tofwerk_raw_file):
         ext = TofwerkPfibExtractor()
         result = ext.extract(_make_context(tofwerk_raw_file))
-        pixel_size = _get_ext(result, "pixel_size")
+        pixel_size = _get_ext(result, "Pixel Size")
         # 0.01 mm * 1000 / 16 pixels = 0.625 um/pixel
         assert abs(float(pixel_size.magnitude) - 0.625) < 1e-6
 
     def test_mass_range_present(self, tofwerk_raw_file):
         ext = TofwerkPfibExtractor()
         result = ext.extract(_make_context(tofwerk_raw_file))
-        assert "mass_range_min_Da" in result[0]["nx_meta"]["extensions"]
-        assert "mass_range_max_Da" in result[0]["nx_meta"]["extensions"]
-        assert _get_ext(result, "mass_range_max_Da") > _get_ext(
-            result, "mass_range_min_Da"
+        assert "Mass Range Minimum" in result[0]["nx_meta"]["extensions"]
+        assert "Mass Range Maximum" in result[0]["nx_meta"]["extensions"]
+        assert _get_ext(result, "Mass Range Maximum") > _get_ext(
+            result, "Mass Range Minimum"
         )
 
     def test_file_variant_raw(self, tofwerk_raw_file):
         ext = TofwerkPfibExtractor()
         result = ext.extract(_make_context(tofwerk_raw_file))
-        assert _get_ext(result, "file_variant") == "raw"
+        assert _get_ext(result, "File Variant") == "raw"
 
     def test_file_variant_opened(self, tofwerk_opened_file):
         ext = TofwerkPfibExtractor()
         result = ext.extract(_make_context(tofwerk_opened_file))
-        assert _get_ext(result, "file_variant") == "opened"
+        assert _get_ext(result, "File Variant") == "pre-processed"
 
     def test_chamber_pressure_extracted(self, tofwerk_raw_file):
         ext = TofwerkPfibExtractor()
         result = ext.extract(_make_context(tofwerk_raw_file))
-        pressure = _get_ext(result, "chamber_pressure")
+        pressure = _get_ext(result, "Chamber Pressure")
         # Fixture sets pressure to 1.7e-4 Pa
         assert abs(float(pressure.magnitude) - 1.7e-4) < 1e-9
         assert "pascal" in str(pressure.units)
@@ -202,12 +202,12 @@ class TestTofwerkPfibExtractorExtract:
     def test_ion_mode_extracted(self, tofwerk_raw_file):
         ext = TofwerkPfibExtractor()
         result = ext.extract(_make_context(tofwerk_raw_file))
-        assert _get_ext(result, "ion_mode") == "positive"
+        assert _get_ext(result, "Ion Mode") == "positive"
 
     def test_fib_hardware_extracted(self, tofwerk_raw_file):
         ext = TofwerkPfibExtractor()
         result = ext.extract(_make_context(tofwerk_raw_file))
-        assert _get_ext(result, "fib_hardware") == "Tescan"
+        assert _get_ext(result, "FIB Hardware") == "Tescan"
 
     def test_no_exception_on_corrupted_file(self, tmp_path):
         """extract() must not raise even for malformed/empty HDF5-like files."""
@@ -273,23 +273,23 @@ class TestTofwerkPfibPreviewGeneratorGenerate:
         assert result is True
         assert out.exists()
 
-    def test_output_is_500x500(self, tofwerk_raw_file, tmp_path):
+    def test_output_is_1500x1500(self, tofwerk_raw_file, tmp_path):
         from PIL import Image
 
         gen = TofwerkPfibPreviewGenerator()
         out = tmp_path / "preview.png"
         gen.generate(_make_context(tofwerk_raw_file), out)
         with Image.open(out) as img:
-            assert img.size == (500, 500)
+            assert img.size == (1500, 1500)
 
-    def test_output_is_500x500_opened(self, tofwerk_opened_file, tmp_path):
+    def test_output_is_1500x1500_opened(self, tofwerk_opened_file, tmp_path):
         from PIL import Image
 
         gen = TofwerkPfibPreviewGenerator()
         out = tmp_path / "preview_opened.png"
         gen.generate(_make_context(tofwerk_opened_file), out)
         with Image.open(out) as img:
-            assert img.size == (500, 500)
+            assert img.size == (1500, 1500)
 
     def test_generate_returns_false_on_bad_file(self, tmp_path):
         p = tmp_path / "bad.h5"
