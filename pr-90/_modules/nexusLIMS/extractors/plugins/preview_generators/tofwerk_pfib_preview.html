@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-90" />
-    <meta name="docbuild:last-update" content="Mar, 18, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 19, 2026"/>
   </head>
   
   
@@ -1160,7 +1160,7 @@ window.addEventListener("load", load);
         <span class="k">try</span><span class="p">:</span>
             <span class="n">output_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">_generate_preview</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">),</span> <span class="n">output_path</span><span class="p">)</span>
-            <span class="n">_pad_to_square</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">new_width</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+            <span class="n">_pad_to_square</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">new_width</span><span class="o">=</span><span class="mi">1500</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to generate preview for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -1256,9 +1256,12 @@ window.addEventListener("load", load);
         <span class="n">rgb_channels</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_top</span><span class="p">):</span>
             <span class="n">rgb_channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_norm_channel</span><span class="p">(</span><span class="n">spatial</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">top_idx</span><span class="p">[</span><span class="n">i</span><span class="p">]]))</span>
-        <span class="c1"># Pad to 3 channels if fewer than 3 peaks</span>
+        <span class="c1"># Pad to 3 channels if fewer than 3 peaks above min_mass</span>
+        <span class="n">_zero_channel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">rgb_channels</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">_N_RGB_CHANNELS</span><span class="p">:</span>
-            <span class="n">rgb_channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">rgb_channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">rgb_channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">rgb_channels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">if</span> <span class="n">rgb_channels</span> <span class="k">else</span> <span class="n">_zero_channel</span>
+            <span class="p">)</span>
         <span class="n">rgb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">rgb_channels</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">writes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nwrites_pk</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="n">mode_str</span> <span class="o">=</span> <span class="s2">&quot;Processed&quot;</span>
@@ -1387,7 +1390,11 @@ window.addEventListener("load", load);
             <span class="n">ax_dep</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">writes</span><span class="p">,</span> <span class="n">depth_prof</span><span class="p">[:,</span> <span class="n">pidx</span><span class="p">],</span> <span class="n">fmt</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
         <span class="n">ax_dep</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Depth Profiles</span><span class="se">\n</span><span class="s2">(top 3 mass channels)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
         <span class="n">ax_dep</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Integrated counts&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-        <span class="n">ax_dep</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">framealpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">get_label</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">a</span><span class="o">.</span><span class="n">get_label</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ax_dep</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="n">ax_dep</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">framealpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">kw</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="s2">&quot;linewidth&quot;</span><span class="p">:</span> <span class="n">lw</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">ms</span><span class="p">:</span>
@@ -1414,8 +1421,10 @@ window.addEventListener("load", load);
     <span class="n">ax_dep</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">writes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">ax_dep</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">writes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">writes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">has_peaks</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">has_peaks</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">top_idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">all_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">depth_prof</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">top_idx</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">has_peaks</span><span class="p">:</span>
+        <span class="n">all_counts</span> <span class="o">=</span> <span class="n">depth_prof</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">all_counts</span> <span class="o">=</span> <span class="n">depth_counts</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_counts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -1439,7 +1448,11 @@ window.addEventListener("load", load);
             <span class="s2">&quot;Summed Mass Spectrum -- top 3 peak integration windows highlighted&quot;</span><span class="p">,</span>
             <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">ax_spec</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">framealpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">get_label</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">a</span><span class="o">.</span><span class="n">get_label</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ax_spec</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()</span>
+        <span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">ax_spec</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">framealpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ax_spec</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
             <span class="s2">&quot;Summed Mass Spectrum (all pixels, all depth slices)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span>

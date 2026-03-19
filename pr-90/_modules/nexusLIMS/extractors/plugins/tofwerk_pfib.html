@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-90" />
-    <meta name="docbuild:last-update" content="Mar, 18, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 19, 2026"/>
   </head>
   
   
@@ -927,8 +927,8 @@ window.addEventListener("load", load);
                 <span class="n">_extract_spectral_params</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">nx_meta</span><span class="p">)</span>
                 <span class="n">_extract_acquisition_params</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">nx_meta</span><span class="p">)</span>
 
-                <span class="n">variant</span> <span class="o">=</span> <span class="s2">&quot;opened&quot;</span> <span class="k">if</span> <span class="s2">&quot;PeakData/PeakData&quot;</span> <span class="ow">in</span> <span class="n">f</span> <span class="k">else</span> <span class="s2">&quot;raw&quot;</span>
-                <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;file_variant&quot;</span><span class="p">,</span> <span class="n">variant</span><span class="p">)</span>
+                <span class="n">variant</span> <span class="o">=</span> <span class="s2">&quot;pre-processed&quot;</span> <span class="k">if</span> <span class="s2">&quot;PeakData/PeakData&quot;</span> <span class="ow">in</span> <span class="n">f</span> <span class="k">else</span> <span class="s2">&quot;raw&quot;</span>
+                <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;File Variant&quot;</span><span class="p">,</span> <span class="n">variant</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to extract metadata from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
@@ -989,7 +989,7 @@ window.addEventListener("load", load);
 
     <span class="n">fib_hw</span> <span class="o">=</span> <span class="n">_read_attr_scalar</span><span class="p">(</span><span class="n">fibparams</span><span class="p">,</span> <span class="s2">&quot;FibHardware&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">fib_hw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;fib_hardware&quot;</span><span class="p">,</span> <span class="n">fib_hw</span><span class="p">)</span>
+        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;FIB Hardware&quot;</span><span class="p">,</span> <span class="n">fib_hw</span><span class="p">)</span>
 
     <span class="n">voltage</span> <span class="o">=</span> <span class="n">_read_attr_scalar</span><span class="p">(</span><span class="n">fibparams</span><span class="p">,</span> <span class="s2">&quot;Voltage&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">voltage</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1046,7 +1046,7 @@ window.addEventListener("load", load);
         <span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;Data Dimensions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">nwrites</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">nsegs</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span><span class="si">}</span><span class="s2">)&quot;</span>
 
     <span class="k">if</span> <span class="n">nbr_peaks</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;number_of_peaks&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">nbr_peaks</span><span class="p">))</span>
+        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;Number of Peaks&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">nbr_peaks</span><span class="p">))</span>
 
     <span class="c1"># Pixel size from FIBParams.ViewField (mm) / nx</span>
     <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
@@ -1055,7 +1055,7 @@ window.addEventListener("load", load);
             <span class="n">pixel_size_um</span> <span class="o">=</span> <span class="p">(</span><span class="n">view_field_mm</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">)</span> <span class="o">/</span> <span class="nb">int</span><span class="p">(</span><span class="n">nx</span><span class="p">)</span>
             <span class="n">add_to_extensions</span><span class="p">(</span>
                 <span class="n">nx_meta</span><span class="p">,</span>
-                <span class="s2">&quot;pixel_size&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Pixel Size&quot;</span><span class="p">,</span>
                 <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">pixel_size_um</span><span class="p">,</span> <span class="s2">&quot;micrometer&quot;</span><span class="p">),</span>
             <span class="p">)</span>
 
@@ -1064,30 +1064,38 @@ window.addEventListener("load", load);
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract spectral (mass axis) parameters.&quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
         <span class="n">mass_axis</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;FullSpectra/MassAxis&quot;</span><span class="p">][:]</span>
-        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;mass_range_min_Da&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">mass_axis</span><span class="o">.</span><span class="n">min</span><span class="p">()))</span>
-        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;mass_range_max_Da&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">mass_axis</span><span class="o">.</span><span class="n">max</span><span class="p">()))</span>
+        <span class="n">add_to_extensions</span><span class="p">(</span>
+            <span class="n">nx_meta</span><span class="p">,</span>
+            <span class="s2">&quot;Mass Range Minimum&quot;</span><span class="p">,</span>
+            <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">mass_axis</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span> <span class="s2">&quot;dalton&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="n">add_to_extensions</span><span class="p">(</span>
+            <span class="n">nx_meta</span><span class="p">,</span>
+            <span class="s2">&quot;Mass Range Maximum&quot;</span><span class="p">,</span>
+            <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">mass_axis</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span> <span class="s2">&quot;dalton&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_extract_acquisition_params</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">,</span> <span class="n">nx_meta</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract acquisition-wide parameters from root attributes and FibParams.&quot;&quot;&quot;</span>
     <span class="n">ion_mode</span> <span class="o">=</span> <span class="n">_read_attr_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;IonMode&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ion_mode</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;ion_mode&quot;</span><span class="p">,</span> <span class="n">ion_mode</span><span class="p">)</span>
+        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;Ion Mode&quot;</span><span class="p">,</span> <span class="n">ion_mode</span><span class="p">)</span>
 
     <span class="n">gui_version</span> <span class="o">=</span> <span class="n">_read_attr_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;FiblysGUIVersion&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">gui_version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;fiblys_gui_version&quot;</span><span class="p">,</span> <span class="n">gui_version</span><span class="p">)</span>
+        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;FibLys GUI Version&quot;</span><span class="p">,</span> <span class="n">gui_version</span><span class="p">)</span>
 
     <span class="n">daq_version</span> <span class="o">=</span> <span class="n">_read_attr_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;TofDAQ Version&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">daq_version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;tofdac_version&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">daq_version</span><span class="p">))</span>
+        <span class="n">add_to_extensions</span><span class="p">(</span><span class="n">nx_meta</span><span class="p">,</span> <span class="s2">&quot;TofDAQ Version&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">daq_version</span><span class="p">))</span>
 
     <span class="c1"># Chamber pressure — mean over all writes</span>
     <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
         <span class="n">pressure_data</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;FibParams/FibPressure/TwData&quot;</span><span class="p">][:]</span>
         <span class="n">add_to_extensions</span><span class="p">(</span>
             <span class="n">nx_meta</span><span class="p">,</span>
-            <span class="s2">&quot;chamber_pressure&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Chamber Pressure&quot;</span><span class="p">,</span>
             <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">pressure_data</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span> <span class="s2">&quot;pascal&quot;</span><span class="p">),</span>
         <span class="p">)</span>
 </pre></div>
