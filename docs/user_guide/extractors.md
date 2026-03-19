@@ -394,7 +394,7 @@ The extractor flags the following fields as potentially unreliable:
 
 **Description**: HDF5 files produced by the Tofwerk fibTOF time-of-flight secondary ion mass
 spectrometry (ToF-SIMS) system integrated with a Tescan plasma focused ion beam (pFIB). Two
-variants exist: raw files (acquired directly by TofDAQ, containing raw event lists) and opened/processed
+variants exist: raw files (acquired directly by TofDAQ, containing raw event lists) and pre-processed
 files (post-processed in Tofwerk software, containing integrated peak intensities).
 
 **Extractor Module**: {py:mod}`nexusLIMS.extractors.plugins.tofwerk_pfib`
@@ -414,10 +414,10 @@ with other HDF5-based formats).
 
 **Two File Variants**:
 
-- **Raw** (`file_variant = "raw"`): Contains `FullSpectra/EventList` (variable-length uint16 array
+- **Raw** (`File Variant = "raw"`): Contains `FullSpectra/EventList` (variable-length uint16 array
   of ion arrival times per pixel). No `PeakData/PeakData` dataset present. This is the file type
   written during acquisition.
-- **Opened** (`file_variant = "opened"`): Contains `PeakData/PeakData` (float32 array of integrated
+- **Pre-processed** (`File Variant = "pre-processed"`): Contains `PeakData/PeakData` (float32 array of integrated
   peak intensities, shape `NbrWrites × NbrSegments × NbrX × NbrPeaks`). Created by post-processing
   in the Tofwerk software. The raw `EventList` is not present.
 
@@ -436,7 +436,7 @@ with other HDF5-based formats).
 - Ion mode (positive or negative)
 - Chamber pressure (Pa, mean over all writes from `FibParams/FibPressure/TwData`)
 - Fiblys GUI version and TofDAQ DAQ version
-- File variant (raw vs. opened)
+- File variant (raw vs. pre-processed)
 
 All vendor-specific fields are stored in `nx_meta["extensions"]`.
 
@@ -446,7 +446,7 @@ All vendor-specific fields are stored in `nx_meta["extensions"]`.
 
 **Preview Generation**:
 
-The preview generator produces a composite 500×500 px PNG with a layout that differs by file variant:
+The preview generator produces a composite 1500×1500 px PNG with a layout that differs by file variant:
 
 *Raw file layout* (2-row grid):
 
@@ -455,7 +455,7 @@ The preview generator produces a composite 500×500 px PNG with a layout that di
 [     Sum mass spectrum (full width, 3 cols)       ]
 ```
 
-*Opened file layout* (2-row grid):
+*Pre-processed file layout* (2-row grid):
 
 ```
 [ FIB SE image ]  [ TIC map ]     [ RGB composite (top 3 peaks) ]
@@ -468,7 +468,7 @@ The preview generator produces a composite 500×500 px PNG with a layout that di
 - **Depth profile**: Total ion signal vs. sputter write index
 - **Sum mass spectrum**: `FullSpectra/SumSpectrum` with ion species annotated (top-N peaks ≥ 2 Da
   apart, log y-scale, positive/negative ion tables)
-- **RGB composite** (opened only): Top 3 peaks by total counts, displayed as R/G/B channels with
+- **RGB composite** (pre-processed only): Top 3 peaks by total counts, displayed as R/G/B channels with
   percentile clipping
 
 **Notes**:
