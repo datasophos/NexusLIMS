@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Mar, 07, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 20, 2026"/>
   </head>
   
   
@@ -542,19 +542,25 @@ each format.</p>
 <td><p>EDS Spectrum</p></td>
 <td><p>EMSA/MAS standard format, vendor extensions supported</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#image-formats">Various (exported images)</a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tofwerk-fibtof-pfib-tof-sims-files-h5">Tofwerk fibTOF pFIB-ToF-SIMS</a></p></td>
+<td><p>.h5</p></td>
+<td><p>✅ Full</p></td>
+<td><p>pFIB-ToF-SIMS Spectrum Image</p></td>
+<td><p>FIB parameters, mass range, TIC map, ion depth profiles, composite preview</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#image-formats">Various (exported images)</a></p></td>
 <td><p>.png, .jpg, .tiff, .bmp, .gif</p></td>
 <td><p>⚠️ Preview</p></td>
 <td><p>Unknown</p></td>
 <td><p>Basic metadata, square thumbnail generation</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#text-files-txt">Various (logs, notes)</a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#text-files-txt">Various (logs, notes)</a></p></td>
 <td><p>.txt</p></td>
 <td><p>⚠️ Preview</p></td>
 <td><p>Unknown</p></td>
 <td><p>Basic metadata, text-to-image preview</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#unknown-files">Unknown Files</a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#unknown-files">Unknown Files</a></p></td>
 <td><p><em>others</em></p></td>
 <td><p>❌ Minimal</p></td>
 <td><p>Unknown</p></td>
@@ -914,12 +920,93 @@ each format.</p>
 </ul>
 </section>
 </section>
+<section id="tofwerk-fibtof-pfib-tof-sims-files-h5">
+<span id="id6"></span><h3>Tofwerk fibTOF pFIB-ToF-SIMS Files (.h5)<a class="headerlink" href="#tofwerk-fibtof-pfib-tof-sims-files-h5" title="Link to this heading">#</a></h3>
+<p><strong>Support Level</strong>: ✅ Full</p>
+<p><strong>Description</strong>: HDF5 files produced by the Tofwerk fibTOF time-of-flight secondary ion mass
+spectrometry (ToF-SIMS) system integrated with a Tescan plasma focused ion beam (pFIB). Two
+variants exist: raw files (acquired directly by TofDAQ, containing raw event lists) and pre-processed
+files (post-processed in Tofwerk software, containing integrated peak intensities).</p>
+<p><strong>Extractor Module</strong>: <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.tofwerk_pfib.html#module-nexusLIMS.extractors.plugins.tofwerk_pfib" title="nexusLIMS.extractors.plugins.tofwerk_pfib"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.tofwerk_pfib</span></code></a></p>
+<p><strong>Preview Generator</strong>: <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview.html#module-nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview" title="nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview</span></code></a></p>
+<p><strong>File Format Detection</strong>:</p>
+<p>The extractor uses content sniffing to identify Tofwerk fibTOF files by checking for all of:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FullSpectra/SumSpectrum</span></code> HDF5 dataset</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FIBParams</span></code> HDF5 group</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FIBImages</span></code> HDF5 group</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TofDAQ</span> <span class="pre">Version</span></code> root attribute</p></li>
+</ul>
+<p>This ensures correct identification without relying on the <code class="docutils literal notranslate"><span class="pre">.h5</span></code> extension alone (which is shared
+with other HDF5-based formats).</p>
+<p><strong>Two File Variants</strong>:</p>
+<ul class="simple">
+<li><p><strong>Raw</strong> (<code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">Variant</span> <span class="pre">=</span> <span class="pre">&quot;raw&quot;</span></code>): Contains <code class="docutils literal notranslate"><span class="pre">FullSpectra/EventList</span></code> (variable-length uint16 array
+of ion arrival times per pixel). No <code class="docutils literal notranslate"><span class="pre">PeakData/PeakData</span></code> dataset present. This is the file type
+written during acquisition.</p></li>
+<li><p><strong>Pre-processed</strong> (<code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">Variant</span> <span class="pre">=</span> <span class="pre">&quot;pre-processed&quot;</span></code>): Contains <code class="docutils literal notranslate"><span class="pre">PeakData/PeakData</span></code> (float32 array of integrated
+peak intensities, shape <code class="docutils literal notranslate"><span class="pre">NbrWrites</span> <span class="pre">×</span> <span class="pre">NbrSegments</span> <span class="pre">×</span> <span class="pre">NbrX</span> <span class="pre">×</span> <span class="pre">NbrPeaks</span></code>). Created by post-processing
+in the Tofwerk software. The raw <code class="docutils literal notranslate"><span class="pre">EventList</span></code> is not present.</p></li>
+</ul>
+<p><strong>Key Metadata Extracted</strong>:</p>
+<ul class="simple">
+<li><p>Acquisition creation time (from <code class="docutils literal notranslate"><span class="pre">AcquisitionLog/Log[0]['timestring']</span></code>, which includes timezone;
+falls back to <code class="docutils literal notranslate"><span class="pre">HDF5</span> <span class="pre">File</span> <span class="pre">Creation</span> <span class="pre">Time</span></code> root attribute or file mtime)</p></li>
+<li><p>FIB hardware vendor (e.g., Tescan)</p></li>
+<li><p>Accelerating voltage (kV)</p></li>
+<li><p>Beam current (A)</p></li>
+<li><p>Field of view (mm, from <code class="docutils literal notranslate"><span class="pre">FIBParams.ViewField</span></code>)</p></li>
+<li><p>Pixel size (µm/pixel, derived as <code class="docutils literal notranslate"><span class="pre">ViewField_mm</span> <span class="pre">×</span> <span class="pre">1e3</span> <span class="pre">/</span> <span class="pre">NbrX</span></code>)</p></li>
+<li><p>Data dimensions (<code class="docutils literal notranslate"><span class="pre">NbrWrites</span> <span class="pre">×</span> <span class="pre">NbrSegments</span> <span class="pre">×</span> <span class="pre">NbrX</span></code> sputter depth × Y × X pixels)</p></li>
+<li><p>Number of peaks in the peak table</p></li>
+<li><p>Mass range minimum and maximum (Da, from <code class="docutils literal notranslate"><span class="pre">FullSpectra/MassAxis</span></code>)</p></li>
+<li><p>Ion mode (positive or negative)</p></li>
+<li><p>Chamber pressure (Pa, mean over all writes from <code class="docutils literal notranslate"><span class="pre">FibParams/FibPressure/TwData</span></code>)</p></li>
+<li><p>Fiblys GUI version and TofDAQ DAQ version</p></li>
+<li><p>File variant (raw vs. pre-processed)</p></li>
+</ul>
+<p>All vendor-specific fields are stored in <code class="docutils literal notranslate"><span class="pre">nx_meta[&quot;extensions&quot;]</span></code>.</p>
+<p><strong>Data Types Detected</strong>:</p>
+<ul class="simple">
+<li><p>pFIB-ToF-SIMS Spectrum Image (<code class="docutils literal notranslate"><span class="pre">PFIB_TOFSIMS</span></code>)</p></li>
+</ul>
+<p><strong>Preview Generation</strong>:</p>
+<p>The preview generator produces a composite 1500×1500 px PNG with a layout that differs by file variant:</p>
+<p><em>Raw file layout</em> (2-row grid):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="n">FIB</span> <span class="n">SE</span> <span class="n">image</span> <span class="p">]</span>  <span class="p">[</span> <span class="n">TIC</span> <span class="nb">map</span> <span class="p">]</span>     <span class="p">[</span> <span class="n">Depth</span> <span class="n">profile</span> <span class="p">]</span>
+<span class="p">[</span>     <span class="n">Sum</span> <span class="n">mass</span> <span class="n">spectrum</span> <span class="p">(</span><span class="n">full</span> <span class="n">width</span><span class="p">,</span> <span class="mi">3</span> <span class="n">cols</span><span class="p">)</span>       <span class="p">]</span>
+</pre></div>
+</div>
+<p><em>Pre-processed file layout</em> (2-row grid):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="n">FIB</span> <span class="n">SE</span> <span class="n">image</span> <span class="p">]</span>  <span class="p">[</span> <span class="n">TIC</span> <span class="nb">map</span> <span class="p">]</span>     <span class="p">[</span> <span class="n">RGB</span> <span class="n">composite</span> <span class="p">(</span><span class="n">top</span> <span class="mi">3</span> <span class="n">peaks</span><span class="p">)</span> <span class="p">]</span>
+<span class="p">[</span> <span class="n">Sum</span> <span class="n">spectrum</span> <span class="p">(</span><span class="mi">2</span> <span class="n">cols</span><span class="p">)</span> <span class="p">]</span>         <span class="p">[</span> <span class="n">Depth</span> <span class="n">profiles</span> <span class="p">(</span><span class="n">top</span> <span class="mi">3</span> <span class="n">peaks</span><span class="p">)</span> <span class="p">]</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>FIB SE image</strong>: Secondary electron image from the first FIB scan in <code class="docutils literal notranslate"><span class="pre">FIBImages/Image0000</span></code></p></li>
+<li><p><strong>TIC map</strong>: Total ion count map summed across all sputter writes; computed one write at a time
+to avoid loading the full ragged 4D event array into memory</p></li>
+<li><p><strong>Depth profile</strong>: Total ion signal vs. sputter write index</p></li>
+<li><p><strong>Sum mass spectrum</strong>: <code class="docutils literal notranslate"><span class="pre">FullSpectra/SumSpectrum</span></code> with ion species annotated (top-N peaks ≥ 2 Da
+apart, log y-scale, positive/negative ion tables)</p></li>
+<li><p><strong>RGB composite</strong> (pre-processed only): Top 3 peaks by total counts, displayed as R/G/B channels with
+percentile clipping</p></li>
+</ul>
+<p><strong>Notes</strong>:</p>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">FIBParams.ViewField</span></code> attribute is in <strong>millimeters</strong> (not meters); pixel size is derived as
+<code class="docutils literal notranslate"><span class="pre">ViewField_mm</span> <span class="pre">×</span> <span class="pre">1e3</span> <span class="pre">/</span> <span class="pre">NbrX</span></code> µm/pixel</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Configuration</span> <span class="pre">File</span> <span class="pre">Contents</span></code> contains ADC voltage range parameters (<code class="docutils literal notranslate"><span class="pre">Ch*FullScale</span></code>) which are
+<strong>not</strong> spatial dimensions and are not used for pixel size calculation</p></li>
+<li><p>At harvest time, only the raw file is typically available; both variants are fully supported</p></li>
+</ul>
+</section>
 </section>
 <section id="partially-supported-formats">
 <h2>Partially Supported Formats<a class="headerlink" href="#partially-supported-formats" title="Link to this heading">#</a></h2>
 <p>These formats receive basic metadata extraction and custom preview generation, but do not have dedicated metadata parsers.</p>
 <section id="image-formats">
-<span id="id6"></span><h3>Image Formats<a class="headerlink" href="#image-formats" title="Link to this heading">#</a></h3>
+<span id="id7"></span><h3>Image Formats<a class="headerlink" href="#image-formats" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ⚠️ Preview Only</p>
 <p><strong>Formats</strong>: <code class="docutils literal notranslate"><span class="pre">.png</span></code>, <code class="docutils literal notranslate"><span class="pre">.tiff</span></code>, <code class="docutils literal notranslate"><span class="pre">.bmp</span></code>, <code class="docutils literal notranslate"><span class="pre">.gif</span></code>, <code class="docutils literal notranslate"><span class="pre">.jpg</span></code>, <code class="docutils literal notranslate"><span class="pre">.jpeg</span></code></p>
 <p><strong>Extractor Module</strong>: <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.basic_metadata.html#module-nexusLIMS.extractors.plugins.basic_metadata" title="nexusLIMS.extractors.plugins.basic_metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.basic_metadata</span></code></a></p>
@@ -941,7 +1028,7 @@ each format.</p>
 </ul>
 </section>
 <section id="text-files-txt">
-<span id="id7"></span><h3>Text Files (.txt)<a class="headerlink" href="#text-files-txt" title="Link to this heading">#</a></h3>
+<span id="id8"></span><h3>Text Files (.txt)<a class="headerlink" href="#text-files-txt" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ⚠️ Preview Only</p>
 <p><strong>Extractor Module</strong>: <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.basic_metadata.html#module-nexusLIMS.extractors.plugins.basic_metadata" title="nexusLIMS.extractors.plugins.basic_metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.basic_metadata</span></code></a></p>
 <p><strong>Preview Generator</strong>: <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.text_preview.html#module-nexusLIMS.extractors.plugins.preview_generators.text_preview" title="nexusLIMS.extractors.plugins.preview_generators.text_preview"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.preview_generators.text_preview</span></code></a></p>
@@ -1412,6 +1499,7 @@ the graceful-degradation behaviour when no config is present.</p>
 <li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.tescan_tif.html#module-nexusLIMS.extractors.plugins.tescan_tif" title="nexusLIMS.extractors.plugins.tescan_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.tescan_tif</span></code></a> - Tescan PFIB/SEM TIF file extractor</p></li>
 <li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#module-nexusLIMS.extractors.plugins.fei_emi" title="nexusLIMS.extractors.plugins.fei_emi"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.fei_emi</span></code></a> - FEI TIA .ser/.emi file extractor</p></li>
 <li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.edax.html#module-nexusLIMS.extractors.plugins.edax" title="nexusLIMS.extractors.plugins.edax"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.edax</span></code></a> - EDAX .spc/.msa file extractor</p></li>
+<li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.tofwerk_pfib.html#module-nexusLIMS.extractors.plugins.tofwerk_pfib" title="nexusLIMS.extractors.plugins.tofwerk_pfib"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.tofwerk_pfib</span></code></a> - Tofwerk fibTOF pFIB-ToF-SIMS .h5 file extractor</p></li>
 <li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.basic_metadata.html#module-nexusLIMS.extractors.plugins.basic_metadata" title="nexusLIMS.extractors.plugins.basic_metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.basic_metadata</span></code></a> - Basic metadata fallback extractor</p></li>
 <li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.html#module-nexusLIMS.extractors.plugins.preview_generators" title="nexusLIMS.extractors.plugins.preview_generators"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.preview_generators</span></code></a> - Preview image generation utilities</p></li>
 </ul>
@@ -1490,6 +1578,7 @@ the graceful-degradation behaviour when no config is present.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#msa-files">.msa Files</a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tofwerk-fibtof-pfib-tof-sims-files-h5">Tofwerk fibTOF pFIB-ToF-SIMS Files (.h5)</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#partially-supported-formats">Partially Supported Formats</a><ul class="nav section-nav flex-column">
