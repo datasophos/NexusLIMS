@@ -14,6 +14,19 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.6.0 (2026-03-19)
+
+### New features
+
+- NexusLIMS records can now be exported to LabArchives electronic lab
+  notebooks. When configured with LabArchives API credentials, the system
+  automatically creates an organized folder structure by instrument and
+  uploads a formatted HTML session summary alongside the full XML record
+  as an attachment. ([#36](https://github.com/datasophos/NexusLIMS/issues/36))
+- Added `nexuslims db view` command that opens an interactive TUI browser for the NexusLIMS SQLite database, powered by [Squall](https://github.com/driscollis/squall). Users can browse instruments, sessions, uploads, and other tables, filter rows, and run custom SQL queries — all from the terminal. ([#80](https://github.com/datasophos/NexusLIMS/issues/80))
+- Add support for Tofwerk pFIB-ToF-SIMS HDF5 files (`.h5`). NexusLIMS can now extract acquisition metadata and generate preview images from raw and post-processed fibTOF files produced by the Tescan pFIB-ToF-SIMS system. ([#89](https://github.com/datasophos/NexusLIMS/issues/89))
+
+
 ## 2.5.1 (2026-02-19)
 
 ### Bug fixes
