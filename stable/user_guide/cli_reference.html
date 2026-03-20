@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Command-Line Interface Reference &#8212; NexusLIMS 2.5.1 documentation</title>
+    <title>Command-Line Interface Reference &#8212; NexusLIMS 2.6.0 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=983e91d6"></script>
+    <script src="../_static/documentation_options.js?v=ae39cb24"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.5.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.6.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -65,8 +65,8 @@
     <link rel="prev" title="Configuration" href="configuration.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.5.1" />
-    <meta name="docbuild:last-update" content="Feb, 20, 2026"/>
+  <meta name="docsearch:version" content="2.6.0" />
+    <meta name="docbuild:last-update" content="Mar, 20, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.5.1 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.5.1 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.6.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.6.0 documentation - Home"/>
   
   
 </a></div>
@@ -1141,13 +1141,15 @@ Options:
   --help     Show this message and exit.
 
 Commands:
-  alembic    Run Alembic commands directly (advanced usage).
-  check      Check if the database has pending migrations.
-  current    Show the current database migration version.
-  downgrade  Downgrade database to an earlier version.
-  history    Show migration history.
-  init       Initialize a new NexusLIMS database.
-  upgrade    Upgrade database to a later version.
+  alembic      Run Alembic commands directly (advanced usage).
+  check        Check if the database has pending migrations.
+  create-demo  Create a demo database pre-populated with sample instruments.
+  current      Show the current database migration version.
+  downgrade    Downgrade database to an earlier version.
+  history      Show migration history.
+  init         Initialize a new NexusLIMS database.
+  upgrade      Upgrade database to a later version.
+  view         Open a read-only TUI browser for the NexusLIMS database.
 </pre></div>
 </div>
 </section>
@@ -1330,6 +1332,119 @@ nexuslims<span class="w"> </span>db<span class="w"> </span><span class="nb">hist
 </pre></div>
 </div>
 </section>
+<section id="view">
+<h4><code class="docutils literal notranslate"><span class="pre">view</span></code><a class="headerlink" href="#view" title="Link to this heading">#</a></h4>
+<p>Open a read-only TUI browser for the NexusLIMS database.</p>
+<p>Launches a Textual-based interactive browser pointed at the database configured
+via <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code>. The browser is <strong>read-only</strong> — no SQL execution or data
+modification is possible.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>view
+</pre></div>
+</div>
+<p><img alt="DB Browser — Table Viewer showing the instruments table" src="../_images/db_browser_table_viewer.svg" /></p>
+<p><strong>Tabs available inside the browser:</strong></p>
+<ul class="simple">
+<li><p><strong>Table Viewer</strong> — Browse rows in any table with a live filter input and
+sortable column headers. Click any column header to sort ascending; click
+again to sort descending; click a third time to clear sorting. Type in the
+filter box to narrow results across all columns simultaneously (up to 1 000
+rows shown at once).</p></li>
+<li><p><strong>Database Structure</strong> — Inspect the schema: tables, columns, types, and
+indexes.</p></li>
+</ul>
+<p><strong>Keybindings (inside the browser):</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Tab</span></code> / <code class="docutils literal notranslate"><span class="pre">Shift+Tab</span></code></p></td>
+<td><p>Navigate between panels</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Enter</span></code></p></td>
+<td><p>Select / confirm</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">q</span></code> / <code class="docutils literal notranslate"><span class="pre">Ctrl+Q</span></code></p></td>
+<td><p>Quit</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Prerequisites:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> must be set (via <code class="docutils literal notranslate"><span class="pre">.env</span></code> or environment)</p></li>
+<li><p>The database file must already exist (run <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span> <span class="pre">init</span></code> first)</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open the database browser</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>view
+</pre></div>
+</div>
+<p><strong>Error handling:</strong></p>
+<ul class="simple">
+<li><p>Exits with a clear error message if <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> is not set</p></li>
+<li><p>Exits with a clear error message if the database file does not exist</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span> <span class="pre">view</span></code> is a read-only command — it cannot modify the database.
+To manage instruments, use <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">manage</span></code>. To explore a
+pre-populated example database, create one first with <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span> <span class="pre">create-demo</span></code>.</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="create-demo">
+<h4><code class="docutils literal notranslate"><span class="pre">create-demo</span></code><a class="headerlink" href="#create-demo" title="Link to this heading">#</a></h4>
+<p>Create a demo SQLite database pre-populated with 10 sample instruments.</p>
+<p>Useful for exploring NexusLIMS without a live NEMO instance, testing the TUI,
+or generating documentation screenshots.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>create-demo<span class="w"> </span><span class="o">[</span>PATH<span class="o">]</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p><strong>Arguments:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PATH</span></code> (optional) — destination file path for the demo database. Defaults to
+<code class="docutils literal notranslate"><span class="pre">nexuslims_demo.db</span></code> in the current working directory.</p></li>
+</ul>
+<p><strong>Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--force</span></code> — Overwrite the file if it already exists</p></li>
+</ul>
+<p><strong>Examples:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create demo database in the current directory (nexuslims_demo.db)</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>create-demo
+
+<span class="c1"># Create at a specific path</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>create-demo<span class="w"> </span>/tmp/demo.db
+
+<span class="c1"># Overwrite an existing file</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>create-demo<span class="w"> </span>./my_demo.db<span class="w"> </span>--force
+</pre></div>
+</div>
+<p><strong>Typical workflow — browse the demo database:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Create a demo database</span>
+nexuslims<span class="w"> </span>db<span class="w"> </span>create-demo
+
+<span class="c1"># 2. Browse it in the TUI</span>
+<span class="nv">NX_DB_PATH</span><span class="o">=</span>./nexuslims_demo.db<span class="w"> </span>nexuslims<span class="w"> </span>db<span class="w"> </span>view
+
+<span class="c1"># 3. Or explore instruments in the instrument manager</span>
+<span class="nv">NX_DB_PATH</span><span class="o">=</span>./nexuslims_demo.db<span class="w"> </span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The demo database is a self-contained SQLite file that can be opened with any
+SQLite client (e.g. <a class="reference external" href="https://sqlitebrowser.org/">DB Browser for SQLite</a> or the
+<code class="docutils literal notranslate"><span class="pre">sqlite3</span></code> CLI). It is not connected to any NEMO instance and contains no real
+session data.</p>
+</div>
+</section>
+<hr class="docutils" />
 <section id="alembic">
 <h4><code class="docutils literal notranslate"><span class="pre">alembic</span></code><a class="headerlink" href="#alembic" title="Link to this heading">#</a></h4>
 <p>Run Alembic commands directly (advanced usage).</p>
@@ -1541,6 +1656,8 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#current"><code class="docutils literal notranslate"><span class="pre">current</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#check"><code class="docutils literal notranslate"><span class="pre">check</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#history"><code class="docutils literal notranslate"><span class="pre">history</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#view"><code class="docutils literal notranslate"><span class="pre">view</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#create-demo"><code class="docutils literal notranslate"><span class="pre">create-demo</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#alembic"><code class="docutils literal notranslate"><span class="pre">alembic</span></code></a></li>
 </ul>
 </li>

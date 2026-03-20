@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="460mm"
+   height="120mm"
+   viewBox="0 0 460 119.99992"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (ebf0e940, 2025-05-08)"
+   sodipodi:docname="logo_horizontal.svg"
+   inkscape:export-filename="logo_horizontal_text.png"
+   inkscape:export-xdpi="100"
+   inkscape:export-ydpi="100"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.34318282"
+     inkscape:cx="676.02451"
+     inkscape:cy="-62.648823"
+     inkscape:window-width="1472"
+     inkscape:window-height="862"
+     inkscape:window-x="0"
+     inkscape:window-y="38"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="false">
+    <sodipodi:guide
+       position="20.44559,51.311975"
+       orientation="1,0"
+       id="guide1"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="46.404598,39.825696"
+       orientation="1,0"
+       id="guide2"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="26.648185,29.028595"
+       orientation="1,0"
+       id="guide3"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="52.607176,13.636981"
+       orientation="1,0"
+       id="guide4"
+       inkscape:locked="false" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1">
+    <linearGradient
+       id="linearGradient6905"
+       inkscape:swatch="solid">
+      <stop
+         id="stop6903"
+         offset="0"
+         style="stop-color:#a9c7da;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="matrix(3.8655266,0,0,3.8650706,67975.473,17446.989)"
+       id="linearGradient1589"
+       inkscape:swatch="solid">
+      <stop
+         id="stop1587"
+         offset="0"
+         style="stop-color:#257a2d;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient1595"
+       inkscape:swatch="solid">
+      <stop
+         id="stop1593"
+         offset="0"
+         style="stop-color:#f5c636;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient1027"
+       inkscape:swatch="solid">
+      <stop
+         id="stop1025"
+         offset="0"
+         style="stop-color:#12659c;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient6897"
+       inkscape:swatch="solid"
+       gradientTransform="matrix(0.02320217,0,0,0.26458333,-24.597664,318.94101)">
+      <stop
+         id="stop6895"
+         offset="0"
+         style="stop-color:#b0c6b2;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient1036"
+       inkscape:swatch="solid">
+      <stop
+         id="stop1034"
+         offset="0"
+         style="stop-color:#fae199;stop-opacity:1;" />
+    </linearGradient>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(24.597664,-318.94101)">
+    <rect
+       style="fill:#f0f0f0;fill-opacity:1;stroke-width:0.0586851;stroke-linecap:round"
+       id="rect4"
+       width="460"
+       height="120"
+       x="-24.597664"
+       y="318.94101"
+       ry="15"
+       rx="15" />
+    <text
+       xml:space="preserve"
+       style="font-weight:400;font-size:30.1842px;line-height:0;font-family:Inter, sans-serif;letter-spacing:0.529167px;text-transform:uppercase;fill:#0064a6;fill-opacity:0.6;stroke-width:1.6769"
+       x="34.680626"
+       y="426.02869"
+       id="tagline"
+       inkscape:label="tagline"><tspan
+         sodipodi:role="line"
+         x="34.680626"
+         y="426.02869"
+         style="font-size:30.1842px;letter-spacing:0.529167px;stroke-width:1.6769"
+         id="tspan6">Discovery in Data</tspan></text>
+    <g
+       id="connection-lines"
+       opacity="0.3"
+       transform="matrix(1.7452832,0,0,1.7452832,-5.1152746,-271.39607)">
+      <path
+         d="m 195,388.9096 h 45"
+         stroke="#0064a6"
+         stroke-width="2"
+         fill="none"
+         stroke-linecap="round"
+         id="path1" />
+      <path
+         d="m 210,393 h 30"
+         stroke="#00a86b"
+         stroke-width="1.5"
+         fill="none"
+         stroke-linecap="round"
+         id="path2" />
+      <path
+         d="m 220,397.0904 h 20"
+         stroke="#f5c636"
+         stroke-width="1.2"
+         fill="none"
+         stroke-linecap="round"
+         id="path3" />
+    </g>
+    <text
+       style="font-weight:700;font-size:85px;font-family:'SF Pro Display', Inter, 'Helvetica Neue', sans-serif;fill:#1a1a1a;stroke-width:0.198173"
+       x="-5.0669045"
+       y="392.23383"
+       id="text3"
+       xml:space="default"><tspan
+         id="tspan3"
+         style="font-style:normal;font-variant:normal;font-weight:700;font-stretch:normal;font-size:85px;font-family:'SF Pro Display', Inter, 'Helvetica Neue', sans-serif;stroke-width:0.198173"
+         x="-5.0669045"
+         y="392.23383"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:700;font-stretch:normal;font-size:85px;font-family:'SF Pro Display', Inter, 'Helvetica Neue', sans-serif;letter-spacing:-3px;fill:#0064a6;fill-opacity:1"
+           id="tspan4">Nexus</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:700;font-stretch:normal;font-family:'SF Pro Display', Inter, 'Helvetica Neue', sans-serif;letter-spacing:-3px;fill:#1a1a1a;fill-opacity:0.85"
+           id="tspan5">LIMS</tspan></tspan></text>
+    <g
+       id="mini-diffraction"
+       transform="translate(15.682629,414.15117)"
+       opacity="0.9">
+      <!-- Center dot -->
+      <circle
+         cx="0"
+         cy="0"
+         r="2.5"
+         fill="#0064a6"
+         id="circle1" />
+      <!-- Inner ring (hexagonal symmetry) -->
+      <circle
+         cx="1.2136442e-14"
+         cy="-6"
+         r="0.89999998"
+         fill="#5ba3d0"
+         id="circle2"
+         transform="rotate(-30)" />
+      <circle
+         cx="5.1999998"
+         cy="-3"
+         r="0.89999998"
+         fill="#5ba3d0"
+         id="circle3"
+         transform="rotate(-30)" />
+      <circle
+         cx="5.1999998"
+         cy="3"
+         r="0.89999998"
+         fill="#5ba3d0"
+         id="circle4"
+         transform="rotate(-30)" />
+      <circle
+         cx="1.2477481e-14"
+         cy="6"
+         r="0.89999998"
+         fill="#5ba3d0"
+         id="circle5"
+         transform="rotate(-30)" />
+      <circle
+         cx="-5.1999998"
+         cy="3"
+         r="0.89999998"
+         fill="#5ba3d0"
+         id="circle6"
+         transform="rotate(-30)" />
+      <circle
+         cx="-5.1999998"
+         cy="-3"
+         r="0.89999998"
+         fill="#5ba3d0"
+         id="circle7"
+         transform="rotate(-30)" />
+      <!-- Outer ring (hexagonal symmetry with radial color symmetry) -->
+      <circle
+         cx="0"
+         cy="-10"
+         r="1.2"
+         fill="#2ea83e"
+         id="circle8" />
+      <circle
+         cx="8.6599998"
+         cy="5"
+         r="1.2"
+         fill="#ffca28"
+         id="circle9" />
+      <circle
+         cx="8.6599998"
+         cy="-5"
+         r="1.2"
+         fill="#66b572"
+         id="circle10"
+         style="fill:url(#linearGradient6897)" />
+      <circle
+         cx="0"
+         cy="10"
+         r="1.2"
+         fill="#2ea83e"
+         id="circle11" />
+      <circle
+         cx="-8.6599998"
+         cy="5"
+         r="1.2"
+         fill="#66b572"
+         id="circle12"
+         style="fill:url(#linearGradient6897)" />
+      <circle
+         cx="-8.6599998"
+         cy="-5"
+         r="1.2"
+         fill="#ffca28"
+         id="circle13" />
+    </g>
+  </g>
+</svg>

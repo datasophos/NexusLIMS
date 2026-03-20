@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Configuration &#8212; NexusLIMS 2.5.1 documentation</title>
+    <title>Configuration &#8212; NexusLIMS 2.6.0 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=983e91d6"></script>
+    <script src="../_static/documentation_options.js?v=ae39cb24"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.5.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.6.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -65,8 +65,8 @@
     <link rel="prev" title="Getting Started" href="getting_started.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.5.1" />
-    <meta name="docbuild:last-update" content="Feb, 20, 2026"/>
+  <meta name="docsearch:version" content="2.6.0" />
+    <meta name="docbuild:last-update" content="Mar, 20, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.5.1 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.5.1 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.6.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.6.0 documentation - Home"/>
   
   
 </a></div>
@@ -846,6 +846,93 @@ are exposed in logs.</p>
 </div>
 </section>
 </section>
+<section id="labarchives-integration">
+<span id="config-labarchives"></span><h3>LabArchives Integration<a class="headerlink" href="#labarchives-integration" title="Link to this heading">#</a></h3>
+<p>NexusLIMS can optionally export records to <a class="reference external" href="https://www.labarchives.com/">LabArchives</a>, a
+commercial electronic lab notebook system. Each NexusLIMS session creates one notebook page
+with an HTML session summary and the full XML record attached as a file.</p>
+<p>LabArchives authentication uses HMAC-SHA-512 signed requests. You need four credentials:
+an Access Key ID (provided by LabArchives), an Access Password (provided by LabArchives),
+a User ID (uid), and the instance URL (most likely can stay as the default unless you are
+in a different region).</p>
+<section id="nx-labarchives-url">
+<span id="config-labarchives-url"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_URL</span></code><a class="headerlink" href="#nx-labarchives-url" title="Link to this heading">#</a></h4>
+<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">AnyHttpUrl</span></code> | None</p>
+<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">'https://api.labarchives.com/api'</span></code></p>
+<p>The base URL for LabArchives API calls, including the <code class="docutils literal notranslate"><span class="pre">/api</span></code> path segment. For the standard cloud service this is <code class="docutils literal notranslate"><span class="pre">https://api.labarchives.com/api</span></code>. For self-hosted instances use <code class="docutils literal notranslate"><span class="pre">https://your-instance.example.com/api</span></code>.</p>
+<p>All API requests are sent to <code class="docutils literal notranslate"><span class="pre">{NX_LABARCHIVES_URL}/{class}/{method}</span></code>, so the <code class="docutils literal notranslate"><span class="pre">/api</span></code> suffix must be included here.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_LABARCHIVES_URL</span><span class="o">=</span>https://api.labarchives.com/api
+</pre></div>
+</div>
+</section>
+<section id="nx-labarchives-access-key-id">
+<span id="config-labarchives-access-key-id"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_KEY_ID</span></code><a class="headerlink" href="#nx-labarchives-access-key-id" title="Link to this heading">#</a></h4>
+<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> | None</p>
+<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<p>The Access Key ID (akid) provided by LabArchives for your API integration. This is the public identifier used alongside <code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_PASSWORD</span></code> to sign API requests with HMAC-SHA-512.</p>
+<p>Obtain this from your LabArchives account under API settings. Both the Access Key ID and Access Password are required for LabArchives export to be enabled.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_LABARCHIVES_ACCESS_KEY_ID</span><span class="o">=</span>your-access-key-id-here
+</pre></div>
+</div>
+</section>
+<section id="nx-labarchives-access-password">
+<span id="config-labarchives-access-password"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_PASSWORD</span></code><a class="headerlink" href="#nx-labarchives-access-password" title="Link to this heading">#</a></h4>
+<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> | None</p>
+<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<p>The access password provided by LabArchives for your API integration. This secret is used to generate HMAC-SHA-512 signatures that authenticate all API requests.</p>
+<p>Keep this value secret — it is equivalent to a password and allows full API access to the configured LabArchives account. Used together with <code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_KEY_ID</span></code>.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_LABARCHIVES_ACCESS_PASSWORD</span><span class="o">=</span>your-access-password-here
+</pre></div>
+</div>
+</section>
+<section id="nx-labarchives-user-id">
+<span id="config-labarchives-user-id"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_USER_ID</span></code><a class="headerlink" href="#nx-labarchives-user-id" title="Link to this heading">#</a></h4>
+<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> | None</p>
+<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<p>The persistent user ID (uid) for the LabArchives account that will own uploaded notebook entries. This is obtained once via the LabArchives <code class="docutils literal notranslate"><span class="pre">user_access_info</span></code> API call.</p>
+<p>To get the uid: call the LabArchives API endpoint <code class="docutils literal notranslate"><span class="pre">users/user_access_info</span></code> with your login and token. The returned <code class="docutils literal notranslate"><span class="pre">uid</span></code> value is what you need here.</p>
+<p>This uid is stable and does not change, so you only need to retrieve it once.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_LABARCHIVES_USER_ID</span><span class="o">=</span>your-uid-here
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To obtain your UID, use the <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">labarchives-get-uid</span></code> command, or use
+the button on the LabArchives page of the <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">edit</span></code> application. You will need to sign in
+manually via the LabArchives web interface and generate a fresh <strong>Password Token for
+External Applications</strong> (valid for 1 hour only), which will be exchanged for your
+stable UID. This only has to be done once, as the
+returned <code class="docutils literal notranslate"><span class="pre">uid</span></code> value is stable and does not change over time.</p>
+</div>
+</section>
+<section id="nx-labarchives-notebook-id">
+<span id="config-labarchives-notebook-id"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_NOTEBOOK_ID</span></code><a class="headerlink" href="#nx-labarchives-notebook-id" title="Link to this heading">#</a></h4>
+<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> | None</p>
+<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<p>The notebook ID (nbid) of the target LabArchives notebook where NexusLIMS records will be stored. When configured, NexusLIMS automatically creates a <code class="docutils literal notranslate"><span class="pre">NexusLIMS</span> <span class="pre">Records/{instrument}/</span></code> folder hierarchy within this notebook.</p>
+<p>If not set, records are uploaded to the user’s default Inbox.</p>
+<p>To find the nbid: open the notebook in LabArchives and check the URL — it typically appears as a parameter in the notebook URL.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_LABARCHIVES_NOTEBOOK_ID</span><span class="o">=</span><span class="m">12345</span><span class="w">  </span><span class="c1"># optional</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>When LabArchives export is enabled, the following structure is created automatically:</p>
+<ul class="simple">
+<li><p><strong>Notebook:</strong> The notebook specified by <code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_NOTEBOOK_ID</span></code> (or Inbox if unset)</p></li>
+<li><p><strong>Folder hierarchy:</strong> <code class="docutils literal notranslate"><span class="pre">NexusLIMS</span> <span class="pre">Records/{instrument_pid}/</span></code> (created automatically if missing)</p></li>
+<li><p><strong>Page:</strong> <code class="docutils literal notranslate"><span class="pre">{YYYY-MM-DD}</span> <span class="pre">—</span> <span class="pre">{session_id}</span></code> (one page per session)</p></li>
+<li><p><strong>Entry:</strong> HTML session summary with optional CDCS cross-link</p></li>
+<li><p><strong>Attachment:</strong> Full XML record file</p></li>
+</ul>
+</div>
+</section>
+</section>
 <section id="export-configuration">
 <h3>Export Configuration<a class="headerlink" href="#export-configuration" title="Link to this heading">#</a></h3>
 <section id="nx-export-strategy">
@@ -1446,6 +1533,14 @@ are exposed in logs.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-elabftw-api-key"><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_API_KEY</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-elabftw-experiment-category"><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_EXPERIMENT_CATEGORY</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-elabftw-experiment-status"><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_EXPERIMENT_STATUS</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#labarchives-integration">LabArchives Integration</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-labarchives-url"><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_URL</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-labarchives-access-key-id"><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_KEY_ID</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-labarchives-access-password"><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_PASSWORD</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-labarchives-user-id"><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_USER_ID</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-labarchives-notebook-id"><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_NOTEBOOK_ID</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#export-configuration">Export Configuration</a><ul class="nav section-nav flex-column">
