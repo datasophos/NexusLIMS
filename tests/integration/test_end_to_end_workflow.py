@@ -784,3 +784,44 @@ class TestEndToEndWorkflow:
         from nexusLIMS.utils import cdcs
 
         cdcs.delete_record(cdcs_result.record_id)
+
+    @pytest.mark.integration
+    @pytest.mark.filterwarnings(
+        "ignore::DeprecationWarning",
+        "ignore::UserWarning",
+    )
+    def test_tofwerk_pfib_record(self, tofwerk_integration_record):
+        """
+        Verify end-to-end record build and CDCS upload for a Tofwerk session.
+
+        This test confirms that:
+
+        - The record builder finds both the raw and opened .h5 files
+        - The generated XML validates against the Nexus Experiment schema
+        - The record is successfully uploaded to CDCS
+        - The record contains the expected instrument and datasets
+        """
+        nx_ns = "https://data.nist.gov/od/dm/nexus/experiment/v1.0"
+
+        xml_doc = tofwerk_integration_record["xml_doc"]
+        record_id = tofwerk_integration_record["record_id"]
+        record_title = tofwerk_integration_record["record_title"]
+
+        print(f"\n[+] Tofwerk record built: {record_title}")
+        print(f"    CDCS record ID: {record_id}")
+
+        # Instrument PID
+        instrument_el = xml_doc.find(
+            f".//{{{nx_ns}}}instrument",
+        )
+        assert instrument_el is not None
+        assert instrument_el.get("pid") == "Tofwerk-pFIB-TOFSIMS"
+
+        # Both .h5 files should appear as datasets
+        datasets = xml_doc.findall(f".//{{{nx_ns}}}dataset")
+        assert len(datasets) == 2, (
+            f"Expected 2 datasets (raw + opened), got {len(datasets)}"
+        )
+
+        # Record should be in CDCS (ID is an integer from the CDCS API)
+        assert record_id is not None

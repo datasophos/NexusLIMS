@@ -17,6 +17,7 @@ each format.
 | [FEI TIA Software](#fei-tia-files-ser-emi) | .ser, .emi | ✅ Full | TEM/STEM Imaging, Diffraction, EELS/EDS Spectra & SI | Multi-file support, experimental conditions, acquisition parameters |
 | [EDAX (Genesis, TEAM)](#edax-eds-files-spc-msa) | .spc | ✅ Full | EDS Spectrum | Detector angles, energy calibration, element identification |
 | [EDAX & others (standard)](#edax-eds-files-spc-msa) | .msa | ✅ Full | EDS Spectrum | EMSA/MAS standard format, vendor extensions supported |
+| [Tofwerk fibTOF pFIB-ToF-SIMS](#tofwerk-fibtof-pfib-tof-sims-files-h5) | .h5 | ✅ Full | pFIB-ToF-SIMS Spectrum Image | FIB parameters, mass range, TIC map, ion depth profiles, composite preview |
 | [Various (exported images)](#image-formats) | .png, .jpg, .tiff, .bmp, .gif | ⚠️ Preview | Unknown | Basic metadata, square thumbnail generation |
 | [Various (logs, notes)](#text-files-txt) | .txt | ⚠️ Preview | Unknown | Basic metadata, text-to-image preview |
 | [Unknown Files](#unknown-files) | *others* | ❌ Minimal | Unknown | Timestamp only, placeholder preview |
@@ -385,6 +386,98 @@ The extractor flags the following fields as potentially unreliable:
 - `.msa` files are vendor-agnostic and may be exported from various EDS software
 - EDAX adds custom fields beyond the MSA standard
 - Both formats are single-spectrum only (not spectrum images)
+
+(tofwerk-fibtof-pfib-tof-sims-files-h5)=
+### Tofwerk fibTOF pFIB-ToF-SIMS Files (.h5)
+
+**Support Level**: ✅ Full
+
+**Description**: HDF5 files produced by the Tofwerk fibTOF time-of-flight secondary ion mass
+spectrometry (ToF-SIMS) system integrated with a Tescan plasma focused ion beam (pFIB). Two
+variants exist: raw files (acquired directly by TofDAQ, containing raw event lists) and pre-processed
+files (post-processed in Tofwerk software, containing integrated peak intensities).
+
+**Extractor Module**: {py:mod}`nexusLIMS.extractors.plugins.tofwerk_pfib`
+
+**Preview Generator**: {py:mod}`nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview`
+
+**File Format Detection**:
+
+The extractor uses content sniffing to identify Tofwerk fibTOF files by checking for all of:
+- `FullSpectra/SumSpectrum` HDF5 dataset
+- `FIBParams` HDF5 group
+- `FIBImages` HDF5 group
+- `TofDAQ Version` root attribute
+
+This ensures correct identification without relying on the `.h5` extension alone (which is shared
+with other HDF5-based formats).
+
+**Two File Variants**:
+
+- **Raw** (`File Variant = "raw"`): Contains `FullSpectra/EventList` (variable-length uint16 array
+  of ion arrival times per pixel). No `PeakData/PeakData` dataset present. This is the file type
+  written during acquisition.
+- **Pre-processed** (`File Variant = "pre-processed"`): Contains `PeakData/PeakData` (float32 array of integrated
+  peak intensities, shape `NbrWrites × NbrSegments × NbrX × NbrPeaks`). Created by post-processing
+  in the Tofwerk software. The raw `EventList` is not present.
+
+**Key Metadata Extracted**:
+
+- Acquisition creation time (from `AcquisitionLog/Log[0]['timestring']`, which includes timezone;
+  falls back to `HDF5 File Creation Time` root attribute or file mtime)
+- FIB hardware vendor (e.g., Tescan)
+- Accelerating voltage (kV)
+- Beam current (A)
+- Field of view (mm, from `FIBParams.ViewField`)
+- Pixel size (µm/pixel, derived as `ViewField_mm × 1e3 / NbrX`)
+- Data dimensions (`NbrWrites × NbrSegments × NbrX` sputter depth × Y × X pixels)
+- Number of peaks in the peak table
+- Mass range minimum and maximum (Da, from `FullSpectra/MassAxis`)
+- Ion mode (positive or negative)
+- Chamber pressure (Pa, mean over all writes from `FibParams/FibPressure/TwData`)
+- Fiblys GUI version and TofDAQ DAQ version
+- File variant (raw vs. pre-processed)
+
+All vendor-specific fields are stored in `nx_meta["extensions"]`.
+
+**Data Types Detected**:
+
+- pFIB-ToF-SIMS Spectrum Image (`PFIB_TOFSIMS`)
+
+**Preview Generation**:
+
+The preview generator produces a composite 1500×1500 px PNG with a layout that differs by file variant:
+
+*Raw file layout* (2-row grid):
+
+```
+[ FIB SE image ]  [ TIC map ]     [ Depth profile ]
+[     Sum mass spectrum (full width, 3 cols)       ]
+```
+
+*Pre-processed file layout* (2-row grid):
+
+```
+[ FIB SE image ]  [ TIC map ]     [ RGB composite (top 3 peaks) ]
+[ Sum spectrum (2 cols) ]         [ Depth profiles (top 3 peaks) ]
+```
+
+- **FIB SE image**: Secondary electron image from the first FIB scan in `FIBImages/Image0000`
+- **TIC map**: Total ion count map summed across all sputter writes; computed one write at a time
+  to avoid loading the full ragged 4D event array into memory
+- **Depth profile**: Total ion signal vs. sputter write index
+- **Sum mass spectrum**: `FullSpectra/SumSpectrum` with ion species annotated (top-N peaks ≥ 2 Da
+  apart, log y-scale, positive/negative ion tables)
+- **RGB composite** (pre-processed only): Top 3 peaks by total counts, displayed as R/G/B channels with
+  percentile clipping
+
+**Notes**:
+
+- The `FIBParams.ViewField` attribute is in **millimeters** (not meters); pixel size is derived as
+  `ViewField_mm × 1e3 / NbrX` µm/pixel
+- `Configuration File Contents` contains ADC voltage range parameters (`Ch*FullScale`) which are
+  **not** spatial dimensions and are not used for pixel size calculation
+- At harvest time, only the raw file is typically available; both variants are fully supported
 
 ## Partially Supported Formats
 
@@ -865,6 +958,7 @@ For complete API documentation of the extractor modules, see:
 - {py:mod}`nexusLIMS.extractors.plugins.tescan_tif` - Tescan PFIB/SEM TIF file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.fei_emi` - FEI TIA .ser/.emi file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.edax` - EDAX .spc/.msa file extractor
+- {py:mod}`nexusLIMS.extractors.plugins.tofwerk_pfib` - Tofwerk fibTOF pFIB-ToF-SIMS .h5 file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.basic_metadata` - Basic metadata fallback extractor
 - {py:mod}`nexusLIMS.extractors.plugins.preview_generators` - Preview image generation utilities
 

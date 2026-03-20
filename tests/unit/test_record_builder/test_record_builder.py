@@ -119,7 +119,7 @@ def skip_preview_generation(monkeypatch):
 
 
 @pytest.mark.needs_db(
-    instruments=["FEI-Titan-TEM", "JEOL-JEM-TEM", "TEST-TOOL"],
+    instruments=["FEI-Titan-TEM", "JEOL-JEM-TEM", "TEST-TOOL", "Tofwerk-pFIB-TOFSIMS"],
     sessions=True,
 )
 @pytest.mark.usefixtures("mock_preflight_pass")
@@ -140,17 +140,18 @@ class TestRecordBuilder:
     ):
         """Test file finding for multiple sessions with different instruments."""
         # Get all sessions from test database
-        # fresh_test_db fixture provides 3 sessions:
-        #   FEI-Titan-TEM, JEOL-JEM-TEM, testtool
+        # fresh_test_db fixture provides 4 sessions:
+        #   FEI-Titan-TEM, JEOL-JEM-TEM, TEST-TOOL, Tofwerk-pFIB-TOFSIMS
         sessions = session_handler.get_sessions_to_build()
-        assert len(sessions) == 3
+        assert len(sessions) == 4
 
         # Expected file counts for each session:
         # - FEI-Titan-TEM (2018-11-13): 11 files
         #       (8 .dm3 + 2 .ser, .emi excluded, 1 .tif from Tescan)
         # - JEOL-JEM-TEM (2019-07-24): 8 files (.dm3 in subdirs)
         # - TEST-TOOL (2021-08-02): 4 files (.dm3)
-        correct_files_per_session = [11, 8, 4]
+        # - Tofwerk-pFIB-TOFSIMS (2025-12-03): 2 files (.h5)
+        correct_files_per_session = [11, 8, 4, 2]
 
         file_list_list = []
         for session, expected_count in zip(sessions, correct_files_per_session):
@@ -172,6 +173,12 @@ class TestRecordBuilder:
         assert (
             self.instr_data_path / "Nexus_Test_Instrument/test_files/sample_001.dm3"
         ) in file_list_list[2]
+
+        assert (
+            self.instr_data_path
+            / "Tofwerk_pFIB_TOFSIMS/researcher_e/project_pfib"
+            / "20251203/pfib-tofwerk raw.h5"
+        ) in file_list_list[3]
 
     @pytest.mark.usefixtures("mock_nemo_reservation")
     def test_dry_run_file_find_mixed_case_extensions(
@@ -621,27 +628,28 @@ class TestRecordBuilder:
         # Mock export_records to return successful results
         monkeypatch.setattr(record_builder, "export_records", _mock_successful_export)
 
-        # Process all sessions in the database (all 3 test sessions)
+        # Process all sessions in the database (all 4 test sessions)
         # The fresh_test_db fixture already has FEI-Titan-TEM, JEOL-JEM-TEM,
-        # and testtool sessions
+        # TEST-TOOL, and Tofwerk-pFIB-TOFSIMS sessions
         record_builder.process_new_records(
             dt_from=dt.fromisoformat("2018-01-01T00:00:00-04:00"),
-            dt_to=dt.fromisoformat("2022-01-01T00:00:00-04:00"),
+            dt_to=dt.fromisoformat("2026-01-01T00:00:00-04:00"),
         )
 
         # tests on the database entries
         # after processing the records, there should be added
         # "RECORD_GENERATION" logs
-        # Updated counts to match 3 test sessions:
+        # Updated counts to match 4 test sessions:
         # - FEI-Titan-TEM (2 logs: START + END)
         # - JEOL-JEM-TEM (2 logs: START + END)
         # - TEST-TOOL (2 logs: START + END)
-        # - 3 RECORD_GENERATION logs added during processing
-        total_session_log_count = 9  # 6 original + 3 RECORD_GENERATION
-        record_generation_count = 3  # One for each session
+        # - Tofwerk-pFIB-TOFSIMS (2 logs: START + END)
+        # - 4 RECORD_GENERATION logs added during processing
+        total_session_log_count = 12  # 8 original + 4 RECORD_GENERATION
+        record_generation_count = 4  # One for each session
         to_be_built_count = 0
         no_files_found_count = 0
-        completed_count = 9  # All 9 logs marked as COMPLETED
+        completed_count = 12  # All 12 logs marked as COMPLETED
 
         with DBSession(get_engine()) as db_session:
             # Count all session logs
@@ -681,12 +689,13 @@ class TestRecordBuilder:
             assert len(completed_logs) == completed_count
 
         # tests on the XML records
-        # Updated for 3 test sessions (Titan TEM, JEOL TEM, Nexus Test Instrument)
+        # Updated for 4 test sessions (Titan TEM, JEOL TEM, Nexus Test Instrument,
+        # Tofwerk pFIB-ToF-SIMS)
         from nexusLIMS.config import settings
 
         upload_path = settings.records_dir_path / "uploaded"
         xmls = list(upload_path.glob("*.xml"))
-        xml_count = 3  # One for each test session
+        xml_count = 4  # One for each test session
         assert len(xmls) == xml_count
 
         # test some various values from the records saved to disk:
@@ -723,6 +732,19 @@ class TestRecordBuilder:
                     "Determine composition of Pt-Ni alloy samples"
                 ),
                 f"./{{{NX_NS}}}summary/{{{NX_NS}}}instrument": ("TEST-TOOL"),
+                f".//{{{NX_NS}}}sample": 1,
+            },
+            # Tofwerk pFIB-ToF-SIMS session (id=707)
+            "2025-12-03_Tofwerk-pFIB-TOFSIMS_707.xml": {
+                f"./{{{NX_NS}}}title": (
+                    "pFIB-ToF-SIMS depth profiling of multilayer film"
+                ),
+                f".//{{{NX_NS}}}acquisitionActivity": 1,
+                f".//{{{NX_NS}}}dataset": 2,
+                f"./{{{NX_NS}}}summary/{{{NX_NS}}}motivation": (
+                    "Characterize elemental distribution in multilayer thin film"
+                ),
+                f"./{{{NX_NS}}}summary/{{{NX_NS}}}instrument": "Tofwerk-pFIB-TOFSIMS",
                 f".//{{{NX_NS}}}sample": 1,
             },
         }

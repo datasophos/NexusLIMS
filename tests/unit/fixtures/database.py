@@ -194,5 +194,6 @@ INSTRUMENT_CONFIGS = {
         "JEOL-JEM-TEM",
         "TEST-TOOL",
         "test-tool-10",
+        "Tofwerk-pFIB-TOFSIMS",
     ]
 }

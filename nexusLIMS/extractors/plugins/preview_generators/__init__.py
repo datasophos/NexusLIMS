@@ -9,9 +9,13 @@ from nexusLIMS.extractors.plugins.preview_generators.image_preview import (
 from nexusLIMS.extractors.plugins.preview_generators.text_preview import (
     TextPreviewGenerator,
 )
+from nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview import (
+    TofwerkPfibPreviewGenerator,
+)
 
 __all__ = [
     "HyperSpyPreviewGenerator",
     "ImagePreviewGenerator",
     "TextPreviewGenerator",
+    "TofwerkPfibPreviewGenerator",
 ]

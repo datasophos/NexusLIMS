@@ -1531,6 +1531,24 @@ def populated_test_database(docker_services, mock_tools_data):
         }
     )
 
+    # Also add Tofwerk-pFIB-TOFSIMS for pFIB-ToF-SIMS integration testing.
+    # Uses a dummy tool ID (tool 7) since the NEMO mock data does not include it;
+    # session logs are created directly in the fixture rather than via harvesting.
+    tofwerk_config = INSTRUMENTS["Tofwerk-pFIB-TOFSIMS"]
+    instruments.append(
+        {
+            "instrument_pid": tofwerk_config["instrument_pid"],
+            "api_url": f"{NEMO_URL}tools/?id=7",
+            "calendar_url": tofwerk_config["calendar_url"],
+            "location": tofwerk_config["location"],
+            "display_name": tofwerk_config["display_name"],
+            "property_tag": tofwerk_config["property_tag"],
+            "filestore_path": tofwerk_config["filestore_path"],
+            "harvester": tofwerk_config["harvester"],
+            "timezone": tofwerk_config["timezone"],
+        }
+    )
+
     # Insert instruments into database (or update if they exist)
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
@@ -2392,6 +2410,214 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
 
     # Cleanup: Delete record from CDCS
     print("\n[*] Cleaning up multi-signal test record...")
+    try:
+        cdcs.delete_record(record_id)
+        print(f"  Deleted record from CDCS: {record_id}")
+    except Exception as e:
+        print(f"[!] Failed to cleanup record {record_id}: {e}")
+
+
+@pytest.fixture
+def tofwerk_integration_record(  # noqa: PLR0913, PLR0915
+    docker_services_running,
+    populated_test_database,
+    extracted_test_files,
+    cdcs_client,
+    clear_session_logs,
+    monkeypatch,
+):
+    """
+    Build and upload a Tofwerk pFIB-ToF-SIMS record for integration tests.
+
+    This fixture creates session log entries directly (no NEMO harvesting),
+    runs the record builder against the Tofwerk files extracted from
+    test_record_files.tar.gz, exports the result to CDCS, and yields the
+    record information.  The CDCS record is deleted on teardown.
+
+    Parameters
+    ----------
+    docker_services_running : dict
+        Ensures Docker services are running.
+    populated_test_database : Path
+        Test database with instruments (includes Tofwerk-pFIB-TOFSIMS).
+    extracted_test_files : dict
+        Extracts test_record_files.tar.gz, including Tofwerk_pFIB_TOFSIMS/.
+    cdcs_client : dict
+        CDCS client configuration for record uploads.
+    clear_session_logs : None
+        Ensures session_log table is cleared before the test.
+    monkeypatch : pytest.MonkeyPatch
+        Pytest monkeypatch fixture.
+
+    Yields
+    ------
+    dict
+        - 'record_id': CDCS record ID
+        - 'record_title': Record filename stem
+        - 'xml_doc': Parsed XML document (lxml.etree.Element)
+        - 'xml_path': Path to the uploaded XML file
+        - 'session_identifier': Database session identifier
+    """
+    import shutil
+    from datetime import datetime as dt
+
+    from lxml import etree
+
+    from nexusLIMS import instruments as instruments_module
+    from nexusLIMS.builder import record_builder
+    from nexusLIMS.config import refresh_settings, settings
+    from nexusLIMS.db.engine import get_engine
+    from nexusLIMS.db.session_handler import Session, get_sessions_to_build
+    from nexusLIMS.exporters import export_records, was_successfully_exported
+    from nexusLIMS.harvesters.reservation_event import ReservationEvent
+
+    monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(TEST_INSTRUMENT_DATA_DIR))
+    monkeypatch.setenv("NX_DATA_PATH", str(TEST_DATA_DIR))
+    refresh_settings()
+
+    test_instrument_db = instruments_module._get_instrument_db(
+        db_path=populated_test_database
+    )
+    monkeypatch.setattr(instruments_module, "instrument_db", test_instrument_db)
+    monkeypatch.setattr(instruments_module, "_instrument_db_initialized", True)
+
+    instrument = test_instrument_db.get("Tofwerk-pFIB-TOFSIMS")
+    if instrument is None:
+        pytest.fail("Tofwerk-pFIB-TOFSIMS instrument not found in database")
+
+    # Session window that covers the 2025-12-03 files in the archive.
+    # Files have mtimes of 12:00 and 12:05 ET; use a broad window.
+    session_identifier = "https://nemo.example.com/api/usage_events/?id=707"
+    session_start = dt.fromisoformat("2025-12-03T10:00:00-05:00")
+    session_end = dt.fromisoformat("2025-12-03T15:00:00-05:00")
+
+    session = Session(
+        session_identifier=session_identifier,
+        instrument=instrument,
+        dt_range=(session_start, session_end),
+        user="researcher_e",
+    )
+
+    # Mock NEMO reservation lookup -- the test NEMO instance has no tool 7 or
+    # usage event 707, so we return a synthetic ReservationEvent directly.
+    def _mock_res_event(sess):
+        return ReservationEvent(
+            experiment_title="pFIB-ToF-SIMS depth profiling of multilayer film",
+            instrument=sess.instrument,
+            username=sess.user,
+            user_full_name="Emma Researcher",
+            start_time=sess.dt_from,
+            end_time=sess.dt_to,
+            experiment_purpose=(
+                "Characterize elemental distribution in multilayer thin film"
+            ),
+            reservation_type="User session",
+            sample_details=["Multilayer thin film on silicon substrate"],
+            sample_pid=["sample-pfib-001"],
+            sample_name=["Multilayer"],
+            project_name=["FIB-SIMS Characterization"],
+            project_id=["project-pfib-001"],
+        )
+
+    monkeypatch.setattr(
+        "nexusLIMS.harvesters.nemo.res_event_from_session",
+        _mock_res_event,
+    )
+
+    print("\n[*] Creating Tofwerk session log entries...")
+    start_log = SessionLog(
+        session_identifier=session.session_identifier,
+        instrument=session.instrument.name,
+        timestamp=session.dt_from,
+        event_type=EventType.START,
+        record_status=RecordStatus.TO_BE_BUILT,
+        user=session.user,
+    )
+    end_log = SessionLog(
+        session_identifier=session.session_identifier,
+        instrument=session.instrument.name,
+        timestamp=session.dt_to,
+        event_type=EventType.END,
+        record_status=RecordStatus.TO_BE_BUILT,
+        user=session.user,
+    )
+
+    with DBSession(get_engine()) as db_session:
+        db_session.add(start_log)
+        db_session.add(end_log)
+        db_session.commit()
+
+    print(f"  Session created: {session.session_identifier}")
+
+    print("\n[*] Running record builder for Tofwerk session...")
+    xml_files, sessions_built, *_ = record_builder.build_new_session_records(
+        generate_previews=True
+    )
+
+    if not xml_files:
+        pytest.fail("Record builder produced no XML files for Tofwerk session")
+
+    export_results = export_records(xml_files, sessions_built)
+
+    sessions_by_file = dict(zip(xml_files, sessions_built, strict=True))
+    for xml_file, session_obj in sessions_by_file.items():
+        if was_successfully_exported(xml_file, export_results):
+            session_obj.update_session_status(RecordStatus.COMPLETED)
+        else:
+            session_obj.update_session_status(RecordStatus.BUILT_NOT_EXPORTED)
+            pytest.fail(f"Export failed for {xml_file.name}")
+
+    uploaded_dir = settings.records_dir_path / "uploaded"
+    uploaded_dir.mkdir(parents=True, exist_ok=True)
+    files_exported = [
+        f for f in xml_files if was_successfully_exported(f, export_results)
+    ]
+    for f in files_exported:
+        shutil.copy2(f, uploaded_dir)
+        f.unlink()
+
+    remaining = get_sessions_to_build()
+    if remaining:
+        pytest.fail(
+            f"Expected no TO_BE_BUILT sessions remaining, found {len(remaining)}"
+        )
+
+    expected_record_name = "2025-12-03_Tofwerk-pFIB-TOFSIMS_707.xml"
+    record_path = uploaded_dir / expected_record_name
+    if not record_path.exists():
+        available = list(uploaded_dir.glob("*.xml"))
+        pytest.fail(
+            f"Expected record {expected_record_name} not found. Available: {available}"
+        )
+
+    print(f"\n[*] Reading generated record: {expected_record_name}")
+    xml_doc = etree.fromstring(record_path.read_bytes())
+
+    schema_doc = etree.parse(str(record_builder.XSD_PATH))
+    schema = etree.XMLSchema(schema_doc)
+    if not schema.validate(xml_doc):
+        pytest.fail(f"XML validation failed: {schema.error_log}")
+
+    from nexusLIMS.utils import cdcs
+
+    record_title = record_path.stem
+    search_results = cdcs.search_records(title=record_title)
+    if not search_results:
+        pytest.fail(f"Record '{record_title}' not found in CDCS after upload")
+
+    record_id = search_results[0]["id"]
+    print(f"  Record ID in CDCS: {record_id}")
+    print("[+] Tofwerk integration record fixture setup complete")
+
+    yield {
+        "record_id": record_id,
+        "record_title": record_title,
+        "xml_doc": xml_doc,
+        "xml_path": record_path,
+        "session_identifier": session.session_identifier,
+    }
+
+    print("\n[*] Cleaning up Tofwerk integration record...")
     try:
         cdcs.delete_record(record_id)
         print(f"  Deleted record from CDCS: {record_id}")

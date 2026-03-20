@@ -931,6 +931,8 @@ def test_record_files():
     - JEOL_TEM/researcher_b/project_beta/20190724/
       (3 subdirectories with .dm3 files)
     - Nexus_Test_Instrument/test_files/ (4 sample .dm3 files)
+    - Tofwerk_pFIB_TOFSIMS/researcher_e/project_pfib/20251203/
+      (2 PII-stripped .h5 files: pfib-tofwerk raw.h5 and pfib-tofwerk opened.h5)
 
     Files have specific modification times for temporal file-finding tests.
     """
