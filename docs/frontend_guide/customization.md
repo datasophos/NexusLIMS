@@ -241,7 +241,31 @@ NX_INSTRUMENT_COLOR_MAPPINGS = {
 ```python
 # Enable the interactive tutorial (default: True)
 NX_ENABLE_TUTORIALS = True
+
+# Enable the record annotator (default: True)
+NX_ENABLE_ANNOTATOR = True
 ```
+
+### Record Annotator (`NX_ENABLE_ANNOTATOR`)
+
+When enabled, authenticated users with write access to a record can attach plain-language descriptions to each dataset (file) in that record. Descriptions are stored in the XML under each `<dataset>/<description>` element and appear in the gallery, dataset activity tables, and metadata modals.
+
+**Entry points:**
+
+- **Side panel** -- the **Annotate Record** button in the top action bar opens a slide-in offcanvas panel. Datasets are listed grouped by acquisition activity, each with a preview thumbnail and a text field. Press **Save Annotations** or **Ctrl+Enter** / **Cmd+Enter** to save all at once.
+- **Inline editing** -- hovering over a row in a dataset activity table reveals a pencil icon next to the description. Clicking it opens a small floating popup for quick single-dataset edits (**Ctrl+Enter** to save, **Escape** to cancel).
+- **Full-page editor** -- the expand icon (⤢) in the panel header opens `/annotate/<record_id>/` as a full-page form.
+
+A `?` help button is available in both the side panel and full-page editor.
+
+**To disable:**
+```python
+NX_ENABLE_ANNOTATOR = False
+```
+
+Disabling removes the Annotate Record button and all annotation UI from detail pages. Existing descriptions stored in XML records are unaffected.
+
+> **Note:** Requires a container restart to take effect (`docker compose restart cdcs`).
 
 ### Dataset Display Threshold
 
