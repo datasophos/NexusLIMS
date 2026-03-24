@@ -1,0 +1,22 @@
+# {py:mod}`nexusLIMS.tui.common`
+
+```{py:module} nexusLIMS.tui.common
+```
+
+```{autodoc2-docstring} nexusLIMS.tui.common
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.tui.common.base_app
+nexusLIMS.tui.common.db_utils
+nexusLIMS.tui.common.widgets
+nexusLIMS.tui.common.base_screens
+nexusLIMS.tui.common.validators
+```
