@@ -1228,6 +1228,64 @@ class TestExtractorModule:
             if result and result.exists():
                 result.unlink()
 
+    def test_create_preview_hyperspy_sig_to_thumbnail_raises(self, tmp_path):
+        """Test fallback to placeholder when sig_to_thumbnail raises an exception.
+
+        When sig_to_thumbnail fails during legacy HyperSpy preview generation,
+        the placeholder image should be copied to the preview path instead.
+        """
+        import unittest.mock
+        from contextlib import ExitStack
+
+        import hyperspy.api as hs
+        import numpy as np
+
+        from nexusLIMS.extractors import PLACEHOLDER_PREVIEW, create_preview
+
+        signal = hs.signals.Signal2D(np.random.random((10, 10)))
+        signal.metadata.General.title = "Test Signal"
+        signal.metadata.General.original_filename = "test.dm3"
+
+        def mock_hs_load(fname, **kwargs):
+            signal.compute = unittest.mock.Mock()
+            return signal
+
+        mock_reg_instance = unittest.mock.Mock()
+        mock_reg_instance.get_preview_generator.return_value = None
+
+        preview_path = tmp_path / "preview.thumb.png"
+
+        with ExitStack() as stack:
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.hs.load", side_effect=mock_hs_load
+                )
+            )
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.sig_to_thumbnail",
+                    side_effect=RuntimeError("thumbnail generation failed"),
+                )
+            )
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.replace_instrument_data_path",
+                    return_value=preview_path,
+                )
+            )
+            stack.enter_context(
+                unittest.mock.patch(
+                    "nexusLIMS.extractors.get_registry",
+                    return_value=mock_reg_instance,
+                )
+            )
+
+            result = create_preview(fname=tmp_path / "test.dm3", overwrite=True)
+
+        assert result == preview_path
+        assert result.exists()
+        assert result.read_bytes() == PLACEHOLDER_PREVIEW.read_bytes()
+
     def test_parse_metadata_extractor_returns_none(self, monkeypatch, tmp_path):
         """Test parse_metadata when extractor returns None.
 

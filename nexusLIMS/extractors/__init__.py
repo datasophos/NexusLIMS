@@ -683,7 +683,15 @@ def create_preview(  # noqa: PLR0911, PLR0912, PLR0915
     _logger.info("Generating HyperSpy preview: %s", preview_fname)
     preview_fname.parent.mkdir(parents=True, exist_ok=True)
     s.compute(show_progressbar=False)
-    sig_to_thumbnail(s, out_path=preview_fname)
+    try:
+        sig_to_thumbnail(s, out_path=preview_fname)
+    except Exception:  # pylint: disable=broad-exception-caught
+        _logger.warning(
+            "Legacy HyperSpy preview generation failed for %s. "
+            "Using placeholder image for preview.",
+            fname,
+        )
+        shutil.copyfile(PLACEHOLDER_PREVIEW, preview_fname)
 
     return preview_fname
 

@@ -225,7 +225,7 @@ class TestCdcsRecordRetrieval:
         from nexusLIMS import config
         from nexusLIMS.utils.network import nexus_req
 
-        endpoint = urljoin(cdcs_url, f"rest/data/{record_id}")
+        endpoint = urljoin(cdcs_url, f"rest/data/{record_id}/")
         response = nexus_req(endpoint, "GET", token_auth=config.settings.NX_CDCS_TOKEN)
 
         # Verify retrieval was successful
@@ -253,7 +253,7 @@ class TestCdcsRecordRetrieval:
         from nexusLIMS import config
         from nexusLIMS.utils.network import nexus_req
 
-        endpoint = urljoin(cdcs_url, f"rest/data/{record_id}")
+        endpoint = urljoin(cdcs_url, f"rest/data/{record_id}/")
         response = nexus_req(endpoint, "GET", token_auth=config.settings.NX_CDCS_TOKEN)
 
         assert response.status_code == HTTPStatus.OK

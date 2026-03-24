@@ -6,6 +6,7 @@ Technical reference documentation for NexusLIMS.
 ```{toctree}
 :maxdepth: 2
 
+reference/compatibility
 reference/changelog
 reference/api
 reference/NEMO_Reference

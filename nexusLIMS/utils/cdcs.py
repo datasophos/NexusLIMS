@@ -96,7 +96,7 @@ def get_workspace_id() -> int:
     """
     # assuming there's only one workspace for this user (that is the public
     # workspace)
-    endpoint = urljoin(get_cdcs_url(), "rest/workspace/read_access")
+    endpoint = urljoin(get_cdcs_url(), "rest/workspace/read_access/")
     r = nexus_req(endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
     if r.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
         msg = (
@@ -124,7 +124,7 @@ def get_template_id() -> str:
         If authentication to CDCS fails
     """
     # get the current template (XSD) id value:
-    endpoint = urljoin(get_cdcs_url(), "rest/template-version-manager/global")
+    endpoint = urljoin(get_cdcs_url(), "rest/template-version-manager/global/")
     r = nexus_req(endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
     if r.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
         msg = (
@@ -150,7 +150,7 @@ def delete_record(record_id: str):
         The REST response returned from the CDCS instance after attempting
         the delete operation
     """
-    endpoint = urljoin(get_cdcs_url(), f"rest/data/{record_id}")
+    endpoint = urljoin(get_cdcs_url(), f"rest/data/{record_id}/")
     response = nexus_req(endpoint, "DELETE", token_auth=settings.NX_CDCS_TOKEN)
     if response.status_code != HTTPStatus.NO_CONTENT:
         # anything other than 204 status means something went wrong

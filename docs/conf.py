@@ -303,6 +303,7 @@ exclude_patterns = [
     "dev_scripts",
     "_ext/README.md",
     "reference/labarchives_api_docs",
+    "**/._*",  # macOS resource fork files
 ]
 
 # Keep warnings as “system message” paragraphs in the built documents.

@@ -191,7 +191,7 @@ class CDCSDestination:
             If authentication fails
         """
         endpoint = urljoin(
-            str(settings.NX_CDCS_URL), "rest/template-version-manager/global"
+            str(settings.NX_CDCS_URL), "rest/template-version-manager/global/"
         )
         r = nexus_req(endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
 
@@ -215,7 +215,7 @@ class CDCSDestination:
         AuthenticationError
             If authentication fails
         """
-        endpoint = urljoin(str(settings.NX_CDCS_URL), "rest/workspace/read_access")
+        endpoint = urljoin(str(settings.NX_CDCS_URL), "rest/workspace/read_access/")
         r = nexus_req(endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
 
         if r.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
