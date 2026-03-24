@@ -97,6 +97,12 @@ NexusLIMS-CDCS/
 └── nexuslims_overrides/          # NexusLIMS-specific customizations
 ```
 
+## Version Compatibility
+
+NexusLIMS-CDCS and the NexusLIMS backend must be kept in sync. See the
+{ref}`Version Compatibility <compatibility>` reference for the full matrix of which
+NexusLIMS-CDCS versions are compatible with each NexusLIMS backend release.
+
 ## Related Resources
 
 - **Repository**: [https://github.com/datasophos/NexusLIMS-CDCS](https://github.com/datasophos/NexusLIMS-CDCS)

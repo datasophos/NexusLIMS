@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Mar, 20, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 24, 2026"/>
   </head>
   
   
@@ -1517,7 +1517,15 @@ window.addEventListener("load", load);
     <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generating HyperSpy preview: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
     <span class="n">preview_fname</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">s</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">show_progressbar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">sig_to_thumbnail</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="o">=</span><span class="n">preview_fname</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">sig_to_thumbnail</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">out_path</span><span class="o">=</span><span class="n">preview_fname</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-exception-caught</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s2">&quot;Legacy HyperSpy preview generation failed for </span><span class="si">%s</span><span class="s2">. &quot;</span>
+            <span class="s2">&quot;Using placeholder image for preview.&quot;</span><span class="p">,</span>
+            <span class="n">fname</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">PLACEHOLDER_PREVIEW</span><span class="p">,</span> <span class="n">preview_fname</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">preview_fname</span></div>
 

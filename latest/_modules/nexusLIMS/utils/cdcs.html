@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Mar, 20, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 24, 2026"/>
   </head>
   
   
@@ -930,7 +930,7 @@ window.addEventListener("load", load);
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># assuming there&#39;s only one workspace for this user (that is the public</span>
     <span class="c1"># workspace)</span>
-    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="s2">&quot;rest/workspace/read_access&quot;</span><span class="p">)</span>
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="s2">&quot;rest/workspace/read_access/&quot;</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">UNAUTHORIZED</span><span class="p">,</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">FORBIDDEN</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
@@ -961,7 +961,7 @@ window.addEventListener("load", load);
 <span class="sd">        If authentication to CDCS fails</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># get the current template (XSD) id value:</span>
-    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="s2">&quot;rest/template-version-manager/global&quot;</span><span class="p">)</span>
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="s2">&quot;rest/template-version-manager/global/&quot;</span><span class="p">)</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">UNAUTHORIZED</span><span class="p">,</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">FORBIDDEN</span><span class="p">):</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
@@ -990,7 +990,7 @@ window.addEventListener("load", load);
 <span class="sd">        The REST response returned from the CDCS instance after attempting</span>
 <span class="sd">        the delete operation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;rest/data/</span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="n">get_cdcs_url</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;rest/data/</span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">)</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">NO_CONTENT</span><span class="p">:</span>
         <span class="c1"># anything other than 204 status means something went wrong</span>

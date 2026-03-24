@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Mar, 20, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 24, 2026"/>
   </head>
   
   
@@ -1000,7 +1000,7 @@ admin-backup
 <li><p><strong>Pull latest code:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/opt/nexuslims/NexusLIMS-CDCS
 git<span class="w"> </span>fetch
-git<span class="w"> </span>checkout<span class="w"> </span>v3.19.0<span class="w">  </span><span class="c1"># or desired version</span>
+git<span class="w"> </span>checkout<span class="w"> </span>v3.20.0-nx0<span class="w">  </span><span class="c1"># or desired version — see {ref}`compatibility` for version requirements</span>
 </pre></div>
 </div>
 </li>
@@ -1026,7 +1026,7 @@ dc-prod<span class="w"> </span>up<span class="w"> </span>-d
 <h3>Rollback<a class="headerlink" href="#rollback" title="Link to this heading">#</a></h3>
 <p>If upgrade fails:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dc-prod<span class="w"> </span>down
-git<span class="w"> </span>checkout<span class="w"> </span>v3.18.0<span class="w">  </span><span class="c1"># Previous version</span>
+git<span class="w"> </span>checkout<span class="w"> </span>v3.20.0-nx0<span class="w">  </span><span class="c1"># or whichever version matches your NexusLIMS backend — see {ref}`compatibility`</span>
 <span class="nb">cd</span><span class="w"> </span>deployment
 dc-prod<span class="w"> </span>build
 dc-prod<span class="w"> </span>up<span class="w"> </span>-d

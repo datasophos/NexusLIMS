@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Mar, 20, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 24, 2026"/>
   </head>
   
   
@@ -1025,7 +1025,7 @@ window.addEventListener("load", load);
 <span class="sd">            If authentication fails</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span>
-            <span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_URL</span><span class="p">),</span> <span class="s2">&quot;rest/template-version-manager/global&quot;</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_URL</span><span class="p">),</span> <span class="s2">&quot;rest/template-version-manager/global/&quot;</span>
         <span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span><span class="p">)</span>
 
@@ -1049,7 +1049,7 @@ window.addEventListener("load", load);
 <span class="sd">        AuthenticationError</span>
 <span class="sd">            If authentication fails</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_URL</span><span class="p">),</span> <span class="s2">&quot;rest/workspace/read_access&quot;</span><span class="p">)</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_URL</span><span class="p">),</span> <span class="s2">&quot;rest/workspace/read_access/&quot;</span><span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="ow">in</span> <span class="p">(</span><span class="n">HTTPStatus</span><span class="o">.</span><span class="n">UNAUTHORIZED</span><span class="p">,</span> <span class="n">HTTPStatus</span><span class="o">.</span><span class="n">FORBIDDEN</span><span class="p">):</span>

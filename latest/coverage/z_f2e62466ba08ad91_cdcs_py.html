@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_f2e62466ba08ad91_elabftw_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2026-03-20 03:38 +0000
+            created at 2026-03-24 05:41 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -273,7 +273,7 @@
     <p class="pln"><span class="n"><a id="t191" href="#t191">191</a></span><span class="t"><span class="str">            If authentication fails</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t192" href="#t192">192</a></span><span class="t"><span class="str">        """</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t193" href="#t193">193</a></span><span class="t">        <span class="nam">endpoint</span> <span class="op">=</span> <span class="nam">urljoin</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run run2"><span class="n"><a id="t194" href="#t194">194</a></span><span class="t">            <span class="nam">str</span><span class="op">(</span><span class="nam">settings</span><span class="op">.</span><span class="nam">NX_CDCS_URL</span><span class="op">)</span><span class="op">,</span> <span class="str">"rest/template-version-manager/global"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run run2"><span class="n"><a id="t194" href="#t194">194</a></span><span class="t">            <span class="nam">str</span><span class="op">(</span><span class="nam">settings</span><span class="op">.</span><span class="nam">NX_CDCS_URL</span><span class="op">)</span><span class="op">,</span> <span class="str">"rest/template-version-manager/global/"</span>&nbsp;</span><span class="r"></span></p>
     <p class="run run2"><span class="n"><a id="t195" href="#t195">195</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t196" href="#t196">196</a></span><span class="t">        <span class="nam">r</span> <span class="op">=</span> <span class="nam">nexus_req</span><span class="op">(</span><span class="nam">endpoint</span><span class="op">,</span> <span class="str">"GET"</span><span class="op">,</span> <span class="nam">token_auth</span><span class="op">=</span><span class="nam">settings</span><span class="op">.</span><span class="nam">NX_CDCS_TOKEN</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t197" href="#t197">197</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -297,7 +297,7 @@
     <p class="pln"><span class="n"><a id="t215" href="#t215">215</a></span><span class="t"><span class="str">        AuthenticationError</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t216" href="#t216">216</a></span><span class="t"><span class="str">            If authentication fails</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t217" href="#t217">217</a></span><span class="t"><span class="str">        """</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t218" href="#t218">218</a></span><span class="t">        <span class="nam">endpoint</span> <span class="op">=</span> <span class="nam">urljoin</span><span class="op">(</span><span class="nam">str</span><span class="op">(</span><span class="nam">settings</span><span class="op">.</span><span class="nam">NX_CDCS_URL</span><span class="op">)</span><span class="op">,</span> <span class="str">"rest/workspace/read_access"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t218" href="#t218">218</a></span><span class="t">        <span class="nam">endpoint</span> <span class="op">=</span> <span class="nam">urljoin</span><span class="op">(</span><span class="nam">str</span><span class="op">(</span><span class="nam">settings</span><span class="op">.</span><span class="nam">NX_CDCS_URL</span><span class="op">)</span><span class="op">,</span> <span class="str">"rest/workspace/read_access/"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t219" href="#t219">219</a></span><span class="t">        <span class="nam">r</span> <span class="op">=</span> <span class="nam">nexus_req</span><span class="op">(</span><span class="nam">endpoint</span><span class="op">,</span> <span class="str">"GET"</span><span class="op">,</span> <span class="nam">token_auth</span><span class="op">=</span><span class="nam">settings</span><span class="op">.</span><span class="nam">NX_CDCS_TOKEN</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t220" href="#t220">220</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t221" href="#t221">221</a></span><span class="t">        <span class="key">if</span> <span class="nam">r</span><span class="op">.</span><span class="nam">status_code</span> <span class="key">in</span> <span class="op">(</span><span class="nam">HTTPStatus</span><span class="op">.</span><span class="nam">UNAUTHORIZED</span><span class="op">,</span> <span class="nam">HTTPStatus</span><span class="op">.</span><span class="nam">FORBIDDEN</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -315,7 +315,7 @@
             <a class="nav" href="z_f2e62466ba08ad91_elabftw_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2026-03-20 03:38 +0000
+            created at 2026-03-24 05:41 +0000
         </p>
     </div>
 </footer>
