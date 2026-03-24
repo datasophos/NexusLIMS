@@ -486,7 +486,7 @@ Restart Docker: `sudo systemctl restart docker`
    ```bash
    cd /opt/nexuslims/NexusLIMS-CDCS
    git fetch
-   git checkout v3.19.0  # or desired version
+   git checkout v3.20.0-nx0  # or desired version — see {ref}`compatibility` for version requirements
    ```
 
 3. **Review changelog** for breaking changes
@@ -513,7 +513,7 @@ If upgrade fails:
 
 ```bash
 dc-prod down
-git checkout v3.18.0  # Previous version
+git checkout v3.20.0-nx0  # or whichever version matches your NexusLIMS backend — see {ref}`compatibility`
 cd deployment
 dc-prod build
 dc-prod up -d

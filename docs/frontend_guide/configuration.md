@@ -28,7 +28,7 @@ Never commit `.env` to version control - it contains secrets!
 | Variable | Description | Dev Default | Prod Example |
 |----------|-------------|-------------|--------------|
 | `COMPOSE_PROJECT_NAME` | Docker Compose project name | `nexuslims_dev` | `nexuslims_prod` |
-| `IMAGE_VERSION` | Docker image version tag | `latest` | `3.18.0` |
+| `IMAGE_VERSION` | Docker image version tag | `latest` | `3.20.0-nx0` (see {ref}`compatibility`) |
 
 ### Domain Configuration
 
