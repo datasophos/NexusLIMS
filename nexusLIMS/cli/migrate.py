@@ -150,11 +150,14 @@ def _get_current_revision() -> str:
         return "unknown"
 
     try:
-        engine = create_engine(f"sqlite:///{db_path}")
+        from sqlalchemy.pool import NullPool
+
+        engine = create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
         with engine.connect() as connection:
             context = MigrationContext.configure(connection)
             current_rev = context.get_current_revision()
-            return current_rev or "none"
+        engine.dispose()
+        return current_rev or "none"
     except Exception:
         return "unknown"
 
@@ -395,11 +398,13 @@ def _cli():  # noqa: PLR0915
             # Get current database revision
             from alembic.runtime.migration import MigrationContext
             from sqlalchemy import create_engine
+            from sqlalchemy.pool import NullPool
 
-            engine = create_engine(f"sqlite:///{db_path}")
+            engine = create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
             with engine.connect() as connection:
                 context = MigrationContext.configure(connection)
                 current_rev = context.get_current_revision()
+            engine.dispose()
 
             head_rev = script.get_current_head()
 

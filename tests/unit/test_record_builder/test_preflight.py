@@ -53,9 +53,14 @@ def _make_full_db(path: Path) -> None:
 
 def _get_engine_for(path: Path):
     """Return a fresh SQLAlchemy engine for the given DB path."""
+    from sqlalchemy.pool import NullPool
     from sqlmodel import create_engine
 
-    return create_engine(f"sqlite:///{path}", connect_args={"check_same_thread": False})
+    return create_engine(
+        f"sqlite:///{path}",
+        connect_args={"check_same_thread": False},
+        poolclass=NullPool,
+    )
 
 
 # ---------------------------------------------------------------------------

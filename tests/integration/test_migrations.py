@@ -75,8 +75,12 @@ def engine(alembic_config):
     sa.Engine
         SQLAlchemy engine connected to test database
     """
+    from sqlalchemy.pool import NullPool
+
     _, db_path = alembic_config
-    return sa.create_engine(f"sqlite:///{db_path}")
+    engine = sa.create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
+    yield engine
+    engine.dispose()
 
 
 def get_table_names(engine) -> set[str]:

@@ -11,6 +11,7 @@ This test module covers:
 from datetime import datetime
 
 import pytest
+from sqlalchemy.pool import StaticPool
 from sqlmodel import Session, create_engine, select
 from textual.css.query import NoMatches
 from textual.pilot import Pilot
@@ -32,9 +33,15 @@ def test_engine():
     """Create an in-memory SQLite database engine for testing."""
     from sqlmodel import SQLModel
 
-    engine = create_engine("sqlite:///:memory:")
+    engine = create_engine(
+        "sqlite://",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
     SQLModel.metadata.create_all(engine)
-    return engine
+    yield engine
+    SQLModel.metadata.drop_all(engine)
+    engine.dispose()
 
 
 @pytest.fixture
@@ -163,9 +170,12 @@ class TestInstrumentManagerApp:
         """Test that providing db_path creates its own engine and session."""
         from sqlmodel import SQLModel
 
+        from sqlalchemy.pool import NullPool
+
         db_path = tmp_path / "custom.db"
-        engine = create_engine(f"sqlite:///{db_path}")
+        engine = create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
         SQLModel.metadata.create_all(engine)
+        engine.dispose()
 
         app = InstrumentManagerApp(db_path=db_path)
         async with app.run_test() as pilot:

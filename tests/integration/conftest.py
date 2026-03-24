@@ -371,7 +371,9 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
     db_path = TEST_DATA_DIR / "integration_test.db"
 
     # Create engine and tables using SQLModel
-    engine = create_engine(f"sqlite:///{db_path}")
+    from sqlalchemy.pool import NullPool
+
+    engine = create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
     SQLModel.metadata.create_all(engine)
 
     # Seed alembic_version at the current head so _check_alembic_migration passes.
@@ -403,6 +405,7 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
         print(f"[+] Seeded alembic_version at {_head}")
 
     print(f"[+] Initialized {db_path}")
+    engine.dispose()
 
     # Check if services are already running
     max_wait = 1  # Short timeout for checking existing services
@@ -1426,16 +1429,17 @@ def test_database(tmp_path, monkeypatch):
     db_path = tmp_path / "test_integration.db"
 
     # Create engine and tables using SQLModel
-    engine = create_engine(f"sqlite:///{db_path}")
+    from sqlalchemy.pool import NullPool
+
+    engine = create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
     SQLModel.metadata.create_all(engine)
+    engine.dispose()
 
     # Now that the database file exists, update the config
     monkeypatch.setenv("NX_DB_PATH", str(db_path))
     refresh_settings()
 
-    return db_path
-
-    # Cleanup is automatic via tmp_path
+    yield db_path
 
 
 @pytest.fixture(scope="session")
@@ -1587,9 +1591,12 @@ def populated_test_database(docker_services, mock_tools_data):
 
     from nexusLIMS.db import engine as engine_module
 
+    from sqlalchemy.pool import NullPool
+
     new_engine = create_engine(
         f"sqlite:///{db_path}",
         connect_args={"check_same_thread": False},
+        poolclass=NullPool,
         echo=False,
     )
     # Update the lazy engine singleton so get_engine() returns the test engine
@@ -1607,7 +1614,10 @@ def populated_test_database(docker_services, mock_tools_data):
     )
     instruments_module._instrument_db_initialized = True
 
-    return Path(db_path)
+    yield Path(db_path)
+
+    new_engine.dispose()
+    engine_module._engine = None
 
 
 # Test Data Fixtures
@@ -1779,7 +1789,7 @@ def extracted_test_files(test_data_dirs):
                 if top_level not in extracted_top_level_dirs:
                     extracted_top_level_dirs.append(top_level)
 
-        tar.extractall(instrument_data_dir)
+        tar.extractall(instrument_data_dir, filter="data")
 
     print(f"[+] Top-level directories extracted: {extracted_top_level_dirs}")
 

@@ -64,13 +64,22 @@ def _get_instrument_db(db_path: Path | str | None = None):
 
         # Create temporary engine if non-default path (for testing)
         if db_path is not None:
-            temp_engine = create_engine(f"sqlite:///{_db_path}")
+            from sqlalchemy.pool import NullPool
+
+            temp_engine = create_engine(
+                f"sqlite:///{_db_path}", poolclass=NullPool
+            )
         else:
             temp_engine = get_engine()
 
         with DBSession(temp_engine) as session:
             instruments_list = session.exec(select(Instrument)).all()
-            return {inst.instrument_pid: inst for inst in instruments_list}
+            result = {inst.instrument_pid: inst for inst in instruments_list}
+
+        if db_path is not None:
+            temp_engine.dispose()
+
+        return result
     except ValidationError as e:
         _logger.debug(
             "NexusLIMS config not available (standalone mode); "

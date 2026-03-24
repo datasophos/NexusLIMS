@@ -105,10 +105,12 @@ class TestHelperFunctions:
 
         # Verify database was created with tables
         import sqlalchemy as sa
+        from sqlalchemy.pool import NullPool
 
-        engine = sa.create_engine(f"sqlite:///{temp_db}")
+        engine = sa.create_engine(f"sqlite:///{temp_db}", poolclass=NullPool)
         inspector = sa.inspect(engine)
         tables = inspector.get_table_names()
+        engine.dispose()
 
         assert "instruments" in tables
         assert "session_log" in tables

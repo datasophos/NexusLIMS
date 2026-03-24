@@ -57,6 +57,8 @@ class SingletonResetter:
         try:
             from nexusLIMS.db import engine
 
+            if engine._engine is not None:
+                engine._engine.dispose()
             engine._engine = None
             logger.debug("Reset database engine")
         except ImportError:

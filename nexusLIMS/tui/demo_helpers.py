@@ -37,7 +37,9 @@ def create_demo_database(db_path: Path) -> None:
     >>> create_demo_database(Path("/tmp/demo.db"))
     """
     # Create engine and tables
-    engine = create_engine(f"sqlite:///{db_path}")
+    from sqlalchemy.pool import NullPool
+
+    engine = create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
     Instrument.metadata.create_all(engine)
 
     # Sample instruments with diverse configurations
@@ -159,6 +161,7 @@ def create_demo_database(db_path: Path) -> None:
     with Session(engine) as session:
         session.add_all(instruments)
         session.commit()
+    engine.dispose()
 
     # Set NX_DB_PATH to the created database and refresh config.
     # Also set dummy values for required fields that may not be present

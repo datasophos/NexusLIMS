@@ -61,7 +61,7 @@ def extract_files(tar_key):
 
     instr_data_path = Path(settings.NX_INSTRUMENT_DATA_PATH)
     with tarfile.open(tars[tar_key], "r:gz") as tar:
-        tar.extractall(path=instr_data_path)
+        tar.extractall(path=instr_data_path, filter="data")
         return [instr_data_path / i for i in tar.getnames()]
 
 

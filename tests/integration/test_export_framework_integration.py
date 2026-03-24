@@ -27,7 +27,9 @@ from nexusLIMS.exporters.base import ExportContext, ExportResult
 def db_session(test_database):
     """Create a test database session using the integration test database fixture."""
     # Create engine from test_database path
-    engine = create_engine(f"sqlite:///{test_database}")
+    from sqlalchemy.pool import NullPool
+
+    engine = create_engine(f"sqlite:///{test_database}", poolclass=NullPool)
 
     # CRITICAL: Update the global engine to point to test database
     # This ensures export_records() uses the same database as the test
@@ -43,6 +45,7 @@ def db_session(test_database):
     finally:
         # Restore original engine
         engine_module._engine = original_engine
+        engine.dispose()
 
 
 @pytest.fixture
