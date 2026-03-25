@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Mar, 24, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 25, 2026"/>
   </head>
   
   
@@ -965,7 +965,6 @@ window.addEventListener("load", load);
     <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">alembic.runtime.migration</span><span class="w"> </span><span class="kn">import</span> <span class="n">MigrationContext</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span>
 
     <span class="n">db_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;NX_DB_PATH&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">db_path</span><span class="p">:</span>
@@ -976,13 +975,17 @@ window.addEventListener("load", load);
         <span class="k">return</span> <span class="s2">&quot;unknown&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sqlite:///</span><span class="si">{</span><span class="n">db_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_transient_sqlite_engine</span>
+
+        <span class="n">engine</span> <span class="o">=</span> <span class="n">create_transient_sqlite_engine</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
             <span class="n">context</span> <span class="o">=</span> <span class="n">MigrationContext</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
             <span class="n">current_rev</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_current_revision</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">current_rev</span> <span class="ow">or</span> <span class="s2">&quot;none&quot;</span>
+        <span class="n">engine</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;unknown&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">current_rev</span> <span class="ow">or</span> <span class="s2">&quot;none&quot;</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_cli</span><span class="p">():</span>  <span class="c1"># noqa: PLR0915</span>
@@ -1220,12 +1223,14 @@ window.addEventListener("load", load);
 
             <span class="c1"># Get current database revision</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">alembic.runtime.migration</span><span class="w"> </span><span class="kn">import</span> <span class="n">MigrationContext</span>
-            <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span>
 
-            <span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sqlite:///</span><span class="si">{</span><span class="n">db_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_transient_sqlite_engine</span>
+
+            <span class="n">engine</span> <span class="o">=</span> <span class="n">create_transient_sqlite_engine</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
             <span class="k">with</span> <span class="n">engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
                 <span class="n">context</span> <span class="o">=</span> <span class="n">MigrationContext</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">connection</span><span class="p">)</span>
                 <span class="n">current_rev</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">get_current_revision</span><span class="p">()</span>
+            <span class="n">engine</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
 
             <span class="n">head_rev</span> <span class="o">=</span> <span class="n">script</span><span class="o">.</span><span class="n">get_current_head</span><span class="p">()</span>
 

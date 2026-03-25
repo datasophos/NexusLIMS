@@ -16,6 +16,11 @@
 :class: autosummary longtable
 :align: left
 
+* - {py:obj}`NexusLIMSDatabaseStructurePane <nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 * - {py:obj}`NexusLIMSTableViewerPane <nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane>`
   - ```{autodoc2-docstring} nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane
     :parser: autodoc2_docstrings_parser
@@ -29,6 +34,26 @@
 ````
 
 ### API
+
+`````{py:class} NexusLIMSDatabaseStructurePane(db_path: pathlib.Path, *args, **kwargs)
+:canonical: nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane
+
+Bases: {py:obj}`textual.widgets.TabPane`
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:method} compose() -> textual.app.ComposeResult
+:canonical: nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane.compose
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane.compose
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
 
 `````{py:class} NexusLIMSTableViewerPane(db_path: pathlib.Path, *args, **kwargs)
 :canonical: nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane

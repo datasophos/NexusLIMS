@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Mar, 24, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 25, 2026"/>
   </head>
   
   
@@ -538,10 +538,13 @@ app.run()
 <h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane" title="nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NexusLIMSTableViewerPane</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane" title="nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NexusLIMSDatabaseStructurePane</span></code></a></p></td>
+<td><p>Database structure tree that does not leak sqlite connections.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane" title="nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NexusLIMSTableViewerPane</span></code></a></p></td>
 <td><p>Table viewer with live full-text filter and sortable column headers.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp" title="nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NexusLIMSDBApp</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp" title="nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NexusLIMSDBApp</span></code></a></p></td>
 <td><p>Read-only NexusLIMS database browser.</p></td>
 </tr>
 </tbody>
@@ -550,6 +553,19 @@ app.run()
 </section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">nexusLIMS.tui.apps.db_browser.</span></span><span class="sig-name descname"><span class="pre">NexusLIMSDatabaseStructurePane</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/tui/apps/db_browser.html#NexusLIMSDatabaseStructurePane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">textual.widgets.TabPane</span></code></p>
+<p>Database structure tree that does not leak sqlite connections.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane.compose">
+<span class="sig-name descname"><span class="pre">compose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">textual.app.ComposeResult</span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/tui/apps/db_browser.html#NexusLIMSDatabaseStructurePane.compose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane.compose" title="Link to this definition">#</a></dt>
+<dd><p>Render the database structure tree.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">nexusLIMS.tui.apps.db_browser.</span></span><span class="sig-name descname"><span class="pre">NexusLIMSTableViewerPane</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/tui/apps/db_browser.html#NexusLIMSTableViewerPane"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane" title="Link to this definition">#</a></dt>
@@ -662,6 +678,10 @@ adds a live filter input and sortable column headers</p></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane"><code class="docutils literal notranslate"><span class="pre">NexusLIMSDatabaseStructurePane</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane.compose"><code class="docutils literal notranslate"><span class="pre">NexusLIMSDatabaseStructurePane.compose()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane"><code class="docutils literal notranslate"><span class="pre">NexusLIMSTableViewerPane</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane.DEFAULT_CSS"><code class="docutils literal notranslate"><span class="pre">NexusLIMSTableViewerPane.DEFAULT_CSS</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.tui.apps.db_browser.NexusLIMSTableViewerPane.compose"><code class="docutils literal notranslate"><span class="pre">NexusLIMSTableViewerPane.compose()</span></code></a></li>

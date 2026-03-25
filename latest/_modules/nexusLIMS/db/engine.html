@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Mar, 24, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 25, 2026"/>
   </head>
   
   
@@ -821,12 +821,9 @@ window.addEventListener("load", load);
                 <article class="bd-article">
                   
   <h1>Source code for nexusLIMS.db.engine</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Database engine and session management for NexusLIMS.</span>
+<span></span><span class="sd">&quot;&quot;&quot;Database engine and session management for NexusLIMS.&quot;&quot;&quot;</span>
 
-<span class="sd">This module provides a centralized SQLModel engine and session factory</span>
-<span class="sd">for database operations, replacing the manual sqlite3 connection management.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -835,6 +832,53 @@ window.addEventListener("load", load);
 <span class="c1"># Lazy singleton — created on first call to get_engine().</span>
 <span class="c1"># Reset to None by SingletonResetter.reset_db_engine() between tests.</span>
 <span class="n">_engine</span><span class="p">:</span> <span class="s2">&quot;Engine | None&quot;</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="create_transient_sqlite_engine">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.engine.html#nexusLIMS.db.engine.create_transient_sqlite_engine">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_transient_sqlite_engine</span><span class="p">(</span>
+    <span class="n">db_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">echo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Engine&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a short-lived file-backed SQLite engine without connection pooling.</span>
+
+<span class="sd">    This is the preferred helper for one-shot CLI utilities, fixtures, and tests</span>
+<span class="sd">    that create a file-backed SQLite engine for a narrow scope and dispose it</span>
+<span class="sd">    explicitly when finished.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.pool</span><span class="w"> </span><span class="kn">import</span> <span class="n">NullPool</span>  <span class="c1"># noqa: PLC0415</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span>  <span class="c1"># noqa: PLC0415</span>
+
+    <span class="k">return</span> <span class="n">create_engine</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;sqlite:///</span><span class="si">{</span><span class="n">db_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">connect_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;check_same_thread&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="n">poolclass</span><span class="o">=</span><span class="n">NullPool</span><span class="p">,</span>
+        <span class="n">echo</span><span class="o">=</span><span class="n">echo</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="create_in_memory_engine">
+<a class="viewcode-back" href="../../../api/nexusLIMS/nexusLIMS.db.engine.html#nexusLIMS.db.engine.create_in_memory_engine">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_in_memory_engine</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">echo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Engine&quot;</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create an in-memory SQLite engine backed by a single shared connection.</span>
+
+<span class="sd">    Tests that need an in-memory database should use this helper so the same</span>
+<span class="sd">    SQLite database remains available across sessions and threads.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.pool</span><span class="w"> </span><span class="kn">import</span> <span class="n">StaticPool</span>  <span class="c1"># noqa: PLC0415</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span>  <span class="c1"># noqa: PLC0415</span>
+
+    <span class="k">return</span> <span class="n">create_engine</span><span class="p">(</span>
+        <span class="s2">&quot;sqlite://&quot;</span><span class="p">,</span>
+        <span class="n">connect_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;check_same_thread&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+        <span class="n">poolclass</span><span class="o">=</span><span class="n">StaticPool</span><span class="p">,</span>
+        <span class="n">echo</span><span class="o">=</span><span class="n">echo</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="get_engine">

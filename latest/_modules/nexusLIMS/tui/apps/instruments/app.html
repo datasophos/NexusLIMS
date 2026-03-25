@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Mar, 24, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 25, 2026"/>
   </head>
   
   
@@ -830,9 +830,10 @@ window.addEventListener("load", load);
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">create_engine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS</span><span class="w"> </span><span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_transient_sqlite_engine</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.tui.apps.instruments.screens</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstrumentListScreen</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.tui.common.base_app</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseNexusApp</span>
 
@@ -861,6 +862,7 @@ window.addEventListener("load", load);
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_path</span><span class="p">:</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the instrument manager app.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_db_path</span> <span class="o">=</span> <span class="n">db_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_custom_engine</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -877,11 +879,8 @@ window.addEventListener("load", load);
         <span class="c1"># If custom db_path provided, create custom session</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;sqlite:///</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_db_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                    <span class="n">connect_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;check_same_thread&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-                <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">db_session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_custom_engine</span> <span class="o">=</span> <span class="n">create_transient_sqlite_engine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_db_path</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">db_session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_custom_engine</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">show_error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Database connection failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">return</span>
@@ -894,6 +893,16 @@ window.addEventListener("load", load);
 
         <span class="c1"># Push the list screen as the main screen</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">push_screen</span><span class="p">(</span><span class="n">InstrumentListScreen</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="InstrumentManagerApp.on_unmount">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.tui.apps.instruments.app.html#nexusLIMS.tui.apps.instruments.app.InstrumentManagerApp.on_unmount">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_unmount</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean up database connection and custom engine.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_unmount</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_engine</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_custom_engine</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_custom_engine</span> <span class="o">=</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="InstrumentManagerApp.get_app_name">

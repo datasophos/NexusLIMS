@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Mar, 24, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 25, 2026"/>
   </head>
   
   
@@ -830,9 +830,10 @@ window.addEventListener("load", load);
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">create_engine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">refresh_settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_transient_sqlite_engine</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Instrument</span>
 
 
@@ -862,7 +863,7 @@ window.addEventListener("load", load);
 <span class="sd">    &gt;&gt;&gt; create_demo_database(Path(&quot;/tmp/demo.db&quot;))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Create engine and tables</span>
-    <span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sqlite:///</span><span class="si">{</span><span class="n">db_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">engine</span> <span class="o">=</span> <span class="n">create_transient_sqlite_engine</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
     <span class="n">Instrument</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">create_all</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span>
 
     <span class="c1"># Sample instruments with diverse configurations</span>
@@ -984,6 +985,7 @@ window.addEventListener("load", load);
     <span class="k">with</span> <span class="n">Session</span><span class="p">(</span><span class="n">engine</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
         <span class="n">session</span><span class="o">.</span><span class="n">add_all</span><span class="p">(</span><span class="n">instruments</span><span class="p">)</span>
         <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    <span class="n">engine</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
 
     <span class="c1"># Set NX_DB_PATH to the created database and refresh config.</span>
     <span class="c1"># Also set dummy values for required fields that may not be present</span>

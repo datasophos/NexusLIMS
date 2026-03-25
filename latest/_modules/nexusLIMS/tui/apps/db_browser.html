@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Mar, 24, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 25, 2026"/>
   </head>
   
   
@@ -846,14 +846,13 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">sqlite3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">closing</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">squall</span><span class="w"> </span><span class="kn">import</span> <span class="n">db_utility</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">squall.database_structure_tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DatabaseStructurePane</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">squall.squall</span><span class="w"> </span><span class="kn">import</span> <span class="n">SQLiteClientApp</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">textual</span><span class="w"> </span><span class="kn">import</span> <span class="n">on</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">textual.widgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Select</span><span class="p">,</span> <span class="n">TabbedContent</span><span class="p">,</span> <span class="n">TabPane</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">textual.widgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Select</span><span class="p">,</span> <span class="n">TabbedContent</span><span class="p">,</span> <span class="n">TabPane</span><span class="p">,</span> <span class="n">Tree</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">textual.widgets._select</span><span class="w"> </span><span class="kn">import</span> <span class="n">NULL</span> <span class="k">as</span> <span class="n">SELECT_BLANK</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
@@ -866,6 +865,73 @@ window.addEventListener("load", load);
 <span class="kn">import</span><span class="w"> </span><span class="nn">squall</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_squall_pkg</span>
 
 <span class="n">_SQUALL_TCSS</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">_squall_pkg</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;squall.tcss&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_table_names</span><span class="p">(</span><span class="n">db_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return database table names using a short-lived sqlite3 connection.&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_path</span><span class="p">))</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="s2">&quot;SELECT name FROM sqlite_master WHERE type=&#39;table&#39; ORDER BY name&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_schema</span><span class="p">(</span><span class="n">db_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a lightweight schema view for display in the structure pane.&quot;&quot;&quot;</span>
+    <span class="n">schema</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_path</span><span class="p">))</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">table_name</span> <span class="ow">in</span> <span class="n">_get_table_names</span><span class="p">(</span><span class="n">db_path</span><span class="p">):</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;PRAGMA table_info(</span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+            <span class="n">schema</span><span class="p">[</span><span class="n">table_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;Columns&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="n">column_name</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;Type&quot;</span><span class="p">:</span> <span class="n">column_type</span><span class="p">,</span>
+                        <span class="s2">&quot;Schema&quot;</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">&quot;cid&quot;</span><span class="p">:</span> <span class="n">cid</span><span class="p">,</span>
+                            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">column_name</span><span class="p">,</span>
+                            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">column_type</span><span class="p">,</span>
+                            <span class="s2">&quot;notnull&quot;</span><span class="p">:</span> <span class="n">not_null</span><span class="p">,</span>
+                            <span class="s2">&quot;dflt_value&quot;</span><span class="p">:</span> <span class="n">default_value</span><span class="p">,</span>
+                            <span class="s2">&quot;pk&quot;</span><span class="p">:</span> <span class="n">primary_key</span><span class="p">,</span>
+                        <span class="p">},</span>
+                    <span class="p">}</span>
+                    <span class="k">for</span> <span class="p">(</span>
+                        <span class="n">cid</span><span class="p">,</span>
+                        <span class="n">column_name</span><span class="p">,</span>
+                        <span class="n">column_type</span><span class="p">,</span>
+                        <span class="n">not_null</span><span class="p">,</span>
+                        <span class="n">default_value</span><span class="p">,</span>
+                        <span class="n">primary_key</span><span class="p">,</span>
+                    <span class="p">)</span> <span class="ow">in</span> <span class="n">columns</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+    <span class="k">return</span> <span class="n">schema</span>
+
+
+<div class="viewcode-block" id="NexusLIMSDatabaseStructurePane">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.tui.apps.db_browser.html#nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">NexusLIMSDatabaseStructurePane</span><span class="p">(</span><span class="n">TabPane</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Database structure tree that does not leak sqlite connections.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span> <span class="o">=</span> <span class="n">db_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_schema</span> <span class="o">=</span> <span class="n">_get_schema</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">else</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="NexusLIMSDatabaseStructurePane.compose">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.tui.apps.db_browser.html#nexusLIMS.tui.apps.db_browser.NexusLIMSDatabaseStructurePane.compose">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">compose</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ComposeResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the database structure tree.&quot;&quot;&quot;</span>
+        <span class="n">tree</span><span class="p">:</span> <span class="n">Tree</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tables (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_schema</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="n">tree</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">expand</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">table_name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_schema</span><span class="p">):</span>
+            <span class="n">table</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">table_name</span><span class="p">)</span>
+            <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_schema</span><span class="p">[</span><span class="n">table_name</span><span class="p">][</span><span class="s2">&quot;Columns&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">column_name</span><span class="p">,</span> <span class="n">column_info</span> <span class="ow">in</span> <span class="n">columns</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">table</span><span class="o">.</span><span class="n">add_leaf</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">column_name</span><span class="si">}</span><span class="s2">  [green]</span><span class="si">{</span><span class="n">column_info</span><span class="p">[</span><span class="s1">&#39;Type&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">[/]&quot;</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">tree</span></div>
+</div>
+
 
 
 <div class="viewcode-block" id="NexusLIMSTableViewerPane">
@@ -901,7 +967,7 @@ window.addEventListener("load", load);
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span> <span class="o">=</span> <span class="n">db_path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">db_utility</span><span class="o">.</span><span class="n">get_table_names</span><span class="p">(</span><span class="n">db_path</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tables</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_table_names</span><span class="p">(</span><span class="n">db_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filter_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sort_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sort_asc</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
@@ -1063,7 +1129,7 @@ window.addEventListener("load", load);
             <span class="n">NexusLIMSTableViewerPane</span><span class="p">(</span><span class="n">db_file_path</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Table Viewer&quot;</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="k">await</span> <span class="n">tabbed_content</span><span class="o">.</span><span class="n">add_pane</span><span class="p">(</span>
-            <span class="n">DatabaseStructurePane</span><span class="p">(</span>
+            <span class="n">NexusLIMSDatabaseStructurePane</span><span class="p">(</span>
                 <span class="n">db_file_path</span><span class="p">,</span>
                 <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Database Structure&quot;</span><span class="p">,</span>
                 <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;db_structure&quot;</span><span class="p">,</span>

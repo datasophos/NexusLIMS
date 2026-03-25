@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Mar, 24, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 25, 2026"/>
   </head>
   
   
@@ -839,10 +839,10 @@ window.addEventListener("load", load);
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span> <span class="k">as</span> <span class="n">DBSession</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span><span class="p">,</span> <span class="n">select</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlmodel</span><span class="w"> </span><span class="kn">import</span> <span class="n">select</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_engine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_transient_sqlite_engine</span><span class="p">,</span> <span class="n">get_engine</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.db.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Instrument</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils.paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_subpath</span>
 
@@ -887,13 +887,16 @@ window.addEventListener("load", load);
 
         <span class="c1"># Create temporary engine if non-default path (for testing)</span>
         <span class="k">if</span> <span class="n">db_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">temp_engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sqlite:///</span><span class="si">{</span><span class="n">_db_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">temp_engine</span> <span class="o">=</span> <span class="n">create_transient_sqlite_engine</span><span class="p">(</span><span class="n">_db_path</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">temp_engine</span> <span class="o">=</span> <span class="n">get_engine</span><span class="p">()</span>
 
         <span class="k">with</span> <span class="n">DBSession</span><span class="p">(</span><span class="n">temp_engine</span><span class="p">)</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
             <span class="n">instruments_list</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="n">Instrument</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-            <span class="k">return</span> <span class="p">{</span><span class="n">inst</span><span class="o">.</span><span class="n">instrument_pid</span><span class="p">:</span> <span class="n">inst</span> <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">instruments_list</span><span class="p">}</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="n">inst</span><span class="o">.</span><span class="n">instrument_pid</span><span class="p">:</span> <span class="n">inst</span> <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">instruments_list</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">db_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">temp_engine</span><span class="o">.</span><span class="n">dispose</span><span class="p">()</span>
     <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
             <span class="s2">&quot;NexusLIMS config not available (standalone mode); &quot;</span>
@@ -908,6 +911,8 @@ window.addEventListener("load", load);
             <span class="n">e</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="p">{}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span>
 
 
 <div class="viewcode-block" id="get_instr_from_filepath">

@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Mar, 24, 2026"/>
+    <meta name="docbuild:last-update" content="Mar, 25, 2026"/>
   </head>
   
   
@@ -512,14 +512,18 @@
   <section id="module-nexusLIMS.db.engine">
 <span id="nexuslims-db-engine"></span><h1><a class="reference internal" href="#module-nexusLIMS.db.engine" title="nexusLIMS.db.engine"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db.engine</span></code></a><a class="headerlink" href="#module-nexusLIMS.db.engine" title="Link to this heading">#</a></h1>
 <p>Database engine and session management for NexusLIMS.</p>
-<p>This module provides a centralized SQLModel engine and session factory
-for database operations, replacing the manual sqlite3 connection management.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <section id="functions">
 <h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.db.engine.create_transient_sqlite_engine" title="nexusLIMS.db.engine.create_transient_sqlite_engine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_transient_sqlite_engine</span></code></a></p></td>
+<td><p>Create a short-lived file-backed SQLite engine without connection pooling.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.db.engine.create_in_memory_engine" title="nexusLIMS.db.engine.create_in_memory_engine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_in_memory_engine</span></code></a></p></td>
+<td><p>Create an in-memory SQLite engine backed by a single shared connection.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.db.engine.get_engine" title="nexusLIMS.db.engine.get_engine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_engine</span></code></a></p></td>
 <td><p>Get the database engine, creating it lazily on first access.</p></td>
 </tr>
@@ -529,6 +533,23 @@ for database operations, replacing the manual sqlite3 connection management.</p>
 </section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.db.engine.create_transient_sqlite_engine">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.db.engine.</span></span><span class="sig-name descname"><span class="pre">create_transient_sqlite_engine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">echo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/connections.html#sqlalchemy.engine.Engine" title="(in SQLAlchemy v2.0)"><span class="pre">Engine</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/db/engine.html#create_transient_sqlite_engine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.engine.create_transient_sqlite_engine" title="Link to this definition">#</a></dt>
+<dd><p>Create a short-lived file-backed SQLite engine without connection pooling.</p>
+<p>This is the preferred helper for one-shot CLI utilities, fixtures, and tests
+that create a file-backed SQLite engine for a narrow scope and dispose it
+explicitly when finished.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.db.engine.create_in_memory_engine">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.db.engine.</span></span><span class="sig-name descname"><span class="pre">create_in_memory_engine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">echo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/connections.html#sqlalchemy.engine.Engine" title="(in SQLAlchemy v2.0)"><span class="pre">Engine</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/db/engine.html#create_in_memory_engine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.engine.create_in_memory_engine" title="Link to this definition">#</a></dt>
+<dd><p>Create an in-memory SQLite engine backed by a single shared connection.</p>
+<p>Tests that need an in-memory database should use this helper so the same
+SQLite database remains available across sessions and threads.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.db.engine.get_engine">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.db.engine.</span></span><span class="sig-name descname"><span class="pre">get_engine</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.sqlalchemy.org/en/20/core/connections.html#sqlalchemy.engine.Engine" title="(in SQLAlchemy v2.0)"><span class="pre">Engine</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/db/engine.html#get_engine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.db.engine.get_engine" title="Link to this definition">#</a></dt>
@@ -603,6 +624,8 @@ for database operations, replacing the manual sqlite3 connection management.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.engine.create_transient_sqlite_engine"><code class="docutils literal notranslate"><span class="pre">create_transient_sqlite_engine()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.engine.create_in_memory_engine"><code class="docutils literal notranslate"><span class="pre">create_in_memory_engine()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.db.engine.get_engine"><code class="docutils literal notranslate"><span class="pre">get_engine()</span></code></a></li>
 </ul>
 </li>

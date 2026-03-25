@@ -16,6 +16,16 @@
 :class: autosummary longtable
 :align: left
 
+* - {py:obj}`create_transient_sqlite_engine <nexusLIMS.db.engine.create_transient_sqlite_engine>`
+  - ```{autodoc2-docstring} nexusLIMS.db.engine.create_transient_sqlite_engine
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`create_in_memory_engine <nexusLIMS.db.engine.create_in_memory_engine>`
+  - ```{autodoc2-docstring} nexusLIMS.db.engine.create_in_memory_engine
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 * - {py:obj}`get_engine <nexusLIMS.db.engine.get_engine>`
   - ```{autodoc2-docstring} nexusLIMS.db.engine.get_engine
     :parser: autodoc2_docstrings_parser
@@ -24,6 +34,22 @@
 ````
 
 ### API
+
+````{py:function} create_transient_sqlite_engine(db_path: pathlib.Path | str, *, echo: bool = False) -> sqlalchemy.engine.base.Engine
+:canonical: nexusLIMS.db.engine.create_transient_sqlite_engine
+
+```{autodoc2-docstring} nexusLIMS.db.engine.create_transient_sqlite_engine
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} create_in_memory_engine(*, echo: bool = False) -> sqlalchemy.engine.base.Engine
+:canonical: nexusLIMS.db.engine.create_in_memory_engine
+
+```{autodoc2-docstring} nexusLIMS.db.engine.create_in_memory_engine
+:parser: autodoc2_docstrings_parser
+```
+````
 
 ````{py:function} get_engine() -> sqlalchemy.engine.base.Engine
 :canonical: nexusLIMS.db.engine.get_engine

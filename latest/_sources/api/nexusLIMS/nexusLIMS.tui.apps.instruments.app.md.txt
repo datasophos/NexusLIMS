@@ -53,6 +53,15 @@ Bases: {py:obj}`nexusLIMS.tui.common.base_app.BaseNexusApp`
 
 ````
 
+````{py:method} on_unmount() -> None
+:canonical: nexusLIMS.tui.apps.instruments.app.InstrumentManagerApp.on_unmount
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.app.InstrumentManagerApp.on_unmount
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:method} get_app_name() -> str
 :canonical: nexusLIMS.tui.apps.instruments.app.InstrumentManagerApp.get_app_name
 
