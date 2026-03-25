@@ -1,0 +1,107 @@
+# {py:mod}`nexusLIMS.extractors.plugins.preview_generators.text_preview`
+
+```{py:module} nexusLIMS.extractors.plugins.preview_generators.text_preview
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`TextPreviewGenerator <nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`text_to_thumbnail <nexusLIMS.extractors.plugins.preview_generators.text_preview.text_to_thumbnail>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.text_to_thumbnail
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} text_to_thumbnail(f: pathlib.Path, out_path: pathlib.Path, output_size: int = 500) -> typing.Union[matplotlib.figure.Figure, bool]
+:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview.text_to_thumbnail
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.text_to_thumbnail
+:parser: autodoc2_docstrings_parser
+```
+````
+
+`````{py:class} TextPreviewGenerator
+:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator.name
+:value: >
+   'text_preview'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator.name
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator.priority
+:value: >
+   100
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator.priority
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator.supported_extensions
+
+**Type:** typing.ClassVar
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator.supported_extensions
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator.supports
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} generate(context: nexusLIMS.extractors.base.ExtractionContext, output_path: pathlib.Path) -> bool
+:canonical: nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator.generate
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.text_preview.TextPreviewGenerator.generate
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
