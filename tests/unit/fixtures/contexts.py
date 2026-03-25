@@ -103,18 +103,11 @@ def db_context(request, db_factory, monkeypatch):
 
     # Recreate the engine to point to new database
     # The engine module uses a lazy _engine singleton, so we set it directly
-    from sqlalchemy.pool import NullPool
-    from sqlmodel import create_engine
-
     import nexusLIMS.db.engine
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
 
     old_engine = nexusLIMS.db.engine._engine
-    new_engine = create_engine(
-        f"sqlite:///{db_path}",
-        connect_args={"check_same_thread": False},
-        poolclass=NullPool,
-        echo=False,
-    )
+    new_engine = create_transient_sqlite_engine(db_path)
     if old_engine is not None:
         old_engine.dispose()
     nexusLIMS.db.engine._engine = new_engine

@@ -7,10 +7,10 @@ instruments database.
 
 from pathlib import Path
 
-from sqlalchemy.pool import NullPool
-from sqlmodel import Session, create_engine
+from sqlmodel import Session
 
 from nexusLIMS import config
+from nexusLIMS.db.engine import create_transient_sqlite_engine
 from nexusLIMS.tui.apps.instruments.screens import InstrumentListScreen
 from nexusLIMS.tui.common.base_app import BaseNexusApp
 
@@ -52,11 +52,7 @@ class InstrumentManagerApp(BaseNexusApp):
         # If custom db_path provided, create custom session
         if self._db_path is not None:
             try:
-                self._custom_engine = create_engine(
-                    f"sqlite:///{self._db_path}",
-                    connect_args={"check_same_thread": False},
-                    poolclass=NullPool,
-                )
+                self._custom_engine = create_transient_sqlite_engine(self._db_path)
                 self.db_session = Session(self._custom_engine)
             except Exception as e:
                 self.show_error(f"Database connection failed: {e}")

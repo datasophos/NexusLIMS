@@ -1,8 +1,9 @@
 """Tests for instrument-specific validators."""
 
 import pytest
-from sqlmodel import Session, SQLModel, create_engine
+from sqlmodel import Session, SQLModel
 
+from nexusLIMS.db.engine import create_in_memory_engine
 from nexusLIMS.db.models import Instrument
 from nexusLIMS.tui.apps.instruments.validators import (
     get_example_values,
@@ -17,13 +18,7 @@ from nexusLIMS.tui.apps.instruments.validators import (
 @pytest.fixture
 def in_memory_db():
     """Create an in-memory SQLite database for testing."""
-    from sqlalchemy.pool import StaticPool
-
-    engine = create_engine(
-        "sqlite:///:memory:",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-    )
+    engine = create_in_memory_engine()
     SQLModel.metadata.create_all(engine)
     yield engine
     SQLModel.metadata.drop_all(engine)

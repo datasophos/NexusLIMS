@@ -36,9 +36,9 @@ def _make_minimal_db(path: Path) -> None:
 
 def _make_full_db(path: Path) -> None:
     """Create a SQLite DB with all NexusLIMS tables (no migration tracking)."""
-    from sqlmodel import SQLModel, create_engine
+    from sqlmodel import SQLModel
 
-    # Ensure all model classes are registered in SQLModel.metadata
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
     from nexusLIMS.db.models import (  # noqa: F401
         ExternalUserIdentifier,
         Instrument,
@@ -46,21 +46,16 @@ def _make_full_db(path: Path) -> None:
         UploadLog,
     )
 
-    engine = create_engine(f"sqlite:///{path}")
+    engine = create_transient_sqlite_engine(path)
     SQLModel.metadata.create_all(engine)
     engine.dispose()
 
 
 def _get_engine_for(path: Path):
     """Return a fresh SQLAlchemy engine for the given DB path."""
-    from sqlalchemy.pool import NullPool
-    from sqlmodel import create_engine
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
 
-    return create_engine(
-        f"sqlite:///{path}",
-        connect_args={"check_same_thread": False},
-        poolclass=NullPool,
-    )
+    return create_transient_sqlite_engine(path)
 
 
 # ---------------------------------------------------------------------------

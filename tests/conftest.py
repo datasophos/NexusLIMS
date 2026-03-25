@@ -20,18 +20,38 @@ if "NX_DB_PATH" not in os.environ or not Path(os.environ["NX_DB_PATH"]).is_absol
     os.environ["NX_DB_PATH"] = str(_DEFAULT_TEST_DB_PATH)
     _DEFAULT_TEST_DB_SET = True
 
+# Use an isolated matplotlib config/cache directory for tests so font discovery
+# does not depend on the user's global cache state.
+_DEFAULT_MPLCONFIGDIR = Path(tempfile.mkdtemp(prefix="nexuslims-mpl-"))
+os.environ.setdefault("MPLCONFIGDIR", str(_DEFAULT_MPLCONFIGDIR))
+
+
+def _bootstrap_matplotlib_fonts() -> None:
+    """Ensure matplotlib's bundled fonts are registered for test runs."""
+    from matplotlib import font_manager, get_data_path
+
+    if any(f.name == "DejaVu Sans" for f in font_manager.fontManager.ttflist):
+        return
+
+    font_dir = Path(get_data_path()) / "fonts" / "ttf"
+    for font_path in font_dir.glob("*.ttf"):
+        font_manager.fontManager.addfont(str(font_path))
+
+
+_bootstrap_matplotlib_fonts()
+
 
 def pytest_sessionfinish(session, exitstatus):
     """Clean up the temp NX_DB_PATH used for tests."""
-    if not _DEFAULT_TEST_DB_SET:
-        return
-
     try:
-        if _DEFAULT_TEST_DB_PATH.exists():
-            _DEFAULT_TEST_DB_PATH.unlink()
-        _DEFAULT_TEST_DB_DIR.rmdir()
+        if _DEFAULT_TEST_DB_SET:
+            if _DEFAULT_TEST_DB_PATH.exists():
+                _DEFAULT_TEST_DB_PATH.unlink()
+            _DEFAULT_TEST_DB_DIR.rmdir()
+        if _DEFAULT_MPLCONFIGDIR.exists():
+            _DEFAULT_MPLCONFIGDIR.rmdir()
     except OSError:
-        # Best-effort cleanup; ignore if the DB is still open or the dir isn't empty.
+        # Best-effort cleanup; ignore if files are still open or dirs aren't empty.
         pass
 
 
@@ -52,9 +72,9 @@ def create_test_database(db_path: Path) -> None:
     db_path : Path
         Path where the database should be created
     """
-    from sqlmodel import SQLModel, create_engine
+    from sqlmodel import SQLModel
 
-    # Import all models to register them with SQLModel metadata
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
     from nexusLIMS.db.models import (  # noqa: F401
         Instrument,
         SessionLog,
@@ -66,7 +86,7 @@ def create_test_database(db_path: Path) -> None:
         db_path.unlink()
 
     # Create engine and tables
-    engine = create_engine(f"sqlite:///{db_path}")
+    engine = create_transient_sqlite_engine(db_path)
     SQLModel.metadata.create_all(engine)
     engine.dispose()
 

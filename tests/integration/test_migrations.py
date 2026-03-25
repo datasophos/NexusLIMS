@@ -75,10 +75,10 @@ def engine(alembic_config):
     sa.Engine
         SQLAlchemy engine connected to test database
     """
-    from sqlalchemy.pool import NullPool
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
 
     _, db_path = alembic_config
-    engine = sa.create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
+    engine = create_transient_sqlite_engine(db_path)
     yield engine
     engine.dispose()
 

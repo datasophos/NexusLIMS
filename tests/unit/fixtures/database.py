@@ -9,8 +9,9 @@ import sqlite3
 from datetime import datetime
 from pathlib import Path
 
-from sqlmodel import SQLModel, create_engine
+from sqlmodel import SQLModel
 
+from nexusLIMS.db.engine import create_transient_sqlite_engine
 from nexusLIMS.db.enums import EventType, RecordStatus
 from tests.fixtures.test_data import INSTRUMENTS
 
@@ -100,7 +101,7 @@ class DatabaseFactory:
             UploadLog,
         )
 
-        engine = create_engine(f"sqlite:///{db_path}")
+        engine = create_transient_sqlite_engine(db_path)
         SQLModel.metadata.create_all(engine)
         engine.dispose()
 

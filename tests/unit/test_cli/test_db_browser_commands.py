@@ -13,8 +13,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from click.testing import CliRunner
-from sqlmodel import Session, create_engine
+from sqlmodel import Session
 
+from nexusLIMS.db.engine import create_transient_sqlite_engine
 from nexusLIMS.db.models import Instrument
 
 
@@ -31,10 +32,8 @@ def demo_db(tmp_path) -> Path:
 @pytest.fixture
 def small_db(tmp_path) -> Path:
     """Small SQLite database with 5 instruments for TUI tests."""
-    from sqlalchemy.pool import NullPool
-
     db_path = tmp_path / "test.db"
-    engine = create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
+    engine = create_transient_sqlite_engine(db_path)
     Instrument.metadata.create_all(engine)
     instruments = [
         Instrument(
@@ -328,7 +327,6 @@ class TestNexusLIMSTableViewerPaneLogic:
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.filterwarnings("ignore:unclosed database:ResourceWarning")
 class TestNexusLIMSTableViewerPaneTUI:
     """TUI integration tests for NexusLIMSTableViewerPane."""
 

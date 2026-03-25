@@ -139,7 +139,6 @@ def _get_current_revision() -> str:
     import os
 
     from alembic.runtime.migration import MigrationContext
-    from sqlalchemy import create_engine
 
     db_path = os.getenv("NX_DB_PATH")
     if not db_path:
@@ -150,16 +149,17 @@ def _get_current_revision() -> str:
         return "unknown"
 
     try:
-        from sqlalchemy.pool import NullPool
+        from nexusLIMS.db.engine import create_transient_sqlite_engine
 
-        engine = create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
+        engine = create_transient_sqlite_engine(db_path)
         with engine.connect() as connection:
             context = MigrationContext.configure(connection)
             current_rev = context.get_current_revision()
         engine.dispose()
-        return current_rev or "none"
     except Exception:
         return "unknown"
+    else:
+        return current_rev or "none"
 
 
 def _cli():  # noqa: PLR0915
@@ -397,10 +397,10 @@ def _cli():  # noqa: PLR0915
 
             # Get current database revision
             from alembic.runtime.migration import MigrationContext
-            from sqlalchemy import create_engine
-            from sqlalchemy.pool import NullPool
 
-            engine = create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
+            from nexusLIMS.db.engine import create_transient_sqlite_engine
+
+            engine = create_transient_sqlite_engine(db_path)
             with engine.connect() as connection:
                 context = MigrationContext.configure(connection)
                 current_rev = context.get_current_revision()

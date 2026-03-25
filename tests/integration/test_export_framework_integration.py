@@ -14,8 +14,9 @@ from unittest.mock import Mock, patch
 
 import pytest
 from sqlmodel import Session as DBSession
-from sqlmodel import create_engine, select
+from sqlmodel import select
 
+from nexusLIMS.db.engine import create_transient_sqlite_engine
 from nexusLIMS.db.enums import EventType, RecordStatus
 from nexusLIMS.db.models import Instrument, SessionLog, UploadLog
 from nexusLIMS.db.session_handler import Session
@@ -27,9 +28,7 @@ from nexusLIMS.exporters.base import ExportContext, ExportResult
 def db_session(test_database):
     """Create a test database session using the integration test database fixture."""
     # Create engine from test_database path
-    from sqlalchemy.pool import NullPool
-
-    engine = create_engine(f"sqlite:///{test_database}", poolclass=NullPool)
+    engine = create_transient_sqlite_engine(test_database)
 
     # CRITICAL: Update the global engine to point to test database
     # This ensures export_records() uses the same database as the test

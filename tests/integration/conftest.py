@@ -359,9 +359,9 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
 
     # Initialize default database for Settings validation
     print("[*] Initializing default test database...")
-    from sqlmodel import SQLModel, create_engine
+    from sqlmodel import SQLModel
 
-    # Import all models to register them with SQLModel metadata
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
     from nexusLIMS.db.models import (  # noqa: F401
         Instrument,
         SessionLog,
@@ -371,9 +371,7 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
     db_path = TEST_DATA_DIR / "integration_test.db"
 
     # Create engine and tables using SQLModel
-    from sqlalchemy.pool import NullPool
-
-    engine = create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
+    engine = create_transient_sqlite_engine(db_path)
     SQLModel.metadata.create_all(engine)
 
     # Seed alembic_version at the current head so _check_alembic_migration passes.
@@ -1414,9 +1412,10 @@ def test_database(tmp_path, monkeypatch):
     -----
     The database is automatically cleaned up by pytest's tmp_path fixture
     """
-    from sqlmodel import SQLModel, create_engine
+    from sqlmodel import SQLModel
 
     from nexusLIMS.config import refresh_settings
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
 
     # Import all models to register them with SQLModel metadata
     from nexusLIMS.db.models import (  # noqa: F401
@@ -1429,9 +1428,7 @@ def test_database(tmp_path, monkeypatch):
     db_path = tmp_path / "test_integration.db"
 
     # Create engine and tables using SQLModel
-    from sqlalchemy.pool import NullPool
-
-    engine = create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
+    engine = create_transient_sqlite_engine(db_path)
     SQLModel.metadata.create_all(engine)
     engine.dispose()
 
@@ -1439,7 +1436,7 @@ def test_database(tmp_path, monkeypatch):
     monkeypatch.setenv("NX_DB_PATH", str(db_path))
     refresh_settings()
 
-    yield db_path
+    return db_path
 
 
 @pytest.fixture(scope="session")
@@ -1587,18 +1584,10 @@ def populated_test_database(docker_services, mock_tools_data):
 
     # CRITICAL: Recreate the database engine to point to the integration test database
     # The engine uses a lazy _engine singleton, so we set it directly
-    from sqlmodel import create_engine
-
     from nexusLIMS.db import engine as engine_module
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
 
-    from sqlalchemy.pool import NullPool
-
-    new_engine = create_engine(
-        f"sqlite:///{db_path}",
-        connect_args={"check_same_thread": False},
-        poolclass=NullPool,
-        echo=False,
-    )
+    new_engine = create_transient_sqlite_engine(db_path)
     # Update the lazy engine singleton so get_engine() returns the test engine
     engine_module._engine = new_engine
 

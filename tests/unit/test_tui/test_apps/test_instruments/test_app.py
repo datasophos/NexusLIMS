@@ -11,12 +11,12 @@ This test module covers:
 from datetime import datetime
 
 import pytest
-from sqlalchemy.pool import StaticPool
-from sqlmodel import Session, create_engine, select
+from sqlmodel import Session, select
 from textual.css.query import NoMatches
 from textual.pilot import Pilot
 from textual.widgets import DataTable, Input, Markdown, Static
 
+from nexusLIMS.db.engine import create_in_memory_engine, create_transient_sqlite_engine
 from nexusLIMS.db.models import Instrument
 from nexusLIMS.tui.apps.instruments.app import InstrumentManagerApp
 from nexusLIMS.tui.apps.instruments.screens import (
@@ -33,11 +33,7 @@ def test_engine():
     """Create an in-memory SQLite database engine for testing."""
     from sqlmodel import SQLModel
 
-    engine = create_engine(
-        "sqlite://",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-    )
+    engine = create_in_memory_engine()
     SQLModel.metadata.create_all(engine)
     yield engine
     SQLModel.metadata.drop_all(engine)
@@ -170,10 +166,8 @@ class TestInstrumentManagerApp:
         """Test that providing db_path creates its own engine and session."""
         from sqlmodel import SQLModel
 
-        from sqlalchemy.pool import NullPool
-
         db_path = tmp_path / "custom.db"
-        engine = create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
+        engine = create_transient_sqlite_engine(db_path)
         SQLModel.metadata.create_all(engine)
         engine.dispose()
 

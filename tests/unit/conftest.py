@@ -1033,14 +1033,11 @@ def test_db_engine():
     ...         instruments = session.exec(select(Instrument)).all()
     ...         assert len(instruments) == 0
     """
-    from sqlalchemy.pool import StaticPool
-    from sqlmodel import SQLModel, create_engine
+    from sqlmodel import SQLModel
 
-    engine = create_engine(
-        "sqlite://",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-    )
+    from nexusLIMS.db.engine import create_in_memory_engine
+
+    engine = create_in_memory_engine()
     SQLModel.metadata.create_all(engine)
     yield engine
     SQLModel.metadata.drop_all(engine)

@@ -6,9 +6,9 @@ covering lines that are difficult to test in isolation.
 """
 
 import pytest
-from sqlalchemy.pool import StaticPool
-from sqlmodel import Session, create_engine, select
+from sqlmodel import Session, select
 
+from nexusLIMS.db.engine import create_in_memory_engine
 from nexusLIMS.db.models import Instrument, SessionLog
 from nexusLIMS.tui.apps.instruments import InstrumentManagerApp
 
@@ -18,11 +18,7 @@ def test_engine():
     """Create an in-memory SQLite database engine for testing."""
     from sqlmodel import SQLModel
 
-    engine = create_engine(
-        "sqlite://",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-    )
+    engine = create_in_memory_engine()
     SQLModel.metadata.create_all(engine)
     yield engine
     SQLModel.metadata.drop_all(engine)

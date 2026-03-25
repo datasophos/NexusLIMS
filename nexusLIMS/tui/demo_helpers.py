@@ -7,9 +7,10 @@ with sample instrument data for documentation and testing purposes.
 import os
 from pathlib import Path
 
-from sqlmodel import Session, create_engine
+from sqlmodel import Session
 
 from nexusLIMS.config import refresh_settings
+from nexusLIMS.db.engine import create_transient_sqlite_engine
 from nexusLIMS.db.models import Instrument
 
 
@@ -37,9 +38,7 @@ def create_demo_database(db_path: Path) -> None:
     >>> create_demo_database(Path("/tmp/demo.db"))
     """
     # Create engine and tables
-    from sqlalchemy.pool import NullPool
-
-    engine = create_engine(f"sqlite:///{db_path}", poolclass=NullPool)
+    engine = create_transient_sqlite_engine(db_path)
     Instrument.metadata.create_all(engine)
 
     # Sample instruments with diverse configurations
