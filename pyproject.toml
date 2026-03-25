@@ -222,6 +222,9 @@ filterwarnings = [
     "ignore:Glyph .* missing from font:UserWarning",
     "ignore:The NumPy module was reloaded:UserWarning",
     "ignore:Corrupt EXIF data.*:UserWarning",
+    "ignore:'return' in a 'finally' block:SyntaxWarning:hyperspy\\.roi",
+    "ignore:`scipy\\.odr` is deprecated.*:DeprecationWarning:hyperspy\\.model",
+    "ignore:codecs\\.open\\(\\) is deprecated.*:DeprecationWarning:rsciio\\.msa\\._api",
 
 ]
 
