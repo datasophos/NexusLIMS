@@ -178,7 +178,7 @@ class FileFactory:
         if archive_path.suffix == ".gz" or archive_path.name.endswith(".tar.gz"):
             # Extract tar.gz
             with tarfile.open(archive_path, "r:gz") as tar:
-                tar.extractall(path=extract_dir)
+                tar.extractall(path=extract_dir, filter="data")
 
             # Find all extracted files recursively
             extracted_files = list(extract_dir.rglob("*"))

@@ -359,9 +359,9 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
 
     # Initialize default database for Settings validation
     print("[*] Initializing default test database...")
-    from sqlmodel import SQLModel, create_engine
+    from sqlmodel import SQLModel
 
-    # Import all models to register them with SQLModel metadata
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
     from nexusLIMS.db.models import (  # noqa: F401
         Instrument,
         SessionLog,
@@ -371,7 +371,7 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
     db_path = TEST_DATA_DIR / "integration_test.db"
 
     # Create engine and tables using SQLModel
-    engine = create_engine(f"sqlite:///{db_path}")
+    engine = create_transient_sqlite_engine(db_path)
     SQLModel.metadata.create_all(engine)
 
     # Seed alembic_version at the current head so _check_alembic_migration passes.
@@ -403,6 +403,7 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
         print(f"[+] Seeded alembic_version at {_head}")
 
     print(f"[+] Initialized {db_path}")
+    engine.dispose()
 
     # Check if services are already running
     max_wait = 1  # Short timeout for checking existing services
@@ -1411,9 +1412,10 @@ def test_database(tmp_path, monkeypatch):
     -----
     The database is automatically cleaned up by pytest's tmp_path fixture
     """
-    from sqlmodel import SQLModel, create_engine
+    from sqlmodel import SQLModel
 
     from nexusLIMS.config import refresh_settings
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
 
     # Import all models to register them with SQLModel metadata
     from nexusLIMS.db.models import (  # noqa: F401
@@ -1426,16 +1428,15 @@ def test_database(tmp_path, monkeypatch):
     db_path = tmp_path / "test_integration.db"
 
     # Create engine and tables using SQLModel
-    engine = create_engine(f"sqlite:///{db_path}")
+    engine = create_transient_sqlite_engine(db_path)
     SQLModel.metadata.create_all(engine)
+    engine.dispose()
 
     # Now that the database file exists, update the config
     monkeypatch.setenv("NX_DB_PATH", str(db_path))
     refresh_settings()
 
     return db_path
-
-    # Cleanup is automatic via tmp_path
 
 
 @pytest.fixture(scope="session")
@@ -1583,15 +1584,10 @@ def populated_test_database(docker_services, mock_tools_data):
 
     # CRITICAL: Recreate the database engine to point to the integration test database
     # The engine uses a lazy _engine singleton, so we set it directly
-    from sqlmodel import create_engine
-
     from nexusLIMS.db import engine as engine_module
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
 
-    new_engine = create_engine(
-        f"sqlite:///{db_path}",
-        connect_args={"check_same_thread": False},
-        echo=False,
-    )
+    new_engine = create_transient_sqlite_engine(db_path)
     # Update the lazy engine singleton so get_engine() returns the test engine
     engine_module._engine = new_engine
 
@@ -1607,7 +1603,10 @@ def populated_test_database(docker_services, mock_tools_data):
     )
     instruments_module._instrument_db_initialized = True
 
-    return Path(db_path)
+    yield Path(db_path)
+
+    new_engine.dispose()
+    engine_module._engine = None
 
 
 # Test Data Fixtures
@@ -1779,7 +1778,7 @@ def extracted_test_files(test_data_dirs):
                 if top_level not in extracted_top_level_dirs:
                     extracted_top_level_dirs.append(top_level)
 
-        tar.extractall(instrument_data_dir)
+        tar.extractall(instrument_data_dir, filter="data")
 
     print(f"[+] Top-level directories extracted: {extracted_top_level_dirs}")
 

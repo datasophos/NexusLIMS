@@ -10,7 +10,7 @@ maintainers = [
 ]
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.11,<3.15"
 keywords = ["microscopy", "LIMS", "materials", "electron-microscopy"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -19,6 +19,8 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 
 dependencies = [
@@ -193,6 +195,7 @@ log_cli_level = "DEBUG"
 asyncio_mode = "auto"
 # Test discovery paths - unit tests run by default, integration tests require explicit -m integration
 testpaths = ["tests/unit"]
+norecursedirs = ["tests/unit/files"]
 # Python files and test functions/classes pattern
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
@@ -219,6 +222,10 @@ filterwarnings = [
     "ignore:Glyph .* missing from font:UserWarning",
     "ignore:The NumPy module was reloaded:UserWarning",
     "ignore:Corrupt EXIF data.*:UserWarning",
+    "ignore:'return' in a 'finally' block:SyntaxWarning:hyperspy\\.roi",
+    "ignore:`scipy\\.odr` is deprecated.*:DeprecationWarning:hyperspy\\.model",
+    "ignore:codecs\\.open\\(\\) is deprecated.*:DeprecationWarning:rsciio\\.msa\\._api",
+
 ]
 
 [tool.pyright]

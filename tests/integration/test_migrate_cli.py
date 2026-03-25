@@ -106,9 +106,12 @@ class TestHelperFunctions:
         # Verify database was created with tables
         import sqlalchemy as sa
 
-        engine = sa.create_engine(f"sqlite:///{temp_db}")
+        from nexusLIMS.db.engine import create_transient_sqlite_engine
+
+        engine = create_transient_sqlite_engine(temp_db)
         inspector = sa.inspect(engine)
         tables = inspector.get_table_names()
+        engine.dispose()
 
         assert "instruments" in tables
         assert "session_log" in tables
@@ -141,11 +144,14 @@ class TestHelperFunctions:
         # Create database file but make connection fail
         temp_db.touch()
 
-        # Mock create_engine to raise an exception (mock where it's imported from)
+        # Mock the centralized engine helper to raise an exception.
         def mock_create_engine(*args, **kwargs):
             raise DatabaseConnectionError
 
-        with mock.patch("sqlalchemy.create_engine", side_effect=mock_create_engine):
+        with mock.patch(
+            "nexusLIMS.db.engine.create_transient_sqlite_engine",
+            side_effect=mock_create_engine,
+        ):
             result = _get_current_revision()
             assert result == "unknown"
 
@@ -427,10 +433,9 @@ class TestCheckCommand:
 
         cli = _cli()
 
-        # Mock create_engine to raise an exception during check (mock where it's
-        # imported from).
+        # Mock the centralized engine helper to raise an exception during check.
         with mock.patch(
-            "sqlalchemy.create_engine",
+            "nexusLIMS.db.engine.create_transient_sqlite_engine",
             side_effect=Exception("Connection error"),
         ):
             result = cli_runner.invoke(cli, ["check"])

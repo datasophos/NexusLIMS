@@ -16,10 +16,10 @@ from pathlib import Path
 
 from pydantic import ValidationError
 from sqlmodel import Session as DBSession
-from sqlmodel import create_engine, select
+from sqlmodel import select
 
 from nexusLIMS.config import settings
-from nexusLIMS.db.engine import get_engine
+from nexusLIMS.db.engine import create_transient_sqlite_engine, get_engine
 from nexusLIMS.db.models import Instrument
 from nexusLIMS.utils.paths import is_subpath
 
@@ -64,13 +64,16 @@ def _get_instrument_db(db_path: Path | str | None = None):
 
         # Create temporary engine if non-default path (for testing)
         if db_path is not None:
-            temp_engine = create_engine(f"sqlite:///{_db_path}")
+            temp_engine = create_transient_sqlite_engine(_db_path)
         else:
             temp_engine = get_engine()
 
         with DBSession(temp_engine) as session:
             instruments_list = session.exec(select(Instrument)).all()
-            return {inst.instrument_pid: inst for inst in instruments_list}
+            result = {inst.instrument_pid: inst for inst in instruments_list}
+
+        if db_path is not None:
+            temp_engine.dispose()
     except ValidationError as e:
         _logger.debug(
             "NexusLIMS config not available (standalone mode); "
@@ -85,6 +88,8 @@ def _get_instrument_db(db_path: Path | str | None = None):
             e,
         )
         return {}
+    else:
+        return result
 
 
 def get_instr_from_filepath(path: Path) -> Instrument | None:

@@ -1,8 +1,9 @@
 """Tests for TUI database utilities."""
 
 import pytest
-from sqlmodel import Session, SQLModel, create_engine
+from sqlmodel import Session, SQLModel
 
+from nexusLIMS.db.engine import create_in_memory_engine
 from nexusLIMS.db.models import Instrument, SessionLog
 from nexusLIMS.tui.common.db_utils import (
     check_uniqueness,
@@ -14,9 +15,11 @@ from nexusLIMS.tui.common.db_utils import (
 @pytest.fixture
 def in_memory_db():
     """Create an in-memory SQLite database for testing."""
-    engine = create_engine("sqlite:///:memory:")
+    engine = create_in_memory_engine()
     SQLModel.metadata.create_all(engine)
-    return engine
+    yield engine
+    SQLModel.metadata.drop_all(engine)
+    engine.dispose()
 
 
 @pytest.fixture

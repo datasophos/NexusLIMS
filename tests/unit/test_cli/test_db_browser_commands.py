@@ -13,8 +13,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from click.testing import CliRunner
-from sqlmodel import Session, create_engine
+from sqlmodel import Session
 
+from nexusLIMS.db.engine import create_transient_sqlite_engine
 from nexusLIMS.db.models import Instrument
 
 
@@ -32,7 +33,7 @@ def demo_db(tmp_path) -> Path:
 def small_db(tmp_path) -> Path:
     """Small SQLite database with 5 instruments for TUI tests."""
     db_path = tmp_path / "test.db"
-    engine = create_engine(f"sqlite:///{db_path}")
+    engine = create_transient_sqlite_engine(db_path)
     Instrument.metadata.create_all(engine)
     instruments = [
         Instrument(
@@ -51,6 +52,7 @@ def small_db(tmp_path) -> Path:
     with Session(engine) as session:
         session.add_all(instruments)
         session.commit()
+    engine.dispose()
     return db_path
 
 

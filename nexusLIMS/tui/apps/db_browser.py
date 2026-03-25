@@ -23,14 +23,13 @@ Usage
 from __future__ import annotations
 
 import sqlite3
+from contextlib import closing
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from squall import db_utility
-from squall.database_structure_tree import DatabaseStructurePane
 from squall.squall import SQLiteClientApp
 from textual import on
-from textual.widgets import DataTable, Input, Select, TabbedContent, TabPane
+from textual.widgets import DataTable, Input, Select, TabbedContent, TabPane, Tree
 from textual.widgets._select import NULL as SELECT_BLANK
 
 if TYPE_CHECKING:
@@ -43,6 +42,67 @@ if TYPE_CHECKING:
 import squall as _squall_pkg
 
 _SQUALL_TCSS = str(Path(_squall_pkg.__file__).parent / "squall.tcss")
+
+
+def _get_table_names(db_path: Path) -> list[str]:
+    """Return database table names using a short-lived sqlite3 connection."""
+    with closing(sqlite3.connect(db_path)) as conn:
+        rows = conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name"
+        ).fetchall()
+    return [row[0] for row in rows]
+
+
+def _get_schema(db_path: Path) -> dict[str, dict]:
+    """Return a lightweight schema view for display in the structure pane."""
+    schema: dict[str, dict] = {}
+    with closing(sqlite3.connect(db_path)) as conn:
+        for table_name in _get_table_names(db_path):
+            columns = conn.execute(f"PRAGMA table_info({table_name})").fetchall()
+            schema[table_name] = {
+                "Columns": {
+                    column_name: {
+                        "Type": column_type,
+                        "Schema": {
+                            "cid": cid,
+                            "name": column_name,
+                            "type": column_type,
+                            "notnull": not_null,
+                            "dflt_value": default_value,
+                            "pk": primary_key,
+                        },
+                    }
+                    for (
+                        cid,
+                        column_name,
+                        column_type,
+                        not_null,
+                        default_value,
+                        primary_key,
+                    ) in columns
+                }
+            }
+    return schema
+
+
+class NexusLIMSDatabaseStructurePane(TabPane):
+    """Database structure tree that does not leak sqlite connections."""
+
+    def __init__(self, db_path: Path, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.db_path = db_path
+        self.db_schema = _get_schema(self.db_path) if self.db_path.exists() else {}
+
+    def compose(self) -> ComposeResult:
+        """Render the database structure tree."""
+        tree: Tree[str] = Tree(f"Tables ({len(self.db_schema.keys())})")
+        tree.root.expand()
+        for table_name in sorted(self.db_schema):
+            table = tree.root.add(table_name)
+            columns = self.db_schema[table_name]["Columns"]
+            for column_name, column_info in columns.items():
+                table.add_leaf(f"{column_name}  [green]{column_info['Type']}[/]")
+        yield tree
 
 
 class NexusLIMSTableViewerPane(TabPane):
@@ -76,7 +136,7 @@ class NexusLIMSTableViewerPane(TabPane):
     def __init__(self, db_path: Path, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.db_path = db_path
-        self.tables: list[str] = sorted(db_utility.get_table_names(db_path))
+        self.tables: list[str] = _get_table_names(db_path)
         self._filter_text: str = ""
         self._sort_col: str | None = None
         self._sort_asc: bool = True
@@ -227,7 +287,7 @@ class NexusLIMSDBApp(SQLiteClientApp):
             NexusLIMSTableViewerPane(db_file_path, title="Table Viewer")
         )
         await tabbed_content.add_pane(
-            DatabaseStructurePane(
+            NexusLIMSDatabaseStructurePane(
                 db_file_path,
                 title="Database Structure",
                 id="db_structure",

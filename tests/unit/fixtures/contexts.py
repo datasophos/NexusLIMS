@@ -103,20 +103,19 @@ def db_context(request, db_factory, monkeypatch):
 
     # Recreate the engine to point to new database
     # The engine module uses a lazy _engine singleton, so we set it directly
-    from sqlmodel import create_engine
-
     import nexusLIMS.db.engine
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
 
-    new_engine = create_engine(
-        f"sqlite:///{db_path}",
-        connect_args={"check_same_thread": False},
-        echo=False,
-    )
+    old_engine = nexusLIMS.db.engine._engine
+    new_engine = create_transient_sqlite_engine(db_path)
+    if old_engine is not None:
+        old_engine.dispose()
     nexusLIMS.db.engine._engine = new_engine
 
-    return db_path
+    yield db_path
 
-    # Cleanup handled by tmp_path fixture (db_factory uses temp_dir)
+    new_engine.dispose()
+    nexusLIMS.db.engine._engine = None
 
 
 @pytest.fixture

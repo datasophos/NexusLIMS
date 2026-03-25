@@ -7,9 +7,10 @@ instruments database.
 
 from pathlib import Path
 
-from sqlmodel import Session, create_engine
+from sqlmodel import Session
 
 from nexusLIMS import config
+from nexusLIMS.db.engine import create_transient_sqlite_engine
 from nexusLIMS.tui.apps.instruments.screens import InstrumentListScreen
 from nexusLIMS.tui.common.base_app import BaseNexusApp
 
@@ -36,6 +37,7 @@ class InstrumentManagerApp(BaseNexusApp):
     def __init__(self, db_path: Path | None = None, **kwargs):
         """Initialize the instrument manager app."""
         self._db_path = db_path
+        self._custom_engine = None
         super().__init__(**kwargs)
 
     @property
@@ -50,11 +52,8 @@ class InstrumentManagerApp(BaseNexusApp):
         # If custom db_path provided, create custom session
         if self._db_path is not None:
             try:
-                engine = create_engine(
-                    f"sqlite:///{self._db_path}",
-                    connect_args={"check_same_thread": False},
-                )
-                self.db_session = Session(engine)
+                self._custom_engine = create_transient_sqlite_engine(self._db_path)
+                self.db_session = Session(self._custom_engine)
             except Exception as e:
                 self.show_error(f"Database connection failed: {e}")
                 return
@@ -67,6 +66,13 @@ class InstrumentManagerApp(BaseNexusApp):
 
         # Push the list screen as the main screen
         self.push_screen(InstrumentListScreen())
+
+    def on_unmount(self) -> None:
+        """Clean up database connection and custom engine."""
+        super().on_unmount()
+        if self._custom_engine is not None:
+            self._custom_engine.dispose()
+            self._custom_engine = None
 
     def get_app_name(self) -> str:
         """Get application name for help screen."""
