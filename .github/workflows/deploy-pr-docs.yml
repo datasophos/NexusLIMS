@@ -250,7 +250,7 @@ jobs:
           git status
           git diff
 
-          git pull --rebase origin gh-pages
+          git pull --rebase --strategy-option=theirs origin gh-pages
           git push origin gh-pages
           echo "✅ Documentation preview deployed!"
           echo "🔗 View at: https://datasophos.github.io/NexusLIMS/pr-${PR_NUMBER}/"
