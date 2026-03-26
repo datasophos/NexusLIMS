@@ -254,7 +254,7 @@ When enabled, authenticated users with write access to a record can attach plain
 
 - **Side panel** -- the **Annotate Record** button in the top action bar opens a slide-in offcanvas panel. Datasets are listed grouped by acquisition activity, each with a preview thumbnail and a text field. Press **Save Annotations** or **Ctrl+Enter** / **Cmd+Enter** to save all at once.
 - **Inline editing** -- hovering over a row in a dataset activity table reveals a pencil icon next to the description. Clicking it opens a small floating popup for quick single-dataset edits (**Ctrl+Enter** to save, **Escape** to cancel).
-- **Full-page editor** -- the expand icon (⤢) in the panel header opens `/annotate/<record_id>/` as a full-page form.
+- **Full-page editor** -- the expand icon (⤢) in the panel header opens `/annotate/<record_id>/` as a full-page form. In addition to editing descriptions, the full-page editor supports **reassigning datasets between acquisition activities** within the same record.
 
 A `?` help button is available in both the side panel and full-page editor.
 
