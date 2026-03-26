@@ -167,6 +167,7 @@ frontend_guide/configuration
 frontend_guide/customization
 frontend_guide/administration
 frontend_guide/troubleshooting
+frontend_guide/changelog
 ```
 
 ---
