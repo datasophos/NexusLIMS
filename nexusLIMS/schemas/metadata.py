@@ -210,7 +210,7 @@ class ExtractionDetails(BaseModel):
     )
     """Fully qualified Python module name of the extractor that processed
     this file. Examples: `'nexusLIMS.extractors.plugins.digital_micrograph'`,
-    `'nexusLIMS.extractors.plugins.quanta_tif'`"""
+    `'nexusLIMS.extractors.plugins.fei_tif'`"""
 
     version: str = Field(
         ...,
@@ -378,6 +378,21 @@ class NexusMetadata(BaseModel):
     """
 
     # Common optional fields
+    acceleration_voltage: PintQuantity | None = emg_field("acceleration_voltage")
+
+    stage_position: StagePosition | None = Field(
+        None,
+        description="Stage coordinates and tilt angles",
+    )
+    """
+    Stage coordinates and tilt angles. See :class:`StagePosition` for details.
+    Preferred units: x/y in µm, z in mm, angles in degrees
+    """
+    """
+    Accelerating voltage of the electron/ion beam.
+    Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004
+    """
+
     data_dimensions: str | None = Field(
         None,
         alias="Data Dimensions",
@@ -501,12 +516,6 @@ class ImageMetadata(NexusMetadata):
     )
 
     # Image-specific fields (using EM Glossary names)
-    acceleration_voltage: PintQuantity | None = emg_field("acceleration_voltage")
-    """
-    Accelerating voltage of the electron/ion beam.
-    Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004
-    """
-
     working_distance: PintQuantity | None = emg_field("working_distance")
     """
     Distance between final lens and sample surface.
@@ -556,15 +565,6 @@ class ImageMetadata(NexusMetadata):
     """
     Name of the acquisition device or camera.
     Examples: "BM-UltraScan", "K2 Summit"
-    """
-
-    stage_position: StagePosition | None = Field(
-        None,
-        description="Stage coordinates and tilt angles",
-    )
-    """
-    Stage coordinates and tilt angles. See :class:`StagePosition` for details.
-    Preferred units: x/y in µm, z in mm, angles in degrees
     """
 
 
@@ -624,6 +624,12 @@ class SpectrumMetadata(NexusMetadata):
 
     takeoff_angle: PintQuantity | None = emg_field("takeoff_angle")
     """X-ray takeoff angle. Preferred unit: degree (°)"""
+
+    acquisition_device: str | None = emg_field("acquisition_device")
+    """Acquisition device or camera name. Examples: "US1000FT 1", "GIF Quantum"."""
+
+    horizontal_field_width: PintQuantity | None = emg_field("horizontal_field_width")
+    """Width of the scanned area. Preferred unit: micrometer (µm)"""
 
     elements: list[str] | None = Field(
         None,
@@ -722,12 +728,6 @@ class DiffractionMetadata(NexusMetadata):
     """
     Convergence angle of the electron beam.
     Preferred unit: milliradian (mrad). EM Glossary: EMG_00000010
-    """
-
-    acceleration_voltage: PintQuantity | None = emg_field("acceleration_voltage")
-    """
-    Accelerating voltage (also relevant for diffraction).
-    Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004
     """
 
     acquisition_device: str | None = emg_field("acquisition_device")
