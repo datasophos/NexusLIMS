@@ -148,7 +148,7 @@ Quick links to guides for common tasks:
 
 ### Adding File Format Support
 - **Guide:** [Writing Extractor Plugins](dev_guide/writing_extractor_plugins.md)
-- **Example:** See `plugins/quanta_tif.py` for TIFF format
+- **Example:** See `plugins/fei_tif.py` for TIFF format
 - **Steps:** Create plugin class, implement `supports()` and `extract()`, test with sample files
 
 ### Customizing Instrument Behavior

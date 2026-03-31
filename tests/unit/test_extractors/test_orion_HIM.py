@@ -461,12 +461,12 @@ class TestOrionFibicsTiffExtractor:
         assert float(detector["Stage Bias Voltage"].magnitude) == 0.0
         assert detector["Stage Bias Voltage"].units == ureg.volt
 
-    def test_extractor_priority_higher_than_quanta(self):
-        """Test OrionFibicsTiffExtractor is higher priority than QuantaTiffExtractor."""
-        from nexusLIMS.extractors.plugins.quanta_tif import QuantaTiffExtractor
+    def test_extractor_priority_higher_than_fei(self):
+        """Test OrionFibicsTiffExtractor is higher priority than FeiTiffExtractor."""
+        from nexusLIMS.extractors.plugins.fei_tif import FeiTiffExtractor
 
-        quanta_extractor = QuantaTiffExtractor()
-        assert self.extractor.priority > quanta_extractor.priority
+        fei_extractor = FeiTiffExtractor()
+        assert self.extractor.priority > fei_extractor.priority
 
     def test_extractor_registered_in_registry(self):
         """Test that the extractor is properly registered in the registry."""

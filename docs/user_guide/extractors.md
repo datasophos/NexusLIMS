@@ -111,7 +111,7 @@ The extractor includes specialized parsers for specific instruments:
 
 **Description**: TIFF images saved by FEI/Thermo Fisher FIB and SEM instruments (Quanta, Helios, etc.) with embedded metadata.
 
-**Extractor Module**: {py:mod}`nexusLIMS.extractors.plugins.quanta_tif`
+**Extractor Module**: {py:mod}`nexusLIMS.extractors.plugins.fei_tif`
 
 **Key Metadata Extracted**:
 
@@ -748,7 +748,7 @@ This consistent list-based approach combined with Pydantic validation ensures th
 
 The `extensions` dictionary provides a flexible way to include vendor-specific or non-standardized metadata that doesn't fit into the core schema fields. Here are real-world examples from NexusLIMS extractors:
 
-**FEI/Thermo Quanta TIF Extractor** ([nexusLIMS/extractors/plugins/quanta_tif.py:428](../../nexusLIMS/extractors/plugins/quanta_tif.py#L428-L447)):
+**FEI/Thermo Quanta TIF Extractor** ([nexusLIMS/extractors/plugins/fei_tif.py:428](../../nexusLIMS/extractors/plugins/fei_tif.py#L428-L447)):
 
 ```python
 # Vendor-specific vacuum and detector settings
@@ -953,7 +953,7 @@ For complete API documentation of the extractor modules, see:
 - {py:mod}`nexusLIMS.extractors` - Main extractor module
 - {py:mod}`nexusLIMS.extractors.registry` - Extractor registry and auto-discovery
 - {py:mod}`nexusLIMS.extractors.plugins.digital_micrograph` - DM3/DM4 file extractor
-- {py:mod}`nexusLIMS.extractors.plugins.quanta_tif` - FEI/Thermo TIF file extractor
+- {py:mod}`nexusLIMS.extractors.plugins.fei_tif` - FEI/Thermo TIF file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.orion_HIM_tif` - Zeiss Orion / Fibics HIM TIF file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.tescan_tif` - Tescan PFIB/SEM TIF file extractor
 - {py:mod}`nexusLIMS.extractors.plugins.fei_emi` - FEI TIA .ser/.emi file extractor

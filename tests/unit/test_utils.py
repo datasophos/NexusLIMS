@@ -15,7 +15,7 @@ import responses
 
 from nexusLIMS import utils
 from nexusLIMS.extractors import get_registry
-from nexusLIMS.extractors.plugins import quanta_tif
+from nexusLIMS.extractors.plugins import fei_tif
 from nexusLIMS.utils.dicts import try_getting_dict_value
 from nexusLIMS.utils.files import (
     _zero_bytes,
@@ -194,8 +194,8 @@ class TestUtils:
         assert new_gz_size < old_gz_size
 
         # check to ensure metadata remains the same
-        mdata_new = quanta_tif.get_quanta_metadata(new_fname)
-        mdata_old = quanta_tif.get_quanta_metadata(test_file)
+        mdata_new = fei_tif.get_fei_metadata(new_fname)
+        mdata_old = fei_tif.get_fei_metadata(test_file)
         del mdata_old[0]["nx_meta"]["Creation Time"]
         del mdata_new[0]["nx_meta"]["Creation Time"]
         assert mdata_new[0] == mdata_old[0]

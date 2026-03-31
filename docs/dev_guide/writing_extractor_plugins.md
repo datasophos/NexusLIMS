@@ -375,7 +375,7 @@ for field in FIELD_DEFINITIONS:
 ```
 
 **Real-world examples:**
-- [Quanta TIF extractor](../../nexusLIMS/extractors/plugins/quanta_tif.py) - Uses `FieldDefinition` for extracting TIFF metadata tags
+- [Quanta TIF extractor](../../nexusLIMS/extractors/plugins/fei_tif.py) - Uses `FieldDefinition` for extracting TIFF metadata tags
 - [Tescan TIF extractor](../../nexusLIMS/extractors/plugins/tescan_tif.py) - Uses `FieldDefinition` for SEM metadata extraction
 - [Orion TIF extractor](../../nexusLIMS/extractors/plugins/orion_HIM_tif.py) - Uses `FieldDefinition` for HIM metadata extraction
 
@@ -489,8 +489,8 @@ class MyFormatExtractor:
 Use the instrument information for instrument-specific handling:
 
 ```python
-class QuantaTifExtractor:
-    name = "quanta_tif_extractor"
+class FeiTifExtractor:
+    name = "fei_tif_extractor"
     priority = 150  # Higher priority for specific instrument
     supported_extensions = {"tif"}  # Only .tif files
     
@@ -778,7 +778,7 @@ You don't need to manually register your plugin - just create the file and it wi
 See the built-in extractors for real-world examples:
 
 - {py:mod}`nexusLIMS.extractors.plugins.digital_micrograph` - Simple extension-based matching
-- {py:mod}`nexusLIMS.extractors.plugins.quanta_tif` - TIFF format for specific instruments
+- {py:mod}`nexusLIMS.extractors.plugins.fei_tif` - TIFF format for specific instruments
 - {py:mod}`nexusLIMS.extractors.plugins.tescan_tif` - TIFF format with metadata content sniffing and parsing sidecar header file
 - {py:mod}`nexusLIMS.extractors.plugins.basic_metadata` - Fallback extractor with priority 0
 - {py:mod}`nexusLIMS.extractors.plugins.edax` - Multiple extractors in one file

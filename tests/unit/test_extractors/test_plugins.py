@@ -16,7 +16,7 @@ from nexusLIMS.extractors.plugins.basic_metadata import BasicFileInfoExtractor
 from nexusLIMS.extractors.plugins.digital_micrograph import DM3Extractor
 from nexusLIMS.extractors.plugins.edax import MsaExtractor, SpcExtractor
 from nexusLIMS.extractors.plugins.fei_emi import SerEmiExtractor
-from nexusLIMS.extractors.plugins.quanta_tif import QuantaTiffExtractor
+from nexusLIMS.extractors.plugins.fei_tif import FeiTiffExtractor
 
 from .conftest import get_field
 
@@ -78,18 +78,18 @@ class TestDM3Extractor:
         assert extractor.priority == 100
 
 
-class TestQuantaTiffExtractor:
-    """Test QuantaTiffExtractor plugin."""
+class TestFeiTiffExtractor:
+    """Test FeiTiffExtractor plugin."""
 
     def test_supports_tif(self, quanta_test_file):
-        """QuantaTiffExtractor should support .tif files."""
-        extractor = QuantaTiffExtractor()
+        """FeiTiffExtractor should support .tif files."""
+        extractor = FeiTiffExtractor()
         context = ExtractionContext(quanta_test_file[0], None)
         assert extractor.supports(context)
 
     def test_supports_tiff(self, quanta_test_file):
-        """QuantaTiffExtractor should support .tiff files."""
-        extractor = QuantaTiffExtractor()
+        """FeiTiffExtractor should support .tiff files."""
+        extractor = FeiTiffExtractor()
         # Get a .tiff file or rename for testing
         tif_file = quanta_test_file[0]
         tiff_file = tif_file.parent / (tif_file.stem + ".tiff")
@@ -100,8 +100,8 @@ class TestQuantaTiffExtractor:
         tiff_file.rename(tif_file)
 
     def test_supports_uppercase(self, quanta_test_file):
-        """QuantaTiffExtractor should support uppercase extensions."""
-        extractor = QuantaTiffExtractor()
+        """FeiTiffExtractor should support uppercase extensions."""
+        extractor = FeiTiffExtractor()
         # Get a file with uppercase extension
         tif_file = quanta_test_file[0]
         uppercase_file = tif_file.parent / (tif_file.stem + ".TIF")
@@ -112,13 +112,13 @@ class TestQuantaTiffExtractor:
         uppercase_file.rename(tif_file)
 
     def test_does_not_support_other_extensions(self):
-        """QuantaTiffExtractor should not support other extensions."""
-        extractor = QuantaTiffExtractor()
+        """FeiTiffExtractor should not support other extensions."""
+        extractor = FeiTiffExtractor()
         context = ExtractionContext(Path("test.dm3"), None)
         assert not extractor.supports(context)
 
     def test_does_not_support_tiff_without_fei_metadata(self, tmp_path):
-        """QuantaTiffExtractor should not support TIFF files without FEI metadata."""
+        """FeiTiffExtractor should not support TIFF files without FEI metadata."""
         # Create a minimal TIFF file without FEI metadata
         import numpy as np
         from PIL import Image
@@ -131,13 +131,13 @@ class TestQuantaTiffExtractor:
         tiff_path = tmp_path / "test_no_fei.tif"
         img.save(tiff_path)
 
-        extractor = QuantaTiffExtractor()
+        extractor = FeiTiffExtractor()
         context = ExtractionContext(tiff_path, None)
         assert not extractor.supports(context)
 
     def test_extract_with_real_file(self, quanta_test_file):
         """Test extraction with a real Quanta TIF file."""
-        extractor = QuantaTiffExtractor()
+        extractor = FeiTiffExtractor()
         context = ExtractionContext(quanta_test_file[0], None)
 
         metadata = extractor.extract(context)
@@ -150,11 +150,11 @@ class TestQuantaTiffExtractor:
         assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
 
     def test_has_required_attributes(self):
-        """QuantaTiffExtractor should have required plugin attributes."""
-        extractor = QuantaTiffExtractor()
+        """FeiTiffExtractor should have required plugin attributes."""
+        extractor = FeiTiffExtractor()
         assert hasattr(extractor, "name")
         assert hasattr(extractor, "priority")
-        assert extractor.name == "quanta_tif_extractor"
+        assert extractor.name == "fei_tif_extractor"
         assert extractor.priority == 100
 
 
@@ -370,7 +370,7 @@ class TestPluginIntegration:
         """All plugins should accept ExtractionContext in extract()."""
         plugins = [
             DM3Extractor(),
-            QuantaTiffExtractor(),
+            FeiTiffExtractor(),
             SerEmiExtractor(),
             SpcExtractor(),
             MsaExtractor(),
@@ -386,7 +386,7 @@ class TestPluginIntegration:
         """All plugins should implement supports() method."""
         plugins = [
             DM3Extractor(),
-            QuantaTiffExtractor(),
+            FeiTiffExtractor(),
             SerEmiExtractor(),
             SpcExtractor(),
             MsaExtractor(),
@@ -401,7 +401,7 @@ class TestPluginIntegration:
         """All plugins should have name and priority attributes."""
         plugins = [
             DM3Extractor(),
-            QuantaTiffExtractor(),
+            FeiTiffExtractor(),
             SerEmiExtractor(),
             SpcExtractor(),
             MsaExtractor(),

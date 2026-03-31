@@ -189,7 +189,7 @@ class TestExtractorModule:
         extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
             extraction_info["Module"]
-            == "nexusLIMS.extractors.plugins.quanta_tif_extractor"
+            == "nexusLIMS.extractors.plugins.fei_tif_extractor"
         )
         assert extraction_info["Version"] == __version__
         self.remove_thumb_and_json(thumb_fnames)
@@ -229,7 +229,7 @@ class TestExtractorModule:
         extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
             extraction_info["Module"]
-            == "nexusLIMS.extractors.plugins.quanta_tif_extractor"
+            == "nexusLIMS.extractors.plugins.fei_tif_extractor"
         )
         assert extraction_info["Version"] == __version__
         self.remove_thumb_and_json(thumb_fnames)
@@ -482,17 +482,15 @@ class TestExtractorModule:
         if json_path.exists():
             json_path.unlink()
 
-    def test_create_preview_non_quanta_tif(
-        self, monkeypatch, quanta_test_file, tmp_path
-    ):
-        """Test create_preview for non-Quanta TIF files (else branch)."""
+    def test_create_preview_non_fei_tif(self, monkeypatch, quanta_test_file, tmp_path):
+        """Test create_preview for non-FEI TIF files (else branch)."""
         from unittest.mock import Mock
 
         from PIL import Image
 
         from nexusLIMS.extractors import create_preview
 
-        # Create a mock instrument that is NOT Quanta (to hit the else branch)
+        # Create a mock instrument that is NOT FEI (to hit the else branch)
         mock_instr = Mock()
         mock_instr.name = "Some-Other-Instrument"
 
@@ -866,11 +864,11 @@ class TestExtractorModule:
         # Verify the log message
         assert "Using legacy preview map for png" in caplog.text
 
-    def test_correct_extractor_dispatched_for_quanta_tif(self, quanta_test_file):
-        """Test that QuantaTiffExtractor is used for Quanta TIFF files.
+    def test_correct_extractor_dispatched_for_fei_tif(self, quanta_test_file):
+        """Test that FeiTiffExtractor is used for FEI/Thermo TIFF files.
 
         This test verifies that the correct extractor is dispatched when
-        parsing metadata from a Quanta TIFF file, ensuring that the
+        parsing metadata from a FEI/Thermo TIFF file, ensuring that the
         extractor selection/priority system works correctly.
         """
         meta_list, thumb_fnames = parse_metadata(fname=quanta_test_file[0])
@@ -881,7 +879,7 @@ class TestExtractorModule:
         extraction_info = get_field(meta_list, "NexusLIMS Extraction")
         assert (
             extraction_info["Module"]
-            == "nexusLIMS.extractors.plugins.quanta_tif_extractor"
+            == "nexusLIMS.extractors.plugins.fei_tif_extractor"
         )
         assert extraction_info["Version"] == __version__
         self.remove_thumb_and_json(thumb_fnames)
@@ -892,7 +890,7 @@ class TestExtractorModule:
         """Test that OrionFibicsTiffExtractor is used for Orion/Fibics TIFF files.
 
         This test verifies that the OrionFibicsTiffExtractor is prioritized
-        over the QuantaTiffExtractor for Orion/Fibics TIFF files, ensuring
+        over the FeiTiffExtractor for Orion/Fibics TIFF files, ensuring
         that the extractor selection by priority works correctly.
         """
         meta_list, thumb_fnames = parse_metadata(fname=orion_fibics_zeroed_file)

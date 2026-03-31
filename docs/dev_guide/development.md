@@ -242,11 +242,11 @@ tasks, such as extracting metadata or building previews images, etc.
 
 For example, to extract the metadata from a `.tif` file saved on the
 FEI Quanta, run the following code using the
-{py:func}`~nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata` function:
+{py:func}`~nexusLIMS.extractors.plugins.fei_tif.get_fei_metadata` function:
 
 ```python
-from nexusLIMS.extractors.plugins.quanta_tif import get_quanta_metadata
-meta = get_quanta_metadata("path_to_file.tif")
+from nexusLIMS.extractors.plugins.fei_tif import get_fei_metadata
+meta = get_fei_metadata("path_to_file.tif")
 ```
 
 The `meta` variable will then contain a dictionary with the extracted
@@ -322,7 +322,7 @@ tests/unit/test_extractors/test_instrument_profile_modules.py ..................
 tests/unit/test_extractors/test_orion_HIM.py ................................                   [ 35%]
 tests/unit/test_extractors/test_plugins.py ....................................                 [ 38%]
 tests/unit/test_extractors/test_profiles.py .................................                   [ 42%]
-tests/unit/test_extractors/test_quanta_tif.py ................                                  [ 43%]
+tests/unit/test_extractors/test_fei_tif.py ................                                  [ 43%]
 tests/unit/test_extractors/test_registry.py ................................................... [ 52%]
 tests/unit/test_extractors/test_schemas.py ...................................                  [ 56%]
 tests/unit/test_extractors/test_tescan_tif.py ........................................          [ 60%]
@@ -377,7 +377,7 @@ nexusLIMS/extractors/plugins/profiles/__init__.py                        47     
 nexusLIMS/extractors/plugins/profiles/fei_titan_stem_643.py              25      0   100%
 nexusLIMS/extractors/plugins/profiles/fei_titan_tem_642.py               53      0   100%
 nexusLIMS/extractors/plugins/profiles/jeol_jem_642.py                    22      0   100%
-nexusLIMS/extractors/plugins/quanta_tif.py                              353      0   100%
+nexusLIMS/extractors/plugins/fei_tif.py                              353      0   100%
 nexusLIMS/extractors/plugins/tescan_tif.py                              248      0   100%
 nexusLIMS/extractors/profiles.py                                         29      0   100%
 nexusLIMS/extractors/registry.py                                        226      0   100%
