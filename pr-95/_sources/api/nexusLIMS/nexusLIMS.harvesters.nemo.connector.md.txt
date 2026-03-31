@@ -1,0 +1,178 @@
+# {py:mod}`nexusLIMS.harvesters.nemo.connector`
+
+```{py:module} nexusLIMS.harvesters.nemo.connector
+```
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`NemoConnector <nexusLIMS.harvesters.nemo.connector.NemoConnector>`
+  - ```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+`````{py:class} NemoConnector(base_url: str, token: str, strftime_fmt: str | None = None, strptime_fmt: str | None = None, timezone: str | None = None, retries: int = 5)
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} tools
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.tools
+
+**Type:** dict[int, dict]
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.tools
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} users
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.users
+
+**Type:** dict[int, dict]
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.users
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} users_by_username
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.users_by_username
+
+**Type:** dict[str, dict]
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.users_by_username
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} projects
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.projects
+
+**Type:** dict[int, dict]
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.projects
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} strftime(date_dt) -> str
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.strftime
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.strftime
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} strptime(date_str) -> datetime.datetime
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.strptime
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.strptime
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_tools(tool_id: typing.Union[int, typing.List[int]]) -> typing.List[dict]
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.get_tools
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.get_tools
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_users(user_id: typing.Union[int, typing.List[int]] | None = None) -> typing.List[dict]
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.get_users
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.get_users
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_users_by_username(username=None) -> typing.List
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.get_users_by_username
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.get_users_by_username
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_projects(proj_id: typing.Union[int, typing.List[int]]) -> typing.List[dict]
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.get_projects
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.get_projects
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_reservations(dt_from: datetime.datetime | None = None, dt_to: datetime.datetime | None = None, tool_id: typing.Union[int, typing.List[int]] | None = None, *, cancelled: bool | None = False) -> typing.List[dict]
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.get_reservations
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.get_reservations
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_usage_events(event_id: typing.Union[int, typing.List[int]] | None = None, user: typing.Union[str, int] | None = None, dt_range: typing.Tuple[datetime.datetime | None, datetime.datetime | None] | None = None, tool_id: typing.Union[int, typing.List[int]] | None = None) -> typing.List
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.get_usage_events
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.get_usage_events
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} write_usage_event_to_session_log(event_id: int) -> None
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.write_usage_event_to_session_log
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.write_usage_event_to_session_log
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_session_from_usage_event(event_id: int) -> nexusLIMS.db.session_handler.Session | None
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.get_session_from_usage_event
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.get_session_from_usage_event
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_known_tool_ids() -> typing.List[int]
+:canonical: nexusLIMS.harvesters.nemo.connector.NemoConnector.get_known_tool_ids
+
+```{autodoc2-docstring} nexusLIMS.harvesters.nemo.connector.NemoConnector.get_known_tool_ids
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
