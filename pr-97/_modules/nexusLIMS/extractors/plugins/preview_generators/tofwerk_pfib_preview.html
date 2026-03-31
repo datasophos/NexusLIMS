@@ -1,0 +1,1577 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview &#8212; NexusLIMS pr-97 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../../../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../../../_static/documentation_options.js?v=284bfbf0"></script>
+    <script src="../../../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.2.0/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+    <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.12.1/dist/mermaid.esm.min.mjs";
+
+const defaultStyle = document.createElement('style');
+defaultStyle.textContent = `pre.mermaid {
+    /* Same as .mermaid-container > pre */
+    display: block;
+    width: 100%;
+}
+
+pre.mermaid > svg {
+    /* Same as .mermaid-container > pre > svg */
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+`;
+document.head.appendChild(defaultStyle);
+
+const fullscreenStyle = document.createElement('style');
+fullscreenStyle.textContent = `.mermaid-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mermaid-container > pre {
+    display: block;
+    width: 100%;
+}
+
+.mermaid-container > pre > svg {
+    height: 500px;
+    width: 100%;
+    max-width: 100% !important;
+}
+
+.mermaid-fullscreen-btn {
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    font-size: 14px;
+    line-height: 1;
+    padding: 0;
+    color: #333;
+}
+
+.mermaid-fullscreen-btn:hover {
+    opacity: 100% !important;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-btn.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-btn.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 3px 10px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 95vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 9999;
+    padding: 20px;
+    overflow: auto;
+}
+
+.mermaid-fullscreen-modal.dark-theme {
+    background: rgba(0, 0, 0, 0.98);
+}
+
+.mermaid-fullscreen-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen {
+    position: relative;
+    width: 95vw;
+    height: 90vh;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen.dark-theme {
+    background: #1a1a1a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+}
+
+.mermaid-container-fullscreen pre.mermaid {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mermaid-container-fullscreen .mermaid svg {
+    height: 100% !important;
+    width: 100% !important;
+    cursor: grab;
+}
+
+.mermaid-fullscreen-close {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s;
+    font-size: 24px;
+    line-height: 1;
+    color: #333;
+}
+
+.mermaid-fullscreen-close:hover {
+    background: white;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+}
+
+.mermaid-fullscreen-close.dark-theme {
+    background: rgba(50, 50, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #e0e0e0;
+}
+
+.mermaid-fullscreen-close.dark-theme:hover {
+    background: rgba(60, 60, 60, 1);
+    box-shadow: 0 6px 16px rgba(255, 255, 255, 0.2);
+}
+
+.mermaid-fullscreen-modal .mermaid-fullscreen-btn {
+    display: none !important;
+}`;
+document.head.appendChild(fullscreenStyle);
+
+// Detect if page has dark background
+const isDarkTheme = () => {
+    const bgColor = window.getComputedStyle(document.body).backgroundColor;
+    const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        const r = parseInt(match[1]);
+        const g = parseInt(match[2]);
+        const b = parseInt(match[3]);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        return brightness < 128;
+    }
+    return false;
+};
+
+const load = async () => {
+    await mermaid.run();
+
+    const all_mermaids = document.querySelectorAll(".mermaid");
+    const mermaids_processed = document.querySelectorAll(".mermaid[data-processed='true']");
+
+    if ("True" === "True") {
+        const mermaids_to_add_zoom = -1 === -1 ? all_mermaids.length : -1;
+        if(mermaids_to_add_zoom > 0) {
+            var svgs = d3.selectAll(".mermaid svg");
+            if(all_mermaids.length !== mermaids_processed.length) {
+                setTimeout(load, 200);
+                return;
+            } else if(svgs.size() !== mermaids_to_add_zoom) {
+                setTimeout(load, 200);
+                return;
+            } else {
+                svgs.each(function() {
+                    var svg = d3.select(this);
+                    svg.html("<g class='wrapper'>" + svg.html() + "</g>");
+                    var inner = svg.select("g");
+                    var zoom = d3.zoom().on("zoom", function(event) {
+                        inner.attr("transform", event.transform);
+                    });
+                    svg.call(zoom);
+                });
+            }
+        }
+    } else if(all_mermaids.length !== mermaids_processed.length) {
+        // Wait for mermaid to process all diagrams
+        setTimeout(load, 200);
+        return;
+    }
+
+    const darkTheme = isDarkTheme();
+
+    // Stop here if not adding fullscreen capability
+    if ("True" !== "True") return;
+
+    const modal = document.createElement('div');
+    modal.className = 'mermaid-fullscreen-modal' + (darkTheme ? ' dark-theme' : '');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Fullscreen diagram viewer');
+    modal.innerHTML = `
+        <button class="mermaid-fullscreen-close${darkTheme ? ' dark-theme' : ''}" aria-label="Close fullscreen">✕</button>
+        <div class="mermaid-container-fullscreen${darkTheme ? ' dark-theme' : ''}"></div>
+    `;
+    document.body.appendChild(modal);
+
+    const modalContent = modal.querySelector('.mermaid-container-fullscreen');
+    const closeBtn = modal.querySelector('.mermaid-fullscreen-close');
+
+    let previousScrollOffset = [window.scrollX, window.scrollY];
+
+    const closeModal = () => {
+        modal.classList.remove('active');
+        modalContent.innerHTML = '';
+        document.body.style.overflow = ''
+        window.scrollTo({left: previousScrollOffset[0], top: previousScrollOffset[1], behavior: 'instant'});
+    };
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+            closeModal();
+        }
+    });
+
+    const allButtons = [];
+
+    document.querySelectorAll('.mermaid').forEach((mermaidDiv) => {
+        if (mermaidDiv.parentNode.classList.contains('mermaid-container') ||
+            mermaidDiv.closest('.mermaid-fullscreen-modal')) {
+            return;
+        }
+
+        const container = document.createElement('div');
+        container.className = 'mermaid-container';
+        mermaidDiv.parentNode.insertBefore(container, mermaidDiv);
+        container.appendChild(mermaidDiv);
+
+        const fullscreenBtn = document.createElement('button');
+        fullscreenBtn.className = 'mermaid-fullscreen-btn' + (darkTheme ? ' dark-theme' : '');
+        fullscreenBtn.setAttribute('aria-label', 'View diagram in fullscreen');
+        fullscreenBtn.textContent = '⛶';
+        fullscreenBtn.style.opacity = '50%';
+
+        // Calculate dynamic position based on diagram's margin and padding
+        const diagramStyle = window.getComputedStyle(mermaidDiv);
+        const marginTop = parseFloat(diagramStyle.marginTop) || 0;
+        const marginRight = parseFloat(diagramStyle.marginRight) || 0;
+        const paddingTop = parseFloat(diagramStyle.paddingTop) || 0;
+        const paddingRight = parseFloat(diagramStyle.paddingRight) || 0;
+        fullscreenBtn.style.top = `${marginTop + paddingTop + 4}px`;
+        fullscreenBtn.style.right = `${marginRight + paddingRight + 4}px`;
+
+        fullscreenBtn.addEventListener('click', () => {
+            previousScrollOffset = [window.scroll, window.scrollY];
+            const clone = mermaidDiv.cloneNode(true);
+            modalContent.innerHTML = '';
+            modalContent.appendChild(clone);
+
+            const svg = clone.querySelector('svg');
+            if (svg) {
+                svg.removeAttribute('width');
+                svg.removeAttribute('height');
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.sdisplay = 'block';
+
+                if ("True" === "True") {
+                    setTimeout(() => {
+                        const g = svg.querySelector('g');
+                        if (g) {
+                            var svgD3 = d3.select(svg);
+                            svgD3.html("<g class='wrapper'>" + svgD3.html() + "</g>");
+                            var inner = svgD3.select("g");
+                            var zoom = d3.zoom().on("zoom", function(event) {
+                                inner.attr("transform", event.transform);
+                            });
+                            svgD3.call(zoom);
+                        }
+                    }, 100);
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        container.appendChild(fullscreenBtn);
+        allButtons.push(fullscreenBtn);
+    });
+
+    // Update theme classes when theme changes
+    const updateTheme = () => {
+        const dark = isDarkTheme();
+        allButtons.forEach(btn => {
+            if (dark) {
+                btn.classList.add('dark-theme');
+            } else {
+                btn.classList.remove('dark-theme');
+            }
+        });
+        if (dark) {
+            modal.classList.add('dark-theme');
+            modalContent.classList.add('dark-theme');
+            closeBtn.classList.add('dark-theme');
+        } else {
+            modal.classList.remove('dark-theme');
+            modalContent.classList.remove('dark-theme');
+            closeBtn.classList.remove('dark-theme');
+        }
+    };
+
+    // Watch for theme changes
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme']
+    });
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class', 'style']
+    });
+};
+
+window.addEventListener("load", load);
+</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nexusLIMS/extractors/plugins/preview_generators/tofwerk_pfib_preview';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-97';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../../../../../_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-97/_modules/nexusLIMS/extractors/plugins/preview_generators/tofwerk_pfib_preview.html" />
+    <link rel="icon" href="../../../../../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="pr-97" />
+    <meta name="docbuild:last-update" content="Mar, 31, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS pr-97 documentation - Home"/>
+    <img src="../../../../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS pr-97 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../../index.html" class="nav-link">Module code</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../../../extractors.html" class="nav-link">nexusLIMS.extractors</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Tofwerk fibTOF pFIB-ToF-SIMS preview generator plugin.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">ClassVar</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">h5py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">mpl</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;Agg&quot;</span><span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">gridspec</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Patch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mpl_toolkits.axes_grid1</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_axes_locatable</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.plugins.preview_generators.image_preview</span><span class="w"> </span><span class="kn">import</span> <span class="n">_pad_to_square</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExtractionContext</span>
+
+<span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">_RGB_COLORS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;#e41a1c&quot;</span><span class="p">,</span> <span class="s2">&quot;#4daf4a&quot;</span><span class="p">,</span> <span class="s2">&quot;#377eb8&quot;</span><span class="p">]</span>
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Ion mass lookup tables (monoisotopic masses)</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+<span class="n">_IONS_POSITIVE</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mf">1.00782</span><span class="p">,</span> <span class="s2">&quot;H</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">2.01565</span><span class="p">,</span> <span class="s2">&quot;H</span><span class="se">\u2082\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">3.02347</span><span class="p">,</span> <span class="s2">&quot;H</span><span class="se">\u2083\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">7.01600</span><span class="p">,</span> <span class="s2">&quot;Li</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">9.01218</span><span class="p">,</span> <span class="s2">&quot;Be</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">11.00931</span><span class="p">,</span> <span class="s2">&quot;B</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">12.00000</span><span class="p">,</span> <span class="s2">&quot;C</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">13.00782</span><span class="p">,</span> <span class="s2">&quot;CH</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">14.00307</span><span class="p">,</span> <span class="s2">&quot;N</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">14.01565</span><span class="p">,</span> <span class="s2">&quot;CH</span><span class="se">\u2082\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">15.02348</span><span class="p">,</span> <span class="s2">&quot;CH</span><span class="se">\u2083\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">15.99491</span><span class="p">,</span> <span class="s2">&quot;O</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">17.00274</span><span class="p">,</span> <span class="s2">&quot;OH</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">18.01057</span><span class="p">,</span> <span class="s2">&quot;H</span><span class="se">\u2082</span><span class="s2">O</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">18.99840</span><span class="p">,</span> <span class="s2">&quot;F</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">22.98977</span><span class="p">,</span> <span class="s2">&quot;Na</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">23.98504</span><span class="p">,</span> <span class="s2">&quot;Mg</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">26.98154</span><span class="p">,</span> <span class="s2">&quot;Al</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">27.97693</span><span class="p">,</span> <span class="s2">&quot;Si</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">30.97376</span><span class="p">,</span> <span class="s2">&quot;P</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">31.97207</span><span class="p">,</span> <span class="s2">&quot;S</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">34.96885</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u00b3\u2075</span><span class="s2">Cl</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">36.96590</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u00b3\u2077</span><span class="s2">Cl</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">38.96371</span><span class="p">,</span> <span class="s2">&quot;K</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">39.96259</span><span class="p">,</span> <span class="s2">&quot;Ca</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">42.97645</span><span class="p">,</span> <span class="s2">&quot;AlO</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">43.97184</span><span class="p">,</span> <span class="s2">&quot;SiO</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">44.95592</span><span class="p">,</span> <span class="s2">&quot;Sc</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">45.95263</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u2074\u2076</span><span class="s2">Ti</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">46.95176</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u2074\u2077</span><span class="s2">Ti</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">47.94795</span><span class="p">,</span> <span class="s2">&quot;Ti</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">48.94787</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u2074\u2079</span><span class="s2">Ti</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">49.94479</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u2075\u2070</span><span class="s2">Ti</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">50.94396</span><span class="p">,</span> <span class="s2">&quot;V</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">51.94051</span><span class="p">,</span> <span class="s2">&quot;Cr</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">53.93882</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u2075\u2074</span><span class="s2">Cr</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">53.93961</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u2075\u2074</span><span class="s2">Fe</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">54.93805</span><span class="p">,</span> <span class="s2">&quot;Mn</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">55.93494</span><span class="p">,</span> <span class="s2">&quot;Fe</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">57.93535</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u2075\u2078</span><span class="s2">Ni</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">58.93320</span><span class="p">,</span> <span class="s2">&quot;Co</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">59.93078</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u2076\u2070</span><span class="s2">Ni</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">62.92960</span><span class="p">,</span> <span class="s2">&quot;Cu</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">63.92914</span><span class="p">,</span> <span class="s2">&quot;Zn</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">64.92784</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u2076\u2075</span><span class="s2">Cu</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">65.92603</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u2076\u2076</span><span class="s2">Zn</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">68.92558</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u2076\u2079</span><span class="s2">Ga</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">70.92470</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u2077\u00b9</span><span class="s2">Ga</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">73.92118</span><span class="p">,</span> <span class="s2">&quot;Ge</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">74.92160</span><span class="p">,</span> <span class="s2">&quot;As</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">78.91834</span><span class="p">,</span> <span class="s2">&quot;Br</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">79.91652</span><span class="p">,</span> <span class="s2">&quot;Se</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">83.91151</span><span class="p">,</span> <span class="s2">&quot;Kr</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">84.91179</span><span class="p">,</span> <span class="s2">&quot;Rb</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">87.90561</span><span class="p">,</span> <span class="s2">&quot;Sr</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">88.90585</span><span class="p">,</span> <span class="s2">&quot;Y</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">89.90470</span><span class="p">,</span> <span class="s2">&quot;Zr</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">92.90638</span><span class="p">,</span> <span class="s2">&quot;Nb</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">97.90541</span><span class="p">,</span> <span class="s2">&quot;Mo</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">102.90550</span><span class="p">,</span> <span class="s2">&quot;Rh</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">106.90509</span><span class="p">,</span> <span class="s2">&quot;Ag</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">113.90336</span><span class="p">,</span> <span class="s2">&quot;Cd</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">114.90388</span><span class="p">,</span> <span class="s2">&quot;In</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">119.90220</span><span class="p">,</span> <span class="s2">&quot;Sn</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">120.90381</span><span class="p">,</span> <span class="s2">&quot;Sb</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">126.90447</span><span class="p">,</span> <span class="s2">&quot;I</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">132.90543</span><span class="p">,</span> <span class="s2">&quot;Cs</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">137.90524</span><span class="p">,</span> <span class="s2">&quot;Ba</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">138.90635</span><span class="p">,</span> <span class="s2">&quot;La</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">139.90543</span><span class="p">,</span> <span class="s2">&quot;Ce</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">157.92410</span><span class="p">,</span> <span class="s2">&quot;Gd</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">179.94655</span><span class="p">,</span> <span class="s2">&quot;Hf</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">183.95093</span><span class="p">,</span> <span class="s2">&quot;W</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">194.96479</span><span class="p">,</span> <span class="s2">&quot;Pt</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">196.96655</span><span class="p">,</span> <span class="s2">&quot;Au</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">207.97665</span><span class="p">,</span> <span class="s2">&quot;Pb</span><span class="se">\u207a</span><span class="s2">&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">_IONS_NEGATIVE</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mf">1.00782</span><span class="p">,</span> <span class="s2">&quot;H</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">11.00931</span><span class="p">,</span> <span class="s2">&quot;B</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">12.00000</span><span class="p">,</span> <span class="s2">&quot;C</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">13.00782</span><span class="p">,</span> <span class="s2">&quot;CH</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">14.00307</span><span class="p">,</span> <span class="s2">&quot;N</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">15.99491</span><span class="p">,</span> <span class="s2">&quot;O</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">17.00274</span><span class="p">,</span> <span class="s2">&quot;OH</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">18.99840</span><span class="p">,</span> <span class="s2">&quot;F</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">25.97926</span><span class="p">,</span> <span class="s2">&quot;CN</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">26.98154</span><span class="p">,</span> <span class="s2">&quot;Al</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">27.97693</span><span class="p">,</span> <span class="s2">&quot;Si</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">30.97376</span><span class="p">,</span> <span class="s2">&quot;P</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">31.97207</span><span class="p">,</span> <span class="s2">&quot;S</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">34.96885</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u00b3\u2075</span><span class="s2">Cl</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">36.96590</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\u00b3\u2077</span><span class="s2">Cl</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">47.94795</span><span class="p">,</span> <span class="s2">&quot;Ti</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">51.94051</span><span class="p">,</span> <span class="s2">&quot;Cr</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">55.93494</span><span class="p">,</span> <span class="s2">&quot;Fe</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">62.92960</span><span class="p">,</span> <span class="s2">&quot;Cu</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">78.91834</span><span class="p">,</span> <span class="s2">&quot;Br</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">106.90509</span><span class="p">,</span> <span class="s2">&quot;Ag</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">126.90447</span><span class="p">,</span> <span class="s2">&quot;I</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">194.96479</span><span class="p">,</span> <span class="s2">&quot;Pt</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">196.96655</span><span class="p">,</span> <span class="s2">&quot;Au</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="mf">207.97665</span><span class="p">,</span> <span class="s2">&quot;Pb</span><span class="se">\u207b</span><span class="s2">&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Helpers</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_norm_channel</span><span class="p">(</span><span class="n">arr</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalize 2-D array to [0,1] with 1st/99th-percentile clipping.&quot;&quot;&quot;</span>
+    <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="mi">99</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">hi</span> <span class="o">==</span> <span class="n">lo</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">((</span><span class="n">arr</span> <span class="o">-</span> <span class="n">lo</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">hi</span> <span class="o">-</span> <span class="n">lo</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_read_attr_scalar</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a scalar attribute value, decoding bytes if needed.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">default</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">key</span><span class="p">])</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">)):</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">val</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_build_ion_lookup</span><span class="p">(</span><span class="n">ions</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a dict round(mass) -&gt; [(exact_mass, label)] for fast lookup.&quot;&quot;&quot;</span>
+    <span class="n">lookup</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">mass</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">ions</span><span class="p">:</span>
+        <span class="n">lookup</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">mass</span><span class="p">),</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">mass</span><span class="p">,</span> <span class="n">label</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">lookup</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ion_label</span><span class="p">(</span><span class="n">mz</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">lookup</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.35</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the label of the nearest ion within tol Da, or None.&quot;&quot;&quot;</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">mz</span><span class="p">)</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="n">key</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">key</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">candidates</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">lookup</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">[]))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">candidates</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">best_mass</span><span class="p">,</span> <span class="n">best_lbl</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">mz</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">best_lbl</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">best_mass</span> <span class="o">-</span> <span class="n">mz</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">tol</span> <span class="k">else</span> <span class="kc">None</span>
+
+
+<span class="n">_MARKER_THRESHOLD</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">_MIN_INTERIOR_PIXELS</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">_MIN_PEAK_SEPARATION_DA</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">_N_RGB_CHANNELS</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">_MAX_XTICK_WRITES</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">_MILLION</span> <span class="o">=</span> <span class="mf">1e6</span>
+<span class="n">_THOUSAND</span> <span class="o">=</span> <span class="mf">1e3</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_depth_plot_style</span><span class="p">(</span><span class="n">nwrites</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return (fmt, lw, ms, mew) suitable for the write count.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">nwrites</span> <span class="o">&lt;=</span> <span class="n">_MARKER_THRESHOLD</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;o-&quot;</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">1.5</span>
+    <span class="k">return</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_tic_display_limits</span><span class="p">(</span>
+    <span class="n">tic_map</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">border_frac</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.06</span><span class="p">,</span>
+    <span class="n">lo_pct</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">hi_pct</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">98</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute robust vmin/vmax for TIC map by sampling only interior pixels.</span>
+
+<span class="sd">    Excludes a border fraction to avoid edge-enhancement artefacts inflating</span>
+<span class="sd">    the percentile clipping.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">tic_map</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">bord</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="o">*</span> <span class="n">border_frac</span><span class="p">))</span>
+    <span class="n">interior</span> <span class="o">=</span> <span class="n">tic_map</span><span class="p">[</span><span class="n">bord</span><span class="p">:</span><span class="o">-</span><span class="n">bord</span><span class="p">,</span> <span class="n">bord</span><span class="p">:</span><span class="o">-</span><span class="n">bord</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">interior</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">_MIN_INTERIOR_PIXELS</span><span class="p">:</span>
+        <span class="n">interior</span> <span class="o">=</span> <span class="n">tic_map</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">interior</span><span class="p">,</span> <span class="n">lo_pct</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">interior</span><span class="p">,</span> <span class="n">hi_pct</span><span class="p">)</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_add_colorbar</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">im</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">extend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;neither&quot;</span><span class="p">):</span>
+    <span class="n">div</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+    <span class="n">cax</span> <span class="o">=</span> <span class="n">div</span><span class="o">.</span><span class="n">append_axes</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;5%&quot;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+    <span class="n">cb</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="n">extend</span><span class="p">)</span>
+    <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+    <span class="n">cb</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cb</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_compute_tic_from_eventlist</span><span class="p">(</span><span class="n">el</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute TIC map (nsegs x nx) and per-write depth counts from EventList.</span>
+
+<span class="sd">    Reads one write at a time to avoid loading the full ragged array into memory.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    el</span>
+<span class="sd">        EventList HDF5 dataset of shape (nwrites, nsegs, nx), object dtype</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tic_map</span>
+<span class="sd">        2-D int64 array of shape (nsegs, nx)</span>
+<span class="sd">    depth_counts</span>
+<span class="sd">        1-D int64 array of shape (nwrites,)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nwrites</span><span class="p">,</span> <span class="n">nsegs</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">el</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">tic_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nsegs</span><span class="p">,</span> <span class="n">nx</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">depth_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nwrites</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">vec_len</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frompyfunc</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nwrites</span><span class="p">):</span>
+        <span class="n">counts_2d</span> <span class="o">=</span> <span class="n">vec_len</span><span class="p">(</span><span class="n">el</span><span class="p">[</span><span class="n">w</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="n">tic_map</span> <span class="o">+=</span> <span class="n">counts_2d</span>
+        <span class="n">depth_counts</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts_2d</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">tic_map</span><span class="p">,</span> <span class="n">depth_counts</span>
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Preview generator class</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="TofwerkPfibPreviewGenerator">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview.html#nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview.TofwerkPfibPreviewGenerator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TofwerkPfibPreviewGenerator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Preview generator for Tofwerk fibTOF pFIB-ToF-SIMS HDF5 files.</span>
+
+<span class="sd">    Generates a composite preview image showing:</span>
+
+<span class="sd">    - **Raw files:** FIB SE image | TIC map | Depth profile (row 0);</span>
+<span class="sd">      Sum mass spectrum (row 1, full width)</span>
+<span class="sd">    - **Opened files:** FIB SE image | TIC map | RGB composite (row 0);</span>
+<span class="sd">      Sum spectrum | Depth profiles (row 1)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;tofwerk_pfib_preview&quot;</span>
+    <span class="n">priority</span> <span class="o">=</span> <span class="mi">150</span>
+    <span class="n">supported_extensions</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;h5&quot;</span><span class="p">}</span>
+
+<div class="viewcode-block" id="TofwerkPfibPreviewGenerator.supports">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview.html#nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview.TofwerkPfibPreviewGenerator.supports">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if this generator supports the given file.</span>
+
+<span class="sd">        Performs content sniffing identical to the extractor to confirm this is a</span>
+<span class="sd">        Tofwerk fibTOF FIB-SIMS HDF5 file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        context</span>
+<span class="sd">            The extraction context containing file information</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if this is a Tofwerk fibTOF FIB-SIMS HDF5 file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;.h5&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span>
+                    <span class="s2">&quot;FullSpectra/SumSpectrum&quot;</span> <span class="ow">in</span> <span class="n">f</span>
+                    <span class="ow">and</span> <span class="s2">&quot;FIBParams&quot;</span> <span class="ow">in</span> <span class="n">f</span>
+                    <span class="ow">and</span> <span class="s2">&quot;FIBImages&quot;</span> <span class="ow">in</span> <span class="n">f</span>
+                    <span class="ow">and</span> <span class="s2">&quot;TofDAQ Version&quot;</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">attrs</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="TofwerkPfibPreviewGenerator.generate">
+<a class="viewcode-back" href="../../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview.html#nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview.TofwerkPfibPreviewGenerator.generate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a composite preview image for a Tofwerk fibTOF HDF5 file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        context</span>
+<span class="sd">            The extraction context containing file information</span>
+<span class="sd">        output_path</span>
+<span class="sd">            Path where the preview PNG should be saved</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if preview was successfully generated, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">output_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">_generate_preview</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">),</span> <span class="n">output_path</span><span class="p">)</span>
+            <span class="n">_pad_to_square</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">new_width</span><span class="o">=</span><span class="mi">1500</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to generate preview for </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+</div>
+
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Core preview generation (module-level for easier testing)</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_preview</span><span class="p">(</span>  <span class="c1"># noqa: PLR0912, PLR0915</span>
+    <span class="n">h5_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">min_mass</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate and save a composite preview image for a Tofwerk fibTOF HDF5 file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    h5_path</span>
+<span class="sd">        Path to the input HDF5 file</span>
+<span class="sd">    output_path</span>
+<span class="sd">        Path where the output PNG will be saved</span>
+<span class="sd">    min_mass</span>
+<span class="sd">        Minimum m/z threshold; peaks/spectrum below this mass are ignored</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">h5_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">has_peaks</span> <span class="o">=</span> <span class="s2">&quot;PeakData/PeakData&quot;</span> <span class="ow">in</span> <span class="n">f</span>
+
+        <span class="c1"># FIB image (first/original surface image)</span>
+        <span class="n">fib_keys</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;FIBImages&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fib_keys</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No FIBImages found in file&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">fib_image</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;FIBImages/</span><span class="si">{</span><span class="n">fib_keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">/Data&quot;</span><span class="p">][:]</span>
+        <span class="n">fib_h</span><span class="p">,</span> <span class="n">fib_w</span> <span class="o">=</span> <span class="n">fib_image</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="c1"># Mass axis and sum spectrum</span>
+        <span class="n">mass_axis</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;FullSpectra/MassAxis&quot;</span><span class="p">][:]</span>
+        <span class="n">sum_spec</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;FullSpectra/SumSpectrum&quot;</span><span class="p">][:]</span>
+
+        <span class="c1"># Root metadata for title</span>
+        <span class="n">voltage_kv</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_read_attr_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;FIBParams&quot;</span><span class="p">],</span> <span class="s2">&quot;Voltage&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">/</span> <span class="mf">1000.0</span>
+        <span class="n">ion_mode</span> <span class="o">=</span> <span class="n">_read_attr_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;IonMode&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
+        <span class="n">acq_time</span> <span class="o">=</span> <span class="n">_read_attr_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;HDF5 File Creation Time&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">fib_hw</span> <span class="o">=</span> <span class="n">_read_attr_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s2">&quot;FIBParams&quot;</span><span class="p">],</span> <span class="s2">&quot;FibHardware&quot;</span><span class="p">,</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
+        <span class="n">nbr_writes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_read_attr_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;NbrWrites&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">has_peaks</span><span class="p">:</span>
+            <span class="n">peak_data</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;PeakData/PeakData&quot;</span><span class="p">][:]</span>
+            <span class="n">peak_table</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;PeakData/PeakTable&quot;</span><span class="p">][:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">el</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;FullSpectra/EventList&quot;</span><span class="p">]</span>
+            <span class="n">tic_map</span><span class="p">,</span> <span class="n">depth_counts</span> <span class="o">=</span> <span class="n">_compute_tic_from_eventlist</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+            <span class="n">tic_h</span><span class="p">,</span> <span class="n">tic_w</span> <span class="o">=</span> <span class="n">tic_map</span><span class="o">.</span><span class="n">shape</span>
+
+    <span class="n">ion_lookup</span> <span class="o">=</span> <span class="n">_build_ion_lookup</span><span class="p">(</span>
+        <span class="n">_IONS_POSITIVE</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">ion_mode</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;positive&quot;</span> <span class="k">else</span> <span class="n">_IONS_NEGATIVE</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Trim spectrum to min_mass</span>
+    <span class="n">valid</span> <span class="o">=</span> <span class="n">mass_axis</span> <span class="o">&gt;=</span> <span class="n">min_mass</span>
+    <span class="n">mass_v</span> <span class="o">=</span> <span class="n">mass_axis</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span>
+    <span class="n">spec_v</span> <span class="o">=</span> <span class="n">sum_spec</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span>
+
+    <span class="c1"># Derived arrays for opened files</span>
+    <span class="k">if</span> <span class="n">has_peaks</span><span class="p">:</span>
+        <span class="n">nwrites_pk</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">npeaks</span> <span class="o">=</span> <span class="n">peak_data</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">per_mass</span> <span class="o">=</span> <span class="n">peak_data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">spatial</span> <span class="o">=</span> <span class="n">peak_data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">tic_map</span> <span class="o">=</span> <span class="n">spatial</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">depth_prof</span> <span class="o">=</span> <span class="n">peak_data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+
+        <span class="n">peak_masses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">peak_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;mass&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npeaks</span><span class="p">)])</span>
+        <span class="n">above_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">peak_masses</span> <span class="o">&gt;=</span> <span class="n">min_mass</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">n_top</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">above_min</span><span class="p">))</span>
+        <span class="n">top_idx</span> <span class="o">=</span> <span class="n">above_min</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">per_mass</span><span class="p">[</span><span class="n">above_min</span><span class="p">])[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="n">n_top</span><span class="p">]]</span>
+        <span class="n">top_masses</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">peak_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;mass&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">top_idx</span><span class="p">]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_fmt_peak_label</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="n">raw_lbl</span> <span class="o">=</span> <span class="n">peak_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;label&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw_lbl</span><span class="p">,</span> <span class="p">(</span><span class="nb">bytes</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">bytes_</span><span class="p">)):</span>
+                <span class="n">raw_lbl</span> <span class="o">=</span> <span class="n">raw_lbl</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">raw_lbl</span> <span class="ow">and</span> <span class="n">raw_lbl</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;nominal&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">raw_lbl</span>
+            <span class="n">matched</span> <span class="o">=</span> <span class="n">_ion_label</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">peak_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;mass&quot;</span><span class="p">]),</span> <span class="n">ion_lookup</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">matched</span> <span class="k">if</span> <span class="n">matched</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">peak_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;mass&#39;</span><span class="p">])</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> Da&quot;</span>
+
+        <span class="n">top_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">_fmt_peak_label</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">top_idx</span><span class="p">]</span>
+        <span class="n">rgb_channels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_top</span><span class="p">):</span>
+            <span class="n">rgb_channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_norm_channel</span><span class="p">(</span><span class="n">spatial</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">top_idx</span><span class="p">[</span><span class="n">i</span><span class="p">]]))</span>
+        <span class="c1"># Pad to 3 channels if fewer than 3 peaks above min_mass</span>
+        <span class="n">_zero_channel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">rgb_channels</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">_N_RGB_CHANNELS</span><span class="p">:</span>
+            <span class="n">rgb_channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">rgb_channels</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">if</span> <span class="n">rgb_channels</span> <span class="k">else</span> <span class="n">_zero_channel</span>
+            <span class="p">)</span>
+        <span class="n">rgb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">rgb_channels</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">writes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nwrites_pk</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">mode_str</span> <span class="o">=</span> <span class="s2">&quot;Processed&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">writes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nbr_writes</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">mode_str</span> <span class="o">=</span> <span class="s2">&quot;Raw&quot;</span>
+
+    <span class="c1"># Annotate top peaks in sum spectrum (spaced &gt;= 2 Da apart)</span>
+    <span class="n">annotated</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">spec_v</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">mz</span> <span class="o">=</span> <span class="n">mass_v</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">mz</span> <span class="o">-</span> <span class="n">m</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">_MIN_PEAK_SEPARATION_DA</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">annotated</span><span class="p">):</span>
+            <span class="n">annotated</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mz</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">annotated</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">5</span> <span class="k">if</span> <span class="n">has_peaks</span> <span class="k">else</span> <span class="mi">6</span><span class="p">):</span>
+            <span class="k">break</span>
+
+    <span class="c1"># Figure layout</span>
+    <span class="k">if</span> <span class="n">has_peaks</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+        <span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span>
+            <span class="mi">2</span><span class="p">,</span>
+            <span class="mi">3</span><span class="p">,</span>
+            <span class="n">figure</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span>
+            <span class="n">left</span><span class="o">=</span><span class="mf">0.06</span><span class="p">,</span>
+            <span class="n">right</span><span class="o">=</span><span class="mf">0.97</span><span class="p">,</span>
+            <span class="n">top</span><span class="o">=</span><span class="mf">0.88</span><span class="p">,</span>
+            <span class="n">bottom</span><span class="o">=</span><span class="mf">0.08</span><span class="p">,</span>
+            <span class="n">hspace</span><span class="o">=</span><span class="mf">0.44</span><span class="p">,</span>
+            <span class="n">wspace</span><span class="o">=</span><span class="mf">0.40</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ax_fib</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">ax_tic</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">ax_rgb</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="n">ax_spec</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">ax_dep</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">patch</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+        <span class="n">gs</span> <span class="o">=</span> <span class="n">gridspec</span><span class="o">.</span><span class="n">GridSpec</span><span class="p">(</span>
+            <span class="mi">2</span><span class="p">,</span>
+            <span class="mi">3</span><span class="p">,</span>
+            <span class="n">figure</span><span class="o">=</span><span class="n">fig</span><span class="p">,</span>
+            <span class="n">left</span><span class="o">=</span><span class="mf">0.07</span><span class="p">,</span>
+            <span class="n">right</span><span class="o">=</span><span class="mf">0.97</span><span class="p">,</span>
+            <span class="n">top</span><span class="o">=</span><span class="mf">0.88</span><span class="p">,</span>
+            <span class="n">bottom</span><span class="o">=</span><span class="mf">0.09</span><span class="p">,</span>
+            <span class="n">hspace</span><span class="o">=</span><span class="mf">0.42</span><span class="p">,</span>
+            <span class="n">wspace</span><span class="o">=</span><span class="mf">0.38</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">ax_fib</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="n">ax_tic</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">ax_dep</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="n">ax_spec</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">gs</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>
+
+    <span class="c1"># Panel: FIB SE image</span>
+    <span class="n">im_fib</span> <span class="o">=</span> <span class="n">ax_fib</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">fib_image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;equal&quot;</span><span class="p">)</span>
+    <span class="n">ax_fib</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;FIB Secondary Electron Image</span><span class="se">\n</span><span class="s2">(</span><span class="si">{</span><span class="n">fib_w</span><span class="si">}</span><span class="se">\xd7</span><span class="si">{</span><span class="n">fib_h</span><span class="si">}</span><span class="s2"> px)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span>
+    <span class="p">)</span>
+    <span class="n">ax_fib</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X pixel&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">ax_fib</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y pixel&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">ax_fib</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+    <span class="n">_add_colorbar</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax_fib</span><span class="p">,</span> <span class="n">im_fib</span><span class="p">,</span> <span class="s2">&quot;SE Intensity&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Panel: TIC map</span>
+    <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="n">_tic_display_limits</span><span class="p">(</span><span class="n">tic_map</span><span class="p">)</span>
+    <span class="n">tic_h2</span><span class="p">,</span> <span class="n">tic_w2</span> <span class="o">=</span> <span class="n">tic_map</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">im_tic</span> <span class="o">=</span> <span class="n">ax_tic</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span>
+        <span class="n">tic_map</span><span class="p">,</span>
+        <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;inferno&quot;</span><span class="p">,</span>
+        <span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;equal&quot;</span><span class="p">,</span>
+        <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span>
+        <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span>
+        <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;upper&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">has_peaks</span><span class="p">:</span>
+        <span class="n">tic_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Total Ion Count Map</span><span class="se">\n</span><span class="s2">(</span><span class="si">{</span><span class="n">npeaks</span><span class="si">}</span><span class="s2"> peaks, </span><span class="si">{</span><span class="n">tic_w2</span><span class="si">}</span><span class="se">\xd7</span><span class="si">{</span><span class="n">tic_h2</span><span class="si">}</span><span class="s2"> px)&quot;</span>
+        <span class="n">tic_cb_label</span> <span class="o">=</span> <span class="s2">&quot;Integrated counts&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tic_title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Total Ion Count Map</span><span class="se">\n</span><span class="s2">(</span><span class="si">{</span><span class="n">nbr_writes</span><span class="si">}</span><span class="s2"> slices, </span><span class="si">{</span><span class="n">tic_w</span><span class="si">}</span><span class="se">\xd7</span><span class="si">{</span><span class="n">tic_h</span><span class="si">}</span><span class="s2"> px)&quot;</span>
+        <span class="n">tic_cb_label</span> <span class="o">=</span> <span class="s2">&quot;Ion events&quot;</span>
+    <span class="n">ax_tic</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">tic_title</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+    <span class="n">ax_tic</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X pixel&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">ax_tic</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y pixel&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">ax_tic</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+    <span class="n">_add_colorbar</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">ax_tic</span><span class="p">,</span> <span class="n">im_tic</span><span class="p">,</span> <span class="n">tic_cb_label</span><span class="p">,</span> <span class="n">extend</span><span class="o">=</span><span class="s2">&quot;max&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Panel: RGB composite (opened only)</span>
+    <span class="k">if</span> <span class="n">has_peaks</span><span class="p">:</span>
+        <span class="n">ax_rgb</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">rgb</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s2">&quot;equal&quot;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s2">&quot;upper&quot;</span><span class="p">)</span>
+        <span class="n">ax_rgb</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+            <span class="s2">&quot;False-Color RGB Composite</span><span class="se">\n</span><span class="s2">(peak-integrated spatial maps)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span>
+        <span class="p">)</span>
+        <span class="n">ax_rgb</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;X pixel&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">ax_rgb</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Y pixel&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">ax_rgb</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+        <span class="n">legend_elements</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Patch</span><span class="p">(</span>
+                <span class="n">facecolor</span><span class="o">=</span><span class="n">_RGB_COLORS</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;RGB&#39;</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">top_labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">top_masses</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> Da)&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_top</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">ax_rgb</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+            <span class="n">handles</span><span class="o">=</span><span class="n">legend_elements</span><span class="p">,</span>
+            <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower right&quot;</span><span class="p">,</span>
+            <span class="n">fontsize</span><span class="o">=</span><span class="mf">6.5</span><span class="p">,</span>
+            <span class="n">framealpha</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span>
+            <span class="n">handlelength</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Panel: Depth profile</span>
+    <span class="n">fmt</span><span class="p">,</span> <span class="n">lw</span><span class="p">,</span> <span class="n">ms</span><span class="p">,</span> <span class="n">mew</span> <span class="o">=</span> <span class="n">_depth_plot_style</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">writes</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">has_peaks</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">color</span><span class="p">,</span> <span class="n">pidx</span><span class="p">,</span> <span class="n">mass_c</span><span class="p">,</span> <span class="n">lbl</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">_RGB_COLORS</span><span class="p">,</span> <span class="n">top_idx</span><span class="p">,</span> <span class="n">top_masses</span><span class="p">,</span> <span class="n">top_labels</span>
+        <span class="p">):</span>
+            <span class="n">kw</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">color</span><span class="p">,</span>
+                <span class="s2">&quot;linewidth&quot;</span><span class="p">:</span> <span class="n">lw</span><span class="p">,</span>
+                <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lbl</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">mass_c</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> Da)&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="n">ms</span><span class="p">:</span>
+                <span class="n">kw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">markersize</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="n">mew</span><span class="p">)</span>
+            <span class="n">ax_dep</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">writes</span><span class="p">,</span> <span class="n">depth_prof</span><span class="p">[:,</span> <span class="n">pidx</span><span class="p">],</span> <span class="n">fmt</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="n">ax_dep</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Depth Profiles</span><span class="se">\n</span><span class="s2">(top 3 mass channels)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+        <span class="n">ax_dep</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Integrated counts&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">get_label</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">a</span><span class="o">.</span><span class="n">get_label</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ax_dep</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()</span>
+        <span class="p">):</span>
+            <span class="n">ax_dep</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">framealpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">kw</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="s2">&quot;linewidth&quot;</span><span class="p">:</span> <span class="n">lw</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">ms</span><span class="p">:</span>
+            <span class="n">kw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">markersize</span><span class="o">=</span><span class="n">ms</span><span class="p">,</span> <span class="n">markerfacecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="n">markeredgewidth</span><span class="o">=</span><span class="n">mew</span><span class="p">)</span>
+        <span class="n">ax_dep</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">writes</span><span class="p">,</span> <span class="n">depth_counts</span><span class="p">,</span> <span class="n">fmt</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="n">ax_dep</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+            <span class="s2">&quot;Depth Profile</span><span class="se">\n</span><span class="s2">(total ion events per milling step)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span>
+        <span class="p">)</span>
+        <span class="n">ax_dep</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Total ion events&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+    <span class="n">ax_dep</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Milling step (write)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">ax_dep</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">writes</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">_MAX_XTICK_WRITES</span><span class="p">:</span>
+        <span class="n">ax_dep</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">writes</span><span class="p">)</span>
+    <span class="n">ax_dep</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">set_major_formatter</span><span class="p">(</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">FuncFormatter</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">_MILLION</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">M&quot;</span>
+                <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">_MILLION</span>
+                <span class="k">else</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">_THOUSAND</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">k&quot;</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">_THOUSAND</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">x</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">ax_dep</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">writes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ax_dep</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">writes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">writes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">has_peaks</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">top_idx</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">all_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">depth_prof</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">top_idx</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="n">has_peaks</span><span class="p">:</span>
+        <span class="n">all_counts</span> <span class="o">=</span> <span class="n">depth_prof</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">all_counts</span> <span class="o">=</span> <span class="n">depth_counts</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_counts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ylo</span><span class="p">,</span> <span class="n">yhi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">all_counts</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">all_counts</span><span class="p">,</span> <span class="mi">98</span><span class="p">)</span>
+        <span class="n">pad</span> <span class="o">=</span> <span class="p">(</span><span class="n">yhi</span> <span class="o">-</span> <span class="n">ylo</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span> <span class="ow">or</span> <span class="n">yhi</span> <span class="o">*</span> <span class="mf">0.05</span> <span class="ow">or</span> <span class="mf">1.0</span>
+        <span class="n">ax_dep</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ylo</span> <span class="o">-</span> <span class="n">pad</span><span class="p">,</span> <span class="n">yhi</span> <span class="o">+</span> <span class="n">pad</span><span class="p">)</span>
+
+    <span class="c1"># Panel: Sum mass spectrum</span>
+    <span class="n">ax_spec</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mass_v</span><span class="p">,</span> <span class="n">spec_v</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#2c7bb6&quot;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+    <span class="n">ax_spec</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">mass_v</span><span class="p">,</span> <span class="n">spec_v</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#2c7bb6&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">has_peaks</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">color</span><span class="p">,</span> <span class="n">pidx</span><span class="p">,</span> <span class="n">lbl</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">_RGB_COLORS</span><span class="p">,</span> <span class="n">top_idx</span><span class="p">,</span> <span class="n">top_labels</span><span class="p">):</span>
+            <span class="n">lo</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">peak_table</span><span class="p">[</span><span class="n">pidx</span><span class="p">][</span><span class="s2">&quot;lower integration limit&quot;</span><span class="p">])</span>
+            <span class="n">hi</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">peak_table</span><span class="p">[</span><span class="n">pidx</span><span class="p">][</span><span class="s2">&quot;upper integration limit&quot;</span><span class="p">])</span>
+            <span class="n">mc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">peak_table</span><span class="p">[</span><span class="n">pidx</span><span class="p">][</span><span class="s2">&quot;mass&quot;</span><span class="p">])</span>
+            <span class="n">ax_spec</span><span class="o">.</span><span class="n">axvspan</span><span class="p">(</span>
+                <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.18</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lbl</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">mc</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> Da)&quot;</span>
+            <span class="p">)</span>
+            <span class="n">ax_spec</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+        <span class="n">ax_spec</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+            <span class="s2">&quot;Summed Mass Spectrum -- top 3 peak integration windows highlighted&quot;</span><span class="p">,</span>
+            <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">get_label</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">a</span><span class="o">.</span><span class="n">get_label</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">ax_spec</span><span class="o">.</span><span class="n">get_lines</span><span class="p">()</span>
+        <span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">ax_spec</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">framealpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax_spec</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+            <span class="s2">&quot;Summed Mass Spectrum (all pixels, all depth slices)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span>
+        <span class="p">)</span>
+
+    <span class="n">ax_spec</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+    <span class="n">ax_spec</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;m/z (Da)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">ax_spec</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Ion counts (log)&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">ax_spec</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mass_v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">ax_spec</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">mass_v</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">mass_v</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+    <span class="n">ax_spec</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">visible</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">mz</span> <span class="ow">in</span> <span class="n">annotated</span><span class="p">:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mass_v</span> <span class="o">-</span> <span class="n">mz</span><span class="p">)))</span>
+        <span class="n">lbl</span> <span class="o">=</span> <span class="n">_ion_label</span><span class="p">(</span><span class="n">mz</span><span class="p">,</span> <span class="n">ion_lookup</span><span class="p">)</span>
+        <span class="n">annot</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">lbl</span><span class="si">}</span><span class="se">\n</span><span class="s2">(</span><span class="si">{</span><span class="n">mz</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">)&quot;</span> <span class="k">if</span> <span class="n">lbl</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mz</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> Da&quot;</span>
+        <span class="n">ax_spec</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+            <span class="n">annot</span><span class="p">,</span>
+            <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="n">mz</span><span class="p">,</span> <span class="n">spec_v</span><span class="p">[</span><span class="n">idx</span><span class="p">]),</span>
+            <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+            <span class="n">textcoords</span><span class="o">=</span><span class="s2">&quot;offset points&quot;</span><span class="p">,</span>
+            <span class="n">fontsize</span><span class="o">=</span><span class="mf">6.5</span><span class="p">,</span>
+            <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#1a4d7a&quot;</span><span class="p">,</span>
+            <span class="n">arrowprops</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;arrowstyle&quot;</span><span class="p">:</span> <span class="s2">&quot;-&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span> <span class="s2">&quot;lw&quot;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">},</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Title and disclaimer</span>
+    <span class="k">if</span> <span class="n">has_peaks</span><span class="p">:</span>
+        <span class="n">dim_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">nwrites_pk</span><span class="si">}</span><span class="s2"> depth slices, </span><span class="si">{</span><span class="n">nx</span><span class="si">}</span><span class="se">\xd7</span><span class="si">{</span><span class="n">ny</span><span class="si">}</span><span class="s2"> px, </span><span class="si">{</span><span class="n">npeaks</span><span class="si">}</span><span class="s2"> peaks&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dim_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">nbr_writes</span><span class="si">}</span><span class="s2"> depth slices, </span><span class="si">{</span><span class="n">tic_w</span><span class="si">}</span><span class="se">\xd7</span><span class="si">{</span><span class="n">tic_h</span><span class="si">}</span><span class="s2"> px&quot;</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">suptitle</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;pFIB-ToF-SIMS Preview (</span><span class="si">{</span><span class="n">mode_str</span><span class="si">}</span><span class="s2">)  |  &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fib_hw</span><span class="si">}</span><span class="s2"> FIB, </span><span class="si">{</span><span class="n">voltage_kv</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> kV, </span><span class="si">{</span><span class="n">ion_mode</span><span class="si">}</span><span class="s2"> mode  |  &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dim_str</span><span class="si">}</span><span class="s2">  |  </span><span class="si">{</span><span class="n">acq_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+        <span class="n">y</span><span class="o">=</span><span class="mf">0.97</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+        <span class="mf">0.5</span><span class="p">,</span>
+        <span class="mf">0.01</span><span class="p">,</span>
+        <span class="s2">&quot;</span><span class="se">\u26a0</span><span class="s2"> Peak identifications are preliminary best-guess assignments based on &quot;</span>
+        <span class="s2">&quot;monoisotopic mass matching (</span><span class="se">\xb1</span><span class="s2">0.35 Da). Verify with high-resolution data.&quot;</span><span class="p">,</span>
+        <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+        <span class="n">va</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span>
+        <span class="n">fontsize</span><span class="o">=</span><span class="mf">6.5</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#666666&quot;</span><span class="p">,</span>
+        <span class="n">style</span><span class="o">=</span><span class="s2">&quot;italic&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_path</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
