@@ -1,0 +1,111 @@
+# {py:mod}`nexusLIMS.builder.preflight`
+
+```{py:module} nexusLIMS.builder.preflight
+```
+
+```{autodoc2-docstring} nexusLIMS.builder.preflight
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`CheckResult <nexusLIMS.builder.preflight.CheckResult>`
+  - ```{autodoc2-docstring} nexusLIMS.builder.preflight.CheckResult
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`run_preflight_checks <nexusLIMS.builder.preflight.run_preflight_checks>`
+  - ```{autodoc2-docstring} nexusLIMS.builder.preflight.run_preflight_checks
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+`````{py:class} CheckResult
+:canonical: nexusLIMS.builder.preflight.CheckResult
+
+```{autodoc2-docstring} nexusLIMS.builder.preflight.CheckResult
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.builder.preflight.CheckResult.name
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.builder.preflight.CheckResult.name
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} passed
+:canonical: nexusLIMS.builder.preflight.CheckResult.passed
+
+**Type:** bool
+
+```{autodoc2-docstring} nexusLIMS.builder.preflight.CheckResult.passed
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} severity
+:canonical: nexusLIMS.builder.preflight.CheckResult.severity
+
+**Type:** typing.Literal[error, warning]
+
+```{autodoc2-docstring} nexusLIMS.builder.preflight.CheckResult.severity
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} message
+:canonical: nexusLIMS.builder.preflight.CheckResult.message
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.builder.preflight.CheckResult.message
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+````{py:exception} PreflightError(failed_checks: list[nexusLIMS.builder.preflight.CheckResult])
+:canonical: nexusLIMS.builder.preflight.PreflightError
+
+Bases: {py:obj}`Exception`
+
+```{autodoc2-docstring} nexusLIMS.builder.preflight.PreflightError
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:function} run_preflight_checks(*, dry_run: bool = False) -> list[nexusLIMS.builder.preflight.CheckResult]
+:canonical: nexusLIMS.builder.preflight.run_preflight_checks
+
+```{autodoc2-docstring} nexusLIMS.builder.preflight.run_preflight_checks
+:parser: autodoc2_docstrings_parser
+```
+````
