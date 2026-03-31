@@ -1,5 +1,6 @@
 """HyperSpy-based preview generator for microscopy data files."""
 
+import glob as _glob
 import logging
 import tempfile
 import textwrap
@@ -832,6 +833,8 @@ class HyperSpyPreviewGenerator:
         "dm4",
         "ser",
         "emi",
+        "msa",
+        "spc",
     }
 
     def supports(self, context: ExtractionContext) -> bool:
@@ -872,8 +875,14 @@ class HyperSpyPreviewGenerator:
 
             _logger.debug("Generating HyperSpy preview for: %s", context.file_path)
 
-            # Load the signal
-            s = load(str(context.file_path), lazy=True)
+            # Load the signal; some formats (e.g. msa) don't support lazy loading.
+            # Use glob.escape() so bracket characters in filenames (e.g. "[3][4]")
+            # are not misinterpreted as glob character classes by HyperSpy's loader.
+            escaped = _glob.escape(str(context.file_path))
+            try:
+                s = load(escaped, lazy=True)
+            except Exception:
+                s = load(escaped, lazy=False)
 
             # Handle multi-signal files
             if isinstance(s, list):
