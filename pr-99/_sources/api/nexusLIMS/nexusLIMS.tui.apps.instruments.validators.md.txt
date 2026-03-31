@@ -1,0 +1,99 @@
+# {py:mod}`nexusLIMS.tui.apps.instruments.validators`
+
+```{py:module} nexusLIMS.tui.apps.instruments.validators
+```
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.validators
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`validate_instrument_pid <nexusLIMS.tui.apps.instruments.validators.validate_instrument_pid>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.validators.validate_instrument_pid
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_api_url_unique <nexusLIMS.tui.apps.instruments.validators.validate_api_url_unique>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.validators.validate_api_url_unique
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_location <nexusLIMS.tui.apps.instruments.validators.validate_location>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.validators.validate_location
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_property_tag <nexusLIMS.tui.apps.instruments.validators.validate_property_tag>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.validators.validate_property_tag
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_harvester <nexusLIMS.tui.apps.instruments.validators.validate_harvester>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.validators.validate_harvester
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`get_example_values <nexusLIMS.tui.apps.instruments.validators.get_example_values>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.validators.get_example_values
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} validate_instrument_pid(value: str | None) -> tuple[bool, str]
+:canonical: nexusLIMS.tui.apps.instruments.validators.validate_instrument_pid
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.validators.validate_instrument_pid
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_api_url_unique(session: sqlmodel.Session, value: str | None, exclude_pid: str | None = None) -> tuple[bool, str]
+:canonical: nexusLIMS.tui.apps.instruments.validators.validate_api_url_unique
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.validators.validate_api_url_unique
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_location(value: str | None) -> tuple[bool, str]
+:canonical: nexusLIMS.tui.apps.instruments.validators.validate_location
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.validators.validate_location
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_property_tag(value: str | None) -> tuple[bool, str]
+:canonical: nexusLIMS.tui.apps.instruments.validators.validate_property_tag
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.validators.validate_property_tag
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_harvester(value: str | None) -> tuple[bool, str]
+:canonical: nexusLIMS.tui.apps.instruments.validators.validate_harvester
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.validators.validate_harvester
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} get_example_values() -> dict[str, str]
+:canonical: nexusLIMS.tui.apps.instruments.validators.get_example_values
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.instruments.validators.get_example_values
+:parser: autodoc2_docstrings_parser
+```
+````

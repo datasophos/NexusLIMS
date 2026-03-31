@@ -1,0 +1,99 @@
+# {py:mod}`nexusLIMS.utils.dicts`
+
+```{py:module} nexusLIMS.utils.dicts
+```
+
+```{autodoc2-docstring} nexusLIMS.utils.dicts
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`get_nested_dict_value_by_path <nexusLIMS.utils.dicts.get_nested_dict_value_by_path>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.dicts.get_nested_dict_value_by_path
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`set_nested_dict_value <nexusLIMS.utils.dicts.set_nested_dict_value>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.dicts.set_nested_dict_value
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`try_getting_dict_value <nexusLIMS.utils.dicts.try_getting_dict_value>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.dicts.try_getting_dict_value
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`sort_dict <nexusLIMS.utils.dicts.sort_dict>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.dicts.sort_dict
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`remove_dtb_element <nexusLIMS.utils.dicts.remove_dtb_element>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.dicts.remove_dtb_element
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`remove_dict_nones <nexusLIMS.utils.dicts.remove_dict_nones>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.dicts.remove_dict_nones
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} get_nested_dict_value_by_path(nest_dict, path)
+:canonical: nexusLIMS.utils.dicts.get_nested_dict_value_by_path
+
+```{autodoc2-docstring} nexusLIMS.utils.dicts.get_nested_dict_value_by_path
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} set_nested_dict_value(nest_dict, path, value)
+:canonical: nexusLIMS.utils.dicts.set_nested_dict_value
+
+```{autodoc2-docstring} nexusLIMS.utils.dicts.set_nested_dict_value
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} try_getting_dict_value(dict_, key)
+:canonical: nexusLIMS.utils.dicts.try_getting_dict_value
+
+```{autodoc2-docstring} nexusLIMS.utils.dicts.try_getting_dict_value
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} sort_dict(item)
+:canonical: nexusLIMS.utils.dicts.sort_dict
+
+```{autodoc2-docstring} nexusLIMS.utils.dicts.sort_dict
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} remove_dtb_element(tree, path)
+:canonical: nexusLIMS.utils.dicts.remove_dtb_element
+
+```{autodoc2-docstring} nexusLIMS.utils.dicts.remove_dtb_element
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} remove_dict_nones(dictionary: typing.Dict[typing.Any, typing.Any]) -> typing.Dict[typing.Any, typing.Any]
+:canonical: nexusLIMS.utils.dicts.remove_dict_nones
+
+```{autodoc2-docstring} nexusLIMS.utils.dicts.remove_dict_nones
+:parser: autodoc2_docstrings_parser
+```
+````
