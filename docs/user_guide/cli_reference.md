@@ -54,7 +54,7 @@ subcommands, flags, and `click.Path` arguments:
 
 ```text
 $ nexuslims <Tab>
-build-records  completion  config  db  instruments
+build-records  completion  config  db  extract  instruments
 
 $ nexuslims build-records --<Tab>
 --dry-run  --from  --help  --to  --verbose  --version
@@ -92,6 +92,7 @@ Commands:
   completion     Print shell completion setup instructions.
   config         Manage NexusLIMS configuration files.
   db             Manage NexusLIMS database.
+  extract        Extract metadata and/or generate a preview for a single file.
   instruments    Manage NexusLIMS instruments.
 ```
 
@@ -397,6 +398,173 @@ error notifications are sent when:
 - Unexpected exceptions occur
 
 See the {doc}`configuration guide <configuration>` Email Notifications section for setup details.
+
+---
+
+(extract-cli-ref)=
+## `nexuslims extract`
+
+Extract metadata and/or generate a preview thumbnail for a single microscopy
+file. Useful for inspecting what NexusLIMS sees in a file without running the
+full record-building pipeline.
+
+### Basic Usage
+
+```bash
+nexuslims extract --help
+```
+
+```text
+Usage: nexuslims extract [OPTIONS] FILE
+
+  Extract metadata and/or generate a preview for a single FILE.
+
+  Metadata is printed to stdout as JSON by default. Use --write to also
+  persist it to the NexusLIMS data directory.
+
+  Examples:
+      nexuslims extract image.dm4
+      nexuslims extract --no-preview spectrum.msa
+      nexuslims extract --no-metadata --preview-path /tmp/thumb.png image.tif
+      nexuslims extract --write --overwrite image.dm4
+
+Options:
+  --no-preview           Skip preview image generation.
+  --no-metadata          Skip metadata extraction (only generate preview).
+  -p, --preview-path PATH  Path to write the preview image. If omitted, the
+                           preview is written alongside the input file as
+                           '<filename>.thumb.png'.
+  -w, --write            Write metadata JSON alongside the input file as
+                         '<filename>.json'. If the file is under
+                         NX_INSTRUMENT_DATA_PATH, the JSON is written to the
+                         corresponding location under NX_DATA_PATH instead.
+                         By default, metadata is only printed to stdout.
+  --overwrite            Overwrite existing metadata JSON and preview files.
+  -v, --verbose          Enable verbose logging output.
+  --help                 Show this message and exit.
+```
+
+### Options
+
+#### `FILE` (required argument)
+
+Path to the microscopy file to extract. The file must exist.
+
+#### `--no-preview`
+
+Skip thumbnail generation. Only metadata extraction is performed and the JSON
+is printed to stdout.
+
+**Example:**
+```bash
+nexuslims extract --no-preview /data/spectrum.msa
+```
+
+#### `--no-metadata`
+
+Skip metadata extraction. Only the preview image is generated. Cannot be used
+together with `--no-preview`.
+
+**Example:**
+```bash
+nexuslims extract --no-metadata /data/image.dm4
+```
+
+#### `-p, --preview-path PATH`
+
+Write the preview image to the given path instead of the default location. The
+parent directory is created automatically. If omitted, the preview is written
+alongside the input file as `<filename>.thumb.png`.
+
+**Example:**
+```bash
+nexuslims extract -p /tmp/thumb.png /data/image.dm4
+```
+
+#### `-w, --write`
+
+Persist the extracted metadata JSON to disk. By default, metadata is only
+printed to stdout. The output location depends on the file's path:
+
+- If the file is **outside** `NX_INSTRUMENT_DATA_PATH` (typical for ad-hoc
+  use), the JSON is written alongside the input file as `<filename>.json`.
+- If the file is **under** `NX_INSTRUMENT_DATA_PATH`, the JSON is written to
+  the corresponding mirror path under `NX_DATA_PATH` (the same behavior as
+  the full record-building pipeline).
+
+**Example:**
+```bash
+nexuslims extract --write /data/image.dm4
+```
+
+#### `--overwrite`
+
+Allow overwriting an existing metadata JSON or preview file. By default, the
+command skips writing if the output file already exists.
+
+**Example:**
+```bash
+nexuslims extract --write --overwrite /data/image.dm4
+```
+
+#### `-v, --verbose`
+
+Enable `DEBUG`-level logging. By default only `WARNING` and above are shown.
+
+**Example:**
+```bash
+nexuslims extract -v /data/image.dm4
+```
+
+### Exit Codes
+
+- **0**: Success
+- **1**: No extractor found for the given file format, or both `--no-metadata`
+  and `--no-preview` were specified together
+
+### Examples
+
+#### Inspect metadata for a DM4 file
+
+```bash
+nexuslims extract /data/sample.dm4
+```
+
+Prints the full extracted metadata as pretty-printed JSON to stdout.
+
+#### Inspect metadata without generating a preview
+
+```bash
+nexuslims extract --no-preview /data/sample.dm4
+```
+
+#### Generate a preview thumbnail at a specific path
+
+```bash
+nexuslims extract --no-metadata --preview-path /tmp/thumb.png /data/sample.dm4
+```
+
+#### Extract and persist both metadata and preview
+
+```bash
+nexuslims extract --write /data/sample.dm4
+```
+
+Writes the JSON sidecar alongside the input file (as `sample.dm4.json`) and
+prints the metadata to stdout. If `sample.dm4` is under `NX_INSTRUMENT_DATA_PATH`,
+the JSON is instead written to the corresponding path under `NX_DATA_PATH`.
+
+#### Re-extract and overwrite existing outputs
+
+```bash
+nexuslims extract --write --overwrite /data/sample.dm4
+```
+
+#### Pipe metadata into jq for filtering
+
+```bash
+nexuslims extract /data/sample.dm4 | jq '.nx_meta.DatasetType'
+```
 
 ---
 
