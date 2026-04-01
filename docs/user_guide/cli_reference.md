@@ -401,8 +401,6 @@ See the {doc}`configuration guide <configuration>` Email Notifications section f
 
 ---
 
----
-
 (extract-cli-ref)=
 ## `nexuslims extract`
 
