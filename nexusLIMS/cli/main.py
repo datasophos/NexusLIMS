@@ -28,6 +28,7 @@ import click
 _LAZY_COMMANDS: dict[str, tuple[str, str]] = {
     "build-records": ("nexusLIMS.cli.process_records", "main"),
     "config": ("nexusLIMS.cli.config", "main"),
+    "extract": ("nexusLIMS.cli.extract", "main"),
 }
 
 
