@@ -528,7 +528,8 @@ nexuslims extract --no-metadata /path/to/file.dm4
 # Save preview to a specific path
 nexuslims extract --preview-path /tmp/preview.png /path/to/file.dm4
 
-# Write metadata JSON to disk (mirrors normal record-building behavior)
+# Write metadata JSON alongside the file (or to NX_DATA_PATH if the file
+# is under NX_INSTRUMENT_DATA_PATH)
 nexuslims extract --write /path/to/file.dm4
 </pre></div>
 </div>

@@ -809,6 +809,49 @@ Use the `extensions` dictionary when:
 
 See {ref}`Helper Functions <metadata-helper-functions>` for the `add_to_extensions()` helper function and {doc}`../dev_guide/writing_extractor_plugins` for complete guidance on using extensions in your own extractors.
 
+(extract-cli)=
+## Command-Line Extraction
+
+The `nexuslims extract` command lets you extract metadata and generate preview
+thumbnails for individual files directly from the terminal, without writing any
+Python code and without a full NexusLIMS deployment.
+
+### Quick reference
+
+```bash
+# Print extracted metadata as JSON
+nexuslims extract /path/to/file.dm4
+
+# Extract metadata only (skip preview generation)
+nexuslims extract --no-preview /path/to/file.msa
+
+# Generate a preview thumbnail only, saved to a specific path
+nexuslims extract --no-metadata --preview-path /tmp/thumb.png /path/to/file.tif
+
+# Also write the JSON sidecar to the NexusLIMS data directory
+nexuslims extract --write /path/to/file.dm4
+
+# Overwrite existing outputs
+nexuslims extract --write --overwrite /path/to/file.dm4
+
+# Pipe metadata into jq
+nexuslims extract /path/to/file.dm4 | jq '.nx_meta.DatasetType'
+```
+
+By default:
+
+- Metadata is printed to stdout as pretty-printed JSON.
+- A preview thumbnail is generated and written alongside the input file as
+  `<filename>.thumb.png`; its path is printed to stderr.
+- The metadata JSON is **not** written to disk unless `--write` / `-w` is
+  given. With `--write`, the JSON is written alongside the input file as
+  `<filename>.json` (or to the corresponding path under `NX_DATA_PATH` if the
+  file is under `NX_INSTRUMENT_DATA_PATH`).
+- Use `-p / --preview-path` to control where the thumbnail is saved.
+
+For full option documentation see {ref}`nexuslims extract <extract-cli-ref>` in
+the CLI reference.
+
 (standalone-extractor-usage)=
 ## Standalone Library Usage
 

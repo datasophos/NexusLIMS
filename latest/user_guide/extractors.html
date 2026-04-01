@@ -1331,6 +1331,47 @@ percentile clipping</p></li>
 <p>See <a class="reference internal" href="../dev_guide/nexuslims_internal_schema.html#metadata-helper-functions"><span class="std std-ref">Helper Functions</span></a> for the <code class="docutils literal notranslate"><span class="pre">add_to_extensions()</span></code> helper function and <a class="reference internal" href="../dev_guide/writing_extractor_plugins.html"><span class="doc">Writing Extractor Plugins</span></a> for complete guidance on using extensions in your own extractors.</p>
 </section>
 </section>
+<section id="command-line-extraction">
+<span id="extract-cli"></span><h2>Command-Line Extraction<a class="headerlink" href="#command-line-extraction" title="Link to this heading">#</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">extract</span></code> command lets you extract metadata and generate preview
+thumbnails for individual files directly from the terminal, without writing any
+Python code and without a full NexusLIMS deployment.</p>
+<section id="id9">
+<h3>Quick reference<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print extracted metadata as JSON</span>
+nexuslims<span class="w"> </span>extract<span class="w"> </span>/path/to/file.dm4
+
+<span class="c1"># Extract metadata only (skip preview generation)</span>
+nexuslims<span class="w"> </span>extract<span class="w"> </span>--no-preview<span class="w"> </span>/path/to/file.msa
+
+<span class="c1"># Generate a preview thumbnail only, saved to a specific path</span>
+nexuslims<span class="w"> </span>extract<span class="w"> </span>--no-metadata<span class="w"> </span>--preview-path<span class="w"> </span>/tmp/thumb.png<span class="w"> </span>/path/to/file.tif
+
+<span class="c1"># Also write the JSON sidecar to the NexusLIMS data directory</span>
+nexuslims<span class="w"> </span>extract<span class="w"> </span>--write<span class="w"> </span>/path/to/file.dm4
+
+<span class="c1"># Overwrite existing outputs</span>
+nexuslims<span class="w"> </span>extract<span class="w"> </span>--write<span class="w"> </span>--overwrite<span class="w"> </span>/path/to/file.dm4
+
+<span class="c1"># Pipe metadata into jq</span>
+nexuslims<span class="w"> </span>extract<span class="w"> </span>/path/to/file.dm4<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.nx_meta.DatasetType&#39;</span>
+</pre></div>
+</div>
+<p>By default:</p>
+<ul class="simple">
+<li><p>Metadata is printed to stdout as pretty-printed JSON.</p></li>
+<li><p>A preview thumbnail is generated and written alongside the input file as
+<code class="docutils literal notranslate"><span class="pre">&lt;filename&gt;.thumb.png</span></code>; its path is printed to stderr.</p></li>
+<li><p>The metadata JSON is <strong>not</strong> written to disk unless <code class="docutils literal notranslate"><span class="pre">--write</span></code> / <code class="docutils literal notranslate"><span class="pre">-w</span></code> is
+given. With <code class="docutils literal notranslate"><span class="pre">--write</span></code>, the JSON is written alongside the input file as
+<code class="docutils literal notranslate"><span class="pre">&lt;filename&gt;.json</span></code> (or to the corresponding path under <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code> if the
+file is under <code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code>).</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">/</span> <span class="pre">--preview-path</span></code> to control where the thumbnail is saved.</p></li>
+</ul>
+<p>For full option documentation see <a class="reference internal" href="cli_reference.html#extract-cli-ref"><span class="std std-ref">nexuslims extract</span></a> in
+the CLI reference.</p>
+</section>
+</section>
 <section id="standalone-library-usage">
 <span id="standalone-extractor-usage"></span><h2>Standalone Library Usage<a class="headerlink" href="#standalone-library-usage" title="Link to this heading">#</a></h2>
 <p>The NexusLIMS extractor system can be used as a <strong>standalone Python library</strong>
@@ -1592,6 +1633,10 @@ the graceful-degradation behaviour when no config is present.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extraction-process">Extraction Process</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#expected-metadata-structure">Expected Metadata Structure</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extension-fields-in-practice">Extension Fields in Practice</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#command-line-extraction">Command-Line Extraction</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Quick reference</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standalone-library-usage">Standalone Library Usage</a><ul class="nav section-nav flex-column">
