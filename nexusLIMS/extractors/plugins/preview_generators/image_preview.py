@@ -1,11 +1,11 @@
 """Image file preview generator."""
 
 import logging
-import shutil
 from pathlib import Path
 from typing import ClassVar, Tuple
 
 import matplotlib.pyplot as plt
+import numpy as np
 from PIL import Image, UnidentifiedImageError
 
 from nexusLIMS.extractors.base import ExtractionContext
@@ -72,12 +72,27 @@ def image_to_square_thumbnail(f: Path, out_path: Path, output_size: int) -> bool
     bool
         Whether a preview was generated
     """
-    shutil.copy(f, out_path)
     try:
+        image = Image.open(f)
+        # For high-bit-depth images (e.g. uint16 TIFFs from scientific instruments),
+        # apply percentile contrast stretching so the full 8-bit range is used.
+        # Without this, low-contrast features (e.g. ECCI patterns) disappear entirely.
+        if image.mode in ("I", "I;16", "I;16B") or (
+            hasattr(image, "mode") and "16" in str(image.mode)
+        ):
+            arr = np.array(image, dtype=np.float32)
+            lo, hi = np.nanpercentile(arr, [2, 98])
+            if hi > lo:
+                arr = np.clip((arr - lo) / (hi - lo) * 255, 0, 255).astype(np.uint8)
+            else:
+                arr = np.zeros_like(arr, dtype=np.uint8)
+            image = Image.fromarray(arr, mode="L")
+        image.save(out_path)
         _pad_to_square(out_path, output_size)
     except UnidentifiedImageError as exc:
         _logger.warning("no preview generated; PIL error text: %s", str(exc))
-        out_path.unlink()
+        if out_path.exists():
+            out_path.unlink()
         return False
 
     return True

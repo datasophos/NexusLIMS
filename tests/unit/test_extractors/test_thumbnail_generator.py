@@ -11,6 +11,7 @@ import numpy as np
 import pytest
 from hyperspy.io import load as hs_load
 from hyperspy.misc.utils import stack as hs_stack
+from PIL import Image as PILImage
 
 from nexusLIMS.extractors.plugins.preview_generators import (
     hyperspy_preview,
@@ -383,6 +384,41 @@ class TestThumbnailGenerator:  # pylint: disable=too-many-public-methods
         )
         image_to_square_thumbnail(image_thumb_source_tif, output_path, 500)
         assert_images_equal(baseline_thumb_tif, output_path)
+
+    def test_16bit_tif_contrast_stretch(self, tmp_path, output_path):
+        """Test 16-bit TIFFs get percentile contrast stretching applied.
+
+        Without contrast stretching, PIL would naively truncate uint16 values to
+        8-bit (e.g. 40000 becomes ~156 via 40000/256). With the stretch applied,
+        the bright pixels are mapped to 255, confirming the stretch ran.
+        """
+        arr = np.zeros((100, 100), dtype=np.uint16)
+        arr[10:90, 10:90] = 40000  # bright outer region
+        arr[20:80, 20:80] = 1000  # intermediate inner region
+        tif_path = tmp_path / "test_16bit.tif"
+        PILImage.fromarray(arr).save(tif_path)
+
+        result = image_to_square_thumbnail(tif_path, output_path, 500)
+
+        assert result is True
+        assert output_path.exists()
+        out_arr = np.array(PILImage.open(output_path).convert("L"))
+        # Without stretch, 40000 would truncate to ~156; with stretch it maps to 255
+        assert out_arr.max() == 255
+        # Intermediate values (1000) should appear as non-zero after stretching
+        assert out_arr.mean() > 1
+
+    def test_unidentified_image_removes_partial_output(
+        self, unreadable_image_file, output_path
+    ):
+        """Test that an existing output file is removed on UnidentifiedImageError."""
+        output_path.write_bytes(b"partial output")
+        assert output_path.exists()
+
+        result = image_to_square_thumbnail(unreadable_image_file, output_path, 500)
+
+        assert result is False
+        assert not output_path.exists()
 
     def test_assert_image_fail(self, image_thumb_source_tif, quanta_test_file):
         """Sanity check that for images that are not the same."""
