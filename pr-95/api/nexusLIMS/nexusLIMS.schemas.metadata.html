@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-95" />
-    <meta name="docbuild:last-update" content="Mar, 31, 2026"/>
+    <meta name="docbuild:last-update" content="Apr, 01, 2026"/>
   </head>
   
   
@@ -718,7 +718,7 @@ metadata extraction occurred.</p>
 <dd><p><strong>Type:</strong> str</p>
 <p>Fully qualified Python module name of the extractor that processed
 this file. Examples: <code class="docutils literal notranslate"><span class="pre">'nexusLIMS.extractors.plugins.digital_micrograph'</span></code>,
-<code class="docutils literal notranslate"><span class="pre">'nexusLIMS.extractors.plugins.quanta_tif'</span></code></p>
+<code class="docutils literal notranslate"><span class="pre">'nexusLIMS.extractors.plugins.fei_tif'</span></code></p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -872,6 +872,20 @@ attribute.</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.NexusMetadata.acceleration_voltage">
+<span class="sig-name descname"><span class="pre">acceleration_voltage</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.acceleration_voltage" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.NexusMetadata.stage_position">
+<span class="sig-name descname"><span class="pre">stage_position</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.stage_position" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> nexusLIMS.schemas.metadata.StagePosition | None</p>
+<p>Stage coordinates and tilt angles. See <a class="reference internal" href="#nexusLIMS.schemas.metadata.StagePosition" title="nexusLIMS.schemas.metadata.StagePosition"><code class="xref py py-class docutils literal notranslate"><span class="pre">StagePosition</span></code></a> for details.
+Preferred units: x/y in µm, z in mm, angles in degrees</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.NexusMetadata.data_dimensions">
 <span class="sig-name descname"><span class="pre">data_dimensions</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.NexusMetadata.data_dimensions" title="Link to this definition">#</a></dt>
 <dd><p><strong>Type:</strong> str | None</p>
@@ -966,14 +980,6 @@ Uses Pint Quantity objects for all physical measurements.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.acceleration_voltage">
-<span class="sig-name descname"><span class="pre">acceleration_voltage</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.acceleration_voltage" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
-<p>Accelerating voltage of the electron/ion beam.
-Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.working_distance">
 <span class="sig-name descname"><span class="pre">working_distance</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.working_distance" title="Link to this definition">#</a></dt>
 <dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
@@ -1062,14 +1068,6 @@ Preferred unit: microsecond (µs). EM Glossary: EMG_00000015</p>
 Examples: “BM-UltraScan”, “K2 Summit”</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.ImageMetadata.stage_position">
-<span class="sig-name descname"><span class="pre">stage_position</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.ImageMetadata.stage_position" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> nexusLIMS.schemas.metadata.StagePosition | None</p>
-<p>Stage coordinates and tilt angles. See <a class="reference internal" href="#nexusLIMS.schemas.metadata.StagePosition" title="nexusLIMS.schemas.metadata.StagePosition"><code class="xref py py-class docutils literal notranslate"><span class="pre">StagePosition</span></code></a> for details.
-Preferred units: x/y in µm, z in mm, angles in degrees</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="py class">
@@ -1153,6 +1151,20 @@ Preferred unit: second (s). EM Glossary: EMG_00000055</p>
 <span class="sig-name descname"><span class="pre">takeoff_angle</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.takeoff_angle" title="Link to this definition">#</a></dt>
 <dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
 <p>X-ray takeoff angle. Preferred unit: degree (°)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumMetadata.acquisition_device">
+<span class="sig-name descname"><span class="pre">acquisition_device</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.acquisition_device" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> str | None</p>
+<p>Acquisition device or camera name. Examples: “US1000FT 1”, “GIF Quantum”.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.SpectrumMetadata.horizontal_field_width">
+<span class="sig-name descname"><span class="pre">horizontal_field_width</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.horizontal_field_width" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
+<p>Width of the scanned area. Preferred unit: micrometer (µm)</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1258,14 +1270,6 @@ Preferred unit: milliradian (mrad). EM Glossary: EMG_00000010</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.DiffractionMetadata.acceleration_voltage">
-<span class="sig-name descname"><span class="pre">acceleration_voltage</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.acceleration_voltage" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> <a class="reference internal" href="nexusLIMS.schemas.pint_types.html#nexusLIMS.schemas.pint_types.PintQuantity" title="nexusLIMS.schemas.pint_types.PintQuantity"><code class="xref py py-data docutils literal notranslate"><span class="pre">PintQuantity</span></code></a> | None</p>
-<p>Accelerating voltage (also relevant for diffraction).
-Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.schemas.metadata.DiffractionMetadata.acquisition_device">
 <span class="sig-name descname"><span class="pre">acquisition_device</span></span><a class="headerlink" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.acquisition_device" title="Link to this definition">#</a></dt>
 <dd><p><strong>Type:</strong> str | None</p>
@@ -1352,6 +1356,8 @@ Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.NexusMetadata.creation_time"><code class="docutils literal notranslate"><span class="pre">NexusMetadata.creation_time</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.NexusMetadata.data_type"><code class="docutils literal notranslate"><span class="pre">NexusMetadata.data_type</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.NexusMetadata.dataset_type"><code class="docutils literal notranslate"><span class="pre">NexusMetadata.dataset_type</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.NexusMetadata.acceleration_voltage"><code class="docutils literal notranslate"><span class="pre">NexusMetadata.acceleration_voltage</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.NexusMetadata.stage_position"><code class="docutils literal notranslate"><span class="pre">NexusMetadata.stage_position</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.NexusMetadata.data_dimensions"><code class="docutils literal notranslate"><span class="pre">NexusMetadata.data_dimensions</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.NexusMetadata.instrument_id"><code class="docutils literal notranslate"><span class="pre">NexusMetadata.instrument_id</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.NexusMetadata.warnings"><code class="docutils literal notranslate"><span class="pre">NexusMetadata.warnings</span></code></a></li>
@@ -1364,7 +1370,6 @@ Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</p>
 </li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.ImageMetadata"><code class="docutils literal notranslate"><span class="pre">ImageMetadata</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.ImageMetadata.dataset_type"><code class="docutils literal notranslate"><span class="pre">ImageMetadata.dataset_type</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.ImageMetadata.acceleration_voltage"><code class="docutils literal notranslate"><span class="pre">ImageMetadata.acceleration_voltage</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.ImageMetadata.working_distance"><code class="docutils literal notranslate"><span class="pre">ImageMetadata.working_distance</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.ImageMetadata.beam_current"><code class="docutils literal notranslate"><span class="pre">ImageMetadata.beam_current</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.ImageMetadata.emission_current"><code class="docutils literal notranslate"><span class="pre">ImageMetadata.emission_current</span></code></a></li>
@@ -1377,7 +1382,6 @@ Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.ImageMetadata.scan_rotation"><code class="docutils literal notranslate"><span class="pre">ImageMetadata.scan_rotation</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.ImageMetadata.detector_type"><code class="docutils literal notranslate"><span class="pre">ImageMetadata.detector_type</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.ImageMetadata.acquisition_device"><code class="docutils literal notranslate"><span class="pre">ImageMetadata.acquisition_device</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.ImageMetadata.stage_position"><code class="docutils literal notranslate"><span class="pre">ImageMetadata.stage_position</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.SpectrumMetadata"><code class="docutils literal notranslate"><span class="pre">SpectrumMetadata</span></code></a><ul class="nav section-nav flex-column">
@@ -1390,6 +1394,8 @@ Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.azimuthal_angle"><code class="docutils literal notranslate"><span class="pre">SpectrumMetadata.azimuthal_angle</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.elevation_angle"><code class="docutils literal notranslate"><span class="pre">SpectrumMetadata.elevation_angle</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.takeoff_angle"><code class="docutils literal notranslate"><span class="pre">SpectrumMetadata.takeoff_angle</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.acquisition_device"><code class="docutils literal notranslate"><span class="pre">SpectrumMetadata.acquisition_device</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.horizontal_field_width"><code class="docutils literal notranslate"><span class="pre">SpectrumMetadata.horizontal_field_width</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.SpectrumMetadata.elements"><code class="docutils literal notranslate"><span class="pre">SpectrumMetadata.elements</span></code></a></li>
 </ul>
 </li>
@@ -1404,7 +1410,6 @@ Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</p>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.dataset_type"><code class="docutils literal notranslate"><span class="pre">DiffractionMetadata.dataset_type</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.camera_length"><code class="docutils literal notranslate"><span class="pre">DiffractionMetadata.camera_length</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.convergence_angle"><code class="docutils literal notranslate"><span class="pre">DiffractionMetadata.convergence_angle</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.acceleration_voltage"><code class="docutils literal notranslate"><span class="pre">DiffractionMetadata.acceleration_voltage</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.schemas.metadata.DiffractionMetadata.acquisition_device"><code class="docutils literal notranslate"><span class="pre">DiffractionMetadata.acquisition_device</span></code></a></li>
 </ul>
 </li>
