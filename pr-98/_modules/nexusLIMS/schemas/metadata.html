@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-98" />
-    <meta name="docbuild:last-update" content="Mar, 31, 2026"/>
+    <meta name="docbuild:last-update" content="Apr, 01, 2026"/>
   </head>
   
   
@@ -1038,7 +1038,7 @@ window.addEventListener("load", load);
     <span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Fully qualified Python module name of the extractor that processed</span>
 <span class="sd">    this file. Examples: `&#39;nexusLIMS.extractors.plugins.digital_micrograph&#39;`,</span>
-<span class="sd">    `&#39;nexusLIMS.extractors.plugins.quanta_tif&#39;`&quot;&quot;&quot;</span>
+<span class="sd">    `&#39;nexusLIMS.extractors.plugins.fei_tif&#39;`&quot;&quot;&quot;</span>
 
     <span class="n">version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="o">...</span><span class="p">,</span>
@@ -1212,6 +1212,21 @@ window.addEventListener("load", load);
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Common optional fields</span>
+    <span class="n">acceleration_voltage</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
+
+    <span class="n">stage_position</span><span class="p">:</span> <span class="n">StagePosition</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">None</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stage coordinates and tilt angles&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stage coordinates and tilt angles. See :class:`StagePosition` for details.</span>
+<span class="sd">    Preferred units: x/y in µm, z in mm, angles in degrees</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Accelerating voltage of the electron/ion beam.</span>
+<span class="sd">    Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">data_dimensions</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">alias</span><span class="o">=</span><span class="s2">&quot;Data Dimensions&quot;</span><span class="p">,</span>
@@ -1344,12 +1359,6 @@ window.addEventListener("load", load);
     <span class="p">)</span>
 
     <span class="c1"># Image-specific fields (using EM Glossary names)</span>
-    <span class="n">acceleration_voltage</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Accelerating voltage of the electron/ion beam.</span>
-<span class="sd">    Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">working_distance</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;working_distance&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Distance between final lens and sample surface.</span>
@@ -1399,15 +1408,6 @@ window.addEventListener("load", load);
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Name of the acquisition device or camera.</span>
 <span class="sd">    Examples: &quot;BM-UltraScan&quot;, &quot;K2 Summit&quot;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">stage_position</span><span class="p">:</span> <span class="n">StagePosition</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stage coordinates and tilt angles&quot;</span><span class="p">,</span>
-    <span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Stage coordinates and tilt angles. See :class:`StagePosition` for details.</span>
-<span class="sd">    Preferred units: x/y in µm, z in mm, angles in degrees</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
@@ -1470,6 +1470,12 @@ window.addEventListener("load", load);
 
     <span class="n">takeoff_angle</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;takeoff_angle&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;X-ray takeoff angle. Preferred unit: degree (°)&quot;&quot;&quot;</span>
+
+    <span class="n">acquisition_device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acquisition_device&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Acquisition device or camera name. Examples: &quot;US1000FT 1&quot;, &quot;GIF Quantum&quot;.&quot;&quot;&quot;</span>
+
+    <span class="n">horizontal_field_width</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;horizontal_field_width&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Width of the scanned area. Preferred unit: micrometer (µm)&quot;&quot;&quot;</span>
 
     <span class="n">elements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
@@ -1577,12 +1583,6 @@ window.addEventListener("load", load);
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convergence angle of the electron beam.</span>
 <span class="sd">    Preferred unit: milliradian (mrad). EM Glossary: EMG_00000010</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">acceleration_voltage</span><span class="p">:</span> <span class="n">PintQuantity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Accelerating voltage (also relevant for diffraction).</span>
-<span class="sd">    Preferred unit: kilovolt (kV). EM Glossary: EMG_00000004</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">acquisition_device</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">emg_field</span><span class="p">(</span><span class="s2">&quot;acquisition_device&quot;</span><span class="p">)</span>
