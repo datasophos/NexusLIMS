@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-99" />
-    <meta name="docbuild:last-update" content="Mar, 31, 2026"/>
+    <meta name="docbuild:last-update" content="Apr, 01, 2026"/>
   </head>
   
   
@@ -826,6 +826,7 @@ window.addEventListener("load", load);
   <h1>Source code for nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;HyperSpy-based preview generator for microscopy data files.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">glob</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_glob</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">textwrap</span>
@@ -1666,6 +1667,8 @@ window.addEventListener("load", load);
         <span class="s2">&quot;dm4&quot;</span><span class="p">,</span>
         <span class="s2">&quot;ser&quot;</span><span class="p">,</span>
         <span class="s2">&quot;emi&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;msa&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;spc&quot;</span><span class="p">,</span>
     <span class="p">}</span>
 
 <div class="viewcode-block" id="HyperSpyPreviewGenerator.supports">
@@ -1711,8 +1714,14 @@ window.addEventListener("load", load);
 
             <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Generating HyperSpy preview for: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">)</span>
 
-            <span class="c1"># Load the signal</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">),</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># Load the signal; some formats (e.g. msa) don&#39;t support lazy loading.</span>
+            <span class="c1"># Use glob.escape() so bracket characters in filenames (e.g. &quot;[3][4]&quot;)</span>
+            <span class="c1"># are not misinterpreted as glob character classes by HyperSpy&#39;s loader.</span>
+            <span class="n">escaped</span> <span class="o">=</span> <span class="n">_glob</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">context</span><span class="o">.</span><span class="n">file_path</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">escaped</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">escaped</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
             <span class="c1"># Handle multi-signal files</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
