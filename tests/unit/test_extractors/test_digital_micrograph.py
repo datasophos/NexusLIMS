@@ -682,6 +682,35 @@ class TestDigitalMicrographExtractor:
         assert "Profile extension field injection" in caplog.text
         assert "failed" in caplog.text
 
+    def test_spectrum_image_unparseable_time_skips_duration(self):
+        """Test that unparseable acquisition times do not produce a duration.
+
+        When "Start time" and "End time" values are present but cannot be
+        parsed by any of the known time formats, the function should skip
+        setting Acquisition Duration rather than raising an error.
+        """
+        mdict = {
+            "ImageList": {
+                "TagGroup0": {
+                    "ImageTags": {
+                        "SI": {
+                            "Acquisition": {
+                                "Start time": "not-a-time",
+                                "End time": "also-not-a-time",
+                            },
+                        },
+                    },
+                },
+            },
+            "nx_meta": {"DatasetType": "Spectrum"},
+        }
+
+        result = digital_micrograph.parse_dm3_spectrum_image_info(mdict)
+
+        # Should not have added Acquisition Duration
+        si_meta = result["nx_meta"].get("Spectrum Imaging", {})
+        assert "Acquisition Duration" not in si_meta
+
     def test_quantity_conversion_failure_keeps_original_value(self):
         """Test that failed unit conversions keep original value w/ original field name.
 

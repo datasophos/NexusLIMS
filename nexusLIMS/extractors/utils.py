@@ -154,6 +154,9 @@ def _set_eels_processing(mdict, pre_path):
             # v will be dictionaries specifying the process step
             # AlignSIByPeak, DataPicker, SpectrumCalibrate,
             # Compute Thickness, Background Removal, Signal Integration
+            # Some TagGroups (e.g. Summing) don't have an Operation key
+            if "Operation" not in v:
+                continue
             operation = v["Operation"]
             param = v["Parameters"]
             if operation == "AlignSIByPeak":

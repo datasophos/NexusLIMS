@@ -129,7 +129,7 @@ class DM3Extractor:
         return metadata_list
 
 
-def get_dm3_metadata(filename: Path, instrument=None):
+def get_dm3_metadata(filename: Path, instrument=None):  # noqa: PLR0912
     """
     Get metadata from a dm3 or dm4 file.
 
@@ -232,8 +232,10 @@ def get_dm3_metadata(filename: Path, instrument=None):
             # tg_name should be 'TagGroup0', 'TagGroup1', etc.
             keys = tag.keys()
             # We want to keep 'ImageTags' and 'Name', so remove from list
-            keys.remove("ImageTags")
-            keys.remove("Name")
+            # (not all dm3/dm4 files have a 'Name' key)
+            for keep in ("ImageTags", "Name"):
+                if keep in keys:
+                    keys.remove(keep)
             for k in keys:
                 # k should be in ['ImageData', 'UniqueID']
                 m_tree = remove_dtb_element(  # noqa: PLW2901
@@ -917,7 +919,7 @@ def parse_dm3_eds_info(mdict):
     return mdict
 
 
-def parse_dm3_spectrum_image_info(mdict):
+def parse_dm3_spectrum_image_info(mdict):  # noqa: PLR0912
     """
     Parse "spectrum image" information from the metadata.
 
@@ -1002,8 +1004,16 @@ def parse_dm3_spectrum_image_info(mdict):
     start_val = try_getting_dict_value(mdict, [*base, "Acquisition", "Start time"])
     end_val = try_getting_dict_value(mdict, [*base, "Acquisition", "End time"])
     if start_val is not None and end_val is not None:
-        start_dt = dt.strptime(start_val, "%I:%M:%S %p").replace(tzinfo=UTC)
-        end_dt = dt.strptime(end_val, "%I:%M:%S %p").replace(tzinfo=UTC)
+        for fmt in ("%I:%M:%S %p", "%H:%M:%S"):
+            try:
+                start_dt = dt.strptime(start_val, fmt).replace(tzinfo=UTC)
+                end_dt = dt.strptime(end_val, fmt).replace(tzinfo=UTC)
+                break
+            except ValueError:
+                continue
+        else:
+            start_dt = end_dt = None
+    if start_val is not None and end_val is not None and start_dt is not None:
         duration = (end_dt - start_dt).seconds  # Calculate acquisition duration
         with contextlib.suppress(ValueError, TypeError):
             duration = ureg.Quantity(duration, "second")
