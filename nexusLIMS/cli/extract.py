@@ -18,7 +18,8 @@ Usage
     # Save preview to a specific path
     nexuslims extract --preview-path /tmp/preview.png /path/to/file.dm4
 
-    # Write metadata JSON to disk (mirrors normal record-building behavior)
+    # Write metadata JSON alongside the file (or to NX_DATA_PATH if the file
+    # is under NX_INSTRUMENT_DATA_PATH)
     nexuslims extract --write /path/to/file.dm4
 """
 
@@ -55,9 +56,8 @@ _logger = logging.getLogger(__name__)
     type=click.Path(dir_okay=False, path_type=Path),
     default=None,
     help=(
-        "Path to write the preview image. If omitted, prints the path of the "
-        "generated preview (written alongside the file in the NexusLIMS data "
-        "directory structure)."
+        "Path to write the preview image. If omitted, the preview is written "
+        "alongside the input file as '<filename>.thumb.png'."
     ),
 )
 @click.option(
@@ -66,7 +66,9 @@ _logger = logging.getLogger(__name__)
     is_flag=True,
     default=False,
     help=(
-        "Write metadata JSON to disk (in the NexusLIMS data directory structure). "
+        "Write metadata JSON to disk alongside the input file as '<filename>.json'. "
+        "If the file is under NX_INSTRUMENT_DATA_PATH, the JSON is written to the "
+        "corresponding location under NX_DATA_PATH instead. "
         "By default, metadata is only printed to stdout."
     ),
 )
