@@ -23,8 +23,8 @@ nexusLIMS.exporters.destinations
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.exporters.base
 nexusLIMS.exporters.strategies
+nexusLIMS.exporters.base
 nexusLIMS.exporters.registry
 ```
 

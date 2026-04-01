@@ -15,8 +15,8 @@
 :maxdepth: 1
 
 nexusLIMS.schemas.units
-nexusLIMS.schemas.em_glossary
 nexusLIMS.schemas.metadata
 nexusLIMS.schemas.pint_types
 nexusLIMS.schemas.activity
+nexusLIMS.schemas.em_glossary
 ```

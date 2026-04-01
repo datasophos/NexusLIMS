@@ -15,6 +15,6 @@
 :maxdepth: 1
 
 nexusLIMS.tui.apps.instruments.screens
-nexusLIMS.tui.apps.instruments.app
 nexusLIMS.tui.apps.instruments.validators
+nexusLIMS.tui.apps.instruments.app
 ```

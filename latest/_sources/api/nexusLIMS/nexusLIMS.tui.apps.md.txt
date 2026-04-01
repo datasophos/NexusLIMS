@@ -14,8 +14,8 @@
 :titlesonly:
 :maxdepth: 3
 
-nexusLIMS.tui.apps.config
 nexusLIMS.tui.apps.instruments
+nexusLIMS.tui.apps.config
 ```
 
 ## Submodules

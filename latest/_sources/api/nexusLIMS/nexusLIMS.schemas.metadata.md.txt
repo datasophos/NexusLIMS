@@ -270,6 +270,28 @@ Bases: {py:obj}`pydantic.BaseModel`
 
 ````
 
+````{py:attribute} acceleration_voltage
+:canonical: nexusLIMS.schemas.metadata.NexusMetadata.acceleration_voltage
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
+
+```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.acceleration_voltage
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} stage_position
+:canonical: nexusLIMS.schemas.metadata.NexusMetadata.stage_position
+
+**Type:** nexusLIMS.schemas.metadata.StagePosition | None
+
+```{autodoc2-docstring} nexusLIMS.schemas.metadata.NexusMetadata.stage_position
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:attribute} data_dimensions
 :canonical: nexusLIMS.schemas.metadata.NexusMetadata.data_dimensions
 
@@ -371,17 +393,6 @@ Bases: {py:obj}`nexusLIMS.schemas.metadata.NexusMetadata`
 **Type:** typing.Literal[Image]
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.dataset_type
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-````{py:attribute} acceleration_voltage
-:canonical: nexusLIMS.schemas.metadata.ImageMetadata.acceleration_voltage
-
-**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
-
-```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.acceleration_voltage
 :parser: autodoc2_docstrings_parser
 ```
 
@@ -519,17 +530,6 @@ Bases: {py:obj}`nexusLIMS.schemas.metadata.NexusMetadata`
 
 ````
 
-````{py:attribute} stage_position
-:canonical: nexusLIMS.schemas.metadata.ImageMetadata.stage_position
-
-**Type:** nexusLIMS.schemas.metadata.StagePosition | None
-
-```{autodoc2-docstring} nexusLIMS.schemas.metadata.ImageMetadata.stage_position
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
 `````
 
 `````{py:class} SpectrumMetadata(/, **data: typing.Any)
@@ -640,6 +640,28 @@ Bases: {py:obj}`nexusLIMS.schemas.metadata.NexusMetadata`
 
 ````
 
+````{py:attribute} acquisition_device
+:canonical: nexusLIMS.schemas.metadata.SpectrumMetadata.acquisition_device
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata.acquisition_device
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} horizontal_field_width
+:canonical: nexusLIMS.schemas.metadata.SpectrumMetadata.horizontal_field_width
+
+**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
+
+```{autodoc2-docstring} nexusLIMS.schemas.metadata.SpectrumMetadata.horizontal_field_width
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:attribute} elements
 :canonical: nexusLIMS.schemas.metadata.SpectrumMetadata.elements
 
@@ -743,17 +765,6 @@ Bases: {py:obj}`nexusLIMS.schemas.metadata.NexusMetadata`
 **Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
 
 ```{autodoc2-docstring} nexusLIMS.schemas.metadata.DiffractionMetadata.convergence_angle
-:parser: autodoc2_docstrings_parser
-```
-
-````
-
-````{py:attribute} acceleration_voltage
-:canonical: nexusLIMS.schemas.metadata.DiffractionMetadata.acceleration_voltage
-
-**Type:** {py:data}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>` | None
-
-```{autodoc2-docstring} nexusLIMS.schemas.metadata.DiffractionMetadata.acceleration_voltage
 :parser: autodoc2_docstrings_parser
 ```
 
