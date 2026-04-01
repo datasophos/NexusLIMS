@@ -705,10 +705,10 @@ uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </sp
 uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/integration
 
 <span class="c1"># Run specific test file with mpl comparison</span>
-uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>--mpl<span class="w"> </span>--mpl-baseline-path<span class="o">=</span>tests/unit/files/figs<span class="w"> </span>tests/unit/test_extractors/test_quanta_tif.py
+uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>--mpl<span class="w"> </span>--mpl-baseline-path<span class="o">=</span>tests/unit/files/figs<span class="w"> </span>tests/unit/test_extractors/test_fei_tif.py
 
 <span class="c1"># Run specific test</span>
-uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/unit/test_extractors/test_quanta_tif.py::TestQuantaTifExtractor::test_extraction
+uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/unit/test_extractors/test_fei_tif.py::TestFeiTifExtractor::test_extraction
 
 <span class="c1"># Run with HTML coverage report</span>
 uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>--cov<span class="o">=</span>nexusLIMS<span class="w"> </span>--cov-report<span class="o">=</span>html<span class="w"> </span>tests/unit

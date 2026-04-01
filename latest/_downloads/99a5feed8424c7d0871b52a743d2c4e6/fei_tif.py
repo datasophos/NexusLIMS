@@ -41,7 +41,7 @@ the standard INI metadata.
 _logger = logging.getLogger(__name__)
 
 
-class QuantaTiffExtractor:
+class FeiTiffExtractor:
     """
     Extractor for FEI/Thermo Fisher TIFF files.
 
@@ -51,7 +51,7 @@ class QuantaTiffExtractor:
     attempting extraction.
     """
 
-    name = "quanta_tif_extractor"
+    name = "fei_tif_extractor"
     priority = 100
     supported_extensions: ClassVar = {"tif", "tiff"}
 
@@ -83,9 +83,15 @@ class QuantaTiffExtractor:
                 # Check for FEI custom tag
                 fei_metadata = img.tag_v2.get(FEI_TIFF_TAG)
                 if fei_metadata is not None:
-                    # Verify the metadata starts with FEI-style markers
+                    # Verify the metadata contains FEI-style markers:
+                    # either INI-style sections ([User]/[Beam]) or
+                    # the flat XML format used by FEI TEM software (<Root>)
                     metadata_str = str(fei_metadata)
-                    if "[User]" in metadata_str or "[Beam]" in metadata_str:
+                    if (
+                        "[User]" in metadata_str
+                        or "[Beam]" in metadata_str
+                        or "<Root>" in metadata_str
+                    ):
                         return True
         except Exception as e:
             _logger.debug(
@@ -139,7 +145,22 @@ class QuantaTiffExtractor:
         _set_instr_name_and_time(mdict, filename)
 
         try:
-            # Extract metadata from TIFF tags/binary
+            # Check for flat <Root> XML format (FEI TEM software) before
+            # attempting INI-style extraction
+            raw_tag = None
+            with contextlib.suppress(Exception), Image.open(filename) as img:
+                raw_tag = img.tag_v2.get(FEI_TIFF_TAG)
+
+            if raw_tag is not None and "<Root>" in str(raw_tag):
+                _logger.debug("Detected FEI <Root> XML format in %s", filename)
+                xml_str = raw_tag if isinstance(raw_tag, str) else str(raw_tag)
+                parsed = self._parse_root_xml_tag(xml_str)
+                mdict["nx_meta"].update(parsed["nx_meta"])
+                _set_instr_name_and_time(mdict, filename)
+                mdict["nx_meta"] = sort_dict(mdict["nx_meta"])
+                return [mdict]
+
+            # Extract metadata from TIFF tags/binary (INI format)
             metadata_str, xml_metadata = self._extract_metadata_from_tiff_tag(filename)
 
             if not metadata_str:
@@ -353,7 +374,7 @@ class QuantaTiffExtractor:
             if element.text and element.text.strip():
                 value = element.text
             else:
-                value = QuantaTiffExtractor._xml_el_to_dict(element)
+                value = FeiTiffExtractor._xml_el_to_dict(element)
             if key in result:
                 if isinstance(result[key], list):
                     result[key].append(value)  # pragma: no cover
@@ -425,6 +446,99 @@ class QuantaTiffExtractor:
             metadata_to_return = metadata_str
 
         return metadata_to_return
+
+    @staticmethod
+    def _parse_root_xml_tag(xml_str: str) -> dict:
+        """Parse FEI TEM ``<Root>`` XML TIFF tag into an nx_meta dict.
+
+        Handles the flat
+        ``<Root><Data><Label>...</Label><Value>...</Value></Data>...</Root>``
+        XML format used by FEI TEM software (e.g. Tecnai).
+
+        Parameters
+        ----------
+        xml_str
+            Raw XML string from TIFF tag 34682
+
+        Returns
+        -------
+        dict
+            Metadata dict with ``nx_meta`` populated from the XML fields
+        """
+        mdict: dict = {"nx_meta": {"warnings": []}}
+
+        try:
+            root = etree.fromstring(
+                xml_str if isinstance(xml_str, bytes) else xml_str.encode()
+            )
+        except Exception as e:
+            _logger.warning("Failed to parse <Root> XML tag: %s", e)
+            return mdict
+
+        # Build a flat label → (value, unit) map
+        fields: dict[str, tuple[str, str]] = {}
+        for data in root.findall("Data"):
+            label = (data.findtext("Label") or "").strip()
+            value = (data.findtext("Value") or "").strip()
+            unit = (data.findtext("Unit") or "").strip()
+            if label:
+                fields[label] = (value, unit)
+
+        def _qty(label: str):
+            """Return a pint Quantity for a label, or None."""
+            if label not in fields:
+                return None
+            val_str, unit_str = fields[label]
+            with contextlib.suppress(Exception):
+                return (
+                    ureg.Quantity(float(val_str), unit_str)
+                    if unit_str
+                    else float(val_str)
+                )
+            return val_str
+
+        nx = mdict["nx_meta"]
+
+        # Determine dataset type from Mode
+        mode = fields.get("Mode", ("", ""))[0].strip()
+        if "Diffraction" in mode:
+            nx["DatasetType"] = "Diffraction"
+            nx["Data Type"] = "TEM_Diffraction"
+        else:
+            nx["DatasetType"] = "Image"
+            nx["Data Type"] = "TEM_Imaging"
+
+        # Core EM Glossary fields
+        ht = _qty("High tension")
+        if ht is not None:
+            nx["acceleration_voltage"] = ht
+
+        # Stage position (keyed by StagePosition field names)
+        stage = {}
+        for key, label in [
+            ("x", "Stage X"),
+            ("y", "Stage Y"),
+            ("z", "Stage Z"),
+            ("tilt_alpha", "Stage A"),
+            ("tilt_beta", "Stage B"),
+        ]:
+            v = _qty(label)
+            if v is not None:
+                stage[key] = v
+        if stage:
+            nx["stage_position"] = stage
+
+        # Extensions: preserve all raw fields for completeness
+        extensions = {}
+        skip = {"Stage X", "Stage Y", "Stage Z", "Stage A", "Stage B", "High tension"}
+        for label, (value, unit) in fields.items():
+            if label in skip:
+                continue
+            extensions[label] = f"{value} {unit}".strip() if unit else value
+        if extensions:
+            nx.setdefault("extensions", {}).update(extensions)
+
+        return mdict
 
     @staticmethod
     def _parse_metadata_string(hdr_string: str) -> dict[str, dict[str, str]]:
@@ -1210,12 +1324,12 @@ class QuantaTiffExtractor:
 
 
 # Backward compatibility function for tests
-def get_quanta_metadata(filename):
+def get_fei_metadata(filename):
     """
-    Get metadata from a Quanta TIF file.
+    Get metadata from a FEI/Thermo Fisher TIF file.
 
     .. deprecated::
-        This function is deprecated. Use QuantaTiffExtractor class instead.
+        This function is deprecated. Use FeiTiffExtractor class instead.
 
     Parameters
     ----------
@@ -1230,4 +1344,7 @@ def get_quanta_metadata(filename):
     context = ExtractionContext(
         file_path=filename, instrument=get_instr_from_filepath(filename)
     )
-    return QuantaTiffExtractor().extract(context)
+    return FeiTiffExtractor().extract(context)
+
+
+get_quanta_metadata = get_fei_metadata

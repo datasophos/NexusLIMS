@@ -515,43 +515,20 @@
                   
   <section id="module-nexusLIMS.extractors.plugins.quanta_tif">
 <span id="nexuslims-extractors-plugins-quanta-tif"></span><h1><a class="reference internal" href="#module-nexusLIMS.extractors.plugins.quanta_tif" title="nexusLIMS.extractors.plugins.quanta_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif</span></code></a><a class="headerlink" href="#module-nexusLIMS.extractors.plugins.quanta_tif" title="Link to this heading">#</a></h1>
-<p>FEI/Thermo Fisher TIFF extractor plugin.</p>
+<p>Backward-compatibility shim for the renamed fei_tif extractor module.</p>
+<p>.. deprecated::
+Import from <a class="reference internal" href="nexusLIMS.extractors.plugins.fei_tif.html#module-nexusLIMS.extractors.plugins.fei_tif" title="nexusLIMS.extractors.plugins.fei_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.fei_tif</span></code></a> instead.</p>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
-<section id="classes">
-<h3>Classes<a class="headerlink" href="#classes" title="Link to this heading">#</a></h3>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor" title="nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QuantaTiffExtractor</span></code></a></p></td>
-<td><p>Extractor for FEI/Thermo Fisher TIFF files.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="functions">
-<h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata" title="nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_quanta_metadata</span></code></a></p></td>
-<td><p>Get metadata from a Quanta TIF file.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
 <section id="data">
 <h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.FEI_TIFF_TAG" title="nexusLIMS.extractors.plugins.quanta_tif.FEI_TIFF_TAG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FEI_TIFF_TAG</span></code></a></p></td>
-<td><p>TIFF tag ID where FEI/Thermo stores metadata in TIFF files.
-The tag contains INI-style metadata with sections like [User], [Beam], [Image], etc.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor" title="nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">QuantaTiffExtractor</span></code></a></p></td>
+<td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.FEI_XML_TIFF_TAG" title="nexusLIMS.extractors.plugins.quanta_tif.FEI_XML_TIFF_TAG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FEI_XML_TIFF_TAG</span></code></a></p></td>
-<td><p>TIFF tag ID where FEI/Thermo stores XML metadata in TIFF files (if present).
-This tag contains supplementary XML metadata that may be embedded after
-the standard INI metadata.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata" title="nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_quanta_metadata</span></code></a></p></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -560,111 +537,14 @@ the standard INI metadata.</p></td>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
 <dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif.FEI_TIFF_TAG">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">FEI_TIFF_TAG</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.FEI_TIFF_TAG" title="Link to this definition">#</a></dt>
-<dd><p>34682</p>
-<p>TIFF tag ID where FEI/Thermo stores metadata in TIFF files.
-The tag contains INI-style metadata with sections like [User], [Beam], [Image], etc.</p>
-</dd></dl>
+<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">QuantaTiffExtractor</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py data">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif.FEI_XML_TIFF_TAG">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">FEI_XML_TIFF_TAG</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.FEI_XML_TIFF_TAG" title="Link to this definition">#</a></dt>
-<dd><p>34683</p>
-<p>TIFF tag ID where FEI/Thermo stores XML metadata in TIFF files (if present).
-This tag contains supplementary XML metadata that may be embedded after
-the standard INI metadata.</p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">QuantaTiffExtractor</span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/quanta_tif.html#QuantaTiffExtractor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor" title="Link to this definition">#</a></dt>
-<dd><p>Extractor for FEI/Thermo Fisher TIFF files.</p>
-<p>This extractor handles metadata extraction from .tif files saved by
-FEI/Thermo Fisher FIBs and SEMs (e.g., Quanta, Helios, etc.). The extractor
-performs content sniffing to verify the file contains FEI metadata before
-attempting extraction.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.name" title="Link to this definition">#</a></dt>
-<dd><p>‘quanta_tif_extractor’</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.priority">
-<span class="sig-name descname"><span class="pre">priority</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.priority" title="Link to this definition">#</a></dt>
-<dd><p>100</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supported_extensions">
-<span class="sig-name descname"><span class="pre">supported_extensions</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supported_extensions" title="Link to this definition">#</a></dt>
-<dd><p><strong>Type:</strong> typing.ClassVar</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supports">
-<span class="sig-name descname"><span class="pre">supports</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/quanta_tif.html#QuantaTiffExtractor.supports"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supports" title="Link to this definition">#</a></dt>
-<dd><p>Check if this extractor supports the given file.</p>
-<p>Performs content sniffing to verify this is a FEI/Thermo TIFF file by:</p>
-<ol class="arabic simple">
-<li><p>Checking for the FEI-specific TIFF tag (34682) containing [User] or [Beam]</p></li>
-<li><p>Falling back to binary content sniffing for files with FEI metadata markers</p></li>
-</ol>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>context</strong> – The extraction context containing file information</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if this appears to be a FEI/Thermo TIFF file with metadata</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.extract">
-<span class="sig-name descname"><span class="pre">extract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">context</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="nexusLIMS.extractors.base.html#nexusLIMS.extractors.base.ExtractionContext" title="nexusLIMS.extractors.base.ExtractionContext"><span class="pre">ExtractionContext</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/typing.html#typing.Any" title="(in Python v3.11)"><span class="pre">Any</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/quanta_tif.html#QuantaTiffExtractor.extract"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.extract" title="Link to this definition">#</a></dt>
-<dd><p>Extract metadata from a FEI/Thermo TIFF file.</p>
-<p>Returns the metadata (as a list of dictionaries) from a .tif file saved
-by the FEI Quanta SEM or related instruments. Specific tags of interest are
-extracted and placed under the root-level <code class="docutils literal notranslate"><span class="pre">nx_meta</span></code> node.</p>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>context</strong> – The extraction context containing file information</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List containing a single metadata dict with ‘nx_meta’ key</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>[<a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">get_quanta_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/extractors/plugins/quanta_tif.html#get_quanta_metadata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata" title="Link to this definition">#</a></dt>
-<dd><p>Get metadata from a Quanta TIF file.</p>
-<div class="deprecated">
-<p><span class="versionmodified deprecated">Deprecated since version This: </span>function is deprecated. Use QuantaTiffExtractor class instead.</p>
-</div>
-<dl class="myst field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><em>Path</em></a>) – path to a file saved in the harvested directory of the instrument</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>mdict</strong> – A description of the file’s metadata.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><em>dict</em></a></p>
-</dd>
-</dl>
-</dd></dl>
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif.</span></span><span class="sig-name descname"><span class="pre">get_quanta_metadata</span></span><a class="headerlink" href="#nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
 
 </section>
 </section>
@@ -718,21 +598,10 @@ extracted and placed under the root-level <code class="docutils literal notransl
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.FEI_TIFF_TAG"><code class="docutils literal notranslate"><span class="pre">FEI_TIFF_TAG</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.FEI_XML_TIFF_TAG"><code class="docutils literal notranslate"><span class="pre">FEI_XML_TIFF_TAG</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor"><code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.name"><code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor.name</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.priority"><code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor.priority</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supported_extensions"><code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor.supported_extensions</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supports"><code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor.supports()</span></code></a></li>
-<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.extract"><code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor.extract()</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata"><code class="docutils literal notranslate"><span class="pre">get_quanta_metadata()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor"><code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata"><code class="docutils literal notranslate"><span class="pre">get_quanta_metadata</span></code></a></li>
 </ul>
 </li>
 </ul>

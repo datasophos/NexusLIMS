@@ -47,7 +47,7 @@ class OrionTiffExtractor:
     """
 
     name = "orion_HIM_tif_extractor"
-    priority = 150  # Higher than QuantaTiffExtractor (100) to handle Orion TIFFs first
+    priority = 150  # Higher than FeiTiffExtractor (100) to handle Orion TIFFs first
     supported_extensions: ClassVar = {
         "tif",
         "tiff",

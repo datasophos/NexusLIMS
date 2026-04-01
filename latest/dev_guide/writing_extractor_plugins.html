@@ -899,7 +899,7 @@
 </div>
 <p><strong>Real-world examples:</strong></p>
 <ul class="simple">
-<li><p><a class="reference download internal" download="" href="../_downloads/9aab50f0d31c81483ce18a2ba7c19905/quanta_tif.py"><span class="xref download myst">Quanta TIF extractor</span></a> - Uses <code class="docutils literal notranslate"><span class="pre">FieldDefinition</span></code> for extracting TIFF metadata tags</p></li>
+<li><p><a class="reference download internal" download="" href="../_downloads/99a5feed8424c7d0871b52a743d2c4e6/fei_tif.py"><span class="xref download myst">Quanta TIF extractor</span></a> - Uses <code class="docutils literal notranslate"><span class="pre">FieldDefinition</span></code> for extracting TIFF metadata tags</p></li>
 <li><p><a class="reference download internal" download="" href="../_downloads/0532b399b6fc234742d192cd1fef94ae/tescan_tif.py"><span class="xref download myst">Tescan TIF extractor</span></a> - Uses <code class="docutils literal notranslate"><span class="pre">FieldDefinition</span></code> for SEM metadata extraction</p></li>
 <li><p><a class="reference download internal" download="" href="../_downloads/6075cbe3da6e7e1ff679eb3a8eb7421f/orion_HIM_tif.py"><span class="xref download myst">Orion TIF extractor</span></a> - Uses <code class="docutils literal notranslate"><span class="pre">FieldDefinition</span></code> for HIM metadata extraction</p></li>
 </ul>
@@ -1023,8 +1023,8 @@
 <section id="instrument-specific-extractors">
 <h3>Instrument-Specific Extractors<a class="headerlink" href="#instrument-specific-extractors" title="Link to this heading">#</a></h3>
 <p>Use the instrument information for instrument-specific handling:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">QuantaTifExtractor</span><span class="p">:</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;quanta_tif_extractor&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">FeiTifExtractor</span><span class="p">:</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;fei_tif_extractor&quot;</span>
     <span class="n">priority</span> <span class="o">=</span> <span class="mi">150</span>  <span class="c1"># Higher priority for specific instrument</span>
     <span class="n">supported_extensions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;tif&quot;</span><span class="p">}</span>  <span class="c1"># Only .tif files</span>
     
@@ -1302,7 +1302,7 @@
 <p>See the built-in extractors for real-world examples:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#module-nexusLIMS.extractors.plugins.digital_micrograph" title="nexusLIMS.extractors.plugins.digital_micrograph"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.digital_micrograph</span></code></a> - Simple extension-based matching</p></li>
-<li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#module-nexusLIMS.extractors.plugins.quanta_tif" title="nexusLIMS.extractors.plugins.quanta_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.quanta_tif</span></code></a> - TIFF format for specific instruments</p></li>
+<li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_tif.html#module-nexusLIMS.extractors.plugins.fei_tif" title="nexusLIMS.extractors.plugins.fei_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.fei_tif</span></code></a> - TIFF format for specific instruments</p></li>
 <li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.tescan_tif.html#module-nexusLIMS.extractors.plugins.tescan_tif" title="nexusLIMS.extractors.plugins.tescan_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.tescan_tif</span></code></a> - TIFF format with metadata content sniffing and parsing sidecar header file</p></li>
 <li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.basic_metadata.html#module-nexusLIMS.extractors.plugins.basic_metadata" title="nexusLIMS.extractors.plugins.basic_metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.basic_metadata</span></code></a> - Fallback extractor with priority 0</p></li>
 <li><p><a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.edax.html#module-nexusLIMS.extractors.plugins.edax" title="nexusLIMS.extractors.plugins.edax"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.edax</span></code></a> - Multiple extractors in one file</p></li>

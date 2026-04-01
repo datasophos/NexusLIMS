@@ -28,6 +28,7 @@ nexusLIMS.extractors.plugins.orion_HIM_tif
 nexusLIMS.extractors.plugins.basic_metadata
 nexusLIMS.extractors.plugins.tofwerk_pfib
 nexusLIMS.extractors.plugins.edax
+nexusLIMS.extractors.plugins.fei_tif
 nexusLIMS.extractors.plugins.tescan_tif
 nexusLIMS.extractors.plugins.quanta_tif
 nexusLIMS.extractors.plugins.fei_emi

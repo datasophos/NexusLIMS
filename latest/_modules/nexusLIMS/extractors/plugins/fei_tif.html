@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>nexusLIMS.extractors.plugins.quanta_tif &#8212; NexusLIMS dev documentation</title>
+    <title>nexusLIMS.extractors.plugins.fei_tif &#8212; NexusLIMS dev documentation</title>
   
   
   
@@ -413,7 +413,7 @@ const load = async () => {
 
 window.addEventListener("load", load);
 </script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nexusLIMS/extractors/plugins/quanta_tif';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/nexusLIMS/extractors/plugins/fei_tif';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
@@ -422,7 +422,7 @@ window.addEventListener("load", load);
             true;
         </script>
     <script src="../../../../_static/custom.js?v=ba087cdf"></script>
-    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/_modules/nexusLIMS/extractors/plugins/quanta_tif.html" />
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/_modules/nexusLIMS/extractors/plugins/fei_tif.html" />
     <link rel="icon" href="../../../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
@@ -806,7 +806,7 @@ window.addEventListener("load", load);
     
     <li class="breadcrumb-item"><a href="../../extractors.html" class="nav-link">nexusLIMS.extractors</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors.plugins.quanta_tif</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">nexusLIMS.extractors.plugins.fei_tif</span></li>
   </ul>
 </nav>
 </div>
@@ -823,7 +823,7 @@ window.addEventListener("load", load);
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <h1>Source code for nexusLIMS.extractors.plugins.quanta_tif</h1><div class="highlight"><pre>
+  <h1>Source code for nexusLIMS.extractors.plugins.fei_tif</h1><div class="highlight"><pre>
 <span></span><span class="c1"># ruff: noqa: N817, FBT001, FBT003</span>
 <span class="sd">&quot;&quot;&quot;FEI/Thermo Fisher TIFF extractor plugin.&quot;&quot;&quot;</span>
 
@@ -867,9 +867,9 @@ window.addEventListener("load", load);
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="QuantaTiffExtractor">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">QuantaTiffExtractor</span><span class="p">:</span>
+<div class="viewcode-block" id="FeiTiffExtractor">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_tif.html#nexusLIMS.extractors.plugins.fei_tif.FeiTiffExtractor">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FeiTiffExtractor</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Extractor for FEI/Thermo Fisher TIFF files.</span>
 
@@ -879,12 +879,12 @@ window.addEventListener("load", load);
 <span class="sd">    attempting extraction.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;quanta_tif_extractor&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;fei_tif_extractor&quot;</span>
     <span class="n">priority</span> <span class="o">=</span> <span class="mi">100</span>
     <span class="n">supported_extensions</span><span class="p">:</span> <span class="n">ClassVar</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;tif&quot;</span><span class="p">,</span> <span class="s2">&quot;tiff&quot;</span><span class="p">}</span>
 
-<div class="viewcode-block" id="QuantaTiffExtractor.supports">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.supports">[docs]</a>
+<div class="viewcode-block" id="FeiTiffExtractor.supports">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_tif.html#nexusLIMS.extractors.plugins.fei_tif.FeiTiffExtractor.supports">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check if this extractor supports the given file.</span>
@@ -913,9 +913,15 @@ window.addEventListener("load", load);
                 <span class="c1"># Check for FEI custom tag</span>
                 <span class="n">fei_metadata</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">tag_v2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">FEI_TIFF_TAG</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">fei_metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="c1"># Verify the metadata starts with FEI-style markers</span>
+                    <span class="c1"># Verify the metadata contains FEI-style markers:</span>
+                    <span class="c1"># either INI-style sections ([User]/[Beam]) or</span>
+                    <span class="c1"># the flat XML format used by FEI TEM software (&lt;Root&gt;)</span>
                     <span class="n">metadata_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">fei_metadata</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="s2">&quot;[User]&quot;</span> <span class="ow">in</span> <span class="n">metadata_str</span> <span class="ow">or</span> <span class="s2">&quot;[Beam]&quot;</span> <span class="ow">in</span> <span class="n">metadata_str</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="s2">&quot;[User]&quot;</span> <span class="ow">in</span> <span class="n">metadata_str</span>
+                        <span class="ow">or</span> <span class="s2">&quot;[Beam]&quot;</span> <span class="ow">in</span> <span class="n">metadata_str</span>
+                        <span class="ow">or</span> <span class="s2">&quot;&lt;Root&gt;&quot;</span> <span class="ow">in</span> <span class="n">metadata_str</span>
+                    <span class="p">):</span>
                         <span class="k">return</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
@@ -941,8 +947,8 @@ window.addEventListener("load", load);
             <span class="k">return</span> <span class="sa">b</span><span class="s2">&quot;[User]&quot;</span> <span class="ow">in</span> <span class="n">content</span> <span class="ow">or</span> <span class="sa">b</span><span class="s2">&quot;[Beam]&quot;</span> <span class="ow">in</span> <span class="n">content</span></div>
 
 
-<div class="viewcode-block" id="QuantaTiffExtractor.extract">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.QuantaTiffExtractor.extract">[docs]</a>
+<div class="viewcode-block" id="FeiTiffExtractor.extract">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_tif.html#nexusLIMS.extractors.plugins.fei_tif.FeiTiffExtractor.extract">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExtractionContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Extract metadata from a FEI/Thermo TIFF file.</span>
@@ -972,7 +978,22 @@ window.addEventListener("load", load);
         <span class="n">_set_instr_name_and_time</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Extract metadata from TIFF tags/binary</span>
+            <span class="c1"># Check for flat &lt;Root&gt; XML format (FEI TEM software) before</span>
+            <span class="c1"># attempting INI-style extraction</span>
+            <span class="n">raw_tag</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">img</span><span class="p">:</span>
+                <span class="n">raw_tag</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">tag_v2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">FEI_TIFF_TAG</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">raw_tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;&lt;Root&gt;&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">raw_tag</span><span class="p">):</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Detected FEI &lt;Root&gt; XML format in </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                <span class="n">xml_str</span> <span class="o">=</span> <span class="n">raw_tag</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw_tag</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">raw_tag</span><span class="p">)</span>
+                <span class="n">parsed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_root_xml_tag</span><span class="p">(</span><span class="n">xml_str</span><span class="p">)</span>
+                <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">parsed</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">])</span>
+                <span class="n">_set_instr_name_and_time</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+                <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_dict</span><span class="p">(</span><span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">])</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">mdict</span><span class="p">]</span>
+
+            <span class="c1"># Extract metadata from TIFF tags/binary (INI format)</span>
             <span class="n">metadata_str</span><span class="p">,</span> <span class="n">xml_metadata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_metadata_from_tiff_tag</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">metadata_str</span><span class="p">:</span>
@@ -1187,7 +1208,7 @@ window.addEventListener("load", load);
             <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span> <span class="ow">and</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">text</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">value</span> <span class="o">=</span> <span class="n">QuantaTiffExtractor</span><span class="o">.</span><span class="n">_xml_el_to_dict</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">FeiTiffExtractor</span><span class="o">.</span><span class="n">_xml_el_to_dict</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
                     <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
@@ -1259,6 +1280,99 @@ window.addEventListener("load", load);
             <span class="n">metadata_to_return</span> <span class="o">=</span> <span class="n">metadata_str</span>
 
         <span class="k">return</span> <span class="n">metadata_to_return</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_root_xml_tag</span><span class="p">(</span><span class="n">xml_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse FEI TEM ``&lt;Root&gt;`` XML TIFF tag into an nx_meta dict.</span>
+
+<span class="sd">        Handles the flat</span>
+<span class="sd">        ``&lt;Root&gt;&lt;Data&gt;&lt;Label&gt;...&lt;/Label&gt;&lt;Value&gt;...&lt;/Value&gt;&lt;/Data&gt;...&lt;/Root&gt;``</span>
+<span class="sd">        XML format used by FEI TEM software (e.g. Tecnai).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        xml_str</span>
+<span class="sd">            Raw XML string from TIFF tag 34682</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Metadata dict with ``nx_meta`` populated from the XML fields</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mdict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;warnings&quot;</span><span class="p">:</span> <span class="p">[]}}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span>
+                <span class="n">xml_str</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xml_str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)</span> <span class="k">else</span> <span class="n">xml_str</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Failed to parse &lt;Root&gt; XML tag: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">mdict</span>
+
+        <span class="c1"># Build a flat label → (value, unit) map</span>
+        <span class="n">fields</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;Data&quot;</span><span class="p">):</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s2">&quot;Label&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s2">&quot;Value&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">unit</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">findtext</span><span class="p">(</span><span class="s2">&quot;Unit&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">label</span><span class="p">:</span>
+                <span class="n">fields</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">_qty</span><span class="p">(</span><span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Return a pint Quantity for a label, or None.&quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="n">val_str</span><span class="p">,</span> <span class="n">unit_str</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">(</span>
+                    <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">val_str</span><span class="p">),</span> <span class="n">unit_str</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">unit_str</span>
+                    <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="n">val_str</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">return</span> <span class="n">val_str</span>
+
+        <span class="n">nx</span> <span class="o">=</span> <span class="n">mdict</span><span class="p">[</span><span class="s2">&quot;nx_meta&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Determine dataset type from Mode</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">fields</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Mode&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s2">&quot;Diffraction&quot;</span> <span class="ow">in</span> <span class="n">mode</span><span class="p">:</span>
+            <span class="n">nx</span><span class="p">[</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Diffraction&quot;</span>
+            <span class="n">nx</span><span class="p">[</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;TEM_Diffraction&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">nx</span><span class="p">[</span><span class="s2">&quot;DatasetType&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Image&quot;</span>
+            <span class="n">nx</span><span class="p">[</span><span class="s2">&quot;Data Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;TEM_Imaging&quot;</span>
+
+        <span class="c1"># Core EM Glossary fields</span>
+        <span class="n">ht</span> <span class="o">=</span> <span class="n">_qty</span><span class="p">(</span><span class="s2">&quot;High tension&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ht</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nx</span><span class="p">[</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ht</span>
+
+        <span class="c1"># Stage position (keyed by StagePosition field names)</span>
+        <span class="n">stage</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage X&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage Y&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage Z&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;tilt_alpha&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage A&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;tilt_beta&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage B&quot;</span><span class="p">),</span>
+        <span class="p">]:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">_qty</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">stage</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">if</span> <span class="n">stage</span><span class="p">:</span>
+            <span class="n">nx</span><span class="p">[</span><span class="s2">&quot;stage_position&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stage</span>
+
+        <span class="c1"># Extensions: preserve all raw fields for completeness</span>
+        <span class="n">extensions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">skip</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Stage X&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage Z&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage A&quot;</span><span class="p">,</span> <span class="s2">&quot;Stage B&quot;</span><span class="p">,</span> <span class="s2">&quot;High tension&quot;</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span> <span class="ow">in</span> <span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">skip</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">extensions</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">unit</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="n">unit</span> <span class="k">else</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">extensions</span><span class="p">:</span>
+            <span class="n">nx</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;extensions&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">extensions</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">mdict</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_parse_metadata_string</span><span class="p">(</span><span class="n">hdr_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
@@ -2045,14 +2159,14 @@ window.addEventListener("load", load);
 
 
 <span class="c1"># Backward compatibility function for tests</span>
-<div class="viewcode-block" id="get_quanta_metadata">
-<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.quanta_tif.html#nexusLIMS.extractors.plugins.quanta_tif.get_quanta_metadata">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_quanta_metadata</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="get_fei_metadata">
+<a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_tif.html#nexusLIMS.extractors.plugins.fei_tif.get_fei_metadata">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_fei_metadata</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get metadata from a Quanta TIF file.</span>
+<span class="sd">    Get metadata from a FEI/Thermo Fisher TIF file.</span>
 
 <span class="sd">    .. deprecated::</span>
-<span class="sd">        This function is deprecated. Use QuantaTiffExtractor class instead.</span>
+<span class="sd">        This function is deprecated. Use FeiTiffExtractor class instead.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -2067,8 +2181,11 @@ window.addEventListener("load", load);
     <span class="n">context</span> <span class="o">=</span> <span class="n">ExtractionContext</span><span class="p">(</span>
         <span class="n">file_path</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="n">get_instr_from_filepath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">QuantaTiffExtractor</span><span class="p">()</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">FeiTiffExtractor</span><span class="p">()</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
 
+
+
+<span class="n">get_quanta_metadata</span> <span class="o">=</span> <span class="n">get_fei_metadata</span>
 </pre></div>
 
                 </article>

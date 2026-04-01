@@ -489,6 +489,7 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 <section id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>Renamed <code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor</span></code> to <code class="docutils literal notranslate"><span class="pre">FeiTiffExtractor</span></code> to support both FEI SEM (INI-style) and FEI TEM (<code class="docutils literal notranslate"><span class="pre">&lt;Root&gt;</span></code> XML) TIFF metadata formats; the old <code class="docutils literal notranslate"><span class="pre">quanta_tif</span></code> module is kept as a backward-compatibility shim; added test coverage for FEI TEM BF image and SAED diffraction extraction paths. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/95">#95</a>)</p></li>
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">extract</span></code> CLI command for single-file metadata extraction and preview generation. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/96">#96</a>)</p></li>
 <li><p>HyperSpy preview generator now supports <code class="docutils literal notranslate"><span class="pre">.msa</span></code> and <code class="docutils literal notranslate"><span class="pre">.spc</span></code> spectrum file formats. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/97">#97</a>)</p></li>
 </ul>
