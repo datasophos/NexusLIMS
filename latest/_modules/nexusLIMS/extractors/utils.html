@@ -980,6 +980,9 @@ window.addEventListener("load", load);
             <span class="c1"># v will be dictionaries specifying the process step</span>
             <span class="c1"># AlignSIByPeak, DataPicker, SpectrumCalibrate,</span>
             <span class="c1"># Compute Thickness, Background Removal, Signal Integration</span>
+            <span class="c1"># Some TagGroups (e.g. Summing) don&#39;t have an Operation key</span>
+            <span class="k">if</span> <span class="s2">&quot;Operation&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                <span class="k">continue</span>
             <span class="n">operation</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;Operation&quot;</span><span class="p">]</span>
             <span class="n">param</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="s2">&quot;Parameters&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">operation</span> <span class="o">==</span> <span class="s2">&quot;AlignSIByPeak&quot;</span><span class="p">:</span>

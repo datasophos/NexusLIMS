@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>nexusLIMS.cli.migrate &#8212; NexusLIMS dev documentation</title>
+    <title>nexusLIMS.cli.extract &#8212; NexusLIMS dev documentation</title>
   
   
   
@@ -49,7 +49,7 @@
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=30646c52"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.cli.migrate';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/nexusLIMS/nexusLIMS.cli.extract';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
@@ -58,12 +58,12 @@
             true;
         </script>
     <script src="../../_static/custom.js?v=ba087cdf"></script>
-    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/api/nexusLIMS/nexusLIMS.cli.migrate.html" />
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/latest/api/nexusLIMS/nexusLIMS.cli.extract.html" />
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="nexusLIMS.cli.main" href="nexusLIMS.cli.main.html" />
-    <link rel="prev" title="nexusLIMS.cli" href="nexusLIMS.cli.html" />
+    <link rel="next" title="nexusLIMS.cli.manage_instruments" href="nexusLIMS.cli.manage_instruments.html" />
+    <link rel="prev" title="nexusLIMS.cli.process_records" href="nexusLIMS.cli.process_records.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
@@ -416,10 +416,10 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">NexusLIMS API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3 current active has-children"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.migrate</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.migrate.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.migrate</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.main.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.main</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.process_records.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.process_records</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.extract.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.extract</span></code></a></li>
+<li class="toctree-l4 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.extract</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.manage_instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.manage_instruments</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="nexusLIMS.cli.config.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a></li>
 </ul>
@@ -493,7 +493,7 @@
     
     <li class="breadcrumb-item"><a href="nexusLIMS.cli.html" class="nav-link"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.migrate</span></code></span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.extract</span></code></span></li>
   </ul>
 </nav>
 </div>
@@ -510,60 +510,28 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-nexusLIMS.cli.migrate">
-<span id="nexuslims-cli-migrate"></span><h1><a class="reference internal" href="#module-nexusLIMS.cli.migrate" title="nexusLIMS.cli.migrate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.migrate</span></code></a><a class="headerlink" href="#module-nexusLIMS.cli.migrate" title="Link to this heading">#</a></h1>
-<p>CLI for NexusLIMS database migrations.</p>
-<p>Provides simple commands for common database migration operations, while
-still allowing advanced users to access the underlying Alembic functionality.</p>
+  <section id="module-nexusLIMS.cli.extract">
+<span id="nexuslims-cli-extract"></span><h1><a class="reference internal" href="#module-nexusLIMS.cli.extract" title="nexusLIMS.cli.extract"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.extract</span></code></a><a class="headerlink" href="#module-nexusLIMS.cli.extract" title="Link to this heading">#</a></h1>
+<p>CLI command for extracting metadata and generating previews from individual files.</p>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
 <p>.. code-block:: bash</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Initialize a new database
-nexuslims db init
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span># Extract metadata and print as JSON
+nexuslims extract /path/to/file.dm4
 
-# Upgrade to latest schema version
-nexuslims db upgrade
+# Extract metadata only (no preview)
+nexuslims extract --no-preview /path/to/file.dm4
 
-# Show current database version
-nexuslims db current
+# Generate preview only
+nexuslims extract --no-metadata /path/to/file.dm4
 
-# Check for pending migrations
-nexuslims db check
+# Save preview to a specific path
+nexuslims extract --preview-path /tmp/preview.png /path/to/file.dm4
 
-# Downgrade one migration
-nexuslims db downgrade
-
-# Browse the database interactively
-nexuslims db view
-
-# Create a demo database with sample instruments
-nexuslims db create-demo [PATH]
-
-# Advanced: Run any Alembic command
-nexuslims db alembic history --verbose
+# Write metadata JSON to disk (mirrors normal record-building behavior)
+nexuslims extract --write /path/to/file.dm4
 </pre></div>
 </div>
-<p><strong>Examples:</strong></p>
-<p>Set up a new database:</p>
-<p>.. code-block:: bash</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nexuslims db init
-</pre></div>
-</div>
-<p>Check database status:</p>
-<p>.. code-block:: bash</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nexuslims db current
-nexuslims db check
-</pre></div>
-</div>
-<p>Apply pending migrations:</p>
-<p>.. code-block:: bash</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>nexuslims db upgrade
-</pre></div>
-</div>
-<p><strong>Notes:</strong></p>
-<p>This command automatically locates the migrations directory inside the
-installed package, making it work correctly whether NexusLIMS is installed
-via pip, uv, or run from source.</p>
 </section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
@@ -571,8 +539,8 @@ via pip, uv, or run from source.</p>
 <h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.migrate.main" title="nexusLIMS.cli.migrate.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a></p></td>
-<td><p>Entry point for nexuslims db CLI.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.extract.main" title="nexusLIMS.cli.extract.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a></p></td>
+<td><p>Extract metadata and/or generate a preview for a single FILE.</p></td>
 </tr>
 </tbody>
 </table>
@@ -581,9 +549,17 @@ via pip, uv, or run from source.</p>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
 <dl class="py function">
-<dt class="sig sig-object py" id="nexusLIMS.cli.migrate.main">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.migrate.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli/migrate.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.migrate.main" title="Link to this definition">#</a></dt>
-<dd><p>Entry point for nexuslims db CLI.</p>
+<dt class="sig sig-object py" id="nexusLIMS.cli.extract.main">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.extract.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_preview</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_metadata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">preview_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">write</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.extract.main" title="Link to this definition">#</a></dt>
+<dd><p>Extract metadata and/or generate a preview for a single FILE.</p>
+<p>Metadata is printed to stdout as JSON by default. Use –write to also
+persist it to the NexusLIMS data directory.</p>
+<p>
+<strong>Examples:</strong></p>
+<p>nexuslims extract image.dm4
+nexuslims extract –no-preview spectrum.msa
+nexuslims extract –no-metadata –preview-path /tmp/thumb.png image.tif
+nexuslims extract –write –overwrite image.dm4</p>
 </dd></dl>
 
 </section>
@@ -601,20 +577,20 @@ via pip, uv, or run from source.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="nexusLIMS.cli.html"
+       href="nexusLIMS.cli.process_records.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.process_records</span></code></p>
       </div>
     </a>
     <a class="right-next"
-       href="nexusLIMS.cli.main.html"
+       href="nexusLIMS.cli.manage_instruments.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.main</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.manage_instruments</span></code></p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -641,7 +617,7 @@ via pip, uv, or run from source.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.migrate.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.extract.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -653,7 +629,7 @@ via pip, uv, or run from source.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../../_sources/api/nexusLIMS/nexusLIMS.cli.migrate.md.txt"
+      <li><a href="../../_sources/api/nexusLIMS/nexusLIMS.cli.extract.md.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

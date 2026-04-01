@@ -966,7 +966,7 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="get_dm3_metadata">
 <a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.get_dm3_metadata">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_dm3_metadata</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_dm3_metadata</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">instrument</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: PLR0912</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get metadata from a dm3 or dm4 file.</span>
 
@@ -1069,8 +1069,10 @@ window.addEventListener("load", load);
             <span class="c1"># tg_name should be &#39;TagGroup0&#39;, &#39;TagGroup1&#39;, etc.</span>
             <span class="n">keys</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
             <span class="c1"># We want to keep &#39;ImageTags&#39; and &#39;Name&#39;, so remove from list</span>
-            <span class="n">keys</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;ImageTags&quot;</span><span class="p">)</span>
-            <span class="n">keys</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;Name&quot;</span><span class="p">)</span>
+            <span class="c1"># (not all dm3/dm4 files have a &#39;Name&#39; key)</span>
+            <span class="k">for</span> <span class="n">keep</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ImageTags&quot;</span><span class="p">,</span> <span class="s2">&quot;Name&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">keep</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                    <span class="n">keys</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">keep</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
                 <span class="c1"># k should be in [&#39;ImageData&#39;, &#39;UniqueID&#39;]</span>
                 <span class="n">m_tree</span> <span class="o">=</span> <span class="n">remove_dtb_element</span><span class="p">(</span>  <span class="c1"># noqa: PLW2901</span>
@@ -1769,7 +1771,7 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="parse_dm3_spectrum_image_info">
 <a class="viewcode-back" href="../../../../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#nexusLIMS.extractors.plugins.digital_micrograph.parse_dm3_spectrum_image_info">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">parse_dm3_spectrum_image_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_dm3_spectrum_image_info</span><span class="p">(</span><span class="n">mdict</span><span class="p">):</span>  <span class="c1"># noqa: PLR0912</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse &quot;spectrum image&quot; information from the metadata.</span>
 
@@ -1854,8 +1856,16 @@ window.addEventListener("load", load);
     <span class="n">start_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;Start time&quot;</span><span class="p">])</span>
     <span class="n">end_val</span> <span class="o">=</span> <span class="n">try_getting_dict_value</span><span class="p">(</span><span class="n">mdict</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;Acquisition&quot;</span><span class="p">,</span> <span class="s2">&quot;End time&quot;</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">start_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">start_dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start_val</span><span class="p">,</span> <span class="s2">&quot;%I:%M:%S %p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">)</span>
-        <span class="n">end_dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">end_val</span><span class="p">,</span> <span class="s2">&quot;%I:%M:%S %p&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;%I:%M:%S %p&quot;</span><span class="p">,</span> <span class="s2">&quot;%H:%M:%S&quot;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">start_dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start_val</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">)</span>
+                <span class="n">end_dt</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">end_val</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start_dt</span> <span class="o">=</span> <span class="n">end_dt</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">start_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">start_dt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">duration</span> <span class="o">=</span> <span class="p">(</span><span class="n">end_dt</span> <span class="o">-</span> <span class="n">start_dt</span><span class="p">)</span><span class="o">.</span><span class="n">seconds</span>  <span class="c1"># Calculate acquisition duration</span>
         <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
             <span class="n">duration</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">duration</span><span class="p">,</span> <span class="s2">&quot;second&quot;</span><span class="p">)</span>

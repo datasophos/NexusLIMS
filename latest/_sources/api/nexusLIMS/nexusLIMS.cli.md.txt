@@ -17,6 +17,7 @@
 nexusLIMS.cli.migrate
 nexusLIMS.cli.main
 nexusLIMS.cli.process_records
+nexusLIMS.cli.extract
 nexusLIMS.cli.manage_instruments
 nexusLIMS.cli.config
 ```

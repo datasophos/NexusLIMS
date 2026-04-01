@@ -489,12 +489,14 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 <section id="new-features">
 <h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>Added <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">extract</span></code> CLI command for single-file metadata extraction and preview generation. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/96">#96</a>)</p></li>
 <li><p>HyperSpy preview generator now supports <code class="docutils literal notranslate"><span class="pre">.msa</span></code> and <code class="docutils literal notranslate"><span class="pre">.spc</span></code> spectrum file formats. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/97">#97</a>)</p></li>
 </ul>
 </section>
 <section id="bug-fixes">
 <h3>Bug fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">KeyError</span></code> exceptions in the DM3/DM4 extractor for files missing a <code class="docutils literal notranslate"><span class="pre">Name</span></code> key, 24-hour timestamps, and EELS TagGroups without an <code class="docutils literal notranslate"><span class="pre">Operation</span></code> key. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/98">#98</a>)</p></li>
 <li><p>Moved <code class="docutils literal notranslate"><span class="pre">acceleration_voltage</span></code> and <code class="docutils literal notranslate"><span class="pre">stage_position</span></code> to the base <code class="docutils literal notranslate"><span class="pre">NexusMetadata</span></code> class; added <code class="docutils literal notranslate"><span class="pre">acquisition_device</span></code> and <code class="docutils literal notranslate"><span class="pre">horizontal_field_width</span></code> to <code class="docutils literal notranslate"><span class="pre">SpectrumMetadata</span></code>. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/100">#100</a>)</p></li>
 </ul>
 </section>
