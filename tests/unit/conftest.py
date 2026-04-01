@@ -793,6 +793,23 @@ def quanta_fei_2_file():
     delete_files("QUANTA_FEI_2")
 
 
+# Titan TEM FEI <Root> XML format TIF files
+@pytest.fixture(scope="module")
+def titan_tem_bf_image():
+    """Titan TEM bright-field image with FEI <Root> XML metadata (data zeroed)."""
+    files = extract_files("TITAN_TEM_BF_IMAGE")
+    yield files[0] if files else None
+    delete_files("TITAN_TEM_BF_IMAGE")
+
+
+@pytest.fixture(scope="module")
+def titan_tem_saed_image():
+    """Titan TEM SAED diffraction image with FEI <Root> XML metadata (data zeroed)."""
+    files = extract_files("TITAN_TEM_SAED_IMAGE")
+    yield files[0] if files else None
+    delete_files("TITAN_TEM_SAED_IMAGE")
+
+
 # XML record test file
 
 

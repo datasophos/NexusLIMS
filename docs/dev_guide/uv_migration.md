@@ -160,10 +160,10 @@ uv run pytest --mpl --mpl-baseline-path=tests/unit/files/figs tests/unit
 uv run pytest tests/integration
 
 # Run specific test file with mpl comparison
-uv run pytest --mpl --mpl-baseline-path=tests/unit/files/figs tests/unit/test_extractors/test_quanta_tif.py
+uv run pytest --mpl --mpl-baseline-path=tests/unit/files/figs tests/unit/test_extractors/test_fei_tif.py
 
 # Run specific test
-uv run pytest tests/unit/test_extractors/test_quanta_tif.py::TestQuantaTifExtractor::test_extraction
+uv run pytest tests/unit/test_extractors/test_fei_tif.py::TestFeiTifExtractor::test_extraction
 
 # Run with HTML coverage report
 uv run pytest --cov=nexusLIMS --cov-report=html tests/unit

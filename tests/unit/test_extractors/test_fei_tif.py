@@ -1,16 +1,16 @@
 # pylint: disable=C0116
 # ruff: noqa: FBT003
 
-"""Tests for nexusLIMS.extractors.quanta_tif."""
+"""Tests for nexusLIMS.extractors.fei_tif."""
 
 import numpy as np
 import pytest
 from PIL import Image
 
 from nexusLIMS.extractors.base import ExtractionContext
-from nexusLIMS.extractors.plugins.quanta_tif import (
-    QuantaTiffExtractor,
-    get_quanta_metadata,
+from nexusLIMS.extractors.plugins.fei_tif import (
+    FeiTiffExtractor,
+    get_fei_metadata,
 )
 from nexusLIMS.schemas.units import ureg
 from tests.unit.test_instrument_factory import make_test_tool
@@ -18,12 +18,12 @@ from tests.unit.test_instrument_factory import make_test_tool
 from .conftest import get_field
 
 
-class TestQuantaExtractor:
-    """Tests nexusLIMS.extractors.quanta_tif."""
+class TestFeiExtractor:
+    """Tests nexusLIMS.extractors.fei_tif."""
 
     def test_quanta_extraction(self, quanta_test_file):  # noqa: PLR0915
         """Test basic metadata extraction from standard Quanta TIF file."""
-        metadata = get_quanta_metadata(quanta_test_file[0])
+        metadata = get_fei_metadata(quanta_test_file[0])
 
         # Test nx_meta values
         assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
@@ -102,7 +102,7 @@ class TestQuantaExtractor:
 
     def test_bad_metadata(self, quanta_bad_metadata):
         """Test handling of file without expected FEI tags."""
-        metadata = get_quanta_metadata(quanta_bad_metadata)
+        metadata = get_fei_metadata(quanta_bad_metadata)
         assert (
             metadata[0]["nx_meta"]["Extractor Warnings"]
             == "Did not find expected FEI tags. Could not read metadata"
@@ -111,7 +111,7 @@ class TestQuantaExtractor:
 
     def test_modded_metadata(self, quanta_just_modded_mdata):
         """Test extraction from file with modified metadata values."""
-        metadata = get_quanta_metadata(quanta_just_modded_mdata)
+        metadata = get_fei_metadata(quanta_just_modded_mdata)
 
         assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
         assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
@@ -136,7 +136,7 @@ class TestQuantaExtractor:
         """Test extraction with missing beam/scan/system metadata sections."""
         mock_instrument_from_filepath(make_test_tool())
 
-        metadata = get_quanta_metadata(quanta_no_beam_meta[0])
+        metadata = get_fei_metadata(quanta_no_beam_meta[0])
         assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
         assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
         assert (
@@ -153,7 +153,7 @@ class TestQuantaExtractor:
 
     def test_scios_duplicate_metadata_sections(self, scios_multiple_gis_meta):
         """Test handling of duplicate MultiGIS metadata sections."""
-        metadata = get_quanta_metadata(scios_multiple_gis_meta[0])
+        metadata = get_fei_metadata(scios_multiple_gis_meta[0])
         assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
         assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
         assert (
@@ -171,7 +171,7 @@ class TestQuantaExtractor:
 
     def test_scios_xml_metadata(self, scios_xml_metadata):
         """Test extraction of XML metadata from tag 34683."""
-        metadata = get_quanta_metadata(scios_xml_metadata[0])
+        metadata = get_fei_metadata(scios_xml_metadata[0])
         assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
         acquisition_date = get_field(metadata, "Acquisition Date")
         assert acquisition_date == "05/01/2024"
@@ -209,7 +209,7 @@ class TestQuantaExtractor:
         - Humidity (Chamber humidity)
         - Temperature (Specimen temperature)
         """
-        metadata = get_quanta_metadata(quanta_fei_2_file)
+        metadata = get_fei_metadata(quanta_fei_2_file)
 
         # Should extract successfully with RawConfigParser handling '%' characters
         assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
@@ -266,7 +266,7 @@ class TestQuantaExtractor:
 
     def test_supports_method(self, quanta_test_file, tmp_path):
         """Test the supports() method for various file types."""
-        extractor = QuantaTiffExtractor()
+        extractor = FeiTiffExtractor()
 
         # Should support valid FEI TIFF
         context = ExtractionContext(quanta_test_file[0], None)
@@ -343,7 +343,7 @@ Beam=EBeam
 
         img.save(tiff_path, tiffinfo={34682: metadata_with_xml})
 
-        extractor = QuantaTiffExtractor()
+        extractor = FeiTiffExtractor()
         result = extractor._detect_and_process_xml_metadata(metadata_with_xml)
 
         # Should separate metadata and XML
@@ -376,7 +376,7 @@ Brightness=50.0
 Contrast=60.0
 """
         img.save(tiff_numeric, tiffinfo={34682: metadata_numeric})
-        metadata = get_quanta_metadata(tiff_numeric)
+        metadata = get_fei_metadata(tiff_numeric)
         # Field name updated to remove unit suffix (in extensions)
         nx_meta = metadata[0]["nx_meta"]
         extensions = nx_meta.get("extensions", {})
@@ -411,7 +411,7 @@ Contrast=60.0
         img.save(tiff_string, tiffinfo={34682: metadata_string})
 
         # Patch to add a Setting field definition to trigger exception handler
-        extractor = QuantaTiffExtractor()
+        extractor = FeiTiffExtractor()
         original_build = extractor._build_field_definitions
 
         def mocked_build(mdict):
@@ -444,7 +444,7 @@ ChPressure=50.5
 UserMode=Low vacuum
 """
         img.save(tiff_low_vac, tiffinfo={34682: metadata_low_vac})
-        metadata = get_quanta_metadata(tiff_low_vac)
+        metadata = get_fei_metadata(tiff_low_vac)
         # Field name updated, should be a Quantity with pascal unit (in extensions)
         try:
             ch_pres = get_field(metadata, "Chamber Pressure")
@@ -472,7 +472,7 @@ Number=1
 Contrast=62.0
 """
         img.save(tiff_bad_pressure, tiffinfo={34682: metadata_bad_pressure})
-        metadata = get_quanta_metadata(tiff_bad_pressure)
+        metadata = get_fei_metadata(tiff_bad_pressure)
         assert metadata[0]["nx_meta"]["Data Type"] == "SEM_Imaging"
         # Invalid value stored as string (field name updated, in extensions)
         chamber_pressure = get_field(metadata, "Chamber Pressure")
@@ -480,7 +480,7 @@ Contrast=62.0
 
     def test_suppression_features(self, quanta_test_file):
         """Test zero suppression and conditional extraction features."""
-        metadata = get_quanta_metadata(quanta_test_file[0])
+        metadata = get_fei_metadata(quanta_test_file[0])
 
         # Beam Shift values are not suppressed even when zero (suppress_zero=False)
         # Check both nx_meta and extensions
@@ -510,7 +510,7 @@ Contrast=62.0
         from unittest.mock import patch
 
         mock_instrument_from_filepath(make_test_tool())
-        extractor = QuantaTiffExtractor()
+        extractor = FeiTiffExtractor()
         img_array = np.zeros((10, 10), dtype=np.uint8)
         img = Image.fromarray(img_array, mode="L")
 
@@ -524,7 +524,7 @@ Contrast=62.0
         # Test file with FEI marker but invalid metadata structure
         corrupted_tiff = tmp_path / "corrupted.tif"
         img.save(corrupted_tiff, tiffinfo={34682: b"[User]\nInvalid=Data"})
-        metadata = get_quanta_metadata(corrupted_tiff)
+        metadata = get_fei_metadata(corrupted_tiff)
         assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
 
         # Test warnings list initialization
@@ -536,7 +536,7 @@ Contrast=62.0
         img.save(
             bad_xml_tiff, tiffinfo={34682: b"[User]\nUser=test", 34683: "<?xml><bad>"}
         )
-        metadata = get_quanta_metadata(bad_xml_tiff)
+        metadata = get_fei_metadata(bad_xml_tiff)
         assert metadata[0]["nx_meta"]["DatasetType"] == "Image"
 
         # Test binary extraction exception
@@ -575,7 +575,7 @@ ResolutionX=1024
 ResolutionY=768
 """
         img.save(tiff_path, tiffinfo={34682: metadata_str})
-        metadata = get_quanta_metadata(tiff_path)
+        metadata = get_fei_metadata(tiff_path)
 
         # Verify special field parsing - field name updated (in extensions)
         nx_meta = metadata[0]["nx_meta"]
@@ -618,7 +618,7 @@ Column=ESEM
 Type=FEG
 """
         img.save(tiff_path, tiffinfo={34682: metadata_str})
-        metadata = get_quanta_metadata(tiff_path)
+        metadata = get_fei_metadata(tiff_path)
 
         # These aggregated fields should be in extensions
         software_version = get_field(metadata, "Software Version")
@@ -651,7 +651,7 @@ Grid=50.0
 """
         img.save(tiff_numeric_setting, tiffinfo={34682: metadata_str})
 
-        extractor = QuantaTiffExtractor()
+        extractor = FeiTiffExtractor()
         original_build = extractor._build_field_definitions
 
         def mocked_build(mdict):
@@ -674,3 +674,173 @@ Grid=50.0
         result = extractor._parse_nx_meta(test_dict)
         assert "warnings" in result["nx_meta"]
         assert isinstance(result["nx_meta"]["warnings"], list)
+
+    def test_titan_tem_bf_image_root_xml_path(self, titan_tem_bf_image):
+        """Test FEI <Root> XML detection and TEM BF image extraction (L154-161)."""
+        metadata = get_fei_metadata(titan_tem_bf_image)
+        nx = metadata[0]["nx_meta"]
+
+        # Verify the <Root> XML code path was taken (TEM imaging)
+        assert nx["DatasetType"] == "Image"
+        assert nx["Data Type"] == "TEM_Imaging"
+
+        # acceleration_voltage from "High tension": 200 kV
+        ht = nx["acceleration_voltage"]
+        assert isinstance(ht, ureg.Quantity)
+        assert float(ht.to("kilovolt").magnitude) == pytest.approx(200.0)
+
+        # Stage position populated from Stage X/Y/Z/A/B
+        stage = nx["stage_position"]
+        assert float(stage["x"].to("micrometer").magnitude) == pytest.approx(307.693)
+        assert float(stage["y"].to("micrometer").magnitude) == pytest.approx(-151.271)
+        assert float(stage["z"].to("micrometer").magnitude) == pytest.approx(37.466)
+        assert float(stage["tilt_alpha"].to("degree").magnitude) == pytest.approx(0.01)
+        assert float(stage["tilt_beta"].to("degree").magnitude) == pytest.approx(0.0)
+
+        # Vendor-specific fields land in extensions
+        extensions = nx.get("extensions", {})
+        assert "Magnification" in extensions
+        assert extensions["Magnification"] == "6300 x"
+
+    def test_titan_tem_saed_image_root_xml_path(self, titan_tem_saed_image):
+        """Test FEI <Root> XML detection and SAED diffraction extraction (L154-161)."""
+        metadata = get_fei_metadata(titan_tem_saed_image)
+        nx = metadata[0]["nx_meta"]
+
+        # Diffraction mode → DatasetType Diffraction
+        assert nx["DatasetType"] == "Diffraction"
+        assert nx["Data Type"] == "TEM_Diffraction"
+
+        # acceleration_voltage from "High tension": 200 kV
+        ht = nx["acceleration_voltage"]
+        assert isinstance(ht, ureg.Quantity)
+        assert float(ht.to("kilovolt").magnitude) == pytest.approx(200.0)
+
+        # Stage position
+        stage = nx["stage_position"]
+        assert float(stage["x"].to("micrometer").magnitude) == pytest.approx(633.553)
+        assert float(stage["tilt_alpha"].to("degree").magnitude) == pytest.approx(-2.35)
+
+        # Camera length in extensions
+        extensions = nx.get("extensions", {})
+        assert "Camera length" in extensions
+
+    def test_parse_root_xml_tag_image_mode(self):
+        """Test _parse_root_xml_tag returns Image type for non-Diffraction mode."""
+        xml = (
+            "<Root>"
+            "<Data><Label>Mode</Label><Value>TEM Imaging</Value><Unit></Unit></Data>"
+            "<Data><Label>High tension</Label><Value>120</Value><Unit>kV</Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        assert result["nx_meta"]["DatasetType"] == "Image"
+        assert result["nx_meta"]["Data Type"] == "TEM_Imaging"
+        ht = result["nx_meta"]["acceleration_voltage"]
+        assert isinstance(ht, ureg.Quantity)
+        assert float(ht.to("kilovolt").magnitude) == pytest.approx(120.0)
+
+    def test_parse_root_xml_tag_diffraction_mode(self):
+        """Test _parse_root_xml_tag returns Diffraction type for Diffraction mode."""
+        xml = (
+            "<Root>"
+            "<Data><Label>Mode</Label><Value>SA Diffraction</Value><Unit></Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        assert result["nx_meta"]["DatasetType"] == "Diffraction"
+        assert result["nx_meta"]["Data Type"] == "TEM_Diffraction"
+
+    def test_parse_root_xml_tag_no_mode(self):
+        """Test _parse_root_xml_tag defaults to Image when Mode field is absent."""
+        xml = (
+            "<Root>"
+            "<Data><Label>Magnification</Label><Value>10000</Value><Unit>x</Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        assert result["nx_meta"]["DatasetType"] == "Image"
+        assert result["nx_meta"]["Data Type"] == "TEM_Imaging"
+        assert result["nx_meta"]["extensions"]["Magnification"] == "10000 x"
+
+    def test_parse_root_xml_tag_stage_position(self):
+        """Test _parse_root_xml_tag populates stage_position; skips it in extensions."""
+        xml = (
+            "<Root>"
+            "<Data><Label>Stage X</Label><Value>100.0</Value><Unit>um</Unit></Data>"
+            "<Data><Label>Stage Y</Label><Value>-50.0</Value><Unit>um</Unit></Data>"
+            "<Data><Label>Stage Z</Label><Value>10.0</Value><Unit>um</Unit></Data>"
+            "<Data><Label>Stage A</Label><Value>5.0</Value><Unit>deg</Unit></Data>"
+            "<Data><Label>Stage B</Label><Value>-1.0</Value><Unit>deg</Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        stage = result["nx_meta"]["stage_position"]
+        assert set(stage.keys()) == {"x", "y", "z", "tilt_alpha", "tilt_beta"}
+        assert float(stage["x"].to("micrometer").magnitude) == pytest.approx(100.0)
+        assert float(stage["tilt_alpha"].to("degree").magnitude) == pytest.approx(5.0)
+
+        # Stage fields must not appear in extensions
+        extensions = result["nx_meta"].get("extensions", {})
+        assert "Stage X" not in extensions
+        assert "Stage A" not in extensions
+
+    def test_parse_root_xml_tag_extensions_skip_ht_and_stage(self):
+        """Test _parse_root_xml_tag skips High tension and Stage* from extensions."""
+        xml = (
+            "<Root>"
+            "<Data><Label>High tension</Label><Value>200</Value><Unit>kV</Unit></Data>"
+            "<Data><Label>Stage X</Label><Value>0</Value><Unit>um</Unit></Data>"
+            "<Data><Label>Emission</Label><Value>41.0</Value><Unit>uA</Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        extensions = result["nx_meta"].get("extensions", {})
+        assert "High tension" not in extensions
+        assert "Stage X" not in extensions
+        assert "Emission" in extensions
+
+    def test_parse_root_xml_tag_invalid_xml(self):
+        """Test _parse_root_xml_tag returns empty nx_meta on malformed XML."""
+        result = FeiTiffExtractor._parse_root_xml_tag("<not valid xml><<<<")
+        # Should return empty warnings list, no DatasetType set
+        assert "warnings" in result["nx_meta"]
+        assert "DatasetType" not in result["nx_meta"]
+
+    def test_parse_root_xml_tag_unitless_field(self):
+        """Test _parse_root_xml_tag stores raw float for fields without a unit."""
+        xml = (
+            "<Root>"
+            "<Data><Label>Spot size</Label><Value>3</Value><Unit></Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        extensions = result["nx_meta"].get("extensions", {})
+        # No unit: stored as plain string from value
+        assert extensions["Spot size"] == "3"
+
+    def test_parse_root_xml_tag_non_numeric_value_with_unit(self):
+        """Test _parse_root_xml_tag falls back to raw string for non-numeric value."""
+        xml = (
+            "<Root>"
+            "<Data><Label>High tension</Label><Value>N/A</Value><Unit>kV</Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        # float("N/A") raises, so _qty returns the raw string "N/A"
+        assert result["nx_meta"]["acceleration_voltage"] == "N/A"
+
+    def test_parse_root_xml_tag_partial_stage_only_some_axes(self):
+        """Test _parse_root_xml_tag builds stage_position with only present axes."""
+        xml = (
+            "<Root>"
+            "<Data><Label>Stage X</Label><Value>5.0</Value><Unit>um</Unit></Data>"
+            "<Data><Label>Stage Z</Label><Value>2.0</Value><Unit>um</Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        stage = result["nx_meta"]["stage_position"]
+        assert "x" in stage
+        assert "z" in stage
+        assert "y" not in stage
+        assert "tilt_alpha" not in stage

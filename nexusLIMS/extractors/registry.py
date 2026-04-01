@@ -143,7 +143,7 @@ class ExtractorRegistry:
             >>> registry = get_registry()
             >>> names = registry.extractor_names
             >>> print(names)
-            ['BasicFileInfoExtractor', 'DM3Extractor', 'QuantaTiffExtractor', ...]
+            ['BasicFileInfoExtractor', 'DM3Extractor', 'FeiTiffExtractor', ...]
         """
         if not self._discovered:
             self.discover_plugins()

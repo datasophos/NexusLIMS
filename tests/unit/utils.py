@@ -43,6 +43,8 @@ tars = {
     "NEOARM_GATAN_SI": "neoarm-gatan_SI_dataZeroed.dm4.tar.gz",
     "NEOARM_GATAN_IMAGE": "neoarm-gatan_image_dataZeroed.dm4.tar.gz",
     "TECNAI_TEM_DIFF": "Titan_Tecnai_TEM_diffraction_dataZeroed.dm3.tar.gz",
+    "TITAN_TEM_BF_IMAGE": "titan_tem_bf_image_dataZeroed.tif.tar.gz",
+    "TITAN_TEM_SAED_IMAGE": "titan_tem_saed_image_dataZeroed.tif.tar.gz",
 }
 
 
