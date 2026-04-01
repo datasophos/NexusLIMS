@@ -674,3 +674,173 @@ Grid=50.0
         result = extractor._parse_nx_meta(test_dict)
         assert "warnings" in result["nx_meta"]
         assert isinstance(result["nx_meta"]["warnings"], list)
+
+    def test_titan_tem_bf_image_root_xml_path(self, titan_tem_bf_image):
+        """Test FEI <Root> XML detection and TEM BF image extraction (L154-161)."""
+        metadata = get_fei_metadata(titan_tem_bf_image)
+        nx = metadata[0]["nx_meta"]
+
+        # Verify the <Root> XML code path was taken (TEM imaging)
+        assert nx["DatasetType"] == "Image"
+        assert nx["Data Type"] == "TEM_Imaging"
+
+        # acceleration_voltage from "High tension": 200 kV
+        ht = nx["acceleration_voltage"]
+        assert isinstance(ht, ureg.Quantity)
+        assert float(ht.to("kilovolt").magnitude) == pytest.approx(200.0)
+
+        # Stage position populated from Stage X/Y/Z/A/B
+        stage = nx["stage_position"]
+        assert float(stage["x"].to("micrometer").magnitude) == pytest.approx(307.693)
+        assert float(stage["y"].to("micrometer").magnitude) == pytest.approx(-151.271)
+        assert float(stage["z"].to("micrometer").magnitude) == pytest.approx(37.466)
+        assert float(stage["tilt_alpha"].to("degree").magnitude) == pytest.approx(0.01)
+        assert float(stage["tilt_beta"].to("degree").magnitude) == pytest.approx(0.0)
+
+        # Vendor-specific fields land in extensions
+        extensions = nx.get("extensions", {})
+        assert "Magnification" in extensions
+        assert extensions["Magnification"] == "6300 x"
+
+    def test_titan_tem_saed_image_root_xml_path(self, titan_tem_saed_image):
+        """Test FEI <Root> XML detection and SAED diffraction extraction (L154-161)."""
+        metadata = get_fei_metadata(titan_tem_saed_image)
+        nx = metadata[0]["nx_meta"]
+
+        # Diffraction mode → DatasetType Diffraction
+        assert nx["DatasetType"] == "Diffraction"
+        assert nx["Data Type"] == "TEM_Diffraction"
+
+        # acceleration_voltage from "High tension": 200 kV
+        ht = nx["acceleration_voltage"]
+        assert isinstance(ht, ureg.Quantity)
+        assert float(ht.to("kilovolt").magnitude) == pytest.approx(200.0)
+
+        # Stage position
+        stage = nx["stage_position"]
+        assert float(stage["x"].to("micrometer").magnitude) == pytest.approx(633.553)
+        assert float(stage["tilt_alpha"].to("degree").magnitude) == pytest.approx(-2.35)
+
+        # Camera length in extensions
+        extensions = nx.get("extensions", {})
+        assert "Camera length" in extensions
+
+    def test_parse_root_xml_tag_image_mode(self):
+        """Test _parse_root_xml_tag returns Image type for non-Diffraction mode."""
+        xml = (
+            "<Root>"
+            "<Data><Label>Mode</Label><Value>TEM Imaging</Value><Unit></Unit></Data>"
+            "<Data><Label>High tension</Label><Value>120</Value><Unit>kV</Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        assert result["nx_meta"]["DatasetType"] == "Image"
+        assert result["nx_meta"]["Data Type"] == "TEM_Imaging"
+        ht = result["nx_meta"]["acceleration_voltage"]
+        assert isinstance(ht, ureg.Quantity)
+        assert float(ht.to("kilovolt").magnitude) == pytest.approx(120.0)
+
+    def test_parse_root_xml_tag_diffraction_mode(self):
+        """Test _parse_root_xml_tag returns Diffraction type for Diffraction mode."""
+        xml = (
+            "<Root>"
+            "<Data><Label>Mode</Label><Value>SA Diffraction</Value><Unit></Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        assert result["nx_meta"]["DatasetType"] == "Diffraction"
+        assert result["nx_meta"]["Data Type"] == "TEM_Diffraction"
+
+    def test_parse_root_xml_tag_no_mode(self):
+        """Test _parse_root_xml_tag defaults to Image when Mode field is absent."""
+        xml = (
+            "<Root>"
+            "<Data><Label>Magnification</Label><Value>10000</Value><Unit>x</Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        assert result["nx_meta"]["DatasetType"] == "Image"
+        assert result["nx_meta"]["Data Type"] == "TEM_Imaging"
+        assert result["nx_meta"]["extensions"]["Magnification"] == "10000 x"
+
+    def test_parse_root_xml_tag_stage_position(self):
+        """Test _parse_root_xml_tag populates stage_position; skips it in extensions."""
+        xml = (
+            "<Root>"
+            "<Data><Label>Stage X</Label><Value>100.0</Value><Unit>um</Unit></Data>"
+            "<Data><Label>Stage Y</Label><Value>-50.0</Value><Unit>um</Unit></Data>"
+            "<Data><Label>Stage Z</Label><Value>10.0</Value><Unit>um</Unit></Data>"
+            "<Data><Label>Stage A</Label><Value>5.0</Value><Unit>deg</Unit></Data>"
+            "<Data><Label>Stage B</Label><Value>-1.0</Value><Unit>deg</Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        stage = result["nx_meta"]["stage_position"]
+        assert set(stage.keys()) == {"x", "y", "z", "tilt_alpha", "tilt_beta"}
+        assert float(stage["x"].to("micrometer").magnitude) == pytest.approx(100.0)
+        assert float(stage["tilt_alpha"].to("degree").magnitude) == pytest.approx(5.0)
+
+        # Stage fields must not appear in extensions
+        extensions = result["nx_meta"].get("extensions", {})
+        assert "Stage X" not in extensions
+        assert "Stage A" not in extensions
+
+    def test_parse_root_xml_tag_extensions_skip_ht_and_stage(self):
+        """Test _parse_root_xml_tag skips High tension and Stage* from extensions."""
+        xml = (
+            "<Root>"
+            "<Data><Label>High tension</Label><Value>200</Value><Unit>kV</Unit></Data>"
+            "<Data><Label>Stage X</Label><Value>0</Value><Unit>um</Unit></Data>"
+            "<Data><Label>Emission</Label><Value>41.0</Value><Unit>uA</Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        extensions = result["nx_meta"].get("extensions", {})
+        assert "High tension" not in extensions
+        assert "Stage X" not in extensions
+        assert "Emission" in extensions
+
+    def test_parse_root_xml_tag_invalid_xml(self):
+        """Test _parse_root_xml_tag returns empty nx_meta on malformed XML."""
+        result = FeiTiffExtractor._parse_root_xml_tag("<not valid xml><<<<")
+        # Should return empty warnings list, no DatasetType set
+        assert "warnings" in result["nx_meta"]
+        assert "DatasetType" not in result["nx_meta"]
+
+    def test_parse_root_xml_tag_unitless_field(self):
+        """Test _parse_root_xml_tag stores raw float for fields without a unit."""
+        xml = (
+            "<Root>"
+            "<Data><Label>Spot size</Label><Value>3</Value><Unit></Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        extensions = result["nx_meta"].get("extensions", {})
+        # No unit: stored as plain string from value
+        assert extensions["Spot size"] == "3"
+
+    def test_parse_root_xml_tag_non_numeric_value_with_unit(self):
+        """Test _parse_root_xml_tag falls back to raw string for non-numeric value."""
+        xml = (
+            "<Root>"
+            "<Data><Label>High tension</Label><Value>N/A</Value><Unit>kV</Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        # float("N/A") raises, so _qty returns the raw string "N/A"
+        assert result["nx_meta"]["acceleration_voltage"] == "N/A"
+
+    def test_parse_root_xml_tag_partial_stage_only_some_axes(self):
+        """Test _parse_root_xml_tag builds stage_position with only present axes."""
+        xml = (
+            "<Root>"
+            "<Data><Label>Stage X</Label><Value>5.0</Value><Unit>um</Unit></Data>"
+            "<Data><Label>Stage Z</Label><Value>2.0</Value><Unit>um</Unit></Data>"
+            "</Root>"
+        )
+        result = FeiTiffExtractor._parse_root_xml_tag(xml)
+        stage = result["nx_meta"]["stage_position"]
+        assert "x" in stage
+        assert "z" in stage
+        assert "y" not in stage
+        assert "tilt_alpha" not in stage
