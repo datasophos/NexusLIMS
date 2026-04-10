@@ -12,7 +12,7 @@ and `nx{N}` is an incrementing counter for NexusLIMS-specific releases on that b
 
 ---
 
-## 3.20.0-pre -- 2026-03-28
+## 3.20.0-nx0 -- 2026-03-29
 
 This version is intended to be used with NexusLIMS backend versions 2.6.1+.
 
