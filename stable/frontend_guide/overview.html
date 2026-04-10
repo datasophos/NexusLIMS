@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Overview &#8212; NexusLIMS 2.6.0 documentation</title>
+    <title>Overview &#8212; NexusLIMS 2.6.1 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=ae39cb24"></script>
+    <script src="../_static/documentation_options.js?v=0a414f3d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.6.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.6.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -65,8 +65,8 @@
     <link rel="prev" title="Screenshot Gallery" href="gallery.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.6.0" />
-    <meta name="docbuild:last-update" content="Mar, 20, 2026"/>
+  <meta name="docsearch:version" content="2.6.1" />
+    <meta name="docbuild:last-update" content="Apr, 10, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.6.0 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.6.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.6.1 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.6.1 documentation - Home"/>
   
   
 </a></div>
@@ -410,7 +410,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshots and Features</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="production.html">Production Deployment</a></li>
@@ -419,6 +419,7 @@
 <li class="toctree-l1"><a class="reference internal" href="customization.html">Branding and Customization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="administration.html">Administration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Frontend Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -523,6 +524,16 @@
 <li><p><strong>Links to raw data</strong> for downloading original instrument files</p></li>
 </ul>
 </section>
+<section id="dataset-annotation">
+<h3>Dataset Annotation<a class="headerlink" href="#dataset-annotation" title="Link to this heading">#</a></h3>
+<p>Authenticated users can add free-text descriptions to individual datasets within a record:</p>
+<ul class="simple">
+<li><p><strong>Annotate Record</strong> button on the detail page opens a slide-in panel</p></li>
+<li><p>Datasets are grouped by acquisition activity with preview thumbnails</p></li>
+<li><p>Descriptions are stored directly in the XML record and appear in the dataset metadata modal</p></li>
+<li><p>Controlled by the <code class="docutils literal notranslate"><span class="pre">NX_ENABLE_ANNOTATOR</span></code> feature flag (enabled by default)</p></li>
+</ul>
+</section>
 <section id="restful-api">
 <h3>RESTful API<a class="headerlink" href="#restful-api" title="Link to this heading">#</a></h3>
 <p>Full programmatic access to CDCS functionality:</p>
@@ -584,6 +595,12 @@
 └── nexuslims_overrides/          # NexusLIMS-specific customizations
 </pre></div>
 </div>
+</section>
+<section id="version-compatibility">
+<h2>Version Compatibility<a class="headerlink" href="#version-compatibility" title="Link to this heading">#</a></h2>
+<p>NexusLIMS-CDCS and the NexusLIMS backend must be kept in sync. See the
+<a class="reference internal" href="../reference/compatibility.html#compatibility"><span class="std std-ref">Version Compatibility</span></a> reference for the full matrix of which
+NexusLIMS-CDCS versions are compatible with each NexusLIMS backend release.</p>
 </section>
 <section id="related-resources">
 <h2>Related Resources<a class="headerlink" href="#related-resources" title="Link to this heading">#</a></h2>
@@ -655,6 +672,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#structured-data-capture">Structured Data Capture</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#powerful-search">Powerful Search</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-visualization">Data Visualization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-annotation">Dataset Annotation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#restful-api">RESTful API</a></li>
 </ul>
 </li>
@@ -664,6 +682,7 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repository-structure">Repository Structure</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-compatibility">Version Compatibility</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-resources">Related Resources</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
 </ul>

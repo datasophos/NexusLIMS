@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Production Deployment &#8212; NexusLIMS 2.6.0 documentation</title>
+    <title>Production Deployment &#8212; NexusLIMS 2.6.1 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=ae39cb24"></script>
+    <script src="../_static/documentation_options.js?v=0a414f3d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.6.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.6.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -65,8 +65,8 @@
     <link rel="prev" title="Development Setup" href="development.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.6.0" />
-    <meta name="docbuild:last-update" content="Mar, 20, 2026"/>
+  <meta name="docsearch:version" content="2.6.1" />
+    <meta name="docbuild:last-update" content="Apr, 10, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.6.0 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.6.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.6.1 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.6.1 documentation - Home"/>
   
   
 </a></div>
@@ -410,7 +410,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshots and Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development Setup</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Production Deployment</a></li>
@@ -419,6 +419,7 @@
 <li class="toctree-l1"><a class="reference internal" href="customization.html">Branding and Customization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="administration.html">Administration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Frontend Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -999,7 +1000,7 @@ admin-backup
 <li><p><strong>Pull latest code:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>/opt/nexuslims/NexusLIMS-CDCS
 git<span class="w"> </span>fetch
-git<span class="w"> </span>checkout<span class="w"> </span>v3.19.0<span class="w">  </span><span class="c1"># or desired version</span>
+git<span class="w"> </span>checkout<span class="w"> </span>v3.20.0-nx0<span class="w">  </span><span class="c1"># or desired version — see {ref}`compatibility` for version requirements</span>
 </pre></div>
 </div>
 </li>
@@ -1025,7 +1026,7 @@ dc-prod<span class="w"> </span>up<span class="w"> </span>-d
 <h3>Rollback<a class="headerlink" href="#rollback" title="Link to this heading">#</a></h3>
 <p>If upgrade fails:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dc-prod<span class="w"> </span>down
-git<span class="w"> </span>checkout<span class="w"> </span>v3.18.0<span class="w">  </span><span class="c1"># Previous version</span>
+git<span class="w"> </span>checkout<span class="w"> </span>v3.20.0-nx0<span class="w">  </span><span class="c1"># or whichever version matches your NexusLIMS backend — see {ref}`compatibility`</span>
 <span class="nb">cd</span><span class="w"> </span>deployment
 dc-prod<span class="w"> </span>build
 dc-prod<span class="w"> </span>up<span class="w"> </span>-d

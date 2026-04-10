@@ -1,0 +1,47 @@
+# {py:mod}`nexusLIMS.db.migrations.utils`
+
+```{py:module} nexusLIMS.db.migrations.utils
+```
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.utils
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`create_backup <nexusLIMS.db.migrations.utils.create_backup>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.utils.create_backup
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`verify_table_integrity <nexusLIMS.db.migrations.utils.verify_table_integrity>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.utils.verify_table_integrity
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} create_backup(connection) -> pathlib.Path
+:canonical: nexusLIMS.db.migrations.utils.create_backup
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.utils.create_backup
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} verify_table_integrity(connection, table_name: str, expected_count: int, expected_pk_range: tuple[int, int] | None = None, expected_distribution: dict | None = None, distribution_column: str | None = None, pk_column: str = 'id')
+:canonical: nexusLIMS.db.migrations.utils.verify_table_integrity
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.utils.verify_table_integrity
+:parser: autodoc2_docstrings_parser
+```
+````

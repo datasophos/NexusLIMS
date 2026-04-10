@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Configuration &#8212; NexusLIMS 2.6.0 documentation</title>
+    <title>Configuration &#8212; NexusLIMS 2.6.1 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=ae39cb24"></script>
+    <script src="../_static/documentation_options.js?v=0a414f3d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -418,7 +418,7 @@ window.addEventListener("load", load);
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.6.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.6.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -430,8 +430,8 @@ window.addEventListener("load", load);
     <link rel="prev" title="Local Test Deployment" href="local-test-deployment.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.6.0" />
-    <meta name="docbuild:last-update" content="Mar, 20, 2026"/>
+  <meta name="docsearch:version" content="2.6.1" />
+    <meta name="docbuild:last-update" content="Apr, 10, 2026"/>
   </head>
   
   
@@ -497,8 +497,8 @@ window.addEventListener("load", load);
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.6.0 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.6.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.6.1 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.6.1 documentation - Home"/>
   
   
 </a></div>
@@ -775,7 +775,7 @@ window.addEventListener("load", load);
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshots and Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="production.html">Production Deployment</a></li>
@@ -784,6 +784,7 @@ window.addEventListener("load", load);
 <li class="toctree-l1"><a class="reference internal" href="customization.html">Branding and Customization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="administration.html">Administration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Frontend Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -900,7 +901,7 @@ window.addEventListener("load", load);
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">IMAGE_VERSION</span></code></p></td>
 <td><p>Docker image version tag</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">latest</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">3.18.0</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">3.20.0-nx0</span></code> (see <a class="reference internal" href="../reference/compatibility.html#compatibility"><span class="std std-ref">Version Compatibility</span></a>)</p></td>
 </tr>
 </tbody>
 </table>
@@ -1373,6 +1374,31 @@ python<span class="w"> </span>manage.py<span class="w"> </span>shell
 <li><p>Import from <code class="docutils literal notranslate"><span class="pre">prod_settings.py</span></code> and override as needed</p></li>
 <li><p>Set <code class="docutils literal notranslate"><span class="pre">DJANGO_SETTINGS_MODULE=config.settings.custom_settings</span></code></p></li>
 </ol>
+<p>The following Python-level feature flags can be set in your custom settings file:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Setting</p></th>
+<th class="head"><p>Default</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NX_ENABLE_ANNOTATOR</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
+<td><p>Show “Annotate Record” button on detail pages, allowing authenticated users to add text descriptions to individual datasets</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">NX_ENABLE_TUTORIALS</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p></td>
+<td><p>Show interactive tutorial prompts for new users</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NX_MAX_DATASET_DISPLAY_COUNT</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">100</span></code></p></td>
+<td><p>Records with more datasets than this threshold use a simplified (non-interactive) display mode</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>See the <a class="reference external" href="https://github.com/datasophos/NexusLIMS-CDCS/blob/main/nexuslims_overrides/CUSTOMIZATION.md">CUSTOMIZATION.md</a> in NexusLIMS-CDCS for full details on all available settings.</p>
 </section>
 </section>
 <hr class="docutils" />
