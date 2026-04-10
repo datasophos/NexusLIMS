@@ -14,12 +14,12 @@
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.cli.migrate
 nexusLIMS.cli.main
-nexusLIMS.cli.process_records
+nexusLIMS.cli.config
 nexusLIMS.cli.extract
 nexusLIMS.cli.manage_instruments
-nexusLIMS.cli.config
+nexusLIMS.cli.process_records
+nexusLIMS.cli.migrate
 ```
 
 ## Package Contents

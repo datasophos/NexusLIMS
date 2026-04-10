@@ -101,6 +101,45 @@ Large records can be displayed with a simplified view to keep the application pe
 
 ---
 
+## Record Annotation
+
+### Annotate Record Panel
+
+```{figure} ../images/cdcs/10_annotate_side_panel.png
+:alt: Annotate Record Side Panel
+:width: 100%
+:class: screenshot
+
+The **Annotate Record** side panel opens from the top action bar. Datasets are shown with 
+preview thumbnails and free-text description fields, which can be customized to add context
+to your experimental record.
+```
+
+### Inline Dataset Editing
+
+```{figure} ../images/cdcs/11_annotate_inline_edit.png
+:alt: Inline Dataset Annotation
+:width: 100%
+:class: screenshot
+
+Hovering over a dataset row in an acquisition activity table reveals a pencil icon. Clicking
+it opens a floating popup for quick single-dataset description edits.
+```
+
+### Full-Page Editor
+
+```{figure} ../images/cdcs/12_annotate_full_page.png
+:alt: Full-Page Annotator
+:width: 100%
+:class: screenshot
+
+The expand icon in the side panel header opens the full-page. In addition to editing descriptions,
+the full-page editor supports **reassigning datasets between acquisition activities** within 
+the same record.
+```
+
+---
+
 ## Branding and Customization
 
 ```{figure} ../images/cdcs/09_customizing_nexuslims.png

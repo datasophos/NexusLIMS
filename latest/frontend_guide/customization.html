@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Apr, 01, 2026"/>
+    <meta name="docbuild:last-update" content="Apr, 10, 2026"/>
   </head>
   
   
@@ -411,7 +411,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshots and Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="production.html">Production Deployment</a></li>
@@ -420,6 +420,7 @@
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Branding and Customization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="administration.html">Administration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Frontend Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -717,8 +718,30 @@
 <h3>Enable/Disable Features<a class="headerlink" href="#enable-disable-features" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable the interactive tutorial (default: True)</span>
 <span class="n">NX_ENABLE_TUTORIALS</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># Enable the record annotator (default: True)</span>
+<span class="n">NX_ENABLE_ANNOTATOR</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 </div>
+</section>
+<section id="record-annotator-nx-enable-annotator">
+<h3>Record Annotator (<code class="docutils literal notranslate"><span class="pre">NX_ENABLE_ANNOTATOR</span></code>)<a class="headerlink" href="#record-annotator-nx-enable-annotator" title="Link to this heading">#</a></h3>
+<p>When enabled, authenticated users with write access to a record can attach plain-language descriptions to each dataset (file) in that record. Descriptions are stored in the XML under each <code class="docutils literal notranslate"><span class="pre">&lt;dataset&gt;/&lt;description&gt;</span></code> element and appear in the gallery, dataset activity tables, and metadata modals.</p>
+<p><strong>Entry points:</strong></p>
+<ul class="simple">
+<li><p><strong>Side panel</strong> – the <strong>Annotate Record</strong> button in the top action bar opens a slide-in offcanvas panel. Datasets are listed grouped by acquisition activity, each with a preview thumbnail and a text field. Press <strong>Save Annotations</strong> or <strong>Ctrl+Enter</strong> / <strong>Cmd+Enter</strong> to save all at once.</p></li>
+<li><p><strong>Inline editing</strong> – hovering over a row in a dataset activity table reveals a pencil icon next to the description. Clicking it opens a small floating popup for quick single-dataset edits (<strong>Ctrl+Enter</strong> to save, <strong>Escape</strong> to cancel).</p></li>
+<li><p><strong>Full-page editor</strong> – the expand icon (⤢) in the panel header opens <code class="docutils literal notranslate"><span class="pre">/annotate/&lt;record_id&gt;/</span></code> as a full-page form. In addition to editing descriptions, the full-page editor supports <strong>reassigning datasets between acquisition activities</strong> within the same record.</p></li>
+</ul>
+<p>A <code class="docutils literal notranslate"><span class="pre">?</span></code> help button is available in both the side panel and full-page editor.</p>
+<p><strong>To disable:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">NX_ENABLE_ANNOTATOR</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>Disabling removes the Annotate Record button and all annotation UI from detail pages. Existing descriptions stored in XML records are unaffected.</p>
+<blockquote>
+<div><p><strong>Note:</strong> Requires a container restart to take effect (<code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">restart</span> <span class="pre">cdcs</span></code>).</p>
+</div></blockquote>
 </section>
 <section id="dataset-display-threshold">
 <h3>Dataset Display Threshold<a class="headerlink" href="#dataset-display-threshold" title="Link to this heading">#</a></h3>
@@ -992,6 +1015,7 @@
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feature-flags">Feature Flags</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#enable-disable-features">Enable/Disable Features</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#record-annotator-nx-enable-annotator">Record Annotator (<code class="docutils literal notranslate"><span class="pre">NX_ENABLE_ANNOTATOR</span></code>)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-display-threshold">Dataset Display Threshold</a></li>
 </ul>
 </li>

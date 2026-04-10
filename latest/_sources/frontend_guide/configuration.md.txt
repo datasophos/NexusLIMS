@@ -225,6 +225,16 @@ For advanced customization, create a custom settings module:
 2. Import from `prod_settings.py` and override as needed
 3. Set `DJANGO_SETTINGS_MODULE=config.settings.custom_settings`
 
+The following Python-level feature flags can be set in your custom settings file:
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `NX_ENABLE_ANNOTATOR` | `True` | Show "Annotate Record" button on detail pages, allowing authenticated users to add text descriptions to individual datasets |
+| `NX_ENABLE_TUTORIALS` | `True` | Show interactive tutorial prompts for new users |
+| `NX_MAX_DATASET_DISPLAY_COUNT` | `100` | Records with more datasets than this threshold use a simplified (non-interactive) display mode |
+
+See the [CUSTOMIZATION.md](https://github.com/datasophos/NexusLIMS-CDCS/blob/main/nexuslims_overrides/CUSTOMIZATION.md) in NexusLIMS-CDCS for full details on all available settings.
+
 ---
 
 ## Troubleshooting Configuration

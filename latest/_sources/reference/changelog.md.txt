@@ -14,6 +14,31 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.6.1 (2026-04-09)
+
+### New features
+
+- Renamed `QuantaTiffExtractor` to `FeiTiffExtractor` to support both FEI SEM (INI-style) and FEI TEM (`<Root>` XML) TIFF metadata formats; the old `quanta_tif` module is kept as a backward-compatibility shim; added test coverage for FEI TEM BF image and SAED diffraction extraction paths. ([#95](https://github.com/datasophos/NexusLIMS/issues/95))
+- Added `nexuslims extract` CLI command for single-file metadata extraction and preview generation. ([#96](https://github.com/datasophos/NexusLIMS/issues/96))
+- HyperSpy preview generator now supports `.msa` and `.spc` spectrum file formats. ([#97](https://github.com/datasophos/NexusLIMS/issues/97))
+
+### Bug fixes
+
+- Fixed `KeyError` exceptions in the DM3/DM4 extractor for files missing a `Name` key, 24-hour timestamps, and EELS TagGroups without an `Operation` key. ([#98](https://github.com/datasophos/NexusLIMS/issues/98))
+- Fixed blank preview thumbnails for 16-bit TIFF images by applying a 2nd--98th percentile contrast stretch before converting to 8-bit. ([#99](https://github.com/datasophos/NexusLIMS/issues/99))
+- Moved `acceleration_voltage` and `stage_position` to the base `NexusMetadata` class; added `acquisition_device` and `horizontal_field_width` to `SpectrumMetadata`. ([#100](https://github.com/datasophos/NexusLIMS/issues/100))
+
+### Documentation improvements
+
+- Add CLI reference and extractor documentation for the `nexuslims extract` command. ([#101](https://github.com/datasophos/NexusLIMS/issues/101))
+- Document the NexusLIMS-CDCS record annotator app, including screenshots for the side panel, inline editing, and full-page editor entry points. ([#103](https://github.com/datasophos/NexusLIMS/issues/103))
+
+### Miscellaneous/Development changes
+
+- Updated CDCS REST API endpoint URLs to include trailing slashes, required for compatibility with NexusLIMS-CDCS 3.20.x. Added a [version compatibility reference page](https://datasophos.github.io/NexusLIMS/2.6.1/reference/compatibility.html) documenting which NexusLIMS-CDCS version is required for each NexusLIMS release. ([#91](https://github.com/datasophos/NexusLIMS/issues/91))
+- Added support and CI coverage for Python 3.13 and 3.14. ([#93](https://github.com/datasophos/NexusLIMS/issues/93))
+
+
 ## 2.6.0 (2026-03-19)
 
 ### New features

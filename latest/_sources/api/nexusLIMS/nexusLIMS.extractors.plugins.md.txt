@@ -14,8 +14,8 @@
 :titlesonly:
 :maxdepth: 3
 
-nexusLIMS.extractors.plugins.profiles
 nexusLIMS.extractors.plugins.preview_generators
+nexusLIMS.extractors.plugins.profiles
 ```
 
 ## Submodules
@@ -24,13 +24,13 @@ nexusLIMS.extractors.plugins.preview_generators
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.extractors.plugins.orion_HIM_tif
-nexusLIMS.extractors.plugins.basic_metadata
+nexusLIMS.extractors.plugins.quanta_tif
 nexusLIMS.extractors.plugins.tofwerk_pfib
+nexusLIMS.extractors.plugins.fei_emi
+nexusLIMS.extractors.plugins.tescan_tif
+nexusLIMS.extractors.plugins.digital_micrograph
+nexusLIMS.extractors.plugins.basic_metadata
 nexusLIMS.extractors.plugins.edax
 nexusLIMS.extractors.plugins.fei_tif
-nexusLIMS.extractors.plugins.tescan_tif
-nexusLIMS.extractors.plugins.quanta_tif
-nexusLIMS.extractors.plugins.fei_emi
-nexusLIMS.extractors.plugins.digital_micrograph
+nexusLIMS.extractors.plugins.orion_HIM_tif
 ```

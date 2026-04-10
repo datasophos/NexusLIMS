@@ -14,9 +14,9 @@
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643
 nexusLIMS.extractors.plugins.profiles.fei_titan_tem_642
 nexusLIMS.extractors.plugins.profiles.jeol_jem_642
+nexusLIMS.extractors.plugins.profiles.fei_titan_stem_643
 ```
 
 ## Package Contents

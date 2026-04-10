@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Apr, 01, 2026"/>
+    <meta name="docbuild:last-update" content="Apr, 10, 2026"/>
   </head>
   
   
@@ -411,7 +411,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshot Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshots and Features</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="production.html">Production Deployment</a></li>
@@ -420,6 +420,7 @@
 <li class="toctree-l1"><a class="reference internal" href="customization.html">Branding and Customization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="administration.html">Administration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Frontend Changelog</a></li>
 </ul>
 </div>
 </nav></div>
@@ -522,6 +523,16 @@
 <li><p><strong>List view</strong> provides summary cards for search results</p></li>
 <li><p><strong>Preview images</strong> display inline from the file server</p></li>
 <li><p><strong>Links to raw data</strong> for downloading original instrument files</p></li>
+</ul>
+</section>
+<section id="dataset-annotation">
+<h3>Dataset Annotation<a class="headerlink" href="#dataset-annotation" title="Link to this heading">#</a></h3>
+<p>Authenticated users can add free-text descriptions to individual datasets within a record:</p>
+<ul class="simple">
+<li><p><strong>Annotate Record</strong> button on the detail page opens a slide-in panel</p></li>
+<li><p>Datasets are grouped by acquisition activity with preview thumbnails</p></li>
+<li><p>Descriptions are stored directly in the XML record and appear in the dataset metadata modal</p></li>
+<li><p>Controlled by the <code class="docutils literal notranslate"><span class="pre">NX_ENABLE_ANNOTATOR</span></code> feature flag (enabled by default)</p></li>
 </ul>
 </section>
 <section id="restful-api">
@@ -662,6 +673,7 @@ NexusLIMS-CDCS versions are compatible with each NexusLIMS backend release.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#structured-data-capture">Structured Data Capture</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#powerful-search">Powerful Search</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-visualization">Data Visualization</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-annotation">Dataset Annotation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#restful-api">RESTful API</a></li>
 </ul>
 </li>
