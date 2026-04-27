@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Apr, 10, 2026"/>
+    <meta name="docbuild:last-update" content="Apr, 27, 2026"/>
   </head>
   
   
@@ -1083,6 +1083,39 @@ window.addEventListener("load", load);
     <span class="k">return</span> <span class="n">tic_map</span><span class="p">,</span> <span class="n">depth_counts</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_compute_peak_aggregates_chunked</span><span class="p">(</span>
+    <span class="n">pk_ds</span><span class="p">:</span> <span class="n">h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute per-mass sums, spatial maps, and depth profiles from PeakData.</span>
+
+<span class="sd">    Reads one write at a time to avoid loading the full dataset into memory.</span>
+<span class="sd">    A full load of PeakData can easily exceed 30 GiB for large acquisitions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pk_ds</span>
+<span class="sd">        PeakData HDF5 dataset of shape (nwrites, ny, nx, npeaks), float32</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    per_mass : ndarray of shape (npeaks,)</span>
+<span class="sd">    spatial : ndarray of shape (ny, nx, npeaks)</span>
+<span class="sd">    depth_prof : ndarray of shape (nwrites, npeaks)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nwrites</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">npeaks</span> <span class="o">=</span> <span class="n">pk_ds</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">per_mass</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">npeaks</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">spatial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">npeaks</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="n">depth_prof</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nwrites</span><span class="p">,</span> <span class="n">npeaks</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nwrites</span><span class="p">):</span>
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">pk_ds</span><span class="p">[</span><span class="n">w</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c1"># shape (ny, nx, npeaks)</span>
+        <span class="n">spatial</span> <span class="o">+=</span> <span class="n">chunk</span>
+        <span class="n">write_sum</span> <span class="o">=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>  <span class="c1"># shape (npeaks,)</span>
+        <span class="n">depth_prof</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">=</span> <span class="n">write_sum</span>
+        <span class="n">per_mass</span> <span class="o">+=</span> <span class="n">write_sum</span>
+    <span class="k">return</span> <span class="n">per_mass</span><span class="p">,</span> <span class="n">spatial</span><span class="p">,</span> <span class="n">depth_prof</span>
+
+
 <span class="c1"># ---------------------------------------------------------------------------</span>
 <span class="c1"># Preview generator class</span>
 <span class="c1"># ---------------------------------------------------------------------------</span>
@@ -1213,7 +1246,9 @@ window.addEventListener("load", load);
         <span class="n">nbr_writes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_read_attr_scalar</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;NbrWrites&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">has_peaks</span><span class="p">:</span>
-            <span class="n">peak_data</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;PeakData/PeakData&quot;</span><span class="p">][:]</span>
+            <span class="n">pk_ds</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;PeakData/PeakData&quot;</span><span class="p">]</span>
+            <span class="n">nwrites_pk</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">npeaks</span> <span class="o">=</span> <span class="n">pk_ds</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">per_mass</span><span class="p">,</span> <span class="n">spatial</span><span class="p">,</span> <span class="n">depth_prof</span> <span class="o">=</span> <span class="n">_compute_peak_aggregates_chunked</span><span class="p">(</span><span class="n">pk_ds</span><span class="p">)</span>
             <span class="n">peak_table</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;PeakData/PeakTable&quot;</span><span class="p">][:]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">el</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;FullSpectra/EventList&quot;</span><span class="p">]</span>
@@ -1231,11 +1266,7 @@ window.addEventListener("load", load);
 
     <span class="c1"># Derived arrays for opened files</span>
     <span class="k">if</span> <span class="n">has_peaks</span><span class="p">:</span>
-        <span class="n">nwrites_pk</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">npeaks</span> <span class="o">=</span> <span class="n">peak_data</span><span class="o">.</span><span class="n">shape</span>
-        <span class="n">per_mass</span> <span class="o">=</span> <span class="n">peak_data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-        <span class="n">spatial</span> <span class="o">=</span> <span class="n">peak_data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">tic_map</span> <span class="o">=</span> <span class="n">spatial</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">depth_prof</span> <span class="o">=</span> <span class="n">peak_data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
 
         <span class="n">peak_masses</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">peak_table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;mass&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">npeaks</span><span class="p">)])</span>
         <span class="n">above_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">peak_masses</span> <span class="o">&gt;=</span> <span class="n">min_mass</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -1266,7 +1297,7 @@ window.addEventListener("load", load);
         <span class="n">writes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nwrites_pk</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="n">mode_str</span> <span class="o">=</span> <span class="s2">&quot;Processed&quot;</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">writes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nbr_writes</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">writes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">depth_counts</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="n">mode_str</span> <span class="o">=</span> <span class="s2">&quot;Raw&quot;</span>
 
     <span class="c1"># Annotate top peaks in sum spectrum (spaced &gt;= 2 Da apart)</span>
