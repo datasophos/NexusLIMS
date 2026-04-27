@@ -286,7 +286,7 @@ git add pyproject.toml nexusLIMS/version.py
 if [ -f "RELEASE_NOTES.md" ]; then
     git rm RELEASE_NOTES.md
 fi
-git commit -m "Bump version to $DEV_VERSION for development"
+git commit -m "Bump version to $DEV_VERSION for development [skip ci]"
 success "Version bumped to $DEV_VERSION"
 
 # Show what was done
