@@ -257,6 +257,39 @@ def _compute_tic_from_eventlist(el: h5py.Dataset) -> tuple[np.ndarray, np.ndarra
     return tic_map, depth_counts
 
 
+def _compute_peak_aggregates_chunked(
+    pk_ds: h5py.Dataset,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Compute per-mass sums, spatial maps, and depth profiles from PeakData.
+
+    Reads one write at a time to avoid loading the full dataset into memory.
+    A full load of PeakData can easily exceed 30 GiB for large acquisitions.
+
+    Parameters
+    ----------
+    pk_ds
+        PeakData HDF5 dataset of shape (nwrites, ny, nx, npeaks), float32
+
+    Returns
+    -------
+    per_mass : ndarray of shape (npeaks,)
+    spatial : ndarray of shape (ny, nx, npeaks)
+    depth_prof : ndarray of shape (nwrites, npeaks)
+    """
+    nwrites, ny, nx, npeaks = pk_ds.shape
+    per_mass = np.zeros(npeaks, dtype=np.float64)
+    spatial = np.zeros((ny, nx, npeaks), dtype=np.float64)
+    depth_prof = np.zeros((nwrites, npeaks), dtype=np.float64)
+    for w in range(nwrites):
+        chunk = pk_ds[w].astype(np.float64)  # shape (ny, nx, npeaks)
+        spatial += chunk
+        write_sum = chunk.sum(axis=(0, 1))  # shape (npeaks,)
+        depth_prof[w] = write_sum
+        per_mass += write_sum
+    return per_mass, spatial, depth_prof
+
+
 # ---------------------------------------------------------------------------
 # Preview generator class
 # ---------------------------------------------------------------------------
@@ -378,7 +411,9 @@ def _generate_preview(  # noqa: PLR0912, PLR0915
         nbr_writes = int(_read_attr_scalar(f, "NbrWrites", 0))
 
         if has_peaks:
-            peak_data = f["PeakData/PeakData"][:]
+            pk_ds = f["PeakData/PeakData"]
+            nwrites_pk, ny, nx, npeaks = pk_ds.shape
+            per_mass, spatial, depth_prof = _compute_peak_aggregates_chunked(pk_ds)
             peak_table = f["PeakData/PeakTable"][:]
         else:
             el = f["FullSpectra/EventList"]
@@ -396,11 +431,7 @@ def _generate_preview(  # noqa: PLR0912, PLR0915
 
     # Derived arrays for opened files
     if has_peaks:
-        nwrites_pk, ny, nx, npeaks = peak_data.shape
-        per_mass = peak_data.sum(axis=(0, 1, 2))
-        spatial = peak_data.sum(axis=0)
         tic_map = spatial.sum(axis=2)
-        depth_prof = peak_data.sum(axis=(1, 2))
 
         peak_masses = np.array([float(peak_table[i]["mass"]) for i in range(npeaks)])
         above_min = np.where(peak_masses >= min_mass)[0]
@@ -431,7 +462,7 @@ def _generate_preview(  # noqa: PLR0912, PLR0915
         writes = np.arange(nwrites_pk) + 1
         mode_str = "Processed"
     else:
-        writes = np.arange(nbr_writes) + 1
+        writes = np.arange(len(depth_counts)) + 1
         mode_str = "Raw"
 
     # Annotate top peaks in sum spectrum (spaced >= 2 Da apart)

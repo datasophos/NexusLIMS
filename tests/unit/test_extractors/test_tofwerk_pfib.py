@@ -10,6 +10,7 @@ import numpy as np
 from nexusLIMS.extractors.base import ExtractionContext
 from nexusLIMS.extractors.plugins.preview_generators.tofwerk_pfib_preview import (
     TofwerkPfibPreviewGenerator,
+    _compute_peak_aggregates_chunked,
     _depth_plot_style,
     _norm_channel,
     _tic_display_limits,
@@ -519,3 +520,95 @@ class TestPrivateHelpers:
         with h5py.File(p, "r") as f:
             _extract_fib_params(f, nx_meta)
         assert nx_meta == {}  # nothing was added
+
+
+# ---------------------------------------------------------------------------
+# Regression tests for client-reported bugs
+# ---------------------------------------------------------------------------
+
+
+class TestComputePeakAggregatesChunked:
+    """Regression tests for _compute_peak_aggregates_chunked (see issue #104).
+
+    Previously, _generate_preview loaded PeakData/PeakData[:] in one shot,
+    which caused an OOM error for large acquisitions (e.g. 500x256x256x259
+    float32 = 31.6 GiB).  The fix reads one write at a time.
+    """
+
+    def test_aggregates_match_full_load(self, tmp_path):
+        """Chunked aggregates must match the equivalent full-array reductions."""
+        nwrites, ny, nx, npeaks = 4, 6, 6, 8
+        rng = np.random.default_rng(42)
+        data = rng.exponential(10, (nwrites, ny, nx, npeaks)).astype(np.float32)
+
+        p = tmp_path / "peak_data.h5"
+        with h5py.File(p, "w") as f:
+            f.create_dataset("PeakData", data=data)
+
+        with h5py.File(p, "r") as f:
+            per_mass, spatial, depth_prof = _compute_peak_aggregates_chunked(
+                f["PeakData"]
+            )
+
+        expected_per_mass = data.sum(axis=(0, 1, 2)).astype(np.float64)
+        expected_spatial = data.sum(axis=0).astype(np.float64)
+        expected_depth_prof = data.sum(axis=(1, 2)).astype(np.float64)
+
+        np.testing.assert_allclose(per_mass, expected_per_mass, rtol=1e-5)
+        np.testing.assert_allclose(spatial, expected_spatial, rtol=1e-5)
+        np.testing.assert_allclose(depth_prof, expected_depth_prof, rtol=1e-5)
+
+    def test_output_shapes(self, tmp_path):
+        """Returned arrays have the expected shapes."""
+        nwrites, ny, nx, npeaks = 3, 5, 7, 4
+        data = np.ones((nwrites, ny, nx, npeaks), dtype=np.float32)
+
+        p = tmp_path / "peak_data_shapes.h5"
+        with h5py.File(p, "w") as f:
+            f.create_dataset("PeakData", data=data)
+
+        with h5py.File(p, "r") as f:
+            per_mass, spatial, depth_prof = _compute_peak_aggregates_chunked(
+                f["PeakData"]
+            )
+
+        assert per_mass.shape == (npeaks,)
+        assert spatial.shape == (ny, nx, npeaks)
+        assert depth_prof.shape == (nwrites, npeaks)
+
+
+class TestNbrWritesMismatchRegression:
+    """Regression test for NbrWrites attribute off-by-one vs EventList shape (#104).
+
+    Previously, the depth-profile x-axis (writes) was built from the NbrWrites
+    HDF5 root attribute while depth_counts came from the actual EventList shape.
+    When these differed by one, matplotlib raised:
+      ValueError: x and y must have same first dimension
+    """
+
+    def test_generate_succeeds_when_nbr_writes_exceeds_eventlist(
+        self, tmp_path, tofwerk_raw_file
+    ):
+        """Preview generates successfully when NbrWrites > EventList.shape[0]."""
+        # Patch NbrWrites to be one more than the actual EventList depth dimension
+        with h5py.File(tofwerk_raw_file, "r+") as f:
+            actual_nwrites = f["FullSpectra/EventList"].shape[0]
+            f.attrs["NbrWrites"] = np.int32(actual_nwrites + 1)
+
+        out = tmp_path / "preview_mismatch.png"
+        gen = TofwerkPfibPreviewGenerator()
+        assert gen.generate(_make_context(tofwerk_raw_file), out) is True
+        assert out.exists()
+
+    def test_generate_succeeds_when_nbr_writes_less_than_eventlist(
+        self, tmp_path, tofwerk_raw_file
+    ):
+        """Preview generates successfully when NbrWrites < EventList.shape[0]."""
+        with h5py.File(tofwerk_raw_file, "r+") as f:
+            actual_nwrites = f["FullSpectra/EventList"].shape[0]
+            f.attrs["NbrWrites"] = np.int32(max(1, actual_nwrites - 1))
+
+        out = tmp_path / "preview_mismatch_under.png"
+        gen = TofwerkPfibPreviewGenerator()
+        assert gen.generate(_make_context(tofwerk_raw_file), out) is True
+        assert out.exists()
