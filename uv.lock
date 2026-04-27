@@ -2262,7 +2262,7 @@ wheels = [
 
 [[package]]
 name = "nexuslims"
-version = "2.6.1.dev0"
+version = "2.6.2.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "alembic" },
