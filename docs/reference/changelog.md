@@ -14,6 +14,13 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.6.2 (2026-04-26)
+
+### Bug fixes
+
+- Fixed an out-of-memory error and a depth-profile shape mismatch in the Tofwerk pFIB-ToF-SIMS preview generator for large pre-processed HDF5 files. ([#104](https://github.com/datasophos/NexusLIMS/issues/104))
+
+
 ## 2.6.1 (2026-04-09)
 
 ### New features
