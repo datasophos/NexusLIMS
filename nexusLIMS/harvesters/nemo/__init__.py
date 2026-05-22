@@ -137,6 +137,9 @@ def create_res_event_from_usage_event(
             "api/",
             f"event_details/usage/{usage_event['id']}/",  # Usage event URL
         ),
+        user_email=usage_event["user"].get("email"),
+        user_first_name=usage_event["user"].get("first_name"),
+        user_last_name=usage_event["user"].get("last_name"),
     )
 
 
@@ -396,4 +399,7 @@ def res_event_from_session(
             "api/",
             f"event_details/reservation/{res['id']}/",
         ),
+        user_email=res["user"].get("email"),
+        user_first_name=res["user"].get("first_name"),
+        user_last_name=res["user"].get("last_name"),
     )

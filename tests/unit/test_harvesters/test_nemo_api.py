@@ -485,6 +485,9 @@ class TestNemoConnectorEvents:
         assert (
             res_event.url == "https://nemo.example.com/event_details/reservation/187/"
         )
+        assert res_event.user_email == "ned.land@nautilus.com"
+        assert res_event.user_first_name == "Ned"
+        assert res_event.user_last_name == "Land"
 
     def test_res_event_from_session_with_elements(self, nemo_connector, monkeypatch):
         from nexusLIMS.instruments import instrument_db
@@ -1029,6 +1032,9 @@ class TestUsageEventQuestionData:
         assert res_event.created_by == "commander"  # Operator, not user
         assert res_event.internal_id == "100"
         assert res_event.url == "https://nemo.example.com/event_details/usage/100/"
+        assert res_event.user_email == "ned.land@nautilus.com"
+        assert res_event.user_first_name == "Ned"
+        assert res_event.user_last_name == "Land"
 
     def test_create_res_event_from_usage_event_pre_run_data(
         self,
