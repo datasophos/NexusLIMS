@@ -8,7 +8,7 @@ import pytest
 
 from nexusLIMS.exporters.base import ExportContext
 from nexusLIMS.exporters.destinations.cdcs import CDCSDestination
-from nexusLIMS.utils.cdcs import AuthenticationError
+from nexusLIMS.utils.cdcs import AuthenticationError, CDCSUserManager
 
 
 @pytest.fixture
@@ -17,6 +17,8 @@ def mock_config_enabled():
     with patch("nexusLIMS.exporters.destinations.cdcs.settings") as mock_settings:
         mock_settings.NX_CDCS_TOKEN = "test_token"
         mock_settings.NX_CDCS_URL = "http://localhost:8000"
+        mock_settings.NX_CDCS_USER_OWNED_RECORDS = False
+        mock_settings.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE = True
         yield mock_settings
 
 
@@ -421,3 +423,208 @@ class TestCDCSDestinationIntegration:
             assert result.destination_name == "cdcs"
             assert result.record_id == "789"
             assert "data?id=789" in result.record_url
+
+
+class TestCDCSDestinationOwnership:
+    """Tests for per-user ownership and workspace toggle logic."""
+
+    @pytest.fixture
+    def mock_settings_ownership_on(self):
+        with patch("nexusLIMS.exporters.destinations.cdcs.settings") as m:
+            m.NX_CDCS_TOKEN = "test_token"
+            m.NX_CDCS_URL = "http://localhost:8000"
+            m.NX_CDCS_USER_OWNED_RECORDS = True
+            m.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE = True
+            yield m
+
+    @pytest.fixture
+    def mock_settings_ownership_off(self):
+        with patch("nexusLIMS.exporters.destinations.cdcs.settings") as m:
+            m.NX_CDCS_TOKEN = "test_token"
+            m.NX_CDCS_URL = "http://localhost:8000"
+            m.NX_CDCS_USER_OWNED_RECORDS = False
+            m.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE = True
+            yield m
+
+    @pytest.fixture
+    def mock_settings_no_workspace(self):
+        with patch("nexusLIMS.exporters.destinations.cdcs.settings") as m:
+            m.NX_CDCS_TOKEN = "test_token"
+            m.NX_CDCS_URL = "http://localhost:8000"
+            m.NX_CDCS_USER_OWNED_RECORDS = False
+            m.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE = False
+            yield m
+
+    @pytest.fixture
+    def export_context_with_user(self, tmp_path):
+        from nexusLIMS.harvesters.reservation_event import ReservationEvent
+
+        xml_file = tmp_path / "record.xml"
+        xml_file.write_text("<record/>")
+        res_event = ReservationEvent(
+            username="jdoe",
+            user_email="jdoe@example.com",
+            user_first_name="Jane",
+            user_last_name="Doe",
+        )
+        return ExportContext(
+            xml_file_path=xml_file,
+            session_identifier="session-abc",
+            instrument_pid="test-instrument",
+            dt_from=datetime(2025, 1, 1, 10, 0, 0),
+            dt_to=datetime(2025, 1, 1, 12, 0, 0),
+            reservation_event=res_event,
+        )
+
+    def test_ownership_assigned_when_toggle_on(
+        self, mock_settings_ownership_on, export_context_with_user
+    ):
+        """assign_record_owner is called when NX_CDCS_USER_OWNED_RECORDS=True."""
+        dest = CDCSDestination()
+        mock_user = {"id": 5, "username": "jdoe"}
+
+        with (
+            patch.object(
+                dest,
+                "_upload_to_cdcs",
+                return_value=(42, "http://localhost:8000/data?id=42"),
+            ),
+            patch.object(CDCSUserManager, "get_or_create_user", return_value=mock_user),
+            patch.object(
+                CDCSUserManager, "assign_record_owner", return_value=True
+            ) as mock_assign,
+        ):
+            result = dest.export(export_context_with_user)
+
+        assert result.success is True
+        mock_assign.assert_called_once_with(42, 5)
+
+    def test_no_ownership_when_toggle_off(
+        self, mock_settings_ownership_off, export_context_with_user
+    ):
+        """assign_record_owner is NOT called when NX_CDCS_USER_OWNED_RECORDS=False."""
+        dest = CDCSDestination()
+
+        with (
+            patch.object(
+                dest,
+                "_upload_to_cdcs",
+                return_value=(42, "http://localhost:8000/data?id=42"),
+            ),
+            patch.object(CDCSUserManager, "assign_record_owner") as mock_assign,
+        ):
+            result = dest.export(export_context_with_user)
+
+        assert result.success is True
+        mock_assign.assert_not_called()
+
+    def test_no_ownership_when_res_event_is_none(
+        self, mock_settings_ownership_on, tmp_path
+    ):
+        """No ownership call when reservation_event is None."""
+        xml_file = tmp_path / "record.xml"
+        xml_file.write_text("<record/>")
+        context = ExportContext(
+            xml_file_path=xml_file,
+            session_identifier="session-abc",
+            instrument_pid="test-instrument",
+            dt_from=datetime(2025, 1, 1, 10, 0, 0),
+            dt_to=datetime(2025, 1, 1, 12, 0, 0),
+            reservation_event=None,
+        )
+        dest = CDCSDestination()
+
+        with (
+            patch.object(
+                dest,
+                "_upload_to_cdcs",
+                return_value=(42, "http://localhost:8000/data?id=42"),
+            ),
+            patch.object(CDCSUserManager, "assign_record_owner") as mock_assign,
+        ):
+            result = dest.export(context)
+
+        assert result.success is True
+        mock_assign.assert_not_called()
+
+    def test_upload_proceeds_when_user_lookup_fails(
+        self, mock_settings_ownership_on, export_context_with_user
+    ):
+        """Record is still uploaded when get_or_create_user returns None."""
+        dest = CDCSDestination()
+
+        with (
+            patch.object(
+                dest,
+                "_upload_to_cdcs",
+                return_value=(42, "http://localhost:8000/data?id=42"),
+            ),
+            patch.object(CDCSUserManager, "get_or_create_user", return_value=None),
+            patch.object(CDCSUserManager, "assign_record_owner") as mock_assign,
+        ):
+            result = dest.export(export_context_with_user)
+
+        assert result.success is True
+        mock_assign.assert_not_called()
+
+    def test_workspace_not_assigned_when_toggle_off(self, mock_settings_no_workspace):
+        """Workspace PATCH is skipped when NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE=False."""
+        dest = CDCSDestination()
+
+        mock_post_resp = Mock()
+        mock_post_resp.status_code = HTTPStatus.CREATED
+        mock_post_resp.json.return_value = {"id": 99}
+
+        with (
+            patch.object(dest, "_get_template_id", return_value="tmpl-1"),
+            patch(
+                "nexusLIMS.exporters.destinations.cdcs.nexus_req",
+                return_value=mock_post_resp,
+            ) as mock_req,
+        ):
+            record_id, _ = dest._upload_to_cdcs("<record/>", "title")
+
+        assert record_id == 99
+        assert mock_req.call_count == 1
+
+    def test_workspace_assigned_when_toggle_on(self, mock_settings_ownership_on):
+        """Workspace PATCH is called when NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE=True."""
+        dest = CDCSDestination()
+
+        mock_post_resp = Mock()
+        mock_post_resp.status_code = HTTPStatus.CREATED
+        mock_post_resp.json.return_value = {"id": 99}
+
+        mock_patch_resp = Mock()
+        mock_patch_resp.status_code = HTTPStatus.OK
+
+        with (
+            patch.object(dest, "_get_template_id", return_value="tmpl-1"),
+            patch.object(dest, "_get_workspace_id", return_value=7),
+            patch(
+                "nexusLIMS.exporters.destinations.cdcs.nexus_req",
+                side_effect=[mock_post_resp, mock_patch_resp],
+            ) as mock_req,
+        ):
+            record_id, _ = dest._upload_to_cdcs("<record/>", "title")
+
+        assert record_id == 99
+        assert mock_req.call_count == 2
+
+    def test_validate_config_logs_superuser_note(
+        self, mock_settings_ownership_on, caplog
+    ):
+        """validate_config logs a superuser note when USER_OWNED_RECORDS=True."""
+        import logging
+
+        dest = CDCSDestination()
+        with (
+            patch.object(dest, "_get_workspace_id", return_value=1),
+            caplog.at_level(logging.INFO),
+        ):
+            is_valid, error_msg = dest.validate_config()
+
+        assert is_valid is True
+        assert error_msg is None
+        assert "NX_CDCS_USER_OWNED_RECORDS" in caplog.text
+        assert "superuser" in caplog.text
