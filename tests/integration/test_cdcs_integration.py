@@ -739,7 +739,7 @@ class TestCDCSUserOwnership:
 
         # Upload a test record
         _, record_id = upload_record_content(
-            "<Experiment><title>ownership test</title></Experiment>",
+            MINIMAL_TEST_RECORD,
             f"ownership_test_{username}",
         )
         assert record_id is not None
