@@ -1113,29 +1113,58 @@ def cdcs_client(cdcs_url, cdcs_credentials, monkeypatch):
 
     refresh_settings()
 
-    # Track created records for cleanup
+    # Track created records and users for cleanup
     created_records = []
+    created_user_ids = []
 
     def register_record(record_id: str):
         """Register a record ID for cleanup after test."""
         created_records.append(record_id)
 
+    def register_user(user_id: int):
+        """Register a user ID for cleanup after test."""
+        created_user_ids.append(user_id)
+
     yield {
         "url": cdcs_url,
         "token": cdcs_credentials["token"],
         "register_record": register_record,
+        "register_user": register_user,
         "created_records": created_records,
+        "created_user_ids": created_user_ids,
     }
 
-    # Cleanup: Delete all records created during the test
+    # Cleanup: Delete all records and users created during the test
+    if os.environ.get("NX_TESTS_SKIP_CDCS_CLEANUP", "0") == "1":
+        print(
+            f"\n[*] NX_TESTS_SKIP_CDCS_CLEANUP=1: Leaving {len(created_records)} "
+            f"record(s) in CDCS: {created_records}"
+        )
+        print(
+            f"[*] NX_TESTS_SKIP_CDCS_CLEANUP=1: Leaving {len(created_user_ids)} "
+            f"user(s) in CDCS: {created_user_ids}"
+        )
+        return
+
+    from urllib.parse import urljoin
+
     from nexusLIMS.utils import cdcs
+    from nexusLIMS.utils.network import nexus_req
 
     for record_id in created_records:
         try:
             cdcs.delete_record(record_id)
         except Exception as e:
-            # Log but don't fail test on cleanup error
             print(f"[!] Failed to cleanup record {record_id}: {e}")
+
+    for user_id in created_user_ids:
+        try:
+            endpoint = urljoin(cdcs_url, f"rest/user/{user_id}/")
+            r = nexus_req(endpoint, "DELETE", token_auth=cdcs_credentials["token"])
+            if r.status_code not in (204, 200):
+                print(f"[!] Failed to cleanup user {user_id}: {r.status_code} {r.text}")
+        except Exception as e:
+            print(f"[!] Failed to cleanup user {user_id}: {e}")
 
 
 @pytest.fixture(scope="session")

@@ -707,6 +707,7 @@ class TestCDCSUserOwnership:
         assert user is not None
         assert user["username"] == username
         assert "id" in user
+        cdcs_client["register_user"](user["id"])
 
     def test_get_or_create_user_returns_existing_on_second_call(self, cdcs_client):
         """get_or_create_user returns cached user on repeated calls."""
@@ -725,6 +726,7 @@ class TestCDCSUserOwnership:
         assert user1 is not None
         assert user2 is not None
         assert user1["id"] == user2["id"]
+        cdcs_client["register_user"](user1["id"])
 
     def test_assign_record_owner_changes_ownership(self, cdcs_client, cdcs_url):
         """assign_record_owner returns True and changes the record's owner."""
@@ -748,6 +750,7 @@ class TestCDCSUserOwnership:
         # Create/find the test user
         user = manager.get_or_create_user(username, f"{username}@example.com", "T", "O")
         assert user is not None
+        cdcs_client["register_user"](user["id"])
 
         # Assign ownership
         success = manager.assign_record_owner(record_id, user["id"])
