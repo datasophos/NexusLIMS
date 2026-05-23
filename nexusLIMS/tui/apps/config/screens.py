@@ -621,6 +621,26 @@ class ConfigScreen(Screen):
                         required=True,
                         help_text=_fdesc("NX_CDCS_TOKEN"),
                     )
+            with Horizontal(classes="section-toggle-row"):
+                yield Label(
+                    "NX_CDCS_USER_OWNED_RECORDS",
+                    classes="section-toggle-label",
+                )
+                yield Switch(
+                    value=self._get_bool("NX_CDCS_USER_OWNED_RECORDS", default=False),
+                    id="nx-cdcs-user-owned-records",
+                )
+            with Horizontal(classes="section-toggle-row"):
+                yield Label(
+                    "NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE",
+                    classes="section-toggle-label",
+                )
+                yield Switch(
+                    value=self._get_bool(
+                        "NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE", default=True
+                    ),
+                    id="nx-cdcs-assign-workspace",
+                )
 
     def _compose_file_processing(self) -> ComposeResult:
         with VerticalScroll():
@@ -1305,15 +1325,25 @@ class ConfigScreen(Screen):
         if isinstance(focused, Input):
             return self._resolve_input_field_detail(focused)
         if isinstance(focused, Switch):
-            if focused.id == "nx-disable-ssl-verify":
-                name = "NX_DISABLE_SSL_VERIFY"
-                return name, _fdetail(name)
-        elif isinstance(focused, TextArea):
+            return self._resolve_switch_field_detail(focused)
+        if isinstance(focused, TextArea):
             if focused.id == "nx-cert-bundle":
                 name = "NX_CERT_BUNDLE"
                 return name, _fdetail(name)
         elif isinstance(focused, Select):
             return self._resolve_select_field_detail(focused)
+        return None, ""
+
+    def _resolve_switch_field_detail(self, focused: Switch) -> tuple[str | None, str]:
+        """Return ``(field_name, detail)`` for a focused Switch widget."""
+        _switch_id_to_name: dict[str, str] = {
+            "nx-disable-ssl-verify": "NX_DISABLE_SSL_VERIFY",
+            "nx-cdcs-user-owned-records": "NX_CDCS_USER_OWNED_RECORDS",
+            "nx-cdcs-assign-workspace": "NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE",
+        }
+        name = _switch_id_to_name.get(focused.id or "")
+        if name:
+            return name, _fdetail(name)
         return None, ""
 
     def _resolve_input_field_detail(self, focused: Input) -> tuple[str | None, str]:
@@ -1531,6 +1561,12 @@ class ConfigScreen(Screen):
             val = self.query_one(f"#{field_id}", Input).value.strip()
             if val:
                 config[key] = val
+        config["NX_CDCS_USER_OWNED_RECORDS"] = self.query_one(
+            "#nx-cdcs-user-owned-records", Switch
+        ).value
+        config["NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE"] = self.query_one(
+            "#nx-cdcs-assign-workspace", Switch
+        ).value
         return config
 
     def _build_file_config(self) -> dict:

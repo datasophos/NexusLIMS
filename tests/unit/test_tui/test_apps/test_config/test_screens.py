@@ -2038,4 +2038,86 @@ class TestBuildLabArchivesConfig:
             assert "NX_LABARCHIVES_NOTEBOOK_ID" not in config
 
 
+# --------------------------------------------------------------------------- #
+# TestCDCSOwnershipSwitches  (task 6)                                         #
+# --------------------------------------------------------------------------- #
+
+
+class TestCDCSOwnershipSwitches:
+    """Tests for the two new CDCS ownership switches."""
+
+    @pytest.fixture
+    def env_with_ownership_on(self, tmp_path) -> Path:
+        env_file = tmp_path / "ownership.env"
+        env_file.write_text(
+            "NX_CDCS_URL='https://cdcs.example.com'\n"
+            "NX_CDCS_TOKEN='token'\n"
+            "NX_CDCS_USER_OWNED_RECORDS='true'\n"
+            "NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE='false'\n"
+        )
+        return env_file
+
+    async def test_user_owned_records_switch_pre_populated_true(
+        self, env_with_ownership_on
+    ):
+        """NX_CDCS_USER_OWNED_RECORDS switch is True when env file has true."""
+        app = ConfiguratorApp(env_path=env_with_ownership_on)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            switch = app.screen.query_one("#nx-cdcs-user-owned-records", Switch)
+            assert switch.value is True
+
+    async def test_assign_workspace_switch_pre_populated_false(
+        self, env_with_ownership_on
+    ):
+        """NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE switch is False when env has false."""
+        app = ConfiguratorApp(env_path=env_with_ownership_on)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            switch = app.screen.query_one("#nx-cdcs-assign-workspace", Switch)
+            assert switch.value is False
+
+    async def test_user_owned_records_defaults_off(self, tmp_path):
+        """NX_CDCS_USER_OWNED_RECORDS switch defaults to False when not in env file."""
+        env_file = tmp_path / "empty.env"
+        env_file.write_text(
+            "NX_CDCS_URL='https://cdcs.example.com'\nNX_CDCS_TOKEN='token'\n"
+        )
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            switch = app.screen.query_one("#nx-cdcs-user-owned-records", Switch)
+            assert switch.value is False
+
+    async def test_assign_workspace_defaults_on(self, tmp_path):
+        """NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE switch defaults to True when not set."""
+        env_file = tmp_path / "empty.env"
+        env_file.write_text(
+            "NX_CDCS_URL='https://cdcs.example.com'\nNX_CDCS_TOKEN='token'\n"
+        )
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            switch = app.screen.query_one("#nx-cdcs-assign-workspace", Switch)
+            assert switch.value is True
+
+    async def test_build_cdcs_config_includes_both_switches(self, tmp_path):
+        """_build_cdcs_config includes both new switch values."""
+        env_file = tmp_path / "ownership.env"
+        env_file.write_text(
+            "NX_CDCS_URL='https://cdcs.example.com'\n"
+            "NX_CDCS_TOKEN='token'\n"
+            "NX_CDCS_USER_OWNED_RECORDS='true'\n"
+            "NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE='false'\n"
+        )
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+            config = screen._build_cdcs_config()
+
+        assert config["NX_CDCS_USER_OWNED_RECORDS"] is True
+        assert config["NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE"] is False
+
+
 pytestmark = pytest.mark.unit
