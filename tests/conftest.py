@@ -7,12 +7,13 @@ import warnings
 from pathlib import Path
 
 # Suppress SyntaxWarning from hyperspy.roi raised at module-compile time,
-# before pytest's filterwarnings machinery is active.
+# before pytest's filterwarnings machinery is active. The module filter is
+# omitted because compile-time SyntaxWarnings are issued before the module
+# __name__ is set, so the pattern never matches.
 warnings.filterwarnings(
     "ignore",
-    message="'return' in a 'finally' block",
+    message=r"'return' in a 'finally' block",
     category=SyntaxWarning,
-    module=r"hyperspy\.roi",
 )
 
 # ============================================================================
