@@ -458,15 +458,14 @@ class Settings(BaseSettings):
         description=(
             "When True, uploaded records are assigned to the global public "
             "workspace in CDCS, making them visible to all users. "
-            "Default: True (existing behaviour)."
+            "Default: True."
         ),
         json_schema_extra={
             "detail": (
                 "Controls whether uploaded records are assigned to the CDCS "
                 "global public workspace after upload.\n\n"
                 "When `true` (default), NexusLIMS calls "
-                "`rest/data/{id}/assign/{workspace_id}/` after each upload, "
-                "which is the existing behaviour.\n\n"
+                "`rest/data/{id}/assign/{workspace_id}/` after each upload.\n\n"
                 "Set to `false` to leave records in the uploading user's private "
                 "workspace. This is only useful in combination with "
                 "`NX_CDCS_USER_OWNED_RECORDS=true`; without user ownership "

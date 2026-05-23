@@ -621,26 +621,39 @@ class ConfigScreen(Screen):
                         required=True,
                         help_text=_fdesc("NX_CDCS_TOKEN"),
                     )
-            with Horizontal(classes="section-toggle-row"):
-                yield Label(
-                    "NX_CDCS_USER_OWNED_RECORDS",
-                    classes="section-toggle-label",
-                )
-                yield Switch(
-                    value=self._get_bool("NX_CDCS_USER_OWNED_RECORDS", default=False),
-                    id="nx-cdcs-user-owned-records",
-                )
-            with Horizontal(classes="section-toggle-row"):
-                yield Label(
-                    "NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE",
-                    classes="section-toggle-label",
-                )
-                yield Switch(
-                    value=self._get_bool(
-                        "NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE", default=True
-                    ),
-                    id="nx-cdcs-assign-workspace",
-                )
+            with Horizontal(classes="form-columns"):
+                with Vertical(classes="form-column"):
+                    with Horizontal(classes="section-toggle-row"):
+                        yield Label(
+                            "NX_CDCS_USER_OWNED_RECORDS",
+                            classes="section-toggle-label",
+                        )
+                        yield Switch(
+                            value=self._get_bool(
+                                "NX_CDCS_USER_OWNED_RECORDS", default=False
+                            ),
+                            id="nx-cdcs-user-owned-records",
+                        )
+                    yield Static(
+                        _fdesc("NX_CDCS_USER_OWNED_RECORDS"),
+                        classes="field-help",
+                    )
+                with Vertical(classes="form-column"):
+                    with Horizontal(classes="section-toggle-row"):
+                        yield Label(
+                            "NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE",
+                            classes="section-toggle-label",
+                        )
+                        yield Switch(
+                            value=self._get_bool(
+                                "NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE", default=True
+                            ),
+                            id="nx-cdcs-assign-workspace",
+                        )
+                    yield Static(
+                        _fdesc("NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE"),
+                        classes="field-help",
+                    )
 
     def _compose_file_processing(self) -> ComposeResult:
         with VerticalScroll():
