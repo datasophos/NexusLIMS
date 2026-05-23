@@ -506,7 +506,7 @@ class CDCSUserManager:
         Returns True on success (HTTP 200), False on any other response.
         """
         endpoint = urljoin(
-            self._base_url, f"rest/data/{record_id}/change-owner/{user_id}/"
+            self._base_url, f"rest/data/{record_id}/change-owner/{user_id}"
         )
         r = nexus_req(endpoint, "PATCH", token_auth=self._token)
         if r.status_code == HTTPStatus.OK:
