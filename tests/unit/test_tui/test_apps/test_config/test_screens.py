@@ -1168,6 +1168,24 @@ class TestResolveFieldDetailHelpers:
             name, _detail = screen._resolve_focused_field_detail(sw)
             assert name == "NX_DISABLE_SSL_VERIFY"
 
+    async def test_resolve_switch_unknown_id_returns_none(self, tmp_path):
+        """Switch with an unmapped id returns (None, '')."""
+        from unittest.mock import MagicMock
+
+        from textual.widgets import Switch as _Switch
+
+        env_file = tmp_path / "empty.env"
+        app = ConfiguratorApp(env_path=env_file)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            screen = app.screen
+
+            mock_sw = MagicMock(spec=_Switch)
+            mock_sw.id = "some-unknown-switch-id"
+            name, detail = screen._resolve_switch_field_detail(mock_sw)
+            assert name is None
+            assert detail == ""
+
     async def test_resolve_textarea_cert_bundle(self, tmp_path):
         """Focused TextArea nx-cert-bundle returns NX_CERT_BUNDLE (1025-1028)."""
         from textual.widgets import TextArea
