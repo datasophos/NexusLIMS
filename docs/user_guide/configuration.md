@@ -283,6 +283,28 @@ NX_CDCS_URL=https://nexuslims.example.com
 NX_CDCS_TOKEN=your-api-token-here
 ```
 
+(config-cdcs-user-owned-records)=
+#### `NX_CDCS_USER_OWNED_RECORDS`
+
+```{config-detail} NX_CDCS_USER_OWNED_RECORDS
+```
+
+**Example:**
+```bash
+NX_CDCS_USER_OWNED_RECORDS=true
+```
+
+(config-cdcs-assign-workspace)=
+#### `NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE`
+
+```{config-detail} NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE
+```
+
+**Example:**
+```bash
+NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE=true
+```
+
 ```{warning}
 Store API tokens securely. Use environment variables or a secure secrets management system rather than committing tokens to version control.
 ```
