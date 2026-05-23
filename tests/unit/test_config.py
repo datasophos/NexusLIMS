@@ -703,3 +703,43 @@ class TestReadLabArchivesEnv:
 
         result = read_labarchives_env(str(env_file))
         assert result["NX_LABARCHIVES_URL"] == "https://la.example.com/api"
+
+
+def test_cdcs_user_owned_records_defaults_false(monkeypatch):
+    """NX_CDCS_USER_OWNED_RECORDS defaults to False when not set."""
+    from nexusLIMS.config import refresh_settings, settings
+
+    monkeypatch.delenv("NX_CDCS_USER_OWNED_RECORDS", raising=False)
+    refresh_settings()
+
+    assert settings.NX_CDCS_USER_OWNED_RECORDS is False
+
+
+def test_cdcs_user_owned_records_can_be_enabled(monkeypatch):
+    """NX_CDCS_USER_OWNED_RECORDS can be set to True via environment."""
+    from nexusLIMS.config import refresh_settings, settings
+
+    monkeypatch.setenv("NX_CDCS_USER_OWNED_RECORDS", "true")
+    refresh_settings()
+
+    assert settings.NX_CDCS_USER_OWNED_RECORDS is True
+
+
+def test_cdcs_assign_to_public_workspace_defaults_true(monkeypatch):
+    """NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE defaults to True when not set."""
+    from nexusLIMS.config import refresh_settings, settings
+
+    monkeypatch.delenv("NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE", raising=False)
+    refresh_settings()
+
+    assert settings.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE is True
+
+
+def test_cdcs_assign_to_public_workspace_can_be_disabled(monkeypatch):
+    """NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE can be set to False via environment."""
+    from nexusLIMS.config import refresh_settings, settings
+
+    monkeypatch.setenv("NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE", "false")
+    refresh_settings()
+
+    assert settings.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE is False
