@@ -3,7 +3,17 @@
 
 import os
 import tempfile
+import warnings
 from pathlib import Path
+
+# Suppress SyntaxWarning from hyperspy.roi raised at module-compile time,
+# before pytest's filterwarnings machinery is active.
+warnings.filterwarnings(
+    "ignore",
+    message="'return' in a 'finally' block",
+    category=SyntaxWarning,
+    module=r"hyperspy\.roi",
+)
 
 # ============================================================================
 # CRITICAL: Enable test mode BEFORE any nexusLIMS imports
