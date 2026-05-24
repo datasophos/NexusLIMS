@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Apr, 27, 2026"/>
+    <meta name="docbuild:last-update" content="May, 24, 2026"/>
   </head>
   
   
@@ -838,7 +838,7 @@ window.addEventListener("load", load);
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.exporters.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">ExportContext</span><span class="p">,</span> <span class="n">ExportResult</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils.cdcs</span><span class="w"> </span><span class="kn">import</span> <span class="n">AuthenticationError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils.cdcs</span><span class="w"> </span><span class="kn">import</span> <span class="n">AuthenticationError</span><span class="p">,</span> <span class="n">CDCSUserManager</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.utils.network</span><span class="w"> </span><span class="kn">import</span> <span class="n">nexus_req</span>
 
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -911,6 +911,12 @@ window.addEventListener("load", load);
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;CDCS configuration error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span>
 
+        <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_USER_OWNED_RECORDS</span><span class="p">:</span>
+            <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="s2">&quot;NX_CDCS_USER_OWNED_RECORDS is enabled: NX_CDCS_TOKEN must be a &quot;</span>
+                <span class="s2">&quot;superuser token for user management to work.&quot;</span>
+            <span class="p">)</span>
+
         <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span></div>
 
 
@@ -919,9 +925,10 @@ window.addEventListener("load", load);
     <span class="k">def</span><span class="w"> </span><span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">ExportContext</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ExportResult</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Export record to CDCS.</span>
 
-<span class="sd">        Reads the XML file, uploads it to CDCS, and assigns it to the</span>
-<span class="sd">        configured workspace. Never raises exceptions - all errors are</span>
-<span class="sd">        caught and returned as ExportResult with success=False.</span>
+<span class="sd">        Reads the XML file, uploads it to CDCS, optionally assigns it to</span>
+<span class="sd">        the configured workspace, and optionally assigns per-user ownership.</span>
+<span class="sd">        Never raises exceptions - all errors are caught and returned as</span>
+<span class="sd">        ExportResult with success=False.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -934,13 +941,38 @@ window.addEventListener("load", load);
 <span class="sd">            Result of the export attempt</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Read XML content</span>
             <span class="k">with</span> <span class="n">context</span><span class="o">.</span><span class="n">xml_file_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">xml_content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
-            <span class="c1"># Upload to CDCS</span>
             <span class="n">title</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">xml_file_path</span><span class="o">.</span><span class="n">stem</span>
+
+            <span class="n">cdcs_user_id</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">manager</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_USER_OWNED_RECORDS</span><span class="p">:</span>
+                <span class="n">res_event</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">reservation_event</span>
+                <span class="k">if</span> <span class="n">res_event</span> <span class="ow">and</span> <span class="n">res_event</span><span class="o">.</span><span class="n">username</span><span class="p">:</span>
+                    <span class="n">manager</span> <span class="o">=</span> <span class="n">CDCSUserManager</span><span class="p">(</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_URL</span><span class="p">),</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span>
+                    <span class="p">)</span>
+                    <span class="n">user</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">get_or_create_user</span><span class="p">(</span>
+                        <span class="n">username</span><span class="o">=</span><span class="n">res_event</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+                        <span class="n">email</span><span class="o">=</span><span class="n">res_event</span><span class="o">.</span><span class="n">user_email</span><span class="p">,</span>
+                        <span class="n">first_name</span><span class="o">=</span><span class="n">res_event</span><span class="o">.</span><span class="n">user_first_name</span><span class="p">,</span>
+                        <span class="n">last_name</span><span class="o">=</span><span class="n">res_event</span><span class="o">.</span><span class="n">user_last_name</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">user</span><span class="p">:</span>
+                        <span class="n">cdcs_user_id</span> <span class="o">=</span> <span class="n">user</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                            <span class="s2">&quot;Could not find or create CDCS user for </span><span class="si">%s</span><span class="s2">; &quot;</span>
+                            <span class="s2">&quot;record will be admin-owned&quot;</span><span class="p">,</span>
+                            <span class="n">res_event</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+                        <span class="p">)</span>
+
             <span class="n">record_id</span><span class="p">,</span> <span class="n">record_url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upload_to_cdcs</span><span class="p">(</span><span class="n">xml_content</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">cdcs_user_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">manager</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">manager</span><span class="o">.</span><span class="n">assign_record_owner</span><span class="p">(</span><span class="n">record_id</span><span class="p">,</span> <span class="n">cdcs_user_id</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">ExportResult</span><span class="p">(</span>
                 <span class="n">success</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -999,12 +1031,12 @@ window.addEventListener("load", load);
 
         <span class="n">record_id</span> <span class="o">=</span> <span class="n">post_r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
 
-        <span class="c1"># Assign to workspace</span>
-        <span class="n">wrk_endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span>
-            <span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_URL</span><span class="p">),</span>
-            <span class="sa">f</span><span class="s2">&quot;rest/data/</span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2">/assign/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_workspace_id</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
-        <span class="n">_</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span><span class="n">wrk_endpoint</span><span class="p">,</span> <span class="s2">&quot;PATCH&quot;</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE</span><span class="p">:</span>
+            <span class="n">wrk_endpoint</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_URL</span><span class="p">),</span>
+                <span class="sa">f</span><span class="s2">&quot;rest/data/</span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2">/assign/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_workspace_id</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">_</span> <span class="o">=</span> <span class="n">nexus_req</span><span class="p">(</span><span class="n">wrk_endpoint</span><span class="p">,</span> <span class="s2">&quot;PATCH&quot;</span><span class="p">,</span> <span class="n">token_auth</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_TOKEN</span><span class="p">)</span>
 
         <span class="n">record_url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_CDCS_URL</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;data?id=</span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Record &quot;</span><span class="si">%s</span><span class="s1">&quot; available at </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">record_url</span><span class="p">)</span>

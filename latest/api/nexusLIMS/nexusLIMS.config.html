@@ -62,12 +62,12 @@
     <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="nexusLIMS.instruments" href="nexusLIMS.instruments.html" />
-    <link rel="prev" title="nexusLIMS.exporters.strategies" href="nexusLIMS.exporters.strategies.html" />
+    <link rel="next" title="NEMO System Reference for NexusLIMS" href="../../reference/NEMO_Reference.html" />
+    <link rel="prev" title="nexusLIMS.instruments" href="nexusLIMS.instruments.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Apr, 27, 2026"/>
+    <meta name="docbuild:last-update" content="May, 24, 2026"/>
   </head>
   
   
@@ -416,16 +416,16 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../../reference/api.html">NexusLIMS API documentation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l2 current active has-children"><a class="reference internal" href="nexusLIMS.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS</span></code></a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.tui.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.tui</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.harvesters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.harvesters</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.builder.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.builder</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.db.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.db</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.cli.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.schemas.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.schemas</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.extractors.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nexusLIMS.utils.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.utils</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.exporters.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters</span></code></a></li>
-<li class="toctree-l3 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="nexusLIMS.instruments.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code></a></li>
 </ul>
 </details></li>
 </ul>
@@ -715,6 +715,18 @@ that settings are loaded with proper types and provides descriptions for each.</
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_CDCS_USER_OWNED_RECORDS">
+<span class="sig-name descname"><span class="pre">NX_CDCS_USER_OWNED_RECORDS</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_CDCS_USER_OWNED_RECORDS" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE">
+<span class="sig-name descname"><span class="pre">NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE" title="Link to this definition">#</a></dt>
+<dd><p><strong>Type:</strong> bool</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_KEY_ID">
 <span class="sig-name descname"><span class="pre">NX_LABARCHIVES_ACCESS_KEY_ID</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_KEY_ID" title="Link to this definition">#</a></dt>
 <dd><p><strong>Type:</strong> str | None</p>
@@ -998,20 +1010,20 @@ values (or <code class="docutils literal notranslate"><span class="pre">None</sp
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="nexusLIMS.exporters.strategies.html"
+       href="nexusLIMS.instruments.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.exporters.strategies</span></code></p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></p>
       </div>
     </a>
     <a class="right-next"
-       href="nexusLIMS.instruments.html"
+       href="../../reference/NEMO_Reference.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.instruments</span></code></p>
+        <p class="prev-next-title">NEMO System Reference for NexusLIMS</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1068,6 +1080,8 @@ values (or <code class="docutils literal notranslate"><span class="pre">None</sp
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_DB_PATH"><code class="docutils literal notranslate"><span class="pre">Settings.NX_DB_PATH</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CDCS_TOKEN"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CDCS_TOKEN</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CDCS_URL"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CDCS_URL</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CDCS_USER_OWNED_RECORDS"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CDCS_USER_OWNED_RECORDS</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE"><code class="docutils literal notranslate"><span class="pre">Settings.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_KEY_ID"><code class="docutils literal notranslate"><span class="pre">Settings.NX_LABARCHIVES_ACCESS_KEY_ID</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_PASSWORD"><code class="docutils literal notranslate"><span class="pre">Settings.NX_LABARCHIVES_ACCESS_PASSWORD</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_LABARCHIVES_USER_ID"><code class="docutils literal notranslate"><span class="pre">Settings.NX_LABARCHIVES_USER_ID</span></code></a></li>

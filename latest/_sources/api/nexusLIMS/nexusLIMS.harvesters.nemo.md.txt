@@ -14,8 +14,8 @@
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.harvesters.nemo.utils
 nexusLIMS.harvesters.nemo.connector
+nexusLIMS.harvesters.nemo.utils
 nexusLIMS.harvesters.nemo.exceptions
 ```
 

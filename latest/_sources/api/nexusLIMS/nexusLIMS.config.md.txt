@@ -346,6 +346,28 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 
 ````
 
+````{py:attribute} NX_CDCS_USER_OWNED_RECORDS
+:canonical: nexusLIMS.config.Settings.NX_CDCS_USER_OWNED_RECORDS
+
+**Type:** bool
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_CDCS_USER_OWNED_RECORDS
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE
+:canonical: nexusLIMS.config.Settings.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE
+
+**Type:** bool
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:attribute} NX_LABARCHIVES_ACCESS_KEY_ID
 :canonical: nexusLIMS.config.Settings.NX_LABARCHIVES_ACCESS_KEY_ID
 

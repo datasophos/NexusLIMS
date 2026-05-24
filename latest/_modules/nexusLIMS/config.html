@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Apr, 27, 2026"/>
+    <meta name="docbuild:last-update" content="May, 24, 2026"/>
   </head>
   
   
@@ -1258,6 +1258,57 @@ window.addEventListener("load", load);
                 <span class="s2">&quot;This is the same URL users visit to browse experiment records. &quot;</span>
                 <span class="s2">&quot;NexusLIMS POSTs new XML records to the CDCS REST API at this address.&quot;</span>
             <span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">NX_CDCS_USER_OWNED_RECORDS</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;When True, NexusLIMS looks up or creates a CDCS user account &quot;</span>
+            <span class="s2">&quot;matching the NEMO session user and assigns ownership of uploaded &quot;</span>
+            <span class="s2">&quot;records to that account. Requires NX_CDCS_TOKEN to be a superuser &quot;</span>
+            <span class="s2">&quot;token. Default: False.&quot;</span>
+        <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;When enabled, NexusLIMS will:</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;1. Fetch the session user&#39;s details (username, email) from the &quot;</span>
+                <span class="s2">&quot;NEMO reservation or usage event.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;2. Search the CDCS user list for a matching account (by username &quot;</span>
+                <span class="s2">&quot;first, then email).</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;3. If no account exists, create one with a random password — the &quot;</span>
+                <span class="s2">&quot;account is intended for SSO/LDAP login only; the generated &quot;</span>
+                <span class="s2">&quot;password is never shared.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;4. Assign ownership of the uploaded record to that CDCS user.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;**Requirements:** `NX_CDCS_TOKEN` must belong to a superuser &quot;</span>
+                <span class="s2">&quot;account. If user lookup or creation fails for any reason, the &quot;</span>
+                <span class="s2">&quot;record is still uploaded as admin-owned and a warning is logged &quot;</span>
+                <span class="s2">&quot;— the export is never blocked by a user management failure.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Default: `false` (records are owned by the service account).&quot;</span>
+            <span class="p">)</span>
+        <span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;When True, uploaded records are assigned to the global public &quot;</span>
+            <span class="s2">&quot;workspace in CDCS, making them visible to all users. &quot;</span>
+            <span class="s2">&quot;Default: True.&quot;</span>
+        <span class="p">),</span>
+        <span class="n">json_schema_extra</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;detail&quot;</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s2">&quot;Controls whether uploaded records are assigned to the CDCS &quot;</span>
+                <span class="s2">&quot;global public workspace after upload.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;When `true` (default), NexusLIMS calls &quot;</span>
+                <span class="s2">&quot;`rest/data/</span><span class="si">{id}</span><span class="s2">/assign/</span><span class="si">{workspace_id}</span><span class="s2">/` after each upload.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Set to `false` to leave records in the uploading user&#39;s private &quot;</span>
+                <span class="s2">&quot;workspace. This is only useful in combination with &quot;</span>
+                <span class="s2">&quot;`NX_CDCS_USER_OWNED_RECORDS=true`; without user ownership &quot;</span>
+                <span class="s2">&quot;enabled, disabling workspace assignment would make records &quot;</span>
+                <span class="s2">&quot;inaccessible to most users.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;Both this setting and `NX_CDCS_USER_OWNED_RECORDS` are applied &quot;</span>
+                <span class="s2">&quot;independently — a record can be user-owned AND in the public &quot;</span>
+                <span class="s2">&quot;workspace at the same time.&quot;</span>
+            <span class="p">)</span>
         <span class="p">},</span>
     <span class="p">)</span>
     <span class="n">NX_LABARCHIVES_ACCESS_KEY_ID</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>

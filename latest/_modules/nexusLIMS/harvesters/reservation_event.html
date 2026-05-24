@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Apr, 27, 2026"/>
+    <meta name="docbuild:last-update" content="May, 24, 2026"/>
   </head>
   
   
@@ -918,6 +918,12 @@ window.addEventListener("load", load);
 <span class="sd">        the user&#39;s group)</span>
 <span class="sd">    url</span>
 <span class="sd">        A web-accessible link to a summary of this reservation</span>
+<span class="sd">    user_email</span>
+<span class="sd">        The email address of the user associated with this reservation</span>
+<span class="sd">    user_first_name</span>
+<span class="sd">        The first name of the user associated with this reservation</span>
+<span class="sd">    user_last_name</span>
+<span class="sd">        The last name of the user associated with this reservation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">experiment_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
@@ -942,6 +948,9 @@ window.addEventListener("load", load);
     <span class="n">division</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">group</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">user_email</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">user_first_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">user_last_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Post-initialization to coerce arguments to lists and validate.&quot;&quot;&quot;</span>

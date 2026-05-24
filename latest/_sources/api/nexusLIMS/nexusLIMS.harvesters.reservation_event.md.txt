@@ -274,6 +274,39 @@
 
 ````
 
+````{py:attribute} user_email
+:canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.user_email
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.user_email
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} user_first_name
+:canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.user_first_name
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.user_first_name
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} user_last_name
+:canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.user_last_name
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.harvesters.reservation_event.ReservationEvent.user_last_name
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:method} as_xml() -> lxml.etree.Element
 :canonical: nexusLIMS.harvesters.reservation_event.ReservationEvent.as_xml
 

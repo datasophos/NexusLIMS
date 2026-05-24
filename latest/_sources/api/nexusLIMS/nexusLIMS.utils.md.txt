@@ -14,13 +14,13 @@
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.utils.dicts
-nexusLIMS.utils.logging
-nexusLIMS.utils.paths
-nexusLIMS.utils.network
-nexusLIMS.utils.time
-nexusLIMS.utils.elabftw
-nexusLIMS.utils.labarchives
-nexusLIMS.utils.cdcs
 nexusLIMS.utils.files
+nexusLIMS.utils.cdcs
+nexusLIMS.utils.logging
+nexusLIMS.utils.network
+nexusLIMS.utils.elabftw
+nexusLIMS.utils.paths
+nexusLIMS.utils.dicts
+nexusLIMS.utils.labarchives
+nexusLIMS.utils.time
 ```

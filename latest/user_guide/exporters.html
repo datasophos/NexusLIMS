@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Apr, 27, 2026"/>
+    <meta name="docbuild:last-update" content="May, 24, 2026"/>
   </head>
   
   
@@ -515,7 +515,9 @@
 <p><strong>Configuration:</strong> See <a class="reference internal" href="configuration.html#config-cdcs-url"><span class="std std-ref">CDCS Integration</span></a> for required settings:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code> - CDCS instance URL</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code> - API authentication token</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code> - API authentication token (must be a superuser token if <code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS</span></code> is enabled)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS</span></code> - Assign record ownership to the NEMO session user (default: <code class="docutils literal notranslate"><span class="pre">false</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE</span></code> - Assign uploaded records to the global public workspace (default: <code class="docutils literal notranslate"><span class="pre">true</span></code>)</p></li>
 </ul>
 <p>CDCS exports have <strong>priority 100</strong> (highest) and run first to ensure records are available for cross-linking by other destinations.</p>
 <p><strong>What gets exported:</strong></p>
@@ -526,6 +528,34 @@
 <li><p>Unique record ID assigned for cross-referencing</p></li>
 </ul>
 <p><strong>Frontend repository:</strong> <a class="reference external" href="https://github.com/datasophos/NexusLIMS-CDCS/">NexusLIMS-CDCS</a></p>
+<section id="user-record-ownership">
+<h4>User Record Ownership<a class="headerlink" href="#user-record-ownership" title="Link to this heading">#</a></h4>
+<p>By default, all uploaded records are owned by the CDCS service account (the account whose token is configured in <code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code>). Enabling <code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS</span></code> transfers ownership of each record to a CDCS account that matches the NEMO session user:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CDCS_USER_OWNED_RECORDS</span><span class="o">=</span><span class="nb">true</span>
+</pre></div>
+</div>
+<p><strong>How it works:</strong></p>
+<ol class="arabic simple">
+<li><p>NexusLIMS reads the session user’s username, email, first name, and last name from the NEMO reservation event.</p></li>
+<li><p>It searches CDCS for an existing account matching that username (falling back to email).</p></li>
+<li><p>If no account exists, a new CDCS account is created with a random password. The user can either login via SSO/LDAP, or will need to reset their password to access the account for the first time.</p></li>
+<li><p>Ownership of the uploaded record is assigned to that CDCS user – this means that the user will have the ability to edit/annotate the record, and will not be visible to other users if the <em>Public Workspace Assignment</em> setting (see below) is false.</p></li>
+</ol>
+<p><strong>Requirements:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code> must belong to a <strong>superuser</strong> account that has permission to list users, create accounts, and change record ownership.</p></li>
+<li><p>If user lookup or creation fails for any reason (network error, missing user details, etc.), the record is still uploaded – it will be owned by the service account and a warning is logged. Exports are never blocked by a user management failure.</p></li>
+</ul>
+</section>
+<section id="public-workspace-assignment">
+<h4>Public Workspace Assignment<a class="headerlink" href="#public-workspace-assignment" title="Link to this heading">#</a></h4>
+<p>Records uploaded to CDCS are by default assigned to the global public workspace, making them visible to all users:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE</span><span class="o">=</span><span class="nb">true</span><span class="w">  </span><span class="c1"># default</span>
+</pre></div>
+</div>
+<p>Set to <code class="docutils literal notranslate"><span class="pre">false</span></code> to leave records in the uploading user’s private workspace. This is only useful when <code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS=true</span></code> is also set – without per-user ownership, disabling workspace assignment would make records inaccessible to most users.</p>
+<p>User ownership and public workspace assignment are independent: a record can be user-owned and in the public workspace simultaneously.</p>
+</section>
 </section>
 <section id="elabftw">
 <span id="elabftw-exporter"></span><h3>eLabFTW<a class="headerlink" href="#elabftw" title="Link to this heading">#</a></h3>

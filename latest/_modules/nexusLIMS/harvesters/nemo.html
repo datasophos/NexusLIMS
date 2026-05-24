@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Apr, 27, 2026"/>
+    <meta name="docbuild:last-update" content="May, 24, 2026"/>
   </head>
   
   
@@ -965,6 +965,9 @@ window.addEventListener("load", load);
             <span class="s2">&quot;api/&quot;</span><span class="p">,</span>
             <span class="sa">f</span><span class="s2">&quot;event_details/usage/</span><span class="si">{</span><span class="n">usage_event</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">,</span>  <span class="c1"># Usage event URL</span>
         <span class="p">),</span>
+        <span class="n">user_email</span><span class="o">=</span><span class="n">usage_event</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">),</span>
+        <span class="n">user_first_name</span><span class="o">=</span><span class="n">usage_event</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;first_name&quot;</span><span class="p">),</span>
+        <span class="n">user_last_name</span><span class="o">=</span><span class="n">usage_event</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;last_name&quot;</span><span class="p">),</span>
     <span class="p">)</span></div>
 
 
@@ -1227,6 +1230,9 @@ window.addEventListener("load", load);
             <span class="s2">&quot;api/&quot;</span><span class="p">,</span>
             <span class="sa">f</span><span class="s2">&quot;event_details/reservation/</span><span class="si">{</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">/&quot;</span><span class="p">,</span>
         <span class="p">),</span>
+        <span class="n">user_email</span><span class="o">=</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">),</span>
+        <span class="n">user_first_name</span><span class="o">=</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;first_name&quot;</span><span class="p">),</span>
+        <span class="n">user_last_name</span><span class="o">=</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;last_name&quot;</span><span class="p">),</span>
     <span class="p">)</span></div>
 
 </pre></div>

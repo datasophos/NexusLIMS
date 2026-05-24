@@ -21,6 +21,11 @@
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
+* - {py:obj}`CDCSUserManager <nexusLIMS.utils.cdcs.CDCSUserManager>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.cdcs.CDCSUserManager
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 ````
 
 ### Functions
@@ -158,3 +163,30 @@ Bases: {py:obj}`typing.Dict`\[{py:obj}`str`\, {py:obj}`typing.Any`\]
 :parser: autodoc2_docstrings_parser
 ```
 ````
+
+`````{py:class} CDCSUserManager(base_url: str, token: str)
+:canonical: nexusLIMS.utils.cdcs.CDCSUserManager
+
+```{autodoc2-docstring} nexusLIMS.utils.cdcs.CDCSUserManager
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:method} get_or_create_user(username: str, email: str | None, first_name: str | None, last_name: str | None) -> dict | None
+:canonical: nexusLIMS.utils.cdcs.CDCSUserManager.get_or_create_user
+
+```{autodoc2-docstring} nexusLIMS.utils.cdcs.CDCSUserManager.get_or_create_user
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} assign_record_owner(record_id: int, user_id: int) -> bool
+:canonical: nexusLIMS.utils.cdcs.CDCSUserManager.assign_record_owner
+
+```{autodoc2-docstring} nexusLIMS.utils.cdcs.CDCSUserManager.assign_record_owner
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
