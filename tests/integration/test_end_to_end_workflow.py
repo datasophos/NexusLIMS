@@ -176,6 +176,50 @@ class TestEndToEndWorkflow:
 
         return downloaded_doc
 
+    def _verify_cdcs_record_ownership(
+        self, cdcs_record_id, expected_username, cdcs_client
+    ):
+        """Verify the CDCS record is owned by the expected user."""
+        from urllib.parse import urljoin
+
+        from nexusLIMS.utils.cdcs import CDCSUserManager
+        from nexusLIMS.utils.network import nexus_req
+
+        manager = CDCSUserManager(cdcs_client["url"], cdcs_client["token"])
+        user = manager.get_or_create_user(expected_username, None, None, None)
+        assert user is not None, f"Could not find CDCS user for '{expected_username}'"
+        cdcs_client["register_user"](user["id"])
+
+        endpoint = urljoin(cdcs_client["url"], f"rest/data/{cdcs_record_id}/")
+        r = nexus_req(endpoint, "GET", token_auth=cdcs_client["token"])
+        assert r.status_code == 200
+        record_data = r.json()
+        assert str(record_data.get("user_id")) == str(user["id"]), (
+            f"Record {cdcs_record_id} is not owned by '{expected_username}' "
+            f"(user_id={record_data.get('user_id')}, expected={user['id']})"
+        )
+        print(f"[+] Record {cdcs_record_id} correctly owned by '{expected_username}'")
+
+    def _verify_cdcs_workspace_assignment(self, cdcs_record_id, cdcs_client):
+        """Verify the CDCS record is in the global public workspace."""
+        from urllib.parse import urljoin
+
+        from nexusLIMS.utils.cdcs import get_workspace_id
+        from nexusLIMS.utils.network import nexus_req
+
+        workspace_id = get_workspace_id()
+        endpoint = urljoin(cdcs_client["url"], f"rest/workspace/{workspace_id}/data/")
+        r = nexus_req(endpoint, "GET", token_auth=cdcs_client["token"])
+        assert r.status_code == 200
+        record_ids = [rec["id"] for rec in r.json()]
+        assert int(cdcs_record_id) in record_ids, (
+            f"Record {cdcs_record_id} is not in public workspace {workspace_id}"
+        )
+        print(
+            f"[+] Record {cdcs_record_id} correctly assigned to "
+            f"public workspace {workspace_id}"
+        )
+
     def _verify_fileserver_access(self, downloaded_doc, nx_ns):
         """Verify fileserver URLs are accessible."""
         import requests
@@ -275,6 +319,7 @@ class TestEndToEndWorkflow:
         self,
         test_environment_setup,
         elabftw_client,
+        monkeypatch,
     ):
         """
         Test complete workflow using process_new_records().
@@ -288,7 +333,7 @@ class TestEndToEndWorkflow:
         3. Files are found based on session timespan
         4. Metadata is extracted from files
         5. XML record is generated and valid
-        6. Record is uploaded to CDCS
+        6. Record is uploaded to CDCS and owned by the session user
         7. Record is uploaded to eLabFTW
         8. Session status transitions from TO_BE_BUILT to COMPLETED
 
@@ -309,9 +354,15 @@ class TestEndToEndWorkflow:
             Test environment configuration (includes nemo_connector, cdcs_client,
             database, extracted_test_files, and session timespan via fixture
             dependencies)
+        monkeypatch : pytest.MonkeyPatch
+            Used to enable NX_CDCS_USER_OWNED_RECORDS for this test only
         """
-        from nexusLIMS.config import settings
+        from nexusLIMS.config import refresh_settings, settings
         from nexusLIMS.db.session_handler import get_sessions_to_build
+
+        # Patch the settings to also exercise the record ownership feature
+        monkeypatch.setenv("NX_CDCS_USER_OWNED_RECORDS", "true")
+        refresh_settings()
 
         # Verify no sessions exist before harvesting
         sessions_before = get_sessions_to_build()
@@ -354,6 +405,19 @@ class TestEndToEndWorkflow:
 
         # Verify CDCS export
         downloaded_doc = self._verify_cdcs_export(upload_info["cdcs_record_id"], schema)
+
+        # Verify record ownership was assigned to the NEMO session user
+        self._verify_cdcs_record_ownership(
+            upload_info["cdcs_record_id"],
+            test_environment_setup["user"],
+            test_environment_setup["cdcs_client"],
+        )
+
+        # Verify record is in the global public workspace
+        self._verify_cdcs_workspace_assignment(
+            upload_info["cdcs_record_id"],
+            test_environment_setup["cdcs_client"],
+        )
 
         # Verify number of expected activities for default setting
         activities = downloaded_doc.findall(f".//{nx_ns}acquisitionActivity")

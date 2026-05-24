@@ -9,6 +9,8 @@ nexusLIMS.exporters.destinations.cdcs instead.
 """
 
 import logging
+import secrets
+import string
 from http import HTTPStatus
 from pathlib import Path
 from typing import Any, Dict, List
@@ -424,3 +426,95 @@ def upload_record_files(
     )
 
     return files_uploaded, record_ids
+
+
+class CDCSUserManager:
+    """Manage CDCS user accounts for per-user record ownership.
+
+    Fetches the user list once per instance and caches it. Intended for
+    use within a single export batch (one CDCSDestination instance).
+    """
+
+    def __init__(self, base_url: str, token: str) -> None:
+        self._base_url = base_url
+        self._token = token
+        self._user_cache: list[dict] | None = None
+
+    def _fetch_users(self) -> list[dict] | None:
+        """Fetch and cache all users from CDCS REST API."""
+        endpoint = urljoin(self._base_url, "rest/user/")
+        r = nexus_req(endpoint, "GET", token_auth=self._token)
+        if not r.ok:
+            _logger.warning("Failed to fetch CDCS users: %s", r.text)
+            return None
+        data = r.json()
+        if not isinstance(data, list):
+            _logger.warning(
+                "CDCS GET rest/user/ returned unexpected type %s; expected list",
+                type(data).__name__,
+            )
+            return None
+        return data
+
+    def get_or_create_user(
+        self,
+        username: str,
+        email: str | None,
+        first_name: str | None,
+        last_name: str | None,
+    ) -> dict | None:
+        """Find or create a CDCS user account.
+
+        Searches by username first, then by email. Creates the account if
+        neither matches. Returns the user dict, or None if any step fails.
+        """
+        if self._user_cache is None:
+            self._user_cache = self._fetch_users()
+        if self._user_cache is None:
+            return None
+
+        for user in self._user_cache:
+            if user.get("username") == username:
+                return user
+
+        if email:
+            for user in self._user_cache:
+                if user.get("email") == email:
+                    return user
+
+        alphabet = string.ascii_letters + string.digits + string.punctuation
+        password = "".join(secrets.choice(alphabet) for _ in range(32))
+        payload = {
+            "username": username,
+            "email": email or "",
+            "first_name": first_name or "",
+            "last_name": last_name or "",
+            "password": password,
+        }
+        endpoint = urljoin(self._base_url, "rest/user/")
+        r = nexus_req(endpoint, "POST", json=payload, token_auth=self._token)
+        if r.status_code != HTTPStatus.CREATED:
+            _logger.warning("Failed to create CDCS user %s: %s", username, r.text)
+            return None
+        new_user = r.json()
+        self._user_cache.append(new_user)
+        return new_user
+
+    def assign_record_owner(self, record_id: int, user_id: int) -> bool:
+        """Assign ownership of a CDCS record to a user.
+
+        Returns True on success (HTTP 200), False on any other response.
+        """
+        endpoint = urljoin(
+            self._base_url, f"rest/data/{record_id}/change-owner/{user_id}"
+        )
+        r = nexus_req(endpoint, "PATCH", token_auth=self._token)
+        if r.status_code == HTTPStatus.OK:
+            return True
+        _logger.warning(
+            "Failed to assign ownership of record %s to user %s: %s",
+            record_id,
+            user_id,
+            r.text,
+        )
+        return False

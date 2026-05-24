@@ -90,6 +90,12 @@ class ReservationEvent:
         the user's group)
     url
         A web-accessible link to a summary of this reservation
+    user_email
+        The email address of the user associated with this reservation
+    user_first_name
+        The first name of the user associated with this reservation
+    user_last_name
+        The last name of the user associated with this reservation
     """
 
     experiment_title: str | None = None
@@ -114,6 +120,9 @@ class ReservationEvent:
     division: str | None = None
     group: str | None = None
     url: str | None = None
+    user_email: str | None = None
+    user_first_name: str | None = None
+    user_last_name: str | None = None
 
     def __post_init__(self):
         """Post-initialization to coerce arguments to lists and validate."""

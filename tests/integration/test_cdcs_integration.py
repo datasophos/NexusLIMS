@@ -7,6 +7,7 @@ to upload, retrieve, and manage experiment records.
 
 import logging
 import os
+from datetime import datetime
 from http import HTTPStatus
 from pathlib import Path
 
@@ -302,6 +303,36 @@ class TestCdcsWorkspaceAssignment:
         # Check that our record is in the workspace
         record_ids = [r["id"] for r in workspace_records]
         assert record_id in record_ids
+
+    def test_cdcs_destination_assigns_record_to_workspace(self, cdcs_client, cdcs_url):
+        """CDCSDestination._upload_to_cdcs assigns the record to the public workspace.
+
+        This test exercises the CDCSDestination class path (not the standalone
+        upload_record_content utility) to ensure the workspace assign endpoint URL
+        is constructed correctly (no trailing slash).
+        """
+        from urllib.parse import urljoin
+
+        from nexusLIMS import config
+        from nexusLIMS.exporters.destinations.cdcs import CDCSDestination
+        from nexusLIMS.utils.network import nexus_req
+
+        dest = CDCSDestination()
+        title = "Test Record - CDCSDestination Workspace Assignment"
+
+        record_id, _record_url = dest._upload_to_cdcs(MINIMAL_TEST_RECORD, title)
+        cdcs_client["register_record"](record_id)
+
+        workspace_id = cdcs.get_workspace_id()
+        endpoint = urljoin(cdcs_url, f"rest/workspace/{workspace_id}/data/")
+        response = nexus_req(endpoint, "GET", token_auth=config.settings.NX_CDCS_TOKEN)
+
+        assert response.status_code == HTTPStatus.OK
+        record_ids = [r["id"] for r in response.json()]
+        assert record_id in record_ids, (
+            f"Record {record_id} not found in public workspace {workspace_id} "
+            f"after CDCSDestination upload"
+        )
 
 
 @pytest.mark.integration
@@ -682,3 +713,82 @@ class TestCdcsFileUploadOperations:
         # Register for cleanup
         for record_id in record_ids:
             cdcs_client["register_record"](record_id)
+
+
+@pytest.mark.integration
+class TestCDCSUserOwnership:
+    """Integration tests for CDCSUserManager and per-user record ownership."""
+
+    def test_get_or_create_user_creates_new_user(self, cdcs_client):
+        """CDCSUserManager creates a CDCS user that did not previously exist."""
+        from nexusLIMS.utils.cdcs import CDCSUserManager
+
+        manager = CDCSUserManager(cdcs_client["url"], cdcs_client["token"])
+        username = f"nx_test_owner_{int(datetime.now().timestamp())}"
+        email = f"{username}@example.com"
+
+        user = manager.get_or_create_user(
+            username=username,
+            email=email,
+            first_name="NexusLIMS",
+            last_name="TestOwner",
+        )
+
+        assert user is not None
+        assert user["username"] == username
+        assert "id" in user
+        cdcs_client["register_user"](user["id"])
+
+    def test_get_or_create_user_returns_existing_on_second_call(self, cdcs_client):
+        """get_or_create_user returns cached user on repeated calls."""
+        from nexusLIMS.utils.cdcs import CDCSUserManager
+
+        manager = CDCSUserManager(cdcs_client["url"], cdcs_client["token"])
+        username = f"nx_test_cached_{int(datetime.now().timestamp())}"
+
+        user1 = manager.get_or_create_user(
+            username, f"{username}@example.com", "A", "B"
+        )
+        user2 = manager.get_or_create_user(
+            username, f"{username}@example.com", "A", "B"
+        )
+
+        assert user1 is not None
+        assert user2 is not None
+        assert user1["id"] == user2["id"]
+        cdcs_client["register_user"](user1["id"])
+
+    def test_assign_record_owner_changes_ownership(self, cdcs_client, cdcs_url):
+        """assign_record_owner returns True and changes the record's owner."""
+        from urllib.parse import urljoin
+
+        from nexusLIMS.config import settings
+        from nexusLIMS.utils.cdcs import CDCSUserManager, upload_record_content
+        from nexusLIMS.utils.network import nexus_req
+
+        manager = CDCSUserManager(cdcs_client["url"], cdcs_client["token"])
+        username = f"nx_test_record_owner_{int(datetime.now().timestamp())}"
+
+        # Upload a test record
+        _, record_id = upload_record_content(
+            MINIMAL_TEST_RECORD,
+            f"ownership_test_{username}",
+        )
+        assert record_id is not None
+        cdcs_client["register_record"](record_id)
+
+        # Create/find the test user
+        user = manager.get_or_create_user(username, f"{username}@example.com", "T", "O")
+        assert user is not None
+        cdcs_client["register_user"](user["id"])
+
+        # Assign ownership
+        success = manager.assign_record_owner(record_id, user["id"])
+        assert success is True
+
+        # Verify by fetching the record and checking user_id
+        endpoint = urljoin(cdcs_url, f"rest/data/{record_id}/")
+        r = nexus_req(endpoint, "GET", token_auth=settings.NX_CDCS_TOKEN)
+        assert r.status_code == HTTPStatus.OK
+        record_data = r.json()
+        assert str(record_data.get("user_id")) == str(user["id"])

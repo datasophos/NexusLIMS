@@ -12,7 +12,7 @@ from urllib.parse import urljoin
 
 from nexusLIMS.config import settings
 from nexusLIMS.exporters.base import ExportContext, ExportResult
-from nexusLIMS.utils.cdcs import AuthenticationError
+from nexusLIMS.utils.cdcs import AuthenticationError, CDCSUserManager
 from nexusLIMS.utils.network import nexus_req
 
 _logger = logging.getLogger(__name__)
@@ -81,14 +81,21 @@ class CDCSDestination:
         except Exception as e:
             return False, f"CDCS configuration error: {e}"
 
+        if settings.NX_CDCS_USER_OWNED_RECORDS:
+            _logger.info(
+                "NX_CDCS_USER_OWNED_RECORDS is enabled: NX_CDCS_TOKEN must be a "
+                "superuser token for user management to work."
+            )
+
         return True, None
 
     def export(self, context: ExportContext) -> ExportResult:
         """Export record to CDCS.
 
-        Reads the XML file, uploads it to CDCS, and assigns it to the
-        configured workspace. Never raises exceptions - all errors are
-        caught and returned as ExportResult with success=False.
+        Reads the XML file, uploads it to CDCS, optionally assigns it to
+        the configured workspace, and optionally assigns per-user ownership.
+        Never raises exceptions - all errors are caught and returned as
+        ExportResult with success=False.
 
         Parameters
         ----------
@@ -101,13 +108,38 @@ class CDCSDestination:
             Result of the export attempt
         """
         try:
-            # Read XML content
             with context.xml_file_path.open(encoding="utf-8") as f:
                 xml_content = f.read()
 
-            # Upload to CDCS
             title = context.xml_file_path.stem
+
+            cdcs_user_id = None
+            manager = None
+            if settings.NX_CDCS_USER_OWNED_RECORDS:
+                res_event = context.reservation_event
+                if res_event and res_event.username:
+                    manager = CDCSUserManager(
+                        str(settings.NX_CDCS_URL), settings.NX_CDCS_TOKEN
+                    )
+                    user = manager.get_or_create_user(
+                        username=res_event.username,
+                        email=res_event.user_email,
+                        first_name=res_event.user_first_name,
+                        last_name=res_event.user_last_name,
+                    )
+                    if user:
+                        cdcs_user_id = user["id"]
+                    else:
+                        _logger.warning(
+                            "Could not find or create CDCS user for %s; "
+                            "record will be admin-owned",
+                            res_event.username,
+                        )
+
             record_id, record_url = self._upload_to_cdcs(xml_content, title)
+
+            if cdcs_user_id is not None and manager is not None:
+                manager.assign_record_owner(record_id, cdcs_user_id)
 
             return ExportResult(
                 success=True,
@@ -165,12 +197,12 @@ class CDCSDestination:
 
         record_id = post_r.json()["id"]
 
-        # Assign to workspace
-        wrk_endpoint = urljoin(
-            str(settings.NX_CDCS_URL),
-            f"rest/data/{record_id}/assign/{self._get_workspace_id()}",
-        )
-        _ = nexus_req(wrk_endpoint, "PATCH", token_auth=settings.NX_CDCS_TOKEN)
+        if settings.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE:
+            wrk_endpoint = urljoin(
+                str(settings.NX_CDCS_URL),
+                f"rest/data/{record_id}/assign/{self._get_workspace_id()}",
+            )
+            _ = nexus_req(wrk_endpoint, "PATCH", token_auth=settings.NX_CDCS_TOKEN)
 
         record_url = urljoin(str(settings.NX_CDCS_URL), f"data?id={record_id}")
         _logger.info('Record "%s" available at %s', title, record_url)

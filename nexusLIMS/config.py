@@ -426,6 +426,57 @@ class Settings(BaseSettings):
             ),
         },
     )
+    NX_CDCS_USER_OWNED_RECORDS: bool = Field(
+        default=False,
+        description=(
+            "When True, NexusLIMS looks up or creates a CDCS user account "
+            "matching the NEMO session user and assigns ownership of uploaded "
+            "records to that account. Requires NX_CDCS_TOKEN to be a superuser "
+            "token. Default: False."
+        ),
+        json_schema_extra={
+            "detail": (
+                "When enabled, NexusLIMS will:\n\n"
+                "1. Fetch the session user's details (username, email) from the "
+                "NEMO reservation or usage event.\n\n"
+                "2. Search the CDCS user list for a matching account (by username "
+                "first, then email).\n\n"
+                "3. If no account exists, create one with a random password — the "
+                "account is intended for SSO/LDAP login only; the generated "
+                "password is never shared.\n\n"
+                "4. Assign ownership of the uploaded record to that CDCS user.\n\n"
+                "**Requirements:** `NX_CDCS_TOKEN` must belong to a superuser "
+                "account. If user lookup or creation fails for any reason, the "
+                "record is still uploaded as admin-owned and a warning is logged "
+                "— the export is never blocked by a user management failure.\n\n"
+                "Default: `false` (records are owned by the service account)."
+            )
+        },
+    )
+    NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE: bool = Field(
+        default=True,
+        description=(
+            "When True, uploaded records are assigned to the global public "
+            "workspace in CDCS, making them visible to all users. "
+            "Default: True."
+        ),
+        json_schema_extra={
+            "detail": (
+                "Controls whether uploaded records are assigned to the CDCS "
+                "global public workspace after upload.\n\n"
+                "When `true` (default), NexusLIMS calls "
+                "`rest/data/{id}/assign/{workspace_id}/` after each upload.\n\n"
+                "Set to `false` to leave records in the uploading user's private "
+                "workspace. This is only useful in combination with "
+                "`NX_CDCS_USER_OWNED_RECORDS=true`; without user ownership "
+                "enabled, disabling workspace assignment would make records "
+                "inaccessible to most users.\n\n"
+                "Both this setting and `NX_CDCS_USER_OWNED_RECORDS` are applied "
+                "independently — a record can be user-owned AND in the public "
+                "workspace at the same time."
+            )
+        },
+    )
     NX_LABARCHIVES_ACCESS_KEY_ID: str | None = Field(
         "test_la_akid" if TEST_MODE else None,
         description=(
