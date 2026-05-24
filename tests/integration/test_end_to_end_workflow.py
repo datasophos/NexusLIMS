@@ -208,16 +208,12 @@ class TestEndToEndWorkflow:
         from nexusLIMS.utils.network import nexus_req
 
         workspace_id = get_workspace_id()
-        endpoint = urljoin(
-            cdcs_client["url"],
-            f"rest/data/{cdcs_record_id}/",
-        )
+        endpoint = urljoin(cdcs_client["url"], f"rest/workspace/{workspace_id}/data/")
         r = nexus_req(endpoint, "GET", token_auth=cdcs_client["token"])
         assert r.status_code == 200
-        record_data = r.json()
-        assert str(record_data.get("workspace")) == str(workspace_id), (
-            f"Record {cdcs_record_id} is not in the public workspace "
-            f"(workspace={record_data.get('workspace')}, expected={workspace_id})"
+        record_ids = [rec["id"] for rec in r.json()]
+        assert cdcs_record_id in record_ids, (
+            f"Record {cdcs_record_id} is not in public workspace {workspace_id}"
         )
         print(
             f"[+] Record {cdcs_record_id} correctly assigned to "
