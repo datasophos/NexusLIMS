@@ -212,7 +212,7 @@ class TestEndToEndWorkflow:
         r = nexus_req(endpoint, "GET", token_auth=cdcs_client["token"])
         assert r.status_code == 200
         record_ids = [rec["id"] for rec in r.json()]
-        assert cdcs_record_id in record_ids, (
+        assert int(cdcs_record_id) in record_ids, (
             f"Record {cdcs_record_id} is not in public workspace {workspace_id}"
         )
         print(

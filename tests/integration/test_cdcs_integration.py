@@ -304,6 +304,36 @@ class TestCdcsWorkspaceAssignment:
         record_ids = [r["id"] for r in workspace_records]
         assert record_id in record_ids
 
+    def test_cdcs_destination_assigns_record_to_workspace(self, cdcs_client, cdcs_url):
+        """CDCSDestination._upload_to_cdcs assigns the record to the public workspace.
+
+        This test exercises the CDCSDestination class path (not the standalone
+        upload_record_content utility) to ensure the workspace assign endpoint URL
+        is constructed correctly (no trailing slash).
+        """
+        from urllib.parse import urljoin
+
+        from nexusLIMS import config
+        from nexusLIMS.exporters.destinations.cdcs import CDCSDestination
+        from nexusLIMS.utils.network import nexus_req
+
+        dest = CDCSDestination()
+        title = "Test Record - CDCSDestination Workspace Assignment"
+
+        record_id, _record_url = dest._upload_to_cdcs(MINIMAL_TEST_RECORD, title)
+        cdcs_client["register_record"](record_id)
+
+        workspace_id = cdcs.get_workspace_id()
+        endpoint = urljoin(cdcs_url, f"rest/workspace/{workspace_id}/data/")
+        response = nexus_req(endpoint, "GET", token_auth=config.settings.NX_CDCS_TOKEN)
+
+        assert response.status_code == HTTPStatus.OK
+        record_ids = [r["id"] for r in response.json()]
+        assert record_id in record_ids, (
+            f"Record {record_id} not found in public workspace {workspace_id} "
+            f"after CDCSDestination upload"
+        )
+
 
 @pytest.mark.integration
 class TestCdcsErrorHandling:

@@ -200,7 +200,7 @@ class CDCSDestination:
         if settings.NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE:
             wrk_endpoint = urljoin(
                 str(settings.NX_CDCS_URL),
-                f"rest/data/{record_id}/assign/{self._get_workspace_id()}/",
+                f"rest/data/{record_id}/assign/{self._get_workspace_id()}",
             )
             _ = nexus_req(wrk_endpoint, "PATCH", token_auth=settings.NX_CDCS_TOKEN)
 
