@@ -37,7 +37,9 @@ The **Configurable Data Curation System (CDCS)** is the primary and default expo
 **Configuration:** See {ref}`CDCS Integration <config-cdcs-url>` for required settings:
 
 - `NX_CDCS_URL` - CDCS instance URL
-- `NX_CDCS_TOKEN` - API authentication token
+- `NX_CDCS_TOKEN` - API authentication token (must be a superuser token if `NX_CDCS_USER_OWNED_RECORDS` is enabled)
+- `NX_CDCS_USER_OWNED_RECORDS` - Assign record ownership to the NEMO session user (default: `false`)
+- `NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE` - Assign uploaded records to the global public workspace (default: `true`)
 
 CDCS exports have **priority 100** (highest) and run first to ensure records are available for cross-linking by other destinations.
 
@@ -48,6 +50,38 @@ CDCS exports have **priority 100** (highest) and run first to ensure records are
 - Unique record ID assigned for cross-referencing
 
 **Frontend repository:** [NexusLIMS-CDCS](https://github.com/datasophos/NexusLIMS-CDCS/)
+
+#### User Record Ownership
+
+By default, all uploaded records are owned by the CDCS service account (the account whose token is configured in `NX_CDCS_TOKEN`). Enabling `NX_CDCS_USER_OWNED_RECORDS` transfers ownership of each record to a CDCS account that matches the NEMO session user:
+
+```bash
+NX_CDCS_USER_OWNED_RECORDS=true
+```
+
+**How it works:**
+
+1. NexusLIMS reads the session user's username, email, first name, and last name from the NEMO reservation event.
+2. It searches CDCS for an existing account matching that username (falling back to email).
+3. If no account exists, a new CDCS account is created with a random password. The user can either login via SSO/LDAP, or will need to reset their password to access the account for the first time.
+4. Ownership of the uploaded record is assigned to that CDCS user -- this means that the user will have the ability to edit/annotate the record, and will not be visible to other users if the *Public Workspace Assignment* setting (see below) is false.
+
+**Requirements:**
+
+- `NX_CDCS_TOKEN` must belong to a **superuser** account that has permission to list users, create accounts, and change record ownership.
+- If user lookup or creation fails for any reason (network error, missing user details, etc.), the record is still uploaded -- it will be owned by the service account and a warning is logged. Exports are never blocked by a user management failure.
+
+#### Public Workspace Assignment
+
+Records uploaded to CDCS are by default assigned to the global public workspace, making them visible to all users:
+
+```bash
+NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE=true  # default
+```
+
+Set to `false` to leave records in the uploading user's private workspace. This is only useful when `NX_CDCS_USER_OWNED_RECORDS=true` is also set -- without per-user ownership, disabling workspace assignment would make records inaccessible to most users.
+
+User ownership and public workspace assignment are independent: a record can be user-owned and in the public workspace simultaneously.
 
 (elabftw-exporter)=
 ### eLabFTW
