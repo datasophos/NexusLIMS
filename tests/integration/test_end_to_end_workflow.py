@@ -200,6 +200,30 @@ class TestEndToEndWorkflow:
         )
         print(f"[+] Record {cdcs_record_id} correctly owned by '{expected_username}'")
 
+    def _verify_cdcs_workspace_assignment(self, cdcs_record_id, cdcs_client):
+        """Verify the CDCS record is in the global public workspace."""
+        from urllib.parse import urljoin
+
+        from nexusLIMS.utils.cdcs import get_workspace_id
+        from nexusLIMS.utils.network import nexus_req
+
+        workspace_id = get_workspace_id()
+        endpoint = urljoin(
+            cdcs_client["url"],
+            f"rest/data/{cdcs_record_id}/",
+        )
+        r = nexus_req(endpoint, "GET", token_auth=cdcs_client["token"])
+        assert r.status_code == 200
+        record_data = r.json()
+        assert str(record_data.get("workspace")) == str(workspace_id), (
+            f"Record {cdcs_record_id} is not in the public workspace "
+            f"(workspace={record_data.get('workspace')}, expected={workspace_id})"
+        )
+        print(
+            f"[+] Record {cdcs_record_id} correctly assigned to "
+            f"public workspace {workspace_id}"
+        )
+
     def _verify_fileserver_access(self, downloaded_doc, nx_ns):
         """Verify fileserver URLs are accessible."""
         import requests
@@ -340,6 +364,7 @@ class TestEndToEndWorkflow:
         from nexusLIMS.config import refresh_settings, settings
         from nexusLIMS.db.session_handler import get_sessions_to_build
 
+        # Patch the settings to also exercise the record ownership feature
         monkeypatch.setenv("NX_CDCS_USER_OWNED_RECORDS", "true")
         refresh_settings()
 
@@ -389,6 +414,12 @@ class TestEndToEndWorkflow:
         self._verify_cdcs_record_ownership(
             upload_info["cdcs_record_id"],
             test_environment_setup["user"],
+            test_environment_setup["cdcs_client"],
+        )
+
+        # Verify record is in the global public workspace
+        self._verify_cdcs_workspace_assignment(
+            upload_info["cdcs_record_id"],
             test_environment_setup["cdcs_client"],
         )
 
