@@ -14,6 +14,13 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.7.0 (2026-05-24)
+
+### New features
+
+- Add per-user CDCS record ownership: when `NX_CDCS_USER_OWNED_RECORDS=true`, uploaded records are assigned to the matching CDCS user account (looked up or created automatically from the NEMO session user), with workspace assignment controlled by the new `NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE` setting. ([#106](https://github.com/datasophos/NexusLIMS/issues/106))
+
+
 ## 2.6.2 (2026-04-26)
 
 ### Bug fixes
