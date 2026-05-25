@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Configuration &#8212; NexusLIMS 2.6.2 documentation</title>
+    <title>Configuration &#8212; NexusLIMS 2.7.0 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=3db9c557"></script>
+    <script src="../_static/documentation_options.js?v=dfec817d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.6.2';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.7.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -65,8 +65,8 @@
     <link rel="prev" title="Getting Started" href="getting_started.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.6.2" />
-    <meta name="docbuild:last-update" content="Apr, 27, 2026"/>
+  <meta name="docsearch:version" content="2.7.0" />
+    <meta name="docbuild:last-update" content="May, 25, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.6.2 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.6.2 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.7.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.7.0 documentation - Home"/>
   
   
 </a></div>
@@ -741,6 +741,35 @@ are exposed in logs.</p>
 <p>Keep this value secret — anyone with this token can upload records to your CDCS instance.</p>
 <p><strong>Example:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CDCS_TOKEN</span><span class="o">=</span>your-api-token-here
+</pre></div>
+</div>
+</section>
+<section id="nx-cdcs-user-owned-records">
+<span id="config-cdcs-user-owned-records"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS</span></code><a class="headerlink" href="#nx-cdcs-user-owned-records" title="Link to this heading">#</a></h4>
+<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
+<p>When enabled, NexusLIMS will:</p>
+<p>1. Fetch the session user’s details (username, email) from the NEMO reservation or usage event.</p>
+<p>2. Search the CDCS user list for a matching account (by username first, then email).</p>
+<p>3. If no account exists, create one with a random password — the account is intended for SSO/LDAP login only; the generated password is never shared.</p>
+<p>4. Assign ownership of the uploaded record to that CDCS user.</p>
+<p><strong>Requirements:</strong> <code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code> must belong to a superuser account. If user lookup or creation fails for any reason, the record is still uploaded as admin-owned and a warning is logged — the export is never blocked by a user management failure.</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">false</span></code> (records are owned by the service account).</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CDCS_USER_OWNED_RECORDS</span><span class="o">=</span><span class="nb">true</span>
+</pre></div>
+</div>
+</section>
+<section id="nx-cdcs-assign-to-public-workspace">
+<span id="config-cdcs-assign-workspace"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE</span></code><a class="headerlink" href="#nx-cdcs-assign-to-public-workspace" title="Link to this heading">#</a></h4>
+<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">true</span></code></p>
+<p>Controls whether uploaded records are assigned to the CDCS global public workspace after upload.</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">true</span></code> (default), NexusLIMS calls <code class="docutils literal notranslate"><span class="pre">rest/data/{id}/assign/{workspace_id}/</span></code> after each upload.</p>
+<p>Set to <code class="docutils literal notranslate"><span class="pre">false</span></code> to leave records in the uploading user’s private workspace. This is only useful in combination with <code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS=true</span></code>; without user ownership enabled, disabling workspace assignment would make records inaccessible to most users.</p>
+<p>Both this setting and <code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS</span></code> are applied independently — a record can be user-owned AND in the public workspace at the same time.</p>
+<p><strong>Example:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE</span><span class="o">=</span><span class="nb">true</span>
 </pre></div>
 </div>
 <div class="admonition warning">
@@ -1518,6 +1547,8 @@ returned <code class="docutils literal notranslate"><span class="pre">uid</span>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cdcs-integration">CDCS Integration</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-cdcs-url"><code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-cdcs-token"><code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-cdcs-user-owned-records"><code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-cdcs-assign-to-public-workspace"><code class="docutils literal notranslate"><span class="pre">NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nemo-integration">NEMO Integration</a><ul class="nav section-nav flex-column">
