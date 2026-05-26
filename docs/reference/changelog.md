@@ -14,6 +14,13 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.7.1 (2026-05-25)
+
+### Bug fixes
+
+- Fixed a bug where the `<sample>` element in built XML records was missing its `id` attribute, causing the `<sampleID>` references written into every acquisition activity to be dangling and unresolvable per the NexusLIMS schema. ([#108](https://github.com/datasophos/NexusLIMS/issues/108))
+
+
 ## 2.6.2 (2026-04-26)
 
 ### Bug fixes
