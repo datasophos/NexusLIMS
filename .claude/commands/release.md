@@ -6,12 +6,28 @@ description: Prepare a NexusLIMS release with changelog review and upgrade instr
 
 # NexusLIMS Release Preparation
 
+## Pre-flight: Branch Guard
+
+Before doing anything else, run:
+
+```bash
+git branch --show-current
+```
+
+**If the result is not `main`, stop immediately** and tell the user:
+
+> Cannot release from branch `<branch>`. Releases must be cut from `main`. Merge all feature branches into main first, then run `/release` again.
+
+Do not proceed past this point until the branch is `main`.
+
+---
+
 ## Current State
 
 Use your tools to gather the following information before proceeding:
 
 1. **Current version:** Read `pyproject.toml` and extract the `version = "..."` line.
-2. **Current branch:** Run `git branch --show-current`.
+2. **Current branch:** Run `git branch --show-current` (already confirmed `main` above).
 3. **Pending changelog fragments:** Use Glob to find all `docs/changes/*.md` files (exclude `README.md`), then Read each one and display its filename and contents.
 4. **Changelog draft:** Run `uv run towncrier build --version=PREVIEW --draft` to preview the assembled changelog.
 

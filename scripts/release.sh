@@ -123,6 +123,19 @@ fi
 CURRENT_BRANCH=$(git branch --show-current)
 info "Current branch: $CURRENT_BRANCH"
 
+# Refuse to release from anything other than main
+if [ "$CURRENT_BRANCH" != "main" ]; then
+    error "Releases must be cut from the 'main' branch.\nCurrent branch: $CURRENT_BRANCH\n\nMerge all feature branches into main first, then re-run this script."
+fi
+
+# Verify main is up-to-date with origin
+git fetch origin main --quiet
+LOCAL=$(git rev-parse HEAD)
+REMOTE=$(git rev-parse origin/main)
+if [ "$LOCAL" != "$REMOTE" ]; then
+    error "Local main is not in sync with origin/main.\nRun 'git pull origin main' to catch up, or push your local commits first."
+fi
+
 # Check if there are any towncrier fragments (both .md and legacy .rst)
 FRAGMENT_COUNT=$(find docs/changes \( -name '*.md' -o -name '*.rst' \) ! -name 'README.rst' ! -name 'README.md' 2>/dev/null | wc -l | tr -d ' ')
 if [ "$FRAGMENT_COUNT" -eq 0 ]; then
