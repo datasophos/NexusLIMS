@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Changelog &#8212; NexusLIMS 2.7.0 documentation</title>
+    <title>Changelog &#8212; NexusLIMS 2.7.1 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=dfec817d"></script>
+    <script src="../_static/documentation_options.js?v=7b940564"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.7.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.7.1';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -65,8 +65,8 @@
     <link rel="prev" title="Version Compatibility" href="compatibility.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.7.0" />
-    <meta name="docbuild:last-update" content="May, 25, 2026"/>
+  <meta name="docsearch:version" content="2.7.1" />
+    <meta name="docbuild:last-update" content="May, 26, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.7.0 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.7.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.7.1 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.7.1 documentation - Home"/>
   
   
 </a></div>
@@ -485,27 +485,27 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 </div>
 <!-- towncrier release notes start -->
 <section id="id1">
-<h2>2.7.0 (2026-05-24)<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<section id="new-features">
-<h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
+<h2>2.7.1 (2026-05-25)<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<section id="bug-fixes">
+<h3>Bug fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Add per-user CDCS record ownership: when <code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS=true</span></code>, uploaded records are assigned to the matching CDCS user account (looked up or created automatically from the NEMO session user), with workspace assignment controlled by the new <code class="docutils literal notranslate"><span class="pre">NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE</span></code> setting. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/106">#106</a>)</p></li>
+<li><p>Fixed a bug where the <code class="docutils literal notranslate"><span class="pre">&lt;sample&gt;</span></code> element in built XML records was missing its <code class="docutils literal notranslate"><span class="pre">id</span></code> attribute, causing the <code class="docutils literal notranslate"><span class="pre">&lt;sampleID&gt;</span></code> references written into every acquisition activity to be dangling and unresolvable per the NexusLIMS schema. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/108">#108</a>)</p></li>
 </ul>
 </section>
 </section>
 <section id="id2">
 <h2>2.6.2 (2026-04-26)<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
-<section id="bug-fixes">
-<h3>Bug fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
+<section id="id3">
+<h3>Bug fixes<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fixed an out-of-memory error and a depth-profile shape mismatch in the Tofwerk pFIB-ToF-SIMS preview generator for large pre-processed HDF5 files. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/104">#104</a>)</p></li>
 </ul>
 </section>
 </section>
-<section id="id3">
-<h2>2.6.1 (2026-04-09)<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
 <section id="id4">
-<h3>New features<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<h2>2.6.1 (2026-04-09)<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<section id="new-features">
+<h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Renamed <code class="docutils literal notranslate"><span class="pre">QuantaTiffExtractor</span></code> to <code class="docutils literal notranslate"><span class="pre">FeiTiffExtractor</span></code> to support both FEI SEM (INI-style) and FEI TEM (<code class="docutils literal notranslate"><span class="pre">&lt;Root&gt;</span></code> XML) TIFF metadata formats; the old <code class="docutils literal notranslate"><span class="pre">quanta_tif</span></code> module is kept as a backward-compatibility shim; added test coverage for FEI TEM BF image and SAED diffraction extraction paths. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/95">#95</a>)</p></li>
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">extract</span></code> CLI command for single-file metadata extraction and preview generation. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/96">#96</a>)</p></li>
@@ -1399,9 +1399,9 @@ delineate functionality of the various parts of NexusLIMS</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.7.0 (2026-05-24)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.7.1 (2026-05-25)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.6.2 (2026-04-26)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">2.6.1 (2026-04-09)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">2.6.1 (2026-04-09)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2.6.0 (2026-03-19)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">2.5.1 (2026-02-19)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">2.5.0 (2026-02-18)</a></li>
