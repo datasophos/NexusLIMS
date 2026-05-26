@@ -1,12 +1,12 @@
 [
   {
-    "name": "v2.7.1.dev0 (latest)",
+    "name": "v2.7.2.dev0 (latest)",
     "version": "dev",
     "url": "https://datasophos.github.io/NexusLIMS/latest/"
   },
   {
-    "name": "v2.7.0 (stable)",
-    "version": "2.7.0",
+    "name": "v2.7.1 (stable)",
+    "version": "2.7.1",
     "url": "https://datasophos.github.io/NexusLIMS/stable/",
     "preferred": true
   },
@@ -49,6 +49,11 @@
     "name": "PR #92",
     "version": "pr-92",
     "url": "https://datasophos.github.io/NexusLIMS/pr-92/"
+  },
+  {
+    "name": "PR #109",
+    "version": "pr-109",
+    "url": "https://datasophos.github.io/NexusLIMS/pr-109/"
   },
   {
     "name": "PR #105",
