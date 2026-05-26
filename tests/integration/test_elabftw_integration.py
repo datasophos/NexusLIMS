@@ -331,7 +331,7 @@ class TestELabFTWClientIntegration:
         # Cleanup
         elabftw_client.delete_experiment(experiment_id)
 
-    def test_authentication_error(self):
+    def test_authentication_error(self, docker_services):
         """Test that invalid credentials raise authentication error."""
         bad_client = ELabFTWClient(base_url=ELABFTW_URL, api_key="invalid-key-12345")
 
@@ -557,7 +557,7 @@ class TestELabFTWDestinationIntegration:
         assert is_valid is True
         assert error_message is None
 
-    def test_validate_config_invalid_credentials(self, monkeypatch):
+    def test_validate_config_invalid_credentials(self, docker_services, monkeypatch):
         """Test configuration validation with invalid credentials."""
         # Configure with invalid credentials
         monkeypatch.setenv("NX_ELABFTW_URL", ELABFTW_URL)
