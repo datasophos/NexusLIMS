@@ -134,6 +134,17 @@ def build_record(
     for child in output:
         xml.append(child)
 
+    # Stamp each <sample> element with a unique id so that the <sampleID>
+    # references written into acquisition activities resolve correctly per the
+    # schema.  Elements produced by ReservationEvent.as_xml() carry no XML
+    # namespace in-memory, so we search without a namespace prefix here.
+    # The first sample receives sample_id (the value threaded into activities);
+    # any additional samples get fresh UUIDs so id values stay unique within
+    # the document.
+    for idx, sample_el in enumerate(xml.findall("sample")):
+        if not sample_el.get("id"):
+            sample_el.set("id", sample_id if idx == 0 else str(uuid4()))
+
     _logger.info(
         "Building acquisition activities for timespan from %s to %s",
         session.dt_from.isoformat(),

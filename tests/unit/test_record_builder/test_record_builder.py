@@ -1072,6 +1072,43 @@ class TestRecordBuilder:
         # remove record
         f.unlink()
 
+    @pytest.mark.usefixtures("mock_nemo_reservation", "skip_preview_generation")
+    def test_build_record_sample_id_cross_reference(
+        self,
+        test_record_files,
+        monkeypatch,
+    ):
+        """Each <sample> element must have an id attribute that activities reference."""
+
+        def mock_get_sessions():
+            all_sessions = session_handler.get_sessions_to_build()
+            return [s for s in all_sessions if s.instrument.name == "TEST-TOOL"]
+
+        monkeypatch.setattr(record_builder, "get_sessions_to_build", mock_get_sessions)
+        monkeypatch.setattr(record_builder, "export_records", _mock_successful_export)
+
+        xml_files, *_ = record_builder.build_new_session_records()
+        assert len(xml_files) == 1
+        f = xml_files[0]
+        root = etree.parse(f)
+
+        sample_elements = root.findall(f".//{{{NX_NS}}}sample")
+        # The TEST-TOOL reservation has exactly one sample
+        assert len(sample_elements) == 1
+        sample_id = sample_elements[0].get("id")
+        assert sample_id is not None, "<sample> element must have an id attribute"
+
+        # The id must match the <sampleID> written into every activity
+        activity_sample_ids = {
+            el.text for el in root.findall(f".//{{{NX_NS}}}sampleID")
+        }
+        assert sample_id in activity_sample_ids, (
+            f"<sample id='{sample_id}'> is not referenced by any "
+            "<sampleID> in activities"
+        )
+
+        f.unlink()
+
     def test_build_record_with_sample_elements(
         self,
         test_record_files,
@@ -1171,6 +1208,24 @@ class TestRecordBuilder:
                 assert exp == this_element
             else:
                 assert [i.tag for i in this_element] == exp
+
+        # Each <sample> must have a unique id attribute so that the <sampleID>
+        # reference in activities resolves correctly per the schema.
+        sample_ids = [el.get("id") for el in sample_elements]
+        assert all(sid is not None for sid in sample_ids), (
+            "All <sample> elements must have an id attribute"
+        )
+        assert len(set(sample_ids)) == sample_count, (
+            "All <sample> id values must be unique within the document"
+        )
+        # The first sample's id must match the <sampleID> written into activities.
+        activity_sample_ids = {
+            el.text for el in root.findall(f".//{{{NX_NS}}}sampleID")
+        }
+        assert sample_ids[0] in activity_sample_ids, (
+            "The first sample's id must be referenced by at least one "
+            "activity <sampleID>"
+        )
 
         # remove record
         f.unlink()
