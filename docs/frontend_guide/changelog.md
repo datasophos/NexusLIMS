@@ -12,6 +12,42 @@ and `nx{N}` is an incrementing counter for NexusLIMS-specific releases on that b
 
 ---
 
+## 3.21.0-nx0 -- 2026-05-31
+
+This version is intended to be used with NexusLIMS backend versions 2.7.1+.
+
+### Added
+
+- **Full sample and activity management in the record editor**: Users can now add,
+  edit, reorder, and delete samples and activities directly in the annotator without
+  manually editing raw XML
+- **Inline title editing**: Record titles can be edited inline in the annotator
+- **Pending-changes modal**: Navigating away with unsaved changes now triggers a
+  confirmation modal that summarises all pending edits (title, descriptions, samples,
+  dataset moves, and activity changes)
+- **Playwright E2E test suite**: Covers auth, record list/detail, annotator, and SSO
+
+### Changed
+
+- **Improved multi-sample display on record detail**: Multiple samples are now
+  rendered as Bootstrap cards (name, PID, expandable description, and element chips)
+  instead of a flat table; each activity header now displays a linked badge identifying
+  its associated sample
+- CDCS base upgraded to **MDCS 3.21.0** (core packages `2.21.*`)
+- "Edit Record" button label and tooltip refined
+
+### Bug Fixes
+
+- Fixed SSO login button styling -- the "Sign in with SSO" button now matches the
+  primary button style with correct contrast
+
+### Upgrade Notes
+
+Rebuilding the Docker image is required (Python dependencies changed). Re-upload
+the XSLT stylesheet after restarting (`admin-update-xslt`).
+
+---
+
 ## 3.20.0-nx0 -- 2026-03-29
 
 This version is intended to be used with NexusLIMS backend versions 2.6.1+.
