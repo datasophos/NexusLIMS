@@ -215,6 +215,7 @@ markers = [
     "extractor: Tests for metadata extractor modules",
     "record_builder: Tests for record builder functionality",
     "labarchives_live: Live integration tests against a real LabArchives server (requires NX_LABARCHIVES_* env vars)",
+    "workflow: End-to-end record-building tests that share TEST_DATA_DIR (run serially via xdist_group)",
 ]
 filterwarnings = [
     "ignore:Using Ntlm\\(\\) is deprecated:DeprecationWarning",

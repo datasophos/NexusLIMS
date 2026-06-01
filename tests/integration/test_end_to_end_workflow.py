@@ -27,6 +27,7 @@ from tests.integration.conftest import (
 
 
 @pytest.mark.integration
+@pytest.mark.xdist_group("workflow")
 class TestEndToEndWorkflow:
     """Test complete end-to-end workflows from NEMO to CDCS."""
 

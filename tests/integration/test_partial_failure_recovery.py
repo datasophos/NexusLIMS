@@ -24,6 +24,7 @@ from nexusLIMS.db.session_handler import Session
 
 
 @pytest.mark.integration
+@pytest.mark.xdist_group("workflow")
 class TestPartialFailureRecovery:
     """Test error handling and recovery for partial failures."""
 
