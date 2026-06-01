@@ -35,12 +35,16 @@ from tests.unit.test_instrument_factory import make_quanta_sem, make_titan_stem
 def registry():
     """Provide a fresh profile registry instance for each test.
 
-    Clears the registry before the test to ensure isolation.
-    Individual tests are responsible for cleanup in finally blocks.
+    Saves the current profiles, clears the registry to provide an empty
+    slate, then restores the original profiles after the test. This
+    prevents tests that call registry.clear() from leaving the global
+    registry empty for subsequent tests on the same worker.
     """
     reg = get_profile_registry()
-    reg.clear()  # Start with clean slate
-    return reg
+    saved_profiles = reg._profiles.copy()
+    reg.clear()
+    yield reg
+    reg._profiles.update(saved_profiles)
 
 
 @pytest.fixture

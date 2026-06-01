@@ -144,16 +144,23 @@ def clear_settings_cache():
     -----
     This fixture is kept for backwards compatibility and as an additional
     safety net. The primary cleanup is now handled by reset_unit_test_environment.
+
+    This also clears ``settings.__dict__`` to remove any direct instance-attribute
+    overrides that ``monkeypatch.setattr(settings, ...)`` may have left behind.
+    When monkeypatch undoes a setattr it calls setattr with the old value (not
+    delattr), so the instance attribute persists and shadows ``__getattr__`` for
+    all subsequent tests on the same xdist worker.
     """
-    # Clear BEFORE test (in case previous test left pollution)
-    from nexusLIMS.config import clear_settings
+    from nexusLIMS.config import clear_settings, settings
 
     clear_settings()
+    settings.__dict__.clear()
 
     yield  # Test runs here
 
     # Clear AFTER test (to prevent pollution to next test)
     clear_settings()
+    settings.__dict__.clear()
 
 
 @pytest.fixture

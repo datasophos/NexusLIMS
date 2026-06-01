@@ -8,7 +8,7 @@ resource allocation instead of autouse fixtures.
 
 import pytest
 
-from nexusLIMS.config import refresh_settings
+from nexusLIMS.config import clear_settings, refresh_settings
 
 from .database import INSTRUMENT_CONFIGS
 
@@ -231,7 +231,12 @@ def settings_context(request, monkeypatch):
         # Refresh settings to pick up new environment
         refresh_settings()
 
-    # Cleanup handled by monkeypatch fixture
+    yield  # Test runs here
+
+    # Explicit teardown: clear settings so the next test sees a clean slate.
+    # monkeypatch will restore the env vars; we clear the cached Settings
+    # instance so the next access reads from the restored environment.
+    clear_settings()
 
 
 def _create_default_sessions(instrument_keys: list[str]) -> list[dict]:
