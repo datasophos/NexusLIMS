@@ -31,10 +31,9 @@ class TestPartialFailureRecovery:
         self,
         docker_services_running,
         nemo_connector,
-        populated_test_database,
+        fresh_test_db,
         extracted_test_files,
         cdcs_client,
-        clear_session_logs,
         monkeypatch,
     ):
         """
@@ -55,7 +54,7 @@ class TestPartialFailureRecovery:
             Docker services status
         nemo_connector : NemoConnector
             NEMO connector fixture
-        populated_test_database : Path
+        fresh_test_db : Path
             Test database with instruments
         extracted_test_files : dict
             Extracted test files
@@ -169,10 +168,9 @@ class TestPartialFailureRecovery:
         self,
         docker_services_running,
         nemo_connector,
-        populated_test_database,
+        fresh_test_db,
         extracted_test_files,
         cdcs_client,
-        clear_session_logs,
         monkeypatch,
     ):
         """
@@ -190,7 +188,7 @@ class TestPartialFailureRecovery:
             Docker services status
         nemo_connector : NemoConnector
             NEMO connector fixture
-        populated_test_database : Path
+        fresh_test_db : Path
             Test database
         extracted_test_files : dict
             Extracted test files
@@ -265,8 +263,7 @@ class TestPartialFailureRecovery:
         self,
         docker_services_running,
         nemo_connector,
-        populated_test_database,
-        clear_session_logs,
+        fresh_test_db,
         monkeypatch,
     ):
         """
@@ -283,7 +280,7 @@ class TestPartialFailureRecovery:
             Docker services status
         nemo_connector : NemoConnector
             NEMO connector fixture (handles database patching)
-        populated_test_database : Path
+        fresh_test_db : Path
             Test database
         monkeypatch : pytest.MonkeyPatch
             Pytest monkeypatch fixture
@@ -317,7 +314,7 @@ class TestPartialFailureRecovery:
         assert len(all_sessions) == 0, "Database should remain empty on failure"
 
     def test_database_constraint_validation_on_invalid_status(
-        self, nemo_connector, populated_test_database, clear_session_logs, monkeypatch
+        self, nemo_connector, fresh_test_db, monkeypatch
     ):
         """
         Test that database CHECK constraints prevent invalid record_status values.
@@ -330,7 +327,7 @@ class TestPartialFailureRecovery:
         ----------
         nemo_connector : NemoConnector
             NEMO connector fixture (handles database patching)
-        populated_test_database : Path
+        fresh_test_db : Path
             Test database
         monkeypatch : pytest.MonkeyPatch
             Pytest monkeypatch fixture
@@ -406,8 +403,7 @@ class TestPartialFailureRecovery:
         self,
         docker_services_running,
         nemo_connector,
-        populated_test_database,
-        clear_session_logs,
+        fresh_test_db,
         monkeypatch,
     ):
         """
@@ -425,7 +421,7 @@ class TestPartialFailureRecovery:
             Docker services status
         nemo_connector : NemoConnector
             NEMO connector fixture (handles database patching)
-        populated_test_database : Path
+        fresh_test_db : Path
             Test database
         monkeypatch : pytest.MonkeyPatch
             Pytest monkeypatch fixture

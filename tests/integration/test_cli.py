@@ -236,7 +236,7 @@ with lock:
         self,
         mailpit_client,
         test_data_dirs,
-        populated_test_database,
+        fresh_test_db,
         monkeypatch,
     ):
         """
@@ -251,7 +251,7 @@ with lock:
             MailPit client for email testing (also configures NX_EMAIL_*)
         test_data_dirs : dict
             Test data directories (instrument_data and nexuslims_data paths)
-        populated_test_database : Path
+        fresh_test_db : Path
             Test database with instruments
         monkeypatch : pytest.MonkeyPatch
             Pytest fixture for modifying environment and mocking
