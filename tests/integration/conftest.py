@@ -145,6 +145,13 @@ def pytest_configure(config):
         )
         raise RuntimeError(msg)
 
+    # Clean up stale coordinator files from a previous crashed run.
+    # Only the controller process (or a non-xdist session) does this;
+    # workers have config.workerinput set.
+    if not hasattr(config, "workerinput"):
+        _COORD_LOCK_FILE.unlink(missing_ok=True)
+        _COORD_COUNT_FILE.unlink(missing_ok=True)
+
     # Create test directories (for actual test execution)
     test_dirs = [
         TEST_INSTRUMENT_DATA_DIR,
