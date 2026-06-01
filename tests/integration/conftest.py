@@ -169,48 +169,13 @@ def pytest_configure(config):
     os.environ["NX_INSTRUMENT_DATA_PATH"] = str(TEST_INSTRUMENT_DATA_DIR)
     os.environ["NX_DATA_PATH"] = str(TEST_DATA_DIR)
 
-    # Create a per-worker database file for integration tests.
-    # When running under pytest-xdist each worker gets its own DB to avoid
-    # concurrent writes to the same SQLite file.
+    # Set NX_DB_PATH to a placeholder path so Settings validation passes.
+    # The actual per-test DB is created by the db_template + fresh_test_db
+    # fixtures at test time. The placeholder file does not need to exist.
     _xdist_worker = os.environ.get("PYTEST_XDIST_WORKER", "")
     db_suffix = f"_{_xdist_worker}" if _xdist_worker else ""
-    db_path = TEST_DATA_DIR / f"integration_test{db_suffix}.db"
-
-    # Use shared database creation function from top-level conftest
-    from tests.conftest import create_test_database
-
-    create_test_database(db_path)
-    os.environ["NX_DB_PATH"] = str(db_path)
-
-    # Seed alembic_version so _check_alembic_migration passes without a real
-    # alembic run.  The integration DB is created via SQLModel (no alembic run),
-    # so we must manually insert the current head revision.
-    from alembic.config import Config as AlembicConfig
-    from alembic.script import ScriptDirectory
-    from sqlalchemy import text
-
-    from nexusLIMS.db.engine import create_transient_sqlite_engine
-
-    _alembic_ini = Path(__file__).parents[2] / "alembic.ini"
-    _cfg = AlembicConfig(str(_alembic_ini))
-    _cfg.set_main_option(
-        "script_location",
-        str(_alembic_ini.parent / "nexusLIMS" / "db" / "migrations"),
-    )
-    _head = ScriptDirectory.from_config(_cfg).get_current_head()
-    if _head:
-        _engine = create_transient_sqlite_engine(db_path)
-        with _engine.connect() as _conn:
-            _conn.execute(
-                text(
-                    "CREATE TABLE IF NOT EXISTS alembic_version "
-                    "(version_num VARCHAR(32) NOT NULL)"
-                )
-            )
-            _conn.execute(text("DELETE FROM alembic_version"))
-            _conn.execute(text(f"INSERT INTO alembic_version VALUES ('{_head}')"))
-            _conn.commit()
-        _engine.dispose()
+    db_placeholder = TEST_DATA_DIR / f"integration_test{db_suffix}.db"
+    os.environ["NX_DB_PATH"] = str(db_placeholder)
 
     # Set required CDCS environment variables to dummy values
     # (actual values will be set per-test via fixtures)
@@ -1482,6 +1447,155 @@ def test_database(tmp_path, monkeypatch):
     # Now that the database file exists, update the config
     monkeypatch.setenv("NX_DB_PATH", str(db_path))
     refresh_settings()
+
+    return db_path
+
+
+@pytest.fixture(scope="session")
+def db_template(docker_services, mock_tools_data, tmp_path_factory):
+    """
+    Create a populated, read-only SQLite DB template once per worker.
+
+    Lives in pytest's own tmp space (``tmp_path_factory``), which is never
+    wiped by ``_first_worker_setup``.  ``fresh_test_db`` copies this file for
+    every test that needs an isolated, writable DB.
+
+    Parameters
+    ----------
+    docker_services : None
+        Ensures Docker services are running before the DB is created.
+    mock_tools_data : list[dict]
+        Mock NEMO tool records (shared with unit tests).
+    tmp_path_factory : pytest.TempPathFactory
+        Session-scoped factory for temporary directories.
+
+    Returns
+    -------
+    Path
+        Path to the read-only template database file.
+    """
+    import sqlite3
+
+    from alembic.config import Config as AlembicConfig
+    from alembic.script import ScriptDirectory
+    from sqlalchemy import text
+
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
+    from tests.conftest import create_test_database
+    from tests.fixtures.test_data import INSTRUMENTS
+
+    template_dir = tmp_path_factory.mktemp("db_template")
+    db_path = template_dir / "template.db"
+
+    # Create schema
+    create_test_database(db_path)
+
+    # Seed alembic_version so _check_alembic_migration passes.
+    _alembic_ini = Path(__file__).parents[2] / "alembic.ini"
+    _cfg = AlembicConfig(str(_alembic_ini))
+    _cfg.set_main_option(
+        "script_location",
+        str(_alembic_ini.parent / "nexusLIMS" / "db" / "migrations"),
+    )
+    _head = ScriptDirectory.from_config(_cfg).get_current_head()
+    if _head:
+        _engine = create_transient_sqlite_engine(db_path)
+        with _engine.connect() as _conn:
+            _conn.execute(
+                text(
+                    "CREATE TABLE IF NOT EXISTS alembic_version "
+                    "(version_num VARCHAR(32) NOT NULL)"
+                )
+            )
+            _conn.execute(text("DELETE FROM alembic_version"))
+            _conn.execute(text(f"INSERT INTO alembic_version VALUES ('{_head}')"))
+            _conn.commit()
+        _engine.dispose()
+
+    # Map mock tool IDs to instrument PIDs from unified test data.
+    tool_id_to_pid = {
+        1: "FEI-Titan-STEM",
+        3: "FEI-Titan-TEM",
+        10: "test-tool-10",
+    }
+
+    instruments = []
+    for tool in mock_tools_data:
+        if tool["id"] in tool_id_to_pid:
+            instrument_pid = tool_id_to_pid[tool["id"]]
+            cfg = INSTRUMENTS[instrument_pid]
+            instruments.append(
+                {
+                    "instrument_pid": cfg["instrument_pid"],
+                    "api_url": f"{NEMO_URL}tools/?id={tool['id']}",
+                    "calendar_url": cfg["calendar_url"],
+                    "location": cfg["location"],
+                    "display_name": tool["name"],
+                    "property_tag": cfg["property_tag"],
+                    "filestore_path": cfg["filestore_path"],
+                    "harvester": cfg["harvester"],
+                    "timezone": cfg["timezone"],
+                }
+            )
+
+    # TEST-TOOL for multi-signal integration testing (tool ID 999)
+    test_tool_cfg = INSTRUMENTS["TEST-TOOL"]
+    instruments.append(
+        {
+            "instrument_pid": test_tool_cfg["instrument_pid"],
+            "api_url": f"{NEMO_URL}tools/?id=999",
+            "calendar_url": test_tool_cfg["calendar_url"],
+            "location": test_tool_cfg["location"],
+            "display_name": "Test Tool (Multi-signal)",
+            "property_tag": test_tool_cfg["property_tag"],
+            "filestore_path": test_tool_cfg["filestore_path"],
+            "harvester": "nemo",
+            "timezone": test_tool_cfg["timezone"],
+        }
+    )
+
+    # Tofwerk-pFIB-TOFSIMS (dummy tool ID 7)
+    tofwerk_cfg = INSTRUMENTS["Tofwerk-pFIB-TOFSIMS"]
+    instruments.append(
+        {
+            "instrument_pid": tofwerk_cfg["instrument_pid"],
+            "api_url": f"{NEMO_URL}tools/?id=7",
+            "calendar_url": tofwerk_cfg["calendar_url"],
+            "location": tofwerk_cfg["location"],
+            "display_name": tofwerk_cfg["display_name"],
+            "property_tag": tofwerk_cfg["property_tag"],
+            "filestore_path": tofwerk_cfg["filestore_path"],
+            "harvester": tofwerk_cfg["harvester"],
+            "timezone": tofwerk_cfg["timezone"],
+        }
+    )
+
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM instruments")
+    for inst in instruments:
+        cursor.execute(
+            """
+            INSERT INTO instruments (
+                instrument_pid, api_url, calendar_url,
+                location, display_name, property_tag, filestore_path,
+                harvester, timezone
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                inst["instrument_pid"],
+                inst["api_url"],
+                inst["calendar_url"],
+                inst["location"],
+                inst["display_name"],
+                inst["property_tag"],
+                inst["filestore_path"],
+                inst["harvester"],
+                inst["timezone"],
+            ),
+        )
+    conn.commit()
+    conn.close()
 
     return db_path
 
