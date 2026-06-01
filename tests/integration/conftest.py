@@ -838,9 +838,7 @@ def nemo_client(nemo_api_url, monkeypatch):
 
 
 @pytest.fixture
-def nemo_connector(
-    nemo_client, populated_test_database, monkeypatch
-) -> "NemoConnector":
+def nemo_connector(nemo_client, fresh_test_db, monkeypatch) -> "NemoConnector":
     """
     Provide a NemoConnector instance for integration tests.
 
@@ -852,8 +850,8 @@ def nemo_connector(
     ----------
     nemo_client : dict
         NEMO connection configuration from nemo_client fixture
-    populated_test_database : Path
-        Ensures the test database is populated before creating connector
+    fresh_test_db : Path
+        Per-test isolated database copy with instruments populated
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture for patching
 
@@ -866,7 +864,7 @@ def nemo_connector(
     from nexusLIMS.harvesters.nemo import connector
 
     # Reload instrument_db from the test database
-    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
+    test_instrument_db = instruments._get_instrument_db(db_path=fresh_test_db)
 
     # Patch the instrument_db in both the instruments module and the connector module
     # This is necessary because the connector imports instrument_db at module level
@@ -1828,18 +1826,18 @@ def populated_test_database(docker_services, mock_tools_data):
 
 
 @pytest.fixture
-def test_instrument_db(populated_test_database):
+def test_instrument_db(fresh_test_db):
     """
     Provide instrument database loaded from the test database.
 
-    This fixture loads the instrument database from the populated test database,
-    making it easy for tests to access the instruments that were created by the
-    populated_test_database fixture.
+    This fixture loads the instrument database from the per-test isolated
+    database, making it easy for tests to access the instruments that were
+    created by the fresh_test_db fixture.
 
     Parameters
     ----------
-    populated_test_database : Path
-        Path to the populated test database from populated_test_database fixture
+    fresh_test_db : Path
+        Path to the per-test isolated database copy from fresh_test_db fixture
 
     Returns
     -------
@@ -1849,7 +1847,7 @@ def test_instrument_db(populated_test_database):
     from nexusLIMS.instruments import _get_instrument_db
 
     # Load instrument database from the test database path
-    return _get_instrument_db(db_path=populated_test_database)
+    return _get_instrument_db(db_path=fresh_test_db)
 
 
 # ============================================================================
@@ -2056,11 +2054,9 @@ def extracted_test_files(test_data_dirs):
 def test_environment_setup(  # noqa: PLR0913
     docker_services_running,
     nemo_connector,
-    populated_test_database,
+    fresh_test_db,
     extracted_test_files,
     cdcs_client,
-    clear_session_logs,
-    clear_upload_logs,
     monkeypatch,
 ):
     """
@@ -2076,16 +2072,13 @@ def test_environment_setup(  # noqa: PLR0913
         Ensures all Docker services (including fileserver) are running
     nemo_connector : NemoConnector
         Configured NEMO connector from fixture (mocked for test usage events)
-    populated_test_database : Path
-        Test database with instruments (also configures NX_DB_PATH)
+    fresh_test_db : Path
+        Per-test isolated database copy with instruments populated and empty
+        session/upload log tables
     extracted_test_files : dict
         Extracted test files information
     cdcs_client : dict
         CDCS client configuration for record uploads
-    clear_session_logs : None
-        Ensures session_log table is cleared before test
-    clear_upload_logs : None
-        Ensures upload_log table is cleared before test
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture
 
@@ -2110,7 +2103,7 @@ def test_environment_setup(  # noqa: PLR0913
     from nexusLIMS import instruments
 
     # Patch the instrument_db to use test database
-    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
+    test_instrument_db = instruments._get_instrument_db(db_path=fresh_test_db)
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
     monkeypatch.setattr(instruments, "_instrument_db_initialized", True)
 
@@ -2418,10 +2411,9 @@ def _verify_url_accessible(url, index, total, expected_type=None):
 def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     docker_services_running,
     nemo_connector,
-    populated_test_database,
+    fresh_test_db,
     cdcs_client,
     multi_signal_test_files,
-    clear_session_logs,
     monkeypatch,
 ):
     """
@@ -2437,14 +2429,13 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
         Ensures Docker services are running
     nemo_connector : NemoConnector
         Configured NEMO connector
-    populated_test_database : Path
-        Test database with instruments
+    fresh_test_db : Path
+        Per-test isolated database copy with instruments populated and empty
+        session/upload log tables
     cdcs_client : dict
         CDCS client configuration
     multi_signal_test_files : list[Path]
         Multi-signal test files from unit test fixtures
-    clear_session_logs : None
-        Ensures session_log table is cleared before test
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture
 
@@ -2476,7 +2467,7 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     refresh_settings()
 
     # Patch the instrument_db to use test database
-    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
+    test_instrument_db = instruments._get_instrument_db(db_path=fresh_test_db)
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
     monkeypatch.setattr(instruments, "_instrument_db_initialized", True)
 
@@ -2631,12 +2622,11 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
 
 
 @pytest.fixture
-def tofwerk_integration_record(  # noqa: PLR0913, PLR0915
+def tofwerk_integration_record(  # noqa: PLR0915
     docker_services_running,
-    populated_test_database,
+    fresh_test_db,
     extracted_test_files,
     cdcs_client,
-    clear_session_logs,
     monkeypatch,
 ):
     """
@@ -2651,14 +2641,13 @@ def tofwerk_integration_record(  # noqa: PLR0913, PLR0915
     ----------
     docker_services_running : dict
         Ensures Docker services are running.
-    populated_test_database : Path
-        Test database with instruments (includes Tofwerk-pFIB-TOFSIMS).
+    fresh_test_db : Path
+        Per-test isolated database copy with instruments populated and empty
+        session/upload log tables (includes Tofwerk-pFIB-TOFSIMS).
     extracted_test_files : dict
         Extracts test_record_files.tar.gz, including Tofwerk_pFIB_TOFSIMS/.
     cdcs_client : dict
         CDCS client configuration for record uploads.
-    clear_session_logs : None
-        Ensures session_log table is cleared before the test.
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture.
 
@@ -2688,9 +2677,7 @@ def tofwerk_integration_record(  # noqa: PLR0913, PLR0915
     monkeypatch.setenv("NX_DATA_PATH", str(TEST_DATA_DIR))
     refresh_settings()
 
-    test_instrument_db = instruments_module._get_instrument_db(
-        db_path=populated_test_database
-    )
+    test_instrument_db = instruments_module._get_instrument_db(db_path=fresh_test_db)
     monkeypatch.setattr(instruments_module, "instrument_db", test_instrument_db)
     monkeypatch.setattr(instruments_module, "_instrument_db_initialized", True)
 
