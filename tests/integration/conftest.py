@@ -1600,6 +1600,59 @@ def db_template(docker_services, mock_tools_data, tmp_path_factory):
     return db_path
 
 
+@pytest.fixture
+def fresh_test_db(db_template, tmp_path, monkeypatch):
+    """
+    Provide a per-test copy of the instrument-populated DB template.
+
+    Copies the read-only template created by ``db_template`` into the
+    test's ``tmp_path``, patches ``NX_DB_PATH``, the SQLAlchemy engine
+    singleton, and the ``instrument_db`` cache for the duration of one test,
+    then restores them on teardown.
+
+    Parameters
+    ----------
+    db_template : Path
+        Path to the populated template DB (session-scoped).
+    tmp_path : Path
+        Per-test temporary directory provided by pytest.
+    monkeypatch : pytest.MonkeyPatch
+        Pytest monkeypatch fixture; restores ``NX_DB_PATH`` automatically.
+
+    Yields
+    ------
+    Path
+        Path to the writable per-test copy of the database.
+    """
+    import shutil
+
+    from nexusLIMS import instruments as instruments_module
+    from nexusLIMS.config import refresh_settings
+    from nexusLIMS.db import engine as engine_module
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
+
+    test_db = tmp_path / "test.db"
+    shutil.copy(str(db_template), str(test_db))
+
+    monkeypatch.setenv("NX_DB_PATH", str(test_db))
+
+    old_engine = engine_module._engine
+    new_engine = create_transient_sqlite_engine(test_db)
+    engine_module._engine = new_engine
+
+    instruments_module.instrument_db.clear()
+    instruments_module.instrument_db.update(
+        instruments_module._get_instrument_db(db_path=test_db)
+    )
+    instruments_module._instrument_db_initialized = True
+    refresh_settings()
+
+    yield test_db
+
+    new_engine.dispose()
+    engine_module._engine = old_engine
+
+
 @pytest.fixture(scope="session")
 def populated_test_database(docker_services, mock_tools_data):
     """
