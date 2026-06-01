@@ -1905,6 +1905,18 @@ def test_environment_setup(  # noqa: PLR0913
     print(f"    Expected session time: {session_start} to {session_end}")
     print("    Expected user: captain")
 
+    from nexusLIMS.utils import cdcs as cdcs_utils
+
+    # Snapshot CDCS record IDs before test runs
+    before_cdcs_ids = {r["id"] for r in cdcs_utils.search_records() or []}
+
+    # Snapshot TEST_DATA_DIR subdirectories before test runs
+    before_data_dirs = (
+        {p.name for p in TEST_DATA_DIR.iterdir() if p.is_dir()}
+        if TEST_DATA_DIR.exists()
+        else set()
+    )
+
     yield {
         "instrument_pid": instrument.name,  # instrument.name is the PID
         "dt_from": session_start,
@@ -1914,8 +1926,25 @@ def test_environment_setup(  # noqa: PLR0913
         "cdcs_client": cdcs_client,
     }
 
-    # Cleanup: Delete all records from CDCS
-    delete_all_cdcs_records()
+    # Cleanup: Delete only CDCS records created during this test
+    import shutil
+
+    after_records = cdcs_utils.search_records() or []
+    for r in after_records:
+        if r["id"] not in before_cdcs_ids:
+            try:
+                cdcs_utils.delete_record(r["id"])
+            except Exception as e:
+                print(f"[!] Failed to cleanup record {r['id']}: {e}")
+
+    # Cleanup: Remove TEST_DATA_DIR subdirectories created during this test
+    if TEST_DATA_DIR.exists():
+        for subdir in TEST_DATA_DIR.iterdir():
+            if subdir.is_dir() and subdir.name not in before_data_dirs:
+                try:
+                    shutil.rmtree(subdir)
+                except Exception as e:
+                    print(f"[!] Failed to remove {subdir}: {e}")
 
 
 # ============================================================================
