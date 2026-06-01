@@ -31,7 +31,7 @@ if [[ "$*" == *"--help"* ]] || [[ "$*" == *"-h"* ]]; then
     echo "  ./scripts/run_tests.sh --integration -s  # Integration tests with prints"
     echo ""
     echo "Note: Integration tests require Docker services to be available."
-    echo "Note: Integration tests always run serially (Docker services use fixed ports)."
+    echo "Note: Integration tests run in parallel; workflow tests are grouped to one worker."
     exit 0
 fi
 
@@ -40,10 +40,11 @@ TEST_PATH="tests/unit"
 COV_SOURCE="nexusLIMS"
 PYTEST_FLAGS=""
 
-# Parallel execution: unit tests run with -n auto by default; integration tests
-# always run serially because Docker services bind fixed ports and cannot be
-# shared across xdist workers.
-PARALLEL_FLAGS="-n auto --dist loadfile"
+# Parallel execution: unit and integration tests use -n auto --dist worksteal.
+# Workflow tests (TestEndToEndWorkflow, TestPartialFailureRecovery) are
+# pinned to one worker via @pytest.mark.xdist_group("workflow") to avoid
+# concurrent writes to the shared Docker fileserver paths.
+PARALLEL_FLAGS="-n auto --dist worksteal"
 
 # Check for --extractors flag (mutually exclusive with --integration)
 if [[ "$*" == *"--extractors"* ]]; then
@@ -56,12 +57,10 @@ elif [[ "$*" == *"--integration"* ]]; then
     TEST_PATH="tests/"
     # Override the default marker filter from pyproject.toml to include integration tests.
     # Use --override-ini to clear the addopts marker filter.
-    # Exclude LabArchives live tests — they require real credentials and a live server;
+    # Exclude LabArchives live tests -- they require real credentials and a live server;
     # use scripts/run_labarchives_tests.sh to run those on demand.
-    # Integration tests use --dist loadfile: tests within each file run on one worker
-    # (preserving intra-file state management), while different files run in parallel.
-    # Docker services and the host fileserver are shared across workers via
-    # the xdist coordination helpers in tests/integration/conftest.py.
+    # Integration tests use --dist worksteal; workflow tests are grouped via
+    # xdist_group("workflow") so they run serially on one worker.
     PYTEST_FLAGS="$PYTEST_FLAGS --override-ini=addopts= --ignore=tests/integration/test_labarchives_integration.py"
 else
     echo "Running unit tests only (use --integration to include integration tests)..."

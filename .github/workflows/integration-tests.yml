@@ -132,6 +132,7 @@ jobs:
       - name: Run all tests (unit + integration)
         run: |
           uv run pytest tests/ \
+            -n auto --dist worksteal \
             -v \
             --override-ini=addopts= \
             --mpl \
