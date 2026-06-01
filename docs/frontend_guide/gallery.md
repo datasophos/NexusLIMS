@@ -65,7 +65,8 @@ Full record view showing all metadata, preview images, and data file links.
 :width: 100%
 :class: screenshot
 
-Acquisition activities showing grouped files and their metadata.
+Acquisition activities showing grouped files and their metadata. Each activity header
+displays a linked badge identifying its associated sample.
 ```
 
 ### Dataset Metadata
@@ -133,9 +134,47 @@ it opens a floating popup for quick single-dataset description edits.
 :width: 100%
 :class: screenshot
 
-The expand icon in the side panel header opens the full-page. In addition to editing descriptions,
-the full-page editor supports **reassigning datasets between acquisition activities** within 
-the same record.
+The expand icon in the side panel header opens the full-page editor. In addition to editing
+descriptions and **reassigning datasets between acquisition activities**, the full-page editor
+supports **adding, editing, and deleting samples and activities** and **inline title editing**.
+```
+
+### Sample Management
+
+```{figure} ../images/cdcs/13_annotate_sample_management.png
+:alt: Sample Management in the Annotator
+:width: 100%
+:class: screenshot
+
+The **Add Sample** modal lets users define a sample name, persistent identifier (PID),
+free-text description, and elemental composition. Samples can also be edited or removed,
+and assigned to individual acquisition activities via a dropdown in each activity header.
+```
+
+### Pending Changes
+
+```{figure} ../images/cdcs/14_annotate_pending_changes.png
+:alt: Pending Changes Modal
+:width: 100%
+:class: screenshot
+
+The **Pending Changes** modal (opened via the toolbar) summarises all unsaved edits
+before saving or navigating away: title changes, dataset description edits, added or
+modified samples, dataset moves, and activity changes.
+```
+
+---
+
+## Multi-Sample Records
+
+```{figure} ../images/cdcs/15_detail_multisample_cards.png
+:alt: Multi-Sample Bootstrap Cards
+:width: 100%
+:class: screenshot
+
+Records with multiple samples display each sample as a Bootstrap card showing its name,
+persistent identifier (linked if a URL), expandable description, and elemental composition
+chips. Activity headers carry a linked badge to their associated sample.
 ```
 
 ---

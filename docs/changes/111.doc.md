@@ -1,0 +1,1 @@
+Updated frontend changelog and screenshot gallery for NexusLIMS-CDCS v3.21.0-nx0 (sample/activity management in annotator, inline title editing, pending-changes modal, multi-sample Bootstrap cards); restored missing 2.7.0 changelog entry; added v3.21.0-nx0 row to the version compatibility matrix.

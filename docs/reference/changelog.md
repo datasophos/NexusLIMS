@@ -21,6 +21,13 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 - Fixed a bug where the `<sample>` element in built XML records was missing its `id` attribute, causing the `<sampleID>` references written into every acquisition activity to be dangling and unresolvable per the NexusLIMS schema. ([#108](https://github.com/datasophos/NexusLIMS/issues/108))
 
 
+## 2.7.0 (2026-05-24)
+
+### New features
+
+- Add per-user CDCS record ownership: when `NX_CDCS_USER_OWNED_RECORDS=true`, uploaded records are assigned to the matching CDCS user account (looked up or created automatically from the NEMO session user), with workspace assignment controlled by the new `NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE` setting. ([#106](https://github.com/datasophos/NexusLIMS/issues/106))
+
+
 ## 2.6.2 (2026-04-26)
 
 ### Bug fixes
