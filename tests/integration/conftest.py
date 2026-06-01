@@ -8,7 +8,10 @@ CDCS services, database setup, and cleanup operations.
 """
 
 import contextlib
+import errno
+import fcntl
 import subprocess
+import tempfile
 import time
 from http import HTTPStatus
 from pathlib import Path
@@ -65,6 +68,54 @@ TEST_DATA_DIR = Path("/tmp/nexuslims-test-data")
 
 
 # ============================================================================
+# xdist Coordination Helpers
+# ============================================================================
+# When running integration tests with pytest-xdist, multiple worker processes
+# share a single Docker stack.  These helpers serialize startup/teardown so
+# only the first worker starts Docker (and cleans data dirs) and only the last
+# worker tears it down.
+
+_COORD_LOCK_FILE = Path(tempfile.gettempdir()) / "nexuslims-integ-coord.lock"
+_COORD_COUNT_FILE = Path(tempfile.gettempdir()) / "nexuslims-integ-coord.count"
+
+
+@contextlib.contextmanager
+def _coord_lock():
+    """Acquire an exclusive OS-level file lock for worker coordination."""
+    lock_fd = _COORD_LOCK_FILE.open("w")
+    try:
+        fcntl.flock(lock_fd.fileno(), fcntl.LOCK_EX)
+        yield
+    finally:
+        fcntl.flock(lock_fd.fileno(), fcntl.LOCK_UN)
+        lock_fd.close()
+
+
+def _register_worker_and_setup(setup_fn) -> bool:
+    """Register worker; if first, call setup_fn() under lock. Return True if first."""
+    with _coord_lock():
+        count = int(_COORD_COUNT_FILE.read_text()) if _COORD_COUNT_FILE.exists() else 0
+        is_first = count == 0
+        if is_first:
+            setup_fn()
+        _COORD_COUNT_FILE.write_text(str(count + 1))
+        return is_first
+
+
+def _deregister_worker() -> bool:
+    """Deregister this worker. Returns True if this is the last active worker."""
+    with _coord_lock():
+        count = int(_COORD_COUNT_FILE.read_text()) if _COORD_COUNT_FILE.exists() else 1
+        remaining = max(0, count - 1)
+        if remaining == 0:
+            _COORD_COUNT_FILE.unlink(missing_ok=True)
+            _COORD_LOCK_FILE.unlink(missing_ok=True)
+        else:
+            _COORD_COUNT_FILE.write_text(str(remaining))
+        return remaining == 0
+
+
+# ============================================================================
 # Pytest Hooks
 # ============================================================================
 
@@ -111,15 +162,48 @@ def pytest_configure(config):
     os.environ["NX_INSTRUMENT_DATA_PATH"] = str(TEST_INSTRUMENT_DATA_DIR)
     os.environ["NX_DATA_PATH"] = str(TEST_DATA_DIR)
 
-    # Create a temporary database file for integration tests
-    # Always use integration test database (don't reuse unit test database)
-    db_path = TEST_DATA_DIR / "integration_test.db"
+    # Create a per-worker database file for integration tests.
+    # When running under pytest-xdist each worker gets its own DB to avoid
+    # concurrent writes to the same SQLite file.
+    _xdist_worker = os.environ.get("PYTEST_XDIST_WORKER", "")
+    db_suffix = f"_{_xdist_worker}" if _xdist_worker else ""
+    db_path = TEST_DATA_DIR / f"integration_test{db_suffix}.db"
 
     # Use shared database creation function from top-level conftest
     from tests.conftest import create_test_database
 
     create_test_database(db_path)
     os.environ["NX_DB_PATH"] = str(db_path)
+
+    # Seed alembic_version so _check_alembic_migration passes without a real
+    # alembic run.  The integration DB is created via SQLModel (no alembic run),
+    # so we must manually insert the current head revision.
+    from alembic.config import Config as AlembicConfig
+    from alembic.script import ScriptDirectory
+    from sqlalchemy import text
+
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
+
+    _alembic_ini = Path(__file__).parents[2] / "alembic.ini"
+    _cfg = AlembicConfig(str(_alembic_ini))
+    _cfg.set_main_option(
+        "script_location",
+        str(_alembic_ini.parent / "nexusLIMS" / "db" / "migrations"),
+    )
+    _head = ScriptDirectory.from_config(_cfg).get_current_head()
+    if _head:
+        _engine = create_transient_sqlite_engine(db_path)
+        with _engine.connect() as _conn:
+            _conn.execute(
+                text(
+                    "CREATE TABLE IF NOT EXISTS alembic_version "
+                    "(version_num VARCHAR(32) NOT NULL)"
+                )
+            )
+            _conn.execute(text("DELETE FROM alembic_version"))
+            _conn.execute(text(f"INSERT INTO alembic_version VALUES ('{_head}')"))
+            _conn.commit()
+        _engine.dispose()
 
     # Set required CDCS environment variables to dummy values
     # (actual values will be set per-test via fixtures)
@@ -290,21 +374,35 @@ def host_fileserver():
     """
     Pytest fixture for host-based fileserver.
 
+    When running under pytest-xdist, multiple workers share a single
+    fileserver process.  If port 48081 is already bound by another worker,
+    this fixture skips startup gracefully and does not attempt teardown.
+
     Yields
     ------
     None
         Fileserver is running when fixture yields control to tests
     """
-    httpd = start_fileserver()
+    try:
+        httpd = start_fileserver()
+        _owns_server = True
+    except OSError as exc:
+        if exc.errno == errno.EADDRINUSE:
+            # Another worker already owns the fileserver — proceed without it.
+            print("[*] Host fileserver already running (started by another worker)")
+            httpd = None
+            _owns_server = False
+        else:
+            raise
 
     try:
         yield
     finally:
-        # Clean up server
-        print("[*] Stopping host fileserver...")
-        httpd.shutdown()
-        httpd.server_close()
-        print("[+] Host fileserver stopped successfully")
+        if _owns_server and httpd is not None:
+            print("[*] Stopping host fileserver...")
+            httpd.shutdown()
+            httpd.server_close()
+            print("[+] Host fileserver stopped successfully")
 
 
 @pytest.fixture(scope="session")
@@ -316,6 +414,11 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
     docker-compose.yml including NEMO, CDCS, PostgreSQL, Redis, and Mailpit.
     Note that the fileserver now runs on the host machine (via host_fileserver fixture)
     to avoid Docker volume mount issues on macOS.
+
+    When running under pytest-xdist, multiple workers share a single Docker
+    stack.  The first worker to reach this fixture cleans data directories and
+    starts Docker; subsequent workers wait for services to become healthy.
+    Only the last active worker tears Docker down.
 
     Parameters
     ----------
@@ -341,128 +444,45 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
     import os
     import shutil
 
-    # Check if we should keep Docker services running for debugging
     keep_running = os.environ.get("NX_TESTS_KEEP_DOCKER_RUNNING", "0") == "1"
-    # Debug: Show keep_running status before yield (during test execution)
-    print(f"\n[DEBUG] keep_running status before tests: {keep_running}")
 
-    # Always clean test data directories to ensure clean state
-    print("\n[*] Checking test data directories...")
-    for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
-        if test_dir.exists():
-            print(f"[!] WARNING: Test data directory already exists: {test_dir}")
-            print("[!] This may indicate a previous test run did not clean up properly")
-            print("[!] Removing directory to ensure clean test environment...")
-            shutil.rmtree(test_dir)
-        test_dir.mkdir(parents=True, exist_ok=True)
-        print(f"[+] Created {test_dir}")
+    # ------------------------------------------------------------------
+    # First-worker setup: clean data dirs + start Docker (under lock so
+    # only one worker does it; others wait and then proceed to health checks)
+    # ------------------------------------------------------------------
+    def _first_worker_setup():
+        print("\n[*] Checking test data directories...")
+        for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
+            if test_dir.exists():
+                print(f"[!] Removing existing test data directory: {test_dir}")
+                shutil.rmtree(test_dir)
+            test_dir.mkdir(parents=True, exist_ok=True)
+            print(f"[+] Created {test_dir}")
 
-    # Initialize default database for Settings validation
-    print("[*] Initializing default test database...")
-    from sqlmodel import SQLModel
-
-    from nexusLIMS.db.engine import create_transient_sqlite_engine
-    from nexusLIMS.db.models import (  # noqa: F401
-        Instrument,
-        SessionLog,
-        UploadLog,
-    )
-
-    db_path = TEST_DATA_DIR / "integration_test.db"
-
-    # Create engine and tables using SQLModel
-    engine = create_transient_sqlite_engine(db_path)
-    SQLModel.metadata.create_all(engine)
-
-    # Seed alembic_version at the current head so _check_alembic_migration passes.
-    # The integration DB is created via SQLModel (no alembic run), so we must
-    # manually insert the head revision to avoid a hard PreflightError when
-    # tests call process_new_records().
-    from alembic.config import Config as AlembicConfig
-    from alembic.script import ScriptDirectory
-    from sqlalchemy import text
-
-    _alembic_ini = Path(__file__).parents[2] / "alembic.ini"
-    _cfg = AlembicConfig(str(_alembic_ini))
-    _cfg.set_main_option(
-        "script_location",
-        str(_alembic_ini.parent / "nexusLIMS" / "db" / "migrations"),
-    )
-    _head = ScriptDirectory.from_config(_cfg).get_current_head()
-    if _head:
-        with engine.connect() as _conn:
-            _conn.execute(
-                text(
-                    "CREATE TABLE IF NOT EXISTS alembic_version "
-                    "(version_num VARCHAR(32) NOT NULL)"
-                )
-            )
-            _conn.execute(text("DELETE FROM alembic_version"))
-            _conn.execute(text(f"INSERT INTO alembic_version VALUES ('{_head}')"))
-            _conn.commit()
-        print(f"[+] Seeded alembic_version at {_head}")
-
-    print(f"[+] Initialized {db_path}")
-    engine.dispose()
-
-    # Check if services are already running
-    max_wait = 1  # Short timeout for checking existing services
-    start_time = time.time()
-    nemo_ready = False
-    cdcs_ready = False
-    mailpit_ready = False
-
-    print("[*] Checking if Docker services are already running...")
-
-    while time.time() - start_time < max_wait:
+        # Check if Docker services are already running before trying to start
+        already_running = False
         try:
-            # Check NEMO
-            if not nemo_ready:
-                nemo_response = requests.get(NEMO_HEALTH_URL, timeout=2)
-                nemo_ready = nemo_response.status_code == HTTPStatus.OK
-                if nemo_ready:
-                    print("[+] NEMO service is ready")
-
-            # Check CDCS
-            if not cdcs_ready:
-                cdcs_response = requests.get(CDCS_HEALTH_URL, timeout=2)
-                cdcs_ready = cdcs_response.status_code == HTTPStatus.OK
-                if cdcs_ready:
-                    print("[+] CDCS service is ready")
-
-            # Check Mailpit
-            if not mailpit_ready:
-                mailpit_response = requests.get(MAILPIT_HEALTH_URL, timeout=2)
-                mailpit_ready = mailpit_response.status_code == HTTPStatus.OK
-                if mailpit_ready:
-                    print("[+] Mailpit service is ready")
-
-            # All services ready
-            if nemo_ready and cdcs_ready and mailpit_ready:
-                print("[+] All services are ready!")
-                break
-
+            nemo_ok = (
+                requests.get(NEMO_HEALTH_URL, timeout=2).status_code == HTTPStatus.OK
+            )
+            cdcs_ok = (
+                requests.get(CDCS_HEALTH_URL, timeout=2).status_code == HTTPStatus.OK
+            )
+            mailpit_ok = (
+                requests.get(MAILPIT_HEALTH_URL, timeout=2).status_code == HTTPStatus.OK
+            )
+            already_running = nemo_ok and cdcs_ok and mailpit_ok
         except (requests.ConnectionError, requests.Timeout):
             pass
 
-        time.sleep(1)
+        if already_running:
+            print("[+] Docker services already running — skipping startup")
+            return
 
-    # If services are not running, start them
-    if not (nemo_ready and cdcs_ready and mailpit_ready):
-        print("[*] Docker services not running - starting them now...")
-
-        # Build docker compose command - use CI override if available and in CI context
-        compose_cmd = ["docker", "compose"]
-
-        # Always use base docker-compose.yml
-        compose_cmd.extend(["-f", "docker-compose.yml"])
-
-        # Add CI override only if running in CI environment (for pre-built images)
-        # Check common CI environment variables to detect CI context
+        print("[*] Docker services not running — starting them now...")
+        compose_cmd = ["docker", "compose", "-f", "docker-compose.yml"]
         ci_override = DOCKER_DIR / "docker-compose.ci.yml"
-        in_ci = any(
-            os.environ.get(var) for var in ["CI", "GITHUB_ACTIONS", "GITLAB_CI"]
-        )
+        in_ci = any(os.environ.get(v) for v in ["CI", "GITHUB_ACTIONS", "GITLAB_CI"])
         if ci_override.exists() and in_ci:
             print(
                 "[*] Detected CI environment, using CI override with pre-built images"
@@ -470,114 +490,105 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
             compose_cmd.extend(["-f", "docker-compose.ci.yml"])
         elif not in_ci:
             print("[*] Running locally, using base docker-compose.yml to build images")
+        compose_cmd.append("up")
+        compose_cmd.append("-d")
 
-        compose_cmd.extend(["up", "-d"])
+        subprocess.run(compose_cmd, cwd=DOCKER_DIR, check=True, capture_output=True)
 
-        subprocess.run(
-            compose_cmd,
-            cwd=DOCKER_DIR,
-            check=True,
-            capture_output=True,
+    _register_worker_and_setup(_first_worker_setup)
+
+    # ------------------------------------------------------------------
+    # All workers wait for services to be healthy
+    # ------------------------------------------------------------------
+    max_wait = 180
+    start_time = time.time()
+    nemo_ready = cdcs_ready = mailpit_ready = False
+
+    print("[*] Waiting for Docker services to be healthy...")
+    while time.time() - start_time < max_wait:
+        try:
+            if not nemo_ready:
+                nemo_ready = (
+                    requests.get(NEMO_HEALTH_URL, timeout=2).status_code
+                    == HTTPStatus.OK
+                )
+                if nemo_ready:
+                    print("[+] NEMO service is ready")
+            if not cdcs_ready:
+                cdcs_ready = (
+                    requests.get(CDCS_HEALTH_URL, timeout=2).status_code
+                    == HTTPStatus.OK
+                )
+                if cdcs_ready:
+                    print("[+] CDCS service is ready")
+            if not mailpit_ready:
+                mailpit_ready = (
+                    requests.get(MAILPIT_HEALTH_URL, timeout=2).status_code
+                    == HTTPStatus.OK
+                )
+                if mailpit_ready:
+                    print("[+] Mailpit service is ready")
+            if nemo_ready and cdcs_ready and mailpit_ready:
+                print("[+] All services are ready!")
+                break
+        except (requests.ConnectionError, requests.Timeout):
+            pass
+        time.sleep(2)
+    else:
+        print("[-] Service health checks timed out")
+        subprocess.run(["docker", "compose", "logs"], check=False, cwd=DOCKER_DIR)
+        msg = (
+            f"Services failed to start within {max_wait} seconds. "
+            "Check Docker logs above for details."
         )
-
-        # Wait for health checks
-        max_wait = 60  # 1 minute
-        start_time = time.time()
-        nemo_ready = False
-        cdcs_ready = False
-        mailpit_ready = False
-
-        print("[*] Waiting for services to be healthy...")
-
-        while time.time() - start_time < max_wait:
-            try:
-                # Check NEMO
-                if not nemo_ready:
-                    nemo_response = requests.get(NEMO_HEALTH_URL, timeout=2)
-                    nemo_ready = nemo_response.status_code == 200
-                    if nemo_ready:
-                        print("[+] NEMO service is ready")
-
-                # Check CDCS
-                if not cdcs_ready:
-                    cdcs_response = requests.get(CDCS_HEALTH_URL, timeout=2)
-                    cdcs_ready = cdcs_response.status_code == 200
-                    if cdcs_ready:
-                        print("[+] CDCS service is ready")
-
-                # Check Mailpit
-                if not mailpit_ready:
-                    mailpit_response = requests.get(MAILPIT_HEALTH_URL, timeout=2)
-                    mailpit_ready = mailpit_response.status_code == 200
-                    if mailpit_ready:
-                        print("[+] Mailpit service is ready")
-
-                # All services ready
-                if nemo_ready and cdcs_ready and mailpit_ready:
-                    print("[+] All services are ready!")
-                    break
-
-            except (requests.ConnectionError, requests.Timeout):
-                pass
-
-            time.sleep(2)
-        else:
-            # Timeout - collect logs for debugging
-            print("[-] Service health checks timed out")
-            subprocess.run(
-                ["docker", "compose", "logs"],
-                check=False,
-                cwd=DOCKER_DIR,
-            )
-            msg = (
-                f"Services failed to start within {max_wait} seconds. "
-                "Check Docker logs above for details."
-            )
-            raise RuntimeError(msg)
+        raise RuntimeError(msg)
 
     yield
-    # Debug: Show keep_running status after yield (during cleanup)
-    print(f"\n[DEBUG] keep_running status during cleanup: {keep_running}")
 
-    # Cleanup logic based on keep_running flag
+    # ------------------------------------------------------------------
+    # Last-worker teardown: only the final worker cleans up
+    # ------------------------------------------------------------------
+    is_last = _deregister_worker()
+
     if keep_running:
-        print("\n[*] NX_TESTS_KEEP_DOCKER_RUNNING=1: Keeping Docker services running")
-        print("[!] Remember to manually clean up with: docker compose down -v")
-        print("\n[*] NX_TESTS_KEEP_DOCKER_RUNNING=1: Keeping test data directories")
-        print(f"[!] Test instrument data: {TEST_INSTRUMENT_DATA_DIR}")
-        print(f"[!] Test NexusLIMS data: {TEST_DATA_DIR}")
+        if is_last:
+            print(
+                "\n[*] NX_TESTS_KEEP_DOCKER_RUNNING=1: Keeping Docker services running"
+            )
+            print("[!] Remember to manually clean up with: docker compose down -v")
+        return
+
+    if not is_last:
+        return
+
+    print("\n[*] Last worker — cleaning up Docker services...")
+    subprocess.run(
+        ["docker", "compose", "down", "-v"],
+        check=False,
+        cwd=DOCKER_DIR,
+        capture_output=True,
+    )
+    print("[+] Docker services cleaned up")
+
+    print("[*] Cleaning test data directories...")
+    cleanup_errors = []
+    for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
+        if test_dir.exists():
+            try:
+                shutil.rmtree(test_dir)
+                print(f"[+] Removed {test_dir}")
+            except Exception as exc:
+                msg = f"Failed to remove {test_dir}: {exc}"
+                print(f"[!] {msg}")
+                cleanup_errors.append(msg)
+
+    if cleanup_errors:
+        print("\n[!] WARNING: Some cleanup operations failed:")
+        for err in cleanup_errors:
+            print(f"    - {err}")
+        print("  rm -rf /tmp/nexuslims-test-*")
     else:
-        # Always stop services (regardless of who started them)
-        print("\n[*] Cleaning up Docker services...")
-        subprocess.run(
-            ["docker", "compose", "down", "-v"],
-            check=False,
-            cwd=DOCKER_DIR,
-            capture_output=True,
-        )
-        print("[+] Docker services cleaned up")
-
-        # Clean test data directories
-        print("[*] Cleaning test data directories...")
-        cleanup_errors = []
-        for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
-            if test_dir.exists():
-                try:
-                    shutil.rmtree(test_dir)
-                    print(f"[+] Removed {test_dir}")
-                except Exception as e:
-                    error_msg = f"Failed to remove {test_dir}: {e}"
-                    print(f"[!] {error_msg}")
-                    cleanup_errors.append(error_msg)
-
-        if cleanup_errors:
-            print("\n[!] WARNING: Some cleanup operations failed:")
-            for error in cleanup_errors:
-                print(f"    - {error}")
-            print("\nYou may need to manually remove directories:")
-            print("  rm -rf /tmp/nexuslims-test-*")
-        else:
-            print("[+] Test environment cleanup complete")
+        print("[+] Test environment cleanup complete")
 
 
 @pytest.fixture(scope="session")

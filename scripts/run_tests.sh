@@ -2,9 +2,10 @@
 # Run tests with coverage and matplotlib baseline checks
 #
 # Usage:
-#   ./scripts/run_tests.sh              # Run unit tests only (default)
+#   ./scripts/run_tests.sh              # Run unit tests only (default, parallel)
 #   ./scripts/run_tests.sh --integration # Run both unit and integration tests
 #   ./scripts/run_tests.sh --extractors  # Run extractor unit tests only
+#   ./scripts/run_tests.sh --no-parallel # Disable parallel execution
 #   ./scripts/run_tests.sh --help        # Show usage information
 
 # Show help message
@@ -17,17 +18,20 @@ if [[ "$*" == *"--help"* ]] || [[ "$*" == *"-h"* ]]; then
     echo "  --integration    Run both unit and integration tests (requires Docker)"
     echo "                   Default: run unit tests only"
     echo "  --extractors     Run only extractor unit tests with extractor coverage"
+    echo "  --no-parallel    Disable parallel execution (run tests serially)"
     echo "  -s, --verbose    Show print statements and detailed output (pytest -s -v)"
     echo "  --help, -h       Show this help message"
     echo ""
     echo "Examples:"
-    echo "  ./scripts/run_tests.sh               # Run unit tests only (fast)"
+    echo "  ./scripts/run_tests.sh               # Run unit tests in parallel (fast)"
     echo "  ./scripts/run_tests.sh --integration # Run all tests including integration"
     echo "  ./scripts/run_tests.sh --extractors  # Run extractor tests only"
+    echo "  ./scripts/run_tests.sh --no-parallel # Run unit tests serially"
     echo "  ./scripts/run_tests.sh -s            # Show all print statements"
     echo "  ./scripts/run_tests.sh --integration -s  # Integration tests with prints"
     echo ""
     echo "Note: Integration tests require Docker services to be available."
+    echo "Note: Integration tests always run serially (Docker services use fixed ports)."
     exit 0
 fi
 
@@ -35,6 +39,11 @@ fi
 TEST_PATH="tests/unit"
 COV_SOURCE="nexusLIMS"
 PYTEST_FLAGS=""
+
+# Parallel execution: unit tests run with -n auto by default; integration tests
+# always run serially because Docker services bind fixed ports and cannot be
+# shared across xdist workers.
+PARALLEL_FLAGS="-n auto --dist loadfile"
 
 # Check for --extractors flag (mutually exclusive with --integration)
 if [[ "$*" == *"--extractors"* ]]; then
@@ -49,20 +58,32 @@ elif [[ "$*" == *"--integration"* ]]; then
     # Use --override-ini to clear the addopts marker filter.
     # Exclude LabArchives live tests — they require real credentials and a live server;
     # use scripts/run_labarchives_tests.sh to run those on demand.
+    # Integration tests use --dist loadfile: tests within each file run on one worker
+    # (preserving intra-file state management), while different files run in parallel.
+    # Docker services and the host fileserver are shared across workers via
+    # the xdist coordination helpers in tests/integration/conftest.py.
     PYTEST_FLAGS="$PYTEST_FLAGS --override-ini=addopts= --ignore=tests/integration/test_labarchives_integration.py"
 else
     echo "Running unit tests only (use --integration to include integration tests)..."
 fi
 
+# Disable parallel execution if requested
+if [[ "$*" == *"--no-parallel"* ]]; then
+    echo "Running with parallel execution disabled..."
+    PARALLEL_FLAGS="--dist no"
+fi
+
 # Check for verbose/show output flag
 if [[ "$*" == *"-s"* ]] || [[ "$*" == *"--verbose"* ]]; then
     echo "Running with output capture disabled (showing print statements)..."
-    PYTEST_FLAGS="-s -v"
+    PYTEST_FLAGS="-s -v $PYTEST_FLAGS"
+    # Parallel mode and -s are incompatible; disable parallelism when -s is used
+    PARALLEL_FLAGS="--dist no"
 fi
 
 rm -rf tests/coverage 2>/dev/null
 rm -rf /tmp/nexuslims-test* 2>/dev/null
-uv run pytest "$TEST_PATH" $PYTEST_FLAGS --cov="$COV_SOURCE" \
+uv run pytest "$TEST_PATH" $PARALLEL_FLAGS $PYTEST_FLAGS --cov="$COV_SOURCE" \
         --cov-report html:tests/coverage \
         --cov-report term-missing \
         --cov-report xml \
