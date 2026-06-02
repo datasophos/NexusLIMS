@@ -24,6 +24,18 @@ jobs:
         python-version: ["3.11", "3.12", "3.13", "3.14"]
 
     steps:
+      - name: Runner info
+        run: |
+          echo "=== CPU ==="
+          nproc
+          lscpu | grep -E "^(Architecture|CPU\(s\)|Thread|Core|Socket|Model name)"
+          echo "=== Memory ==="
+          free -h
+          echo "=== Kernel ==="
+          uname -a
+          echo "=== Disk ==="
+          df -h /
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -132,7 +144,7 @@ jobs:
       - name: Run all tests (unit + integration)
         run: |
           uv run pytest tests/ \
-            -n auto --dist loadgroup \
+            -n logical --dist loadgroup \
             -v \
             --override-ini=addopts= \
             --mpl \
