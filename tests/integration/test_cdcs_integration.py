@@ -7,9 +7,9 @@ to upload, retrieve, and manage experiment records.
 
 import logging
 import os
-from datetime import datetime
 from http import HTTPStatus
 from pathlib import Path
+from uuid import uuid4
 
 import pytest
 import requests
@@ -582,7 +582,7 @@ class TestCdcsSearchAndDownload:
     def test_upload_and_search_new_record(self, cdcs_client):
         """Test uploading a new record and then searching for it."""
         # Upload a new record
-        test_title = "Test Record - Search After Upload"
+        test_title = f"Test Record - Search After Upload [{uuid4().hex}]"
         upload_response, record_id = cdcs.upload_record_content(
             MINIMAL_TEST_RECORD,
             test_title,
@@ -724,7 +724,7 @@ class TestCDCSUserOwnership:
         from nexusLIMS.utils.cdcs import CDCSUserManager
 
         manager = CDCSUserManager(cdcs_client["url"], cdcs_client["token"])
-        username = f"nx_test_owner_{int(datetime.now().timestamp())}"
+        username = f"nx_test_owner_{uuid4().hex}"
         email = f"{username}@example.com"
 
         user = manager.get_or_create_user(
@@ -744,7 +744,7 @@ class TestCDCSUserOwnership:
         from nexusLIMS.utils.cdcs import CDCSUserManager
 
         manager = CDCSUserManager(cdcs_client["url"], cdcs_client["token"])
-        username = f"nx_test_cached_{int(datetime.now().timestamp())}"
+        username = f"nx_test_cached_{uuid4().hex}"
 
         user1 = manager.get_or_create_user(
             username, f"{username}@example.com", "A", "B"
@@ -767,7 +767,7 @@ class TestCDCSUserOwnership:
         from nexusLIMS.utils.network import nexus_req
 
         manager = CDCSUserManager(cdcs_client["url"], cdcs_client["token"])
-        username = f"nx_test_record_owner_{int(datetime.now().timestamp())}"
+        username = f"nx_test_record_owner_{uuid4().hex}"
 
         # Upload a test record
         _, record_id = upload_record_content(

@@ -59,7 +59,9 @@ def multi_signal_test_files(request):
         # Try to get it from environment variable, fall back to standard path
         from tests.integration.conftest import TEST_INSTRUMENT_DATA_DIR
 
-        instr_data_path = TEST_INSTRUMENT_DATA_DIR
+        instr_data_path = Path(
+            os.environ.get("NX_TEST_INSTRUMENT_DATA_PATH", TEST_INSTRUMENT_DATA_DIR)
+        )
     else:
         # Unit tests use standard NX_INSTRUMENT_DATA_PATH from settings
         instr_data_path = Path(settings.NX_INSTRUMENT_DATA_PATH)

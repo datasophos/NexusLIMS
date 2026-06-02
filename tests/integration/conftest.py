@@ -10,6 +10,7 @@ CDCS services, database setup, and cleanup operations.
 import contextlib
 import fcntl
 import os
+import re
 import subprocess
 import tempfile
 import time
@@ -119,6 +120,13 @@ def _deregister_worker() -> bool:
         else:
             _COORD_COUNT_FILE.write_text(str(remaining))
         return remaining == 0
+
+
+def _safe_test_id(nodeid: str) -> str:
+    """Return a filesystem-safe identifier for a pytest node ID."""
+    worker = os.environ.get("PYTEST_XDIST_WORKER", "controller")
+    safe = re.sub(r"[^A-Za-z0-9_.-]+", "_", nodeid).strip("_")
+    return f"{worker}-{safe[:180]}"
 
 
 # ============================================================================
@@ -256,6 +264,49 @@ def reset_caches_between_tests():
     SingletonResetter.reset_settings()
     SingletonResetter.reset_emg_cache()
     # Don't reset engine/database - those are session-scoped
+
+
+@pytest.fixture
+def integration_paths(request, monkeypatch) -> dict[str, Path | str]:
+    """
+    Provide path isolation for one integration test.
+
+    Docker services and the host fileserver are shared across xdist workers,
+    so their public roots remain stable. Each test gets a unique filestore
+    prefix under those roots, plus private log and record directories.
+    """
+    from nexusLIMS.config import refresh_settings
+
+    test_id = _safe_test_id(request.node.nodeid)
+    instrument_prefix = Path(test_id)
+    instrument_data_dir = TEST_INSTRUMENT_DATA_DIR / instrument_prefix
+    data_dir = TEST_DATA_DIR
+    test_data_dir = data_dir / instrument_prefix
+    log_dir = test_data_dir / "logs"
+    records_dir = test_data_dir / "records"
+
+    instrument_data_dir.mkdir(parents=True, exist_ok=True)
+    test_data_dir.mkdir(parents=True, exist_ok=True)
+    log_dir.mkdir(parents=True, exist_ok=True)
+    records_dir.mkdir(parents=True, exist_ok=True)
+
+    monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(TEST_INSTRUMENT_DATA_DIR))
+    monkeypatch.setenv("NX_DATA_PATH", str(data_dir))
+    monkeypatch.setenv("NX_LOG_PATH", str(log_dir))
+    monkeypatch.setenv("NX_RECORDS_PATH", str(records_dir))
+    monkeypatch.setenv("NX_TEST_INSTRUMENT_DATA_PATH", str(instrument_data_dir))
+    monkeypatch.setenv("NX_TEST_FILESTORE_PREFIX", instrument_prefix.as_posix())
+    refresh_settings()
+
+    return {
+        "test_id": test_id,
+        "filestore_prefix": instrument_prefix,
+        "instrument_data": instrument_data_dir,
+        "nexuslims_data": data_dir,
+        "test_data": test_data_dir,
+        "logs": log_dir,
+        "records": records_dir,
+    }
 
 
 # ============================================================================
@@ -1053,6 +1104,25 @@ def setup_cdcs_environment(cdcs_url, cdcs_credentials):
     refresh_settings()
 
 
+def _get_uploaded_cdcs_record_ids() -> list[str]:
+    """Return successful CDCS record IDs from the current test database."""
+    from sqlmodel import select
+
+    from nexusLIMS.db.engine import get_engine
+    from nexusLIMS.db.models import UploadLog
+
+    with DBSession(get_engine()) as db_session:
+        upload_logs = db_session.exec(
+            select(UploadLog).where(
+                UploadLog.destination_name == "cdcs",
+                UploadLog.success.is_(True),
+                UploadLog.record_id.is_not(None),
+            )
+        ).all()
+
+    return [log.record_id for log in upload_logs if log.record_id is not None]
+
+
 @pytest.fixture
 def cdcs_client(cdcs_url, cdcs_credentials, monkeypatch):
     """
@@ -1547,7 +1617,7 @@ def db_template(docker_services, mock_tools_data, tmp_path_factory):
 
 
 @pytest.fixture
-def fresh_test_db(db_template, tmp_path, monkeypatch):
+def fresh_test_db(db_template, tmp_path, monkeypatch, integration_paths):
     """
     Provide a per-test copy of the instrument-populated DB template.
 
@@ -1571,6 +1641,7 @@ def fresh_test_db(db_template, tmp_path, monkeypatch):
         Path to the writable per-test copy of the database.
     """
     import shutil
+    import sqlite3
 
     from nexusLIMS import instruments as instruments_module
     from nexusLIMS.config import refresh_settings
@@ -1580,9 +1651,22 @@ def fresh_test_db(db_template, tmp_path, monkeypatch):
     test_db = tmp_path / "test.db"
     shutil.copy(str(db_template), str(test_db))
 
+    filestore_prefix = integration_paths["filestore_prefix"]
+    with sqlite3.connect(test_db) as conn:
+        rows = conn.execute("SELECT instrument_pid, filestore_path FROM instruments")
+        for instrument_pid, filestore_path in rows.fetchall():
+            prefixed_path = (filestore_prefix / filestore_path).as_posix()
+            conn.execute(
+                "UPDATE instruments SET filestore_path = ? WHERE instrument_pid = ?",
+                (prefixed_path, instrument_pid),
+            )
+        conn.commit()
+
     monkeypatch.setenv("NX_DB_PATH", str(test_db))
     monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(TEST_INSTRUMENT_DATA_DIR))
     monkeypatch.setenv("NX_DATA_PATH", str(TEST_DATA_DIR))
+    monkeypatch.setenv("NX_LOG_PATH", str(integration_paths["logs"]))
+    monkeypatch.setenv("NX_RECORDS_PATH", str(integration_paths["records"]))
 
     old_engine = engine_module._engine
     new_engine = create_transient_sqlite_engine(test_db)
@@ -1638,7 +1722,7 @@ def test_instrument_db(fresh_test_db):
 
 
 @pytest.fixture
-def test_data_dirs(tmp_path, monkeypatch) -> dict[str, Path]:
+def test_data_dirs(integration_paths, monkeypatch) -> dict[str, Path]:
     """
     Create test data directories for integration tests.
 
@@ -1662,16 +1746,18 @@ def test_data_dirs(tmp_path, monkeypatch) -> dict[str, Path]:
     from nexusLIMS.config import refresh_settings
 
     # Create directories
-    instrument_data_dir = TEST_INSTRUMENT_DATA_DIR
-    nexuslims_data_dir = TEST_DATA_DIR
+    instrument_data_dir = integration_paths["instrument_data"]
+    nexuslims_data_dir = integration_paths["nexuslims_data"]
 
     # Ensure they exist
     instrument_data_dir.mkdir(parents=True, exist_ok=True)
     nexuslims_data_dir.mkdir(parents=True, exist_ok=True)
 
-    # Set environment variables for data paths
-    monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(instrument_data_dir))
+    # Keep public roots stable; instrument DB rows include the per-test prefix.
+    monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(TEST_INSTRUMENT_DATA_DIR))
     monkeypatch.setenv("NX_DATA_PATH", str(nexuslims_data_dir))
+    monkeypatch.setenv("NX_LOG_PATH", str(integration_paths["logs"]))
+    monkeypatch.setenv("NX_RECORDS_PATH", str(integration_paths["records"]))
 
     # Refresh settings to pick up new environment variables
     refresh_settings()
@@ -1712,20 +1798,15 @@ def sample_microscopy_files(extracted_test_files):
     with tarfile.open(archive_path, "r:gz") as tar:
         names = tar.getnames()
 
-    instrument_data_dir = TEST_INSTRUMENT_DATA_DIR
+    instrument_data_dir = extracted_test_files["base_dir"]
     return [
         instrument_data_dir / n for n in names if (instrument_data_dir / n).exists()
     ]
 
 
-@pytest.fixture(scope="session")
-def extracted_test_files():
-    """Extract test files archive once per worker session (session-scoped).
-
-    All workflow tests run on the same worker (via ``xdist_group("workflow")``),
-    so extracting once is safe. Per-test generated metadata is cleaned up by
-    ``test_environment_setup``; this fixture only cleans up the source files on
-    session teardown.
+@pytest.fixture
+def extracted_test_files(integration_paths):
+    """Extract test files archive into this test's isolated filestore subtree.
 
     Yields
     ------
@@ -1742,7 +1823,7 @@ def extracted_test_files():
     from datetime import datetime
 
     archive_path = Path(__file__).parents[1] / "unit/files/test_record_files.tar.gz"
-    instrument_data_dir = TEST_INSTRUMENT_DATA_DIR
+    instrument_data_dir = integration_paths["instrument_data"]
 
     print(f"\n[*] Extracting test files to {instrument_data_dir}")
     extracted_top_level_dirs = []
@@ -1798,6 +1879,7 @@ def test_environment_setup(  # noqa: PLR0913
     docker_services_running,
     nemo_connector,
     fresh_test_db,
+    integration_paths,
     extracted_test_files,
     cdcs_client,
     monkeypatch,
@@ -1874,15 +1956,11 @@ def test_environment_setup(  # noqa: PLR0913
     print(f"    Expected session time: {session_start} to {session_end}")
     print("    Expected user: captain")
 
-    from nexusLIMS.utils import cdcs as cdcs_utils
-
-    # Snapshot CDCS record IDs before test runs
-    before_cdcs_ids = {r["id"] for r in cdcs_utils.search_records() or []}
-
     # Snapshot TEST_DATA_DIR subdirectories before test runs
+    test_data_dir = integration_paths["test_data"]
     before_data_dirs = (
-        {p.name for p in TEST_DATA_DIR.iterdir() if p.is_dir()}
-        if TEST_DATA_DIR.exists()
+        {p.name for p in test_data_dir.iterdir() if p.is_dir()}
+        if test_data_dir.exists()
         else set()
     )
 
@@ -1898,13 +1976,13 @@ def test_environment_setup(  # noqa: PLR0913
     # Cleanup: Delete only CDCS records created during this test
     import shutil
 
-    after_records = cdcs_utils.search_records() or []
-    for r in after_records:
-        if r["id"] not in before_cdcs_ids:
-            try:
-                cdcs_utils.delete_record(r["id"])
-            except Exception as e:
-                print(f"[!] Failed to cleanup record {r['id']}: {e}")
+    from nexusLIMS.utils import cdcs as cdcs_utils
+
+    for record_id in _get_uploaded_cdcs_record_ids():
+        try:
+            cdcs_utils.delete_record(record_id)
+        except Exception as e:
+            print(f"[!] Failed to cleanup record {record_id}: {e}")
 
     # Cleanup: Remove TEST_DATA_DIR subdirectories created during this test.
     # Skip "logs/" — it is shared across xdist workers (CLI tests write logs
@@ -1913,8 +1991,8 @@ def test_environment_setup(  # noqa: PLR0913
     # FileHandler into that directory.  The docker_services teardown removes
     # TEST_DATA_DIR entirely at the end of the session.
     _worker_shared_dirs = {"logs"}
-    if TEST_DATA_DIR.exists():
-        for subdir in TEST_DATA_DIR.iterdir():
+    if test_data_dir.exists():
+        for subdir in test_data_dir.iterdir():
             if subdir.name in _worker_shared_dirs:
                 continue
             if subdir.is_dir() and subdir.name not in before_data_dirs:
@@ -2194,6 +2272,7 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     fresh_test_db,
     cdcs_client,
     multi_signal_test_files,
+    integration_paths,
     monkeypatch,
 ):
     """
@@ -2242,6 +2321,8 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     # (unit test fixtures may have overwritten them)
     monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(TEST_INSTRUMENT_DATA_DIR))
     monkeypatch.setenv("NX_DATA_PATH", str(TEST_DATA_DIR))
+    monkeypatch.setenv("NX_LOG_PATH", str(integration_paths["logs"]))
+    monkeypatch.setenv("NX_RECORDS_PATH", str(integration_paths["records"]))
 
     # Ensure settings are using integration test directories
     refresh_settings()
@@ -2376,11 +2457,13 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     from nexusLIMS.utils import cdcs
 
     record_title = record_path.stem
-    search_results = cdcs.search_records(title=record_title)
-    if not search_results:
-        pytest.fail(f"Record '{record_title}' not found in CDCS after upload")
+    uploaded_record_ids = _get_uploaded_cdcs_record_ids()
+    if len(uploaded_record_ids) != 1:
+        pytest.fail(
+            f"Expected one CDCS upload for '{record_title}', got {uploaded_record_ids}"
+        )
 
-    record_id = search_results[0]["id"]
+    record_id = uploaded_record_ids[0]
     print(f"  Record ID: {record_id}")
     print("[+] Multi-signal record fixture setup complete")
 
@@ -2402,9 +2485,10 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
 
 
 @pytest.fixture
-def tofwerk_integration_record(  # noqa: PLR0915
+def tofwerk_integration_record(  # noqa: PLR0913, PLR0915
     docker_services_running,
     fresh_test_db,
+    integration_paths,
     extracted_test_files,
     cdcs_client,
     monkeypatch,
@@ -2455,6 +2539,8 @@ def tofwerk_integration_record(  # noqa: PLR0915
 
     monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(TEST_INSTRUMENT_DATA_DIR))
     monkeypatch.setenv("NX_DATA_PATH", str(TEST_DATA_DIR))
+    monkeypatch.setenv("NX_LOG_PATH", str(integration_paths["logs"]))
+    monkeypatch.setenv("NX_RECORDS_PATH", str(integration_paths["records"]))
     refresh_settings()
 
     test_instrument_db = instruments_module._get_instrument_db(db_path=fresh_test_db)
@@ -2581,11 +2667,13 @@ def tofwerk_integration_record(  # noqa: PLR0915
     from nexusLIMS.utils import cdcs
 
     record_title = record_path.stem
-    search_results = cdcs.search_records(title=record_title)
-    if not search_results:
-        pytest.fail(f"Record '{record_title}' not found in CDCS after upload")
+    uploaded_record_ids = _get_uploaded_cdcs_record_ids()
+    if len(uploaded_record_ids) != 1:
+        pytest.fail(
+            f"Expected one CDCS upload for '{record_title}', got {uploaded_record_ids}"
+        )
 
-    record_id = search_results[0]["id"]
+    record_id = uploaded_record_ids[0]
     print(f"  Record ID in CDCS: {record_id}")
     print("[+] Tofwerk integration record fixture setup complete")
 

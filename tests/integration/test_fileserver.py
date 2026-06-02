@@ -15,15 +15,16 @@ import requests
 class TestHostFileserver:
     """Test the host-based fileserver fixture."""
 
-    def test_fileserver_serves_instrument_data(self, host_fileserver, tmp_path):
+    def test_fileserver_serves_instrument_data(self, host_fileserver, test_data_dirs):
         """Test that the fileserver can serve files from instrument data directory."""
         # Create a test file in the instrument data directory
-        test_file = Path("/tmp/nexuslims-test-instrument-data/test_file.txt")
+        test_file = test_data_dirs["instrument_data"] / "test_file.txt"
         test_file.parent.mkdir(parents=True, exist_ok=True)
         test_file.write_text("Hello from instrument data!")
 
         # Request the file through the fileserver
-        response = requests.get("http://localhost:48081/instrument-data/test_file.txt")
+        rel_path = test_file.relative_to(Path("/tmp/nexuslims-test-instrument-data"))
+        response = requests.get(f"http://localhost:48081/instrument-data/{rel_path}")
 
         # Verify the response
         assert response.status_code == 200
@@ -32,15 +33,16 @@ class TestHostFileserver:
         # Clean up
         test_file.unlink()
 
-    def test_fileserver_serves_nexuslims_data(self, host_fileserver):
+    def test_fileserver_serves_nexuslims_data(self, host_fileserver, integration_paths):
         """Test that the fileserver can serve files from NexusLIMS data directory."""
         # Create a test file in the NexusLIMS data directory
-        test_file = Path("/tmp/nexuslims-test-data/test_preview.png")
+        test_file = integration_paths["test_data"] / "test_preview.png"
         test_file.parent.mkdir(parents=True, exist_ok=True)
         test_file.write_text("Fake preview content")
 
         # Request the file through the fileserver
-        response = requests.get("http://localhost:48081/data/test_preview.png")
+        rel_path = test_file.relative_to(Path("/tmp/nexuslims-test-data"))
+        response = requests.get(f"http://localhost:48081/data/{rel_path}")
 
         # Verify the response
         assert response.status_code == 200
@@ -49,15 +51,16 @@ class TestHostFileserver:
         # Clean up
         test_file.unlink()
 
-    def test_fileserver_cors_headers(self, host_fileserver):
+    def test_fileserver_cors_headers(self, host_fileserver, test_data_dirs):
         """Test that the fileserver includes proper CORS headers."""
         # Create a test file
-        test_file = Path("/tmp/nexuslims-test-instrument-data/cors_test.txt")
+        test_file = test_data_dirs["instrument_data"] / "cors_test.txt"
         test_file.parent.mkdir(parents=True, exist_ok=True)
         test_file.write_text("CORS test")
 
         # Request the file
-        response = requests.get("http://localhost:48081/instrument-data/cors_test.txt")
+        rel_path = test_file.relative_to(Path("/tmp/nexuslims-test-instrument-data"))
+        response = requests.get(f"http://localhost:48081/instrument-data/{rel_path}")
 
         # Verify CORS headers
         assert response.status_code == 200
