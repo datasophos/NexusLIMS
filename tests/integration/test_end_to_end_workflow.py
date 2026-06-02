@@ -466,29 +466,33 @@ class TestEndToEndWorkflow:
         The default condition for this record produces 2 activities, and
         is tested in ``test_complete_record_building_workflow()``
         """
-        from nexusLIMS.config import refresh_settings, settings
+        from nexusLIMS.config import refresh_settings
         from nexusLIMS.utils import cdcs
 
         # disable clustering to put all datasets in one activity
         monkeypatch.setenv("NX_CLUSTERING_SENSITIVITY", str(0))
         refresh_settings()
 
-        # process record with default sensitivity
+        # Snapshot CDCS record IDs before processing so we can identify the
+        # newly uploaded record without relying on the local filesystem.
+        # (The records/uploaded/ directory may be cleaned up by a concurrent
+        # xdist worker's test_environment_setup teardown mid-run.)
+        before_ids = {r["id"] for r in (cdcs.search_records() or [])}
+
+        # process record with clustering disabled (all files → 1 activity)
         record_builder.process_new_records(
             dt_from=test_environment_setup["dt_from"] - timedelta(hours=1),
             dt_to=test_environment_setup["dt_to"] + timedelta(hours=1),
         )
 
-        uploaded_dir = settings.records_dir_path / "uploaded"
-        uploaded_records = list(uploaded_dir.glob("*.xml"))
-        test_record = uploaded_records[0]
-        record_title = test_record.stem
-
-        # this is not reliable if generating the same record twice
-        search_results = cdcs.search_records(title=record_title)
-
-        cdcs_record = search_results[0]
-        record_id = cdcs_record["id"]
+        # Find the record uploaded during this call via CDCS snapshot delta
+        after_records = cdcs.search_records() or []
+        new_records = [r for r in after_records if r["id"] not in before_ids]
+        assert len(new_records) == 1, (
+            f"Expected exactly 1 new CDCS record after process_new_records(), "
+            f"got {len(new_records)}"
+        )
+        record_id = new_records[0]["id"]
 
         # Download the record from CDCS and verify it matches
         downloaded_xml = cdcs.download_record(record_id)

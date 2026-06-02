@@ -172,66 +172,43 @@ class TestProcessRecordsScript:
         This test verifies that the script uses file locking to prevent
         multiple instances from running simultaneously.
 
-        Note: This test uses subprocess because it requires testing
-        actual concurrent execution with separate processes.
+        The lock is held by the test process itself (not a subprocess) to
+        avoid unreliable startup timing with ``uv run``.
 
         Parameters
         ----------
         test_environment_setup : dict
             Test environment configuration (includes all necessary fixtures)
         """
-        # Start first instance in background (with a sleep to hold the lock)
-        # We'll use a python script that acquires the lock and sleeps
-        lock_holder_script = """
-import time
-from pathlib import Path
-from filelock import FileLock
-from nexusLIMS.config import settings
+        from filelock import FileLock
 
-lock_file = settings.lock_file_path
-lock = FileLock(str(lock_file), timeout=0)
+        from nexusLIMS.config import settings
 
-with lock:
-    print("Lock acquired, sleeping...")
-    time.sleep(10)
-"""
+        lock_file = settings.lock_file_path
+        lock = FileLock(str(lock_file), timeout=0)
 
-        # Start the lock holder
-        process1 = subprocess.Popen(
-            ["uv", "run", "python", "-c", lock_holder_script],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-
-        # Give it time to acquire the lock
-        time.sleep(2)
-
-        try:
-            # Try to run the script - should exit immediately due to lock
+        # Hold the lock in this process while running nexuslims build-records.
+        # The child process must detect the lock and exit immediately.
+        with lock:
             result = subprocess.run(
                 ["uv", "run", "nexuslims", "build-records", "-vv"],
                 check=False,
                 capture_output=True,
                 text=True,
-                timeout=10,
+                timeout=15,
             )
 
-            # Should exit cleanly (exit code 0) but indicate lock exists
-            assert result.returncode == 0, "Script should exit cleanly when locked"
+        # Should exit cleanly (exit code 0) but indicate lock exists
+        assert result.returncode == 0, "Script should exit cleanly when locked"
 
-            # Should log that another instance is running
-            assert "another instance is running" in result.stderr.lower(), (
-                "Missing concurrent run warning"
-            )
-            assert "lock file already exists at " in result.stderr.lower(), (
-                "Missing concurrent run warning"
-            )
-
-        finally:
-            # Clean up the lock holder
-            process1.terminate()
-            process1.wait(timeout=5)
+        # The lock messages may appear on stdout (via Rich Console) or stderr
+        combined_output = (result.stdout + result.stderr).lower()
+        assert "another instance is running" in combined_output, (
+            "Missing concurrent run warning"
+        )
+        assert "lock file already exists at" in combined_output, (
+            "Missing lock-file path in output"
+        )
 
     def test_script_error_email_notification(
         self,

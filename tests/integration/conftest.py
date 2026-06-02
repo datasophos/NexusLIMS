@@ -282,7 +282,11 @@ def _start_fileserver_subprocess() -> int:
         "        self.send_header('Access-Control-Allow-Origin', '*')\n"
         "        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')\n"
         "        self.send_header('Access-Control-Allow-Headers', '*')\n"
-        "        self.send_header('Cache-Control', 'no-store, no-cache')\n"
+        "        cc = ('no-store, no-cache, must-revalidate,'\n"
+        "              ' proxy-revalidate, max-age=0')\n"
+        "        self.send_header('Cache-Control', cc)\n"
+        "        self.send_header('Pragma', 'no-cache')\n"
+        "        self.send_header('Expires', '0')\n"
         "        super().end_headers()\n"
         "    def log_message(self, *a): pass\n"
         "\n"
@@ -1892,9 +1896,17 @@ def test_environment_setup(  # noqa: PLR0913
             except Exception as e:
                 print(f"[!] Failed to cleanup record {r['id']}: {e}")
 
-    # Cleanup: Remove TEST_DATA_DIR subdirectories created during this test
+    # Cleanup: Remove TEST_DATA_DIR subdirectories created during this test.
+    # Skip "logs/" — it is shared across xdist workers (CLI tests write logs
+    # here while workflow tests may be tearing down concurrently).  Deleting
+    # it here would race with the CLI worker's runner.invoke() which holds a
+    # FileHandler into that directory.  The docker_services teardown removes
+    # TEST_DATA_DIR entirely at the end of the session.
+    _worker_shared_dirs = {"logs"}
     if TEST_DATA_DIR.exists():
         for subdir in TEST_DATA_DIR.iterdir():
+            if subdir.name in _worker_shared_dirs:
+                continue
             if subdir.is_dir() and subdir.name not in before_data_dirs:
                 try:
                     shutil.rmtree(subdir)
