@@ -189,13 +189,15 @@ class TestProcessRecordsScript:
 
         # Hold the lock in this process while running nexuslims build-records.
         # The child process must detect the lock and exit immediately.
+        # Timeout is generous because uv startup under parallel test load can
+        # be slow even though the actual lock-detection path exits instantly.
         with lock:
             result = subprocess.run(
                 ["uv", "run", "nexuslims", "build-records", "-vv"],
                 check=False,
                 capture_output=True,
                 text=True,
-                timeout=15,
+                timeout=60,
             )
 
         # Should exit cleanly (exit code 0) but indicate lock exists

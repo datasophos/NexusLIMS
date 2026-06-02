@@ -202,6 +202,18 @@ def pytest_configure(config):
     )
 
 
+def pytest_sessionfinish(session, exitstatus):
+    """Stop the host fileserver when the test session finishes.
+
+    In xdist runs this is called once per worker AND once on the controller
+    after all workers finish.  We only stop the fileserver on the controller
+    (or in a non-xdist single-process run) so the subprocess stays alive for
+    the entire test session regardless of which workers use it.
+    """
+    if not hasattr(session.config, "workerinput"):
+        _stop_fileserver_subprocess()
+
+
 # ============================================================================
 # Test Isolation Fixtures
 # ============================================================================
@@ -339,13 +351,14 @@ def host_fileserver():
     When running under pytest-xdist, multiple workers share a single
     fileserver subprocess.  The first worker starts it as a detached
     subprocess (via _start_fileserver_subprocess) so it outlives any
-    individual worker process.  The last worker's docker_services teardown
-    stops it, ensuring it remains alive for the entire test run.
+    individual worker process.  The subprocess is stopped by the controller
+    in pytest_sessionfinish after all workers have completed, ensuring it
+    remains alive for all tests regardless of which workers use it.
 
-    Yields
-    ------
+    Returns
+    -------
     None
-        Fileserver is running when fixture yields control to tests
+        Fileserver is running when the fixture completes setup
     """
     with _coord_lock():
         if not _FILESERVER_PID_FILE.exists():
@@ -527,9 +540,6 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
         capture_output=True,
     )
     print("[+] Docker services cleaned up")
-
-    print("[*] Stopping host fileserver subprocess...")
-    _stop_fileserver_subprocess()
 
     print("[*] Cleaning test data directories...")
     cleanup_errors = []

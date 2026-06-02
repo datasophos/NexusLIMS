@@ -21,7 +21,8 @@ if [[ " $* " == *" --help "* ]] || [[ " $* " == *" -h "* ]]; then
     echo "  --extractors     Run only extractor unit tests with extractor coverage"
     echo "  --no-parallel    Disable parallel execution (run tests serially)"
     echo "  --half-cpu       Use half the available CPU cores (instead of all)"
-    echo "  -s, --verbose    Show print statements and detailed output (pytest -s -v)"
+    echo "  -s               Disable output capture (show print statements, disables parallelism)
+  --verbose        Show verbose test output (pytest -v, compatible with parallelism)"
     echo "  --help, -h       Show this help message"
     echo ""
     echo "Examples:"
@@ -30,8 +31,10 @@ if [[ " $* " == *" --help "* ]] || [[ " $* " == *" -h "* ]]; then
     echo "  ./scripts/run_tests.sh --extractors  # Run extractor tests only"
     echo "  ./scripts/run_tests.sh --no-parallel # Run unit tests serially"
     echo "  ./scripts/run_tests.sh --half-cpu    # Run with half the CPU cores"
-    echo "  ./scripts/run_tests.sh -s            # Show all print statements"
-    echo "  ./scripts/run_tests.sh --integration -s  # Integration tests with prints"
+    echo "  ./scripts/run_tests.sh -s                   # Show print statements (serial)"
+    echo "  ./scripts/run_tests.sh --verbose            # Verbose output (parallel ok)"
+    echo "  ./scripts/run_tests.sh --integration -s     # Integration tests with prints"
+    echo "  ./scripts/run_tests.sh --integration --verbose  # Integration tests verbose"
     echo ""
     echo "Note: Integration tests require Docker services to be available."
     echo "Note: Integration tests run in parallel; workflow tests are grouped to one worker."
@@ -80,12 +83,16 @@ elif [[ "$*" == *"--half-cpu"* ]]; then
     PARALLEL_FLAGS="-n ${HALF_CPUS} --dist loadgroup"
 fi
 
-# Check for verbose/show output flag
-if [[ "$*" == *"-s"* ]] || [[ "$*" == *"--verbose"* ]]; then
+# Check for verbose/show output flags (-s and --verbose are independent)
+if [[ " $* " == *" -s "* ]]; then
     echo "Running with output capture disabled (showing print statements)..."
-    PYTEST_FLAGS="-s -v $PYTEST_FLAGS"
+    PYTEST_FLAGS="-s $PYTEST_FLAGS"
     # Parallel mode and -s are incompatible; disable parallelism when -s is used
     PARALLEL_FLAGS="--dist no"
+fi
+if [[ " $* " == *" --verbose "* ]]; then
+    echo "Running with verbose output..."
+    PYTEST_FLAGS="-v $PYTEST_FLAGS"
 fi
 
 rm -rf tests/coverage 2>/dev/null
