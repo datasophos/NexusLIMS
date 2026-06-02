@@ -16,6 +16,7 @@ import pytest
 
 
 @pytest.mark.integration
+@pytest.mark.xdist_group("cli")
 class TestProcessRecordsScript:
     """Test the nexuslims build-records CLI script behavior."""
 

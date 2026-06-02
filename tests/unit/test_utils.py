@@ -7,7 +7,6 @@ import logging
 import shutil
 from datetime import datetime
 from pathlib import Path
-from subprocess import CalledProcessError
 from unittest.mock import Mock
 
 import pytest
@@ -164,18 +163,15 @@ class TestUtils:
             )
         assert str(exception.value) == "find command was not found on the system PATH"
 
-    def test_gnu_find_stderr(self):
-        with pytest.raises(CalledProcessError) as exception:
-            # bad path should cause find to error, which should raise error
-            _ = gnu_find_files_by_mtime(
-                Path("..............."),
-                dt_from=datetime.fromisoformat("2019-11-06T15:00:00.000"),
-                dt_to=datetime.fromisoformat("2019-11-06T18:00:00.000"),
-                extensions=get_registry().get_supported_extensions(
-                    exclude_fallback=True
-                ),
-            )
-        assert "..............." in str(exception.value)
+    def test_gnu_find_nonexistent_path_returns_empty(self):
+        """Test that a non-existent path returns an empty list rather than raising."""
+        result = gnu_find_files_by_mtime(
+            Path("..............."),
+            dt_from=datetime.fromisoformat("2019-11-06T15:00:00.000"),
+            dt_to=datetime.fromisoformat("2019-11-06T18:00:00.000"),
+            extensions=get_registry().get_supported_extensions(exclude_fallback=True),
+        )
+        assert result == []
 
     def test_zero_bytes(self, quanta_test_file):
         test_file = quanta_test_file[0]

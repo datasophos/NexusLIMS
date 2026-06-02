@@ -8,8 +8,8 @@ CDCS services, database setup, and cleanup operations.
 """
 
 import contextlib
-import errno
 import fcntl
+import os
 import subprocess
 import tempfile
 import time
@@ -77,6 +77,7 @@ TEST_DATA_DIR = Path("/tmp/nexuslims-test-data")
 
 _COORD_LOCK_FILE = Path(tempfile.gettempdir()) / "nexuslims-integ-coord.lock"
 _COORD_COUNT_FILE = Path(tempfile.gettempdir()) / "nexuslims-integ-coord.count"
+_FILESERVER_PID_FILE = Path(tempfile.gettempdir()) / "nexuslims-integ-fileserver.pid"
 
 
 @contextlib.contextmanager
@@ -92,13 +93,18 @@ def _coord_lock():
 
 
 def _register_worker_and_setup(setup_fn) -> bool:
-    """Register worker; if first, call setup_fn() under lock. Return True if first."""
+    """Register worker; if first, call setup_fn() under lock. Return True if first.
+
+    The count is written BEFORE calling setup_fn so that if setup_fn raises, other
+    workers see count > 0 and skip the retry rather than all attempting a failing
+    setup command in a cascade.
+    """
     with _coord_lock():
         count = int(_COORD_COUNT_FILE.read_text()) if _COORD_COUNT_FILE.exists() else 0
         is_first = count == 0
+        _COORD_COUNT_FILE.write_text(str(count + 1))
         if is_first:
             setup_fn()
-        _COORD_COUNT_FILE.write_text(str(count + 1))
         return is_first
 
 
@@ -151,6 +157,7 @@ def pytest_configure(config):
     if not hasattr(config, "workerinput"):
         _COORD_LOCK_FILE.unlink(missing_ok=True)
         _COORD_COUNT_FILE.unlink(missing_ok=True)
+        _stop_fileserver_subprocess()  # kill any lingering fileserver from previous run
 
     # Create test directories (for actual test execution)
     test_dirs = [
@@ -163,16 +170,25 @@ def pytest_configure(config):
         dir_path.mkdir(parents=True, exist_ok=True)
 
     # Set up environment variables BEFORE any nexusLIMS imports
-    # These are the minimum required for Settings validation
-    # CRITICAL: Use unconditional assignment to ensure test values are used
-    # even if variables are already set in the shell environment
-    os.environ["NX_INSTRUMENT_DATA_PATH"] = str(TEST_INSTRUMENT_DATA_DIR)
-    os.environ["NX_DATA_PATH"] = str(TEST_DATA_DIR)
+    # These are the minimum required for Settings validation.
+    #
+    # When running the full test suite with -n auto (xdist), the unit conftest's
+    # module-level code already set per-worker isolated paths (e.g.,
+    # /tmp/nexuslims-gw0-XXXX/InstrumentData).  Don't override those: unit tests
+    # need their own isolated paths, and integration tests get the correct
+    # TEST_INSTRUMENT_DATA_DIR via monkeypatch inside fresh_test_db.
+    _xdist_worker = os.environ.get("PYTEST_XDIST_WORKER", "")
+    _current_instr = os.environ.get("NX_INSTRUMENT_DATA_PATH", "")
+    _current_data = os.environ.get("NX_DATA_PATH", "")
+    _worker_owns_paths = _xdist_worker and _xdist_worker in _current_instr
+
+    if not _worker_owns_paths:
+        os.environ["NX_INSTRUMENT_DATA_PATH"] = str(TEST_INSTRUMENT_DATA_DIR)
+        os.environ["NX_DATA_PATH"] = str(TEST_DATA_DIR)
 
     # Set NX_DB_PATH to a placeholder path so Settings validation passes.
     # The actual per-test DB is created by the db_template + fresh_test_db
     # fixtures at test time. The placeholder file does not need to exist.
-    _xdist_worker = os.environ.get("PYTEST_XDIST_WORKER", "")
     db_suffix = f"_{_xdist_worker}" if _xdist_worker else ""
     db_placeholder = TEST_DATA_DIR / f"integration_test{db_suffix}.db"
     os.environ["NX_DB_PATH"] = str(db_placeholder)
@@ -235,110 +251,80 @@ def reset_caches_between_tests():
 # ============================================================================
 
 
-def start_fileserver():
+def _start_fileserver_subprocess() -> int:
+    """Start fileserver as a detached subprocess; return its PID.
+
+    The subprocess runs independently of any pytest worker process, so it
+    survives when the worker that started it finishes.  The last worker's
+    docker_services teardown is responsible for stopping it.
     """
-    Start a host-based fileserver to serve test files.
+    import select as _select
+    import sys as _sys
 
-    This avoids Docker volume mount issues on macOS by running the fileserver
-    directly on the host machine instead of in a Docker container.
-
-    Returns
-    -------
-    ThreadingHTTPServer
-        The running HTTP server instance. Call shutdown() and server_close() to stop.
-
-    Notes
-    -----
-    - Fileserver runs on port 48081
-    - Serves files from TEST_INSTRUMENT_DATA_DIR and TEST_DATA_DIR
-    - Uses Python's built-in HTTP server with custom routing
-    - Server runs in a daemon thread
-    """
-    import threading
-    from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-    from urllib.parse import unquote, urlparse
-
-    class TestFileHandler(SimpleHTTPRequestHandler):
-        """Custom handler that serves files from test directories."""
-
-        def __init__(self, *args, **kwargs):
-            self.instrument_data_dir = TEST_INSTRUMENT_DATA_DIR
-            self.nexuslims_data_dir = TEST_DATA_DIR
-            super().__init__(*args, **kwargs)
-
-        def translate_path(self, path):
-            """Translate URL path to filesystem path, handling our test directories."""
-            # Decode URL and normalize path
-            path = unquote(path)
-            path = urlparse(path).path
-            path = path.lstrip("/")
-
-            # Handle instrument-data requests
-            if path.startswith("instrument-data/"):
-                relative_path = path[len("instrument-data/") :]
-                full_path = self.instrument_data_dir / relative_path
-
-            # Handle data requests
-            elif path.startswith("data/"):
-                relative_path = path[len("data/") :]
-                full_path = self.nexuslims_data_dir / relative_path
-
-            else:
-                # Reject any other paths - only serve from our two test directories
-                # Return a non-existent path to trigger 404
-                return "/dev/null/nonexistent"
-
-            return str(full_path)
-
-        def do_GET(self):
-            """Handle GET requests with CORS headers."""
-            # Call parent method to handle the actual file serving first
-            super().do_GET()
-
-            # Then add CORS headers to the response
-            # Note: We need to override end_headers to add our custom headers
-
-        def end_headers(self):
-            """Override to add CORS and cache control headers."""
-            # Add CORS headers
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
-            self.send_header("Access-Control-Allow-Headers", "*")
-
-            # Disable caching
-            self.send_header(
-                "Cache-Control",
-                "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
-            )
-            self.send_header("Pragma", "no-cache")
-            self.send_header("Expires", "0")
-
-            # Call parent method to finalize headers
-            super().end_headers()
-
-        def log_message(self, msg_format, *args):
-            """Override to reduce logging verbosity."""
-            # Only log errors, not every request
-            if "404" in msg_format or "500" in msg_format:
-                import sys
-
-                sys.stderr.write(
-                    f"[{self.log_date_time_string()}] {msg_format % args}\n"
-                )
-
-    # Create and start the server
-    server_address = ("", 48081)
-    httpd = ThreadingHTTPServer(server_address, TestFileHandler)
-
-    print("[+] Host fileserver started successfully on port 48081")
+    server_code = (
+        "import sys\n"
+        "from pathlib import Path\n"
+        "from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer\n"
+        "from urllib.parse import unquote, urlparse\n"
+        "\n"
+        "INSTR = Path('/tmp/nexuslims-test-instrument-data')\n"
+        "DATA  = Path('/tmp/nexuslims-test-data')\n"
+        "\n"
+        "class H(SimpleHTTPRequestHandler):\n"
+        "    def translate_path(self, path):\n"
+        "        path = unquote(urlparse(path).path).lstrip('/')\n"
+        "        if path.startswith('instrument-data/'):\n"
+        "            return str(INSTR / path[len('instrument-data/'):])\n"
+        "        if path.startswith('data/'):\n"
+        "            return str(DATA / path[len('data/'):])\n"
+        "        return '/dev/null/nonexistent'\n"
+        "    def end_headers(self):\n"
+        "        self.send_header('Access-Control-Allow-Origin', '*')\n"
+        "        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')\n"
+        "        self.send_header('Access-Control-Allow-Headers', '*')\n"
+        "        self.send_header('Cache-Control', 'no-store, no-cache')\n"
+        "        super().end_headers()\n"
+        "    def log_message(self, *a): pass\n"
+        "\n"
+        "srv = ThreadingHTTPServer(('', 48081), H)\n"
+        "sys.stdout.write('ready\\n'); sys.stdout.flush()\n"
+        "srv.serve_forever()\n"
+    )
+    proc = subprocess.Popen(
+        [_sys.executable, "-c", server_code],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+    rlist, _, _ = _select.select([proc.stdout], [], [], 10.0)
+    if rlist:
+        proc.stdout.readline()  # consume "ready\n"
+    else:
+        print("[!] Fileserver subprocess did not signal ready within 10 s")
+    _FILESERVER_PID_FILE.write_text(str(proc.pid))
+    print(f"[+] Host fileserver subprocess started (PID={proc.pid}) on port 48081")
     print(f"[+] Serving instrument data from: {TEST_INSTRUMENT_DATA_DIR}")
     print(f"[+] Serving NexusLIMS data from: {TEST_DATA_DIR}")
+    return proc.pid
 
-    # Start server in a separate thread
-    server_thread = threading.Thread(target=httpd.serve_forever, daemon=True)
-    server_thread.start()
 
-    return httpd
+def _stop_fileserver_subprocess() -> None:
+    """Stop the fileserver subprocess identified by _FILESERVER_PID_FILE."""
+    import signal as _signal
+
+    if not _FILESERVER_PID_FILE.exists():
+        return
+    try:
+        pid = int(_FILESERVER_PID_FILE.read_text().strip())
+    except (ValueError, OSError):
+        _FILESERVER_PID_FILE.unlink(missing_ok=True)
+        return
+    try:
+        os.kill(pid, _signal.SIGTERM)
+        print(f"[+] Host fileserver subprocess stopped (PID={pid})")
+    except ProcessLookupError:
+        print(f"[*] Fileserver process {pid} already gone")
+    _FILESERVER_PID_FILE.unlink(missing_ok=True)
 
 
 @pytest.fixture(scope="session")
@@ -347,34 +333,21 @@ def host_fileserver():
     Pytest fixture for host-based fileserver.
 
     When running under pytest-xdist, multiple workers share a single
-    fileserver process.  If port 48081 is already bound by another worker,
-    this fixture skips startup gracefully and does not attempt teardown.
+    fileserver subprocess.  The first worker starts it as a detached
+    subprocess (via _start_fileserver_subprocess) so it outlives any
+    individual worker process.  The last worker's docker_services teardown
+    stops it, ensuring it remains alive for the entire test run.
 
     Yields
     ------
     None
         Fileserver is running when fixture yields control to tests
     """
-    try:
-        httpd = start_fileserver()
-        _owns_server = True
-    except OSError as exc:
-        if exc.errno == errno.EADDRINUSE:
-            # Another worker already owns the fileserver — proceed without it.
-            print("[*] Host fileserver already running (started by another worker)")
-            httpd = None
-            _owns_server = False
+    with _coord_lock():
+        if not _FILESERVER_PID_FILE.exists():
+            _start_fileserver_subprocess()
         else:
-            raise
-
-    try:
-        yield
-    finally:
-        if _owns_server and httpd is not None:
-            print("[*] Stopping host fileserver...")
-            httpd.shutdown()
-            httpd.server_close()
-            print("[+] Host fileserver stopped successfully")
+            print("[*] Host fileserver already running (started by another worker)")
 
 
 @pytest.fixture(scope="session")
@@ -465,7 +438,16 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
         compose_cmd.append("up")
         compose_cmd.append("-d")
 
-        subprocess.run(compose_cmd, cwd=DOCKER_DIR, check=True, capture_output=True)
+        result = subprocess.run(
+            compose_cmd, check=False, cwd=DOCKER_DIR, capture_output=True, text=True
+        )
+        if result.returncode != 0:
+            print(f"[!] docker compose up failed (exit {result.returncode})")
+            if result.stdout:
+                print(f"[!] stdout:\n{result.stdout}")
+            if result.stderr:
+                print(f"[!] stderr:\n{result.stderr}")
+            result.check_returncode()
 
     _register_worker_and_setup(_first_worker_setup)
 
@@ -541,6 +523,9 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
         capture_output=True,
     )
     print("[+] Docker services cleaned up")
+
+    print("[*] Stopping host fileserver subprocess...")
+    _stop_fileserver_subprocess()
 
     print("[*] Cleaning test data directories...")
     cleanup_errors = []
@@ -1164,8 +1149,13 @@ def cdcs_test_record_xml():
         - title: The record title
         - xml_content: The complete XML as a string
     """
+    # Make titles unique per xdist worker to prevent CDCS search collisions
+    # when multiple workers run in parallel and each uploads their own copy.
+    _worker = os.environ.get("PYTEST_XDIST_WORKER", "main")
+    _worker_suffix = f" [{_worker}]"
+
     # First record: STEM imaging with EDS spectrum
-    test_record_1_title = "NexusLIMS Integration Test Record - STEM"
+    test_record_1_title = f"NexusLIMS Integration Test Record - STEM{_worker_suffix}"
     test_record_1_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Experiment xmlns="https://data.nist.gov/od/dm/nexus/experiment/v1.0">
     <title>{test_record_1_title}</title>
@@ -1211,7 +1201,7 @@ def cdcs_test_record_xml():
 """
 
     # Second record: SEM imaging with different instrument and metadata
-    test_record_2_title = "NexusLIMS Integration Test Record - SEM"
+    test_record_2_title = f"NexusLIMS Integration Test Record - SEM{_worker_suffix}"
     test_record_2_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Experiment xmlns="https://data.nist.gov/od/dm/nexus/experiment/v1.0">
     <title>{test_record_2_title}</title>
@@ -1577,6 +1567,8 @@ def fresh_test_db(db_template, tmp_path, monkeypatch):
     shutil.copy(str(db_template), str(test_db))
 
     monkeypatch.setenv("NX_DB_PATH", str(test_db))
+    monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(TEST_INSTRUMENT_DATA_DIR))
+    monkeypatch.setenv("NX_DATA_PATH", str(TEST_DATA_DIR))
 
     old_engine = engine_module._engine
     new_engine = create_transient_sqlite_engine(test_db)
@@ -1681,38 +1673,35 @@ def test_data_dirs(tmp_path, monkeypatch) -> dict[str, Path]:
 
 
 @pytest.fixture
-def sample_microscopy_files():
+def sample_microscopy_files(extracted_test_files):
     """
-    Extract sample microscopy data files for testing from unit test archive.
+    Provide paths to sample microscopy data files for testing.
 
-    This fixture extracts test files from test_record_files.tar.gz (shared
-    with unit tests) into the instrument data directory. These files can be
-    used for testing file discovery, metadata extraction, and record building.
+    These files are managed by the session-scoped ``extracted_test_files``
+    fixture; this fixture just returns the already-extracted paths without
+    re-extracting or cleaning up.  Cleanup happens at session teardown via
+    ``extracted_test_files``.
+
+    Parameters
+    ----------
+    extracted_test_files : dict
+        Session-scoped fixture that extracts and owns the test archive.
 
     Yields
     ------
     list[Path]
-        List of extracted file paths
-
-    Notes
-    -----
-    Uses test_record_files.tar.gz from tests/unit/files/, which contains:
-    - Titan_TEM/researcher_a/project_alpha/20181113/ (8 .dm3, 2 .ser, 1 .emi)
-    - JEOL_TEM/researcher_b/project_beta/20190724/ (multiple .dm3 files)
-    - Nexus_Test_Instrument/test_files/ (sample .dm3 files)
-
-    Files are extracted to NX_INSTRUMENT_DATA_PATH and cleaned up after test.
+        List of existing file paths from the test archive.
     """
-    # Import extraction utilities from unit tests
-    from tests.unit.utils import delete_files, extract_files
+    import tarfile
 
-    # Extract test record files (same as used in unit tests)
-    files = extract_files("TEST_RECORD_FILES")
+    archive_path = Path(__file__).parents[1] / "unit/files/test_record_files.tar.gz"
+    with tarfile.open(archive_path, "r:gz") as tar:
+        names = tar.getnames()
 
-    yield files
-
-    # Cleanup after test
-    delete_files("TEST_RECORD_FILES")
+    instrument_data_dir = TEST_INSTRUMENT_DATA_DIR
+    return [
+        instrument_data_dir / n for n in names if (instrument_data_dir / n).exists()
+    ]
 
 
 @pytest.fixture(scope="session")
@@ -1734,7 +1723,6 @@ def extracted_test_files():
         - 'orion_files': dict with 'zeiss' and 'fibics' Paths (if present)
         - 'tescan_files': dict with 'tif' and 'hdr' Paths (if present)
     """
-    import shutil
     import tarfile
     import zoneinfo
     from datetime import datetime
@@ -1778,7 +1766,7 @@ def extracted_test_files():
         if tescan_hdr.exists():
             tescan_files["hdr"] = tescan_hdr
 
-    yield {
+    return {
         "base_dir": instrument_data_dir,
         "titan_date": titan_date,
         "jeol_date": jeol_date,
@@ -1786,16 +1774,9 @@ def extracted_test_files():
         "orion_files": orion_files,
         "tescan_files": tescan_files,
     }
-
-    # Session teardown: remove source files only.
-    # Per-test generated metadata in TEST_DATA_DIR is cleaned up by
-    # test_environment_setup's snapshot-delta teardown.
-    print("\n[*] Cleaning up extracted test source files")
-    for dir_name in extracted_top_level_dirs:
-        source_dir = instrument_data_dir / dir_name
-        if source_dir.exists():
-            print(f"[*] Removing {source_dir}")
-            shutil.rmtree(source_dir)
+    # Source files are cleaned up by docker_services teardown on the last
+    # worker, which removes TEST_INSTRUMENT_DATA_DIR entirely.  Doing it here
+    # would race with other workers that are still running workflow tests.
 
 
 @pytest.fixture

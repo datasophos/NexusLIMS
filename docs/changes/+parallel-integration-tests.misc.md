@@ -1,1 +1,1 @@
-Parallelized integration test suite with per-test DB isolation and ``--dist worksteal`` scheduling, reducing CI wall-clock time.
+Parallelized integration test suite with per-test DB isolation, ``--dist loadgroup`` scheduling, a persistent fileserver subprocess, and grouped CLI/workflow test workers to eliminate lock conflicts.

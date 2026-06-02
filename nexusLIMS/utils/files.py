@@ -365,6 +365,13 @@ def gnu_find_files_by_mtime(
     dt_from += _tz_offset if dt_from.tzinfo is None else timedelta(0)
     dt_to += _tz_offset if dt_to.tzinfo is None else timedelta(0)
 
+    # If the base path doesn't exist there are no files to find.
+    # Return [] rather than letting gfind fail with a CalledProcessError.
+    _base_path = Path(str(settings.NX_INSTRUMENT_DATA_PATH)) / path
+    if not _base_path.exists():
+        _logger.info("Path %s does not exist, returning empty file list", _base_path)
+        return []
+
     # Find symlink directories if following links
     if followlinks:
         find_paths = _find_symlink_dirs(find_command, path)
