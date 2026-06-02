@@ -6,16 +6,19 @@ set -euo pipefail
 
 WHEEL_PATH="${1:-dist/nexuslims-*.whl}"
 VENV_DIR="${SMOKE_TEST_VENV:-/tmp/nexuslims-smoke-test-$$}"
+FAST_INSTALL="${SMOKE_TEST_FAST_INSTALL:-0}"
 
 # Detect Python command - prefer 3.12, 3.11, then fallback to python3/python
 # NexusLIMS requires Python >=3.11, <3.13
-PYTHON_CMD=""
-for cmd in python3.12 python3.11 python3 python; do
-    if command -v $cmd &> /dev/null; then
-        PYTHON_CMD=$cmd
-        break
-    fi
-done
+PYTHON_CMD="${SMOKE_TEST_PYTHON_CMD:-}"
+if [ -z "$PYTHON_CMD" ]; then
+    for cmd in python3.12 python3.11 python3 python; do
+        if command -v $cmd &> /dev/null; then
+            PYTHON_CMD=$cmd
+            break
+        fi
+    done
+fi
 
 if [ -z "$PYTHON_CMD" ]; then
     echo "ERROR: No Python interpreter found"
@@ -30,12 +33,21 @@ echo
 
 # 1. CREATE FRESH VENV
 echo "Creating fresh virtual environment..."
-$PYTHON_CMD -m venv "$VENV_DIR"
+if [ "$FAST_INSTALL" = "1" ]; then
+    $PYTHON_CMD -m venv --system-site-packages "$VENV_DIR"
+else
+    $PYTHON_CMD -m venv "$VENV_DIR"
+fi
 source "$VENV_DIR/bin/activate"
 
 # 2. INSTALL WHEEL
 echo "Installing wheel..."
-pip install --quiet "$WHEEL_PATH"
+if [ "$FAST_INSTALL" = "1" ]; then
+    pip install --quiet --no-deps "$WHEEL_PATH"
+    export PYTHONPATH="${SMOKE_TEST_SITE_PACKAGES:?SMOKE_TEST_SITE_PACKAGES is required in fast mode}${PYTHONPATH:+:$PYTHONPATH}"
+else
+    pip install --quiet "$WHEEL_PATH"
+fi
 
 # 3. TEST CLI ENTRY POINTS
 echo "Testing CLI entry points..."

@@ -12,11 +12,11 @@ from pathlib import Path
 import pytest
 
 from nexusLIMS.config import settings
-from tests.unit.utils import delete_files, extract_files
+from tests.unit.fixtures.files import FileFactory
 
 
 @pytest.fixture
-def multi_signal_test_files(request):
+def multi_signal_test_files(request, tmp_path):
     """Extract and set up multi-signal test files in testtool instrument directory.
 
     Creates files in the Nexus_Test_Instrument instrument directory with
@@ -42,6 +42,8 @@ def multi_signal_test_files(request):
     ----------
     request : pytest.FixtureRequest
         Pytest request object for determining test context
+    tmp_path : Path
+        Isolated temporary directory for extracting source archives
 
     Yields
     ------
@@ -71,10 +73,16 @@ def multi_signal_test_files(request):
 
     files = []
 
-    # Extract tar files to a temporary location first
-    temp_files = []
-    temp_files.extend(extract_files("NEOARM_GATAN_SI"))
-    temp_files.extend(extract_files("LIST_SIGNAL"))
+    # Extract tar files to an isolated temporary location first
+    factory = FileFactory(
+        Path(__file__).parent.parent / "files",
+        tmp_path / "multi_signal_sources",
+    )
+    extracted_files = factory.extract("NEOARM_GATAN_SI", "TEM_LIST_SIGNAL")
+    temp_files = [
+        *extracted_files["NEOARM_GATAN_SI"],
+        *extracted_files["TEM_LIST_SIGNAL"],
+    ]
 
     # Define mtimes for each file (in UTC)
     mtimes = {
@@ -108,6 +116,5 @@ def multi_signal_test_files(request):
     yield files
 
     # Cleanup
-    delete_files("NEOARM_GATAN_SI")
-    delete_files("LIST_SIGNAL")
+    factory.cleanup()
     shutil.rmtree(test_dir, ignore_errors=True)

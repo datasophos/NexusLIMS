@@ -35,6 +35,7 @@ Serialize for XML:
 <meta name='Voltage' unit='kV'>10.0</meta>
 """
 
+import json
 import logging
 from decimal import Decimal
 from functools import lru_cache
@@ -81,6 +82,7 @@ _OriginalQuantity.__new__ = staticmethod(_quantity_new_with_decimal_conversion)
 
 # Path to QUDT unit vocabulary file
 QUDT_UNIT_TTL_PATH = Path(__file__).parent / "references" / "qudt_unit.ttl"
+QUDT_UNIT_MAP_PATH = Path(__file__).parent / "references" / "qudt_unit_map.json"
 QUDT_VERSION = "3.1.9"
 
 # RDF namespace for QUDT
@@ -138,10 +140,9 @@ PREFERRED_UNITS = {
 @lru_cache(maxsize=1)
 def _load_qudt_units() -> dict[str, str]:
     """
-    Load QUDT unit URIs from the Turtle file.
+    Load generated QUDT unit URI mappings.
 
-    Parses the QUDT unit vocabulary to extract unit labels and their URIs.
-    This provides a mapping from Pint unit names to QUDT ontology URIs.
+    Loads a generated JSON mapping from Pint unit names to QUDT ontology URIs.
 
     Returns
     -------
@@ -156,37 +157,48 @@ def _load_qudt_units() -> dict[str, str]:
 
     Notes
     -----
-    Results are cached for performance. The mapping uses rdfs:label to match
-    Pint unit names (e.g., "kilovolt") to QUDT URIs.
+    Results are cached for performance. The mapping is generated from the QUDT
+    Turtle vocabulary by ``scripts/generate_qudt_unit_map.py``.
     """
+    if not QUDT_UNIT_MAP_PATH.exists():
+        logger.warning("QUDT unit map not found at %s", QUDT_UNIT_MAP_PATH)
+        return {}
+
+    try:
+        unit_map = json.loads(QUDT_UNIT_MAP_PATH.read_text())
+        logger.debug("Loaded QUDT unit mappings from %s", QUDT_UNIT_MAP_PATH)
+    except Exception:
+        logger.exception("Failed to load QUDT unit map.")
+        return {}
+
+    logger.debug("Loaded %s QUDT unit mappings", len(unit_map))
+    return unit_map
+
+
+def _build_qudt_units_from_ttl() -> dict[str, str]:
+    """Build QUDT unit URI mappings from the source Turtle vocabulary."""
     if not QUDT_UNIT_TTL_PATH.exists():
         logger.warning("QUDT unit file not found at %s", QUDT_UNIT_TTL_PATH)
         return {}
 
     try:
-        g = Graph()
-        g.parse(QUDT_UNIT_TTL_PATH, format="turtle")
+        graph = Graph()
+        graph.parse(QUDT_UNIT_TTL_PATH, format="turtle")
         logger.debug("Loaded QUDT unit vocabulary from %s", QUDT_UNIT_TTL_PATH)
     except Exception:
         logger.exception("Failed to parse QUDT unit file.")
         return {}
 
-    # Build mapping from label -> URI
     unit_map = {}
 
-    # Iterate over all QUDT unit instances
-    for unit_uri in g.subjects(predicate=RDFS.label):
+    for unit_uri in graph.subjects(predicate=RDFS.label):
         if not str(unit_uri).startswith(str(QUDT_UNIT)):
             continue
 
-        # Get the label(s) for this unit
-        for label_obj in g.objects(unit_uri, RDFS.label):
+        for label_obj in graph.objects(unit_uri, RDFS.label):
             label = str(label_obj).lower().replace(" ", "")
-
-            # Map label to URI
             unit_map[label] = str(unit_uri)
 
-    logger.debug("Loaded %s QUDT unit mappings", len(unit_map))
     return unit_map
 
 

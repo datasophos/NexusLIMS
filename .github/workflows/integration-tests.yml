@@ -144,7 +144,7 @@ jobs:
       - name: Run all tests (unit + integration)
         run: |
           uv run pytest tests/ \
-            -n logical --dist loadgroup \
+            -n 4 --dist loadgroup \
             -v \
             --override-ini=addopts= \
             --mpl \
