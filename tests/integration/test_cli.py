@@ -488,25 +488,20 @@ class TestProcessRecordsScript:
         This test verifies that the --version flag displays version
         information and exits without running the main logic.
 
-        Note: This test uses subprocess because it tests the Click CLI
-        interface directly, which is simpler than mocking the version
-        detection logic.
+        This test uses Click's in-process runner to avoid process startup
+        overhead while still exercising the command's Click version callback.
         """
-        result = subprocess.run(
-            ["uv", "run", "nexuslims", "build-records", "--version"],
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
+        from click.testing import CliRunner
+
+        from nexusLIMS.cli.process_records import main
+
+        result = CliRunner().invoke(main, ["--version"])
 
         # Should succeed
-        assert result.returncode == 0, f"Version flag failed: {result.stderr}"
+        assert result.exit_code == 0, f"Version flag failed: {result.output}"
 
         # Should output version information
-        assert "nexusLIMS, version" in result.stdout.lower() or result.stdout.strip(), (
-            f"No version output: {result.stdout}"
-        )
+        assert "nexuslims build-records" in result.output.lower()
 
     def test_script_help_flag(self):
         """
@@ -515,33 +510,30 @@ class TestProcessRecordsScript:
         This test verifies that the --help flag displays usage information
         and exits without running the main logic.
 
-        Note: This test uses subprocess because it tests the Click CLI
-        interface directly, which is simpler than mocking the help
-        generation logic.
+        This test uses Click's in-process runner to avoid process startup
+        overhead while still exercising the command's Click help generation.
         """
-        result = subprocess.run(
-            ["uv", "run", "nexuslims", "build-records", "--help"],
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
+        from click.testing import CliRunner
+
+        from nexusLIMS.cli.process_records import main
+
+        result = CliRunner().invoke(main, ["--help"])
 
         # Should succeed
-        assert result.returncode == 0, f"Help flag failed: {result.stderr}"
+        assert result.exit_code == 0, f"Help flag failed: {result.output}"
 
         # Should output help information
-        assert "usage" in result.stdout.lower() or "options" in result.stdout.lower(), (
-            f"No help output: {result.stdout}"
+        assert "usage" in result.output.lower() or "options" in result.output.lower(), (
+            f"No help output: {result.output}"
         )
 
         # Should document the -n/--dry-run option
-        assert "--dry-run" in result.stdout or "-n" in result.stdout, (
+        assert "--dry-run" in result.output or "-n" in result.output, (
             "Missing dry-run option in help"
         )
 
         # Should document the -v/--verbose option
-        assert "--verbose" in result.stdout or "-v" in result.stdout, (
+        assert "--verbose" in result.output or "-v" in result.output, (
             "Missing verbose option in help"
         )
 

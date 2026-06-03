@@ -446,6 +446,7 @@ class TestEndToEndWorkflow:
     # ========================================================================
 
     @pytest.mark.integration
+    @pytest.mark.slow
     @pytest.mark.filterwarnings(
         "ignore:invalid value encountered in divide:RuntimeWarning"
     )
@@ -491,6 +492,7 @@ class TestEndToEndWorkflow:
         )
 
     @pytest.mark.integration
+    @pytest.mark.slow
     @pytest.mark.filterwarnings(
         "ignore:invalid value encountered in divide:RuntimeWarning"
     )

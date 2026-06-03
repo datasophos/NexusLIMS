@@ -87,7 +87,7 @@ jobs:
 
       - name: Download coverage artifact from test workflow
         if: github.event_name == 'workflow_run'
-        # Download coverage artifact from the workflow_run that triggered this
+        # Download integration coverage HTML artifact from the workflow_run that triggered this
         uses: actions/github-script@v7
         with:
           script: |
