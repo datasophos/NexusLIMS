@@ -118,40 +118,6 @@ jobs:
             echo "VHS already installed: $(vhs --version)"
           fi
 
-      - name: Download coverage artifact from integration test workflow
-        # Download integration coverage HTML artifact from the workflow_run that triggered this
-        if: steps.pr.outputs.found == 'true'
-        continue-on-error: true
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const artifacts = await github.rest.actions.listWorkflowRunArtifacts({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: context.payload.workflow_run.id,
-            });
-
-            const coverageArtifact = artifacts.data.artifacts.find(
-              artifact => artifact.name === 'coverage-combined-html'
-            );
-
-            if (coverageArtifact) {
-              const download = await github.rest.actions.downloadArtifact({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                artifact_id: coverageArtifact.id,
-                archive_format: 'zip',
-              });
-
-              const fs = require('fs');
-              fs.mkdirSync('pr-source/tests', { recursive: true });
-              fs.writeFileSync('coverage.zip', Buffer.from(download.data));
-
-              // Extract the zip file
-              const { execSync } = require('child_process');
-              execSync('unzip -q coverage.zip -d pr-source/tests/coverage');
-            }
-
       - name: Generate switcher.json
         # Create version switcher for PyData Sphinx Theme navigation
         if: steps.pr.outputs.found == 'true'
@@ -197,7 +163,7 @@ jobs:
           ./scripts/build_docs.sh --strict
 
       - name: Deploy to PR preview directory
-        # Create/update pr-{NUMBER} directory in gh-pages with docs and coverage
+        # Create/update pr-{NUMBER} directory in gh-pages with docs
         if: steps.pr.outputs.found == 'true'
         run: |
           # Stash any local changes (e.g., uv.lock modifications from uv sync)
@@ -207,11 +173,6 @@ jobs:
           rm -rf "pr-${PR_NUMBER}"
           mkdir -p "pr-${PR_NUMBER}"
           rsync -avr pr-source/_build/ "pr-${PR_NUMBER}/"
-
-          if [ -d "pr-source/tests/coverage" ]; then
-            mkdir -p "pr-${PR_NUMBER}/coverage"
-            rsync -avr pr-source/tests/coverage/ "pr-${PR_NUMBER}/coverage/"
-          fi
 
           # Update switcher.json in all version directories
           # This ensures all versions have the latest switcher with all available versions
@@ -263,11 +224,12 @@ jobs:
           script: |
             const prNumber = ${{ steps.pr.outputs.number }};
             const baseUrl = `https://${context.repo.owner}.github.io/${context.repo.repo}`;
+            const codecovUrl = `https://app.codecov.io/gh/${context.repo.owner}/${context.repo.repo}/pull/${prNumber}`;
             const commentBody = `## 📚 Documentation Preview
 
             The documentation for this PR has been deployed to:
             - **Docs**: ${baseUrl}/pr-${prNumber}/
-            - **Coverage**: ${baseUrl}/pr-${prNumber}/coverage/
+            - **Coverage**: ${codecovUrl}
 
             _This preview will be updated on each push to this PR._`;
 

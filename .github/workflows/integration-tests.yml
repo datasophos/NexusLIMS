@@ -154,7 +154,6 @@ jobs:
             --mpl \
             --mpl-baseline-path=tests/unit/files/figs \
             --cov=nexusLIMS \
-            --cov-report html:tests/coverage-combined \
             --cov-report term-missing \
             --cov-report=xml:coverage-combined.xml \
             --tb=short \
@@ -190,13 +189,6 @@ jobs:
             .coverage
             coverage-combined.xml
           include-hidden-files: true
-
-      - name: Upload HTML coverage report
-        if: matrix.python-version == '3.11'
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-combined-html
-          path: tests/coverage-combined
 
       - name: Collect Docker container logs
         if: always()
