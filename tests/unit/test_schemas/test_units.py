@@ -306,6 +306,37 @@ class TestLoadQudtUnitsErrorHandling:
             )
 
 
+class TestBuildQudtUnitsFromTtlErrorHandling:
+    """Test error handling in _build_qudt_units_from_ttl function."""
+
+    def test_qudt_ttl_file_not_found_returns_empty_dict(self, caplog):
+        """Test that missing QUDT source TTL returns empty dict and logs warning."""
+        with patch("nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH") as mock_path:
+            mock_path.exists.return_value = False
+
+            with caplog.at_level(logging.WARNING):
+                result = _build_qudt_units_from_ttl()
+
+        assert result == {}
+        assert any("not found" in record.message.lower() for record in caplog.records)
+
+    def test_qudt_ttl_parse_exception_returns_empty_dict(self, caplog, tmp_path):
+        """Test that invalid QUDT source TTL returns empty dict and logs error."""
+        invalid_ttl_file = tmp_path / "invalid.ttl"
+        invalid_ttl_file.write_text("not valid turtle }{]")
+
+        with (
+            patch("nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH", invalid_ttl_file),
+            caplog.at_level(logging.ERROR),
+        ):
+            result = _build_qudt_units_from_ttl()
+
+        assert result == {}
+        assert any(
+            "failed to parse" in record.message.lower() for record in caplog.records
+        )
+
+
 class TestNormalizeQuantityErrorHandling:
     """Test error handling in normalize_quantity function."""
 
