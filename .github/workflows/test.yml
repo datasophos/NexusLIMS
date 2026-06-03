@@ -103,6 +103,14 @@ jobs:
           # Show report in logs
           coverage report
 
+      - name: Upload unit coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./combined-coverage.xml
+          flags: unit
+          fail_ci_if_error: false
+
   package-smoke-test:
     # Smoke test for package installation
     # Verifies that the built wheel can be installed and all functionality works
