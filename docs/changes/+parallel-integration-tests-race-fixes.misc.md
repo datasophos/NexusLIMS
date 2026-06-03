@@ -1,1 +1,0 @@
-Fix four race conditions in parallel integration tests: host fileserver now uses its own worker-count coordination so it stays alive until all workers finish, and `register_all_profiles()` re-registers profiles from cached modules after the registry is cleared by a test fixture.
