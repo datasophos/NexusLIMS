@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="pr-112" />
-    <meta name="docbuild:last-update" content="Jun, 02, 2026"/>
+    <meta name="docbuild:last-update" content="Jun, 03, 2026"/>
   </head>
   
   
@@ -484,12 +484,14 @@
 <p>This changelog documents development history including the original NIST project
 up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 </div>
-<section id="unreleased-2026-06-02">
-<h2>[Unreleased] (2026-06-02)<a class="headerlink" href="#unreleased-2026-06-02" title="Link to this heading">#</a></h2>
+<section id="unreleased-2026-06-03">
+<h2>[Unreleased] (2026-06-03)<a class="headerlink" href="#unreleased-2026-06-03" title="Link to this heading">#</a></h2>
 <section id="miscellaneous-development-changes">
 <h3>Miscellaneous/Development changes<a class="headerlink" href="#miscellaneous-development-changes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Unit tests now run in parallel using <code class="docutils literal notranslate"><span class="pre">pytest-xdist</span></code>, reducing local and CI test time significantly. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/110">#110</a>)</p></li>
+<li><p>Fix four race conditions in parallel integration tests: host fileserver now uses its own worker-count coordination so it stays alive until all workers finish, and <code class="docutils literal notranslate"><span class="pre">register_all_profiles()</span></code> re-registers profiles from cached modules after the registry is cleared by a test fixture.</p></li>
+<li><p>Load generated QUDT unit mappings from compact JSON instead of parsing the full RDF vocabulary during application startup.</p></li>
 <li><p>Parallelized integration test suite with per-test DB isolation, <code class="docutils literal notranslate"><span class="pre">--dist</span> <span class="pre">loadgroup</span></code> scheduling, a persistent fileserver subprocess, and grouped CLI/workflow test workers to eliminate lock conflicts.</p></li>
 </ul>
 </section>
@@ -1410,7 +1412,7 @@ delineate functionality of the various parts of NexusLIMS</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-2026-06-02">[Unreleased] (2026-06-02)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-2026-06-03">[Unreleased] (2026-06-03)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.7.1 (2026-05-25)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.6.2 (2026-04-26)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">2.6.1 (2026-04-09)</a></li>
