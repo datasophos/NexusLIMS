@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jun, 01, 2026"/>
+    <meta name="docbuild:last-update" content="Jun, 03, 2026"/>
   </head>
   
   
@@ -1195,6 +1195,13 @@ window.addEventListener("load", load);
     <span class="c1"># Adjust datetime objects with tz_offset if naive</span>
     <span class="n">dt_from</span> <span class="o">+=</span> <span class="n">_tz_offset</span> <span class="k">if</span> <span class="n">dt_from</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">dt_to</span> <span class="o">+=</span> <span class="n">_tz_offset</span> <span class="k">if</span> <span class="n">dt_to</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># If the base path doesn&#39;t exist there are no files to find.</span>
+    <span class="c1"># Return [] rather than letting gfind fail with a CalledProcessError.</span>
+    <span class="n">_base_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">NX_INSTRUMENT_DATA_PATH</span><span class="p">))</span> <span class="o">/</span> <span class="n">path</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_base_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Path </span><span class="si">%s</span><span class="s2"> does not exist, returning empty file list&quot;</span><span class="p">,</span> <span class="n">_base_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[]</span>
 
     <span class="c1"># Find symlink directories if following links</span>
     <span class="k">if</span> <span class="n">followlinks</span><span class="p">:</span>

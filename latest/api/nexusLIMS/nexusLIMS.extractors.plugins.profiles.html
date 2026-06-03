@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jun, 01, 2026"/>
+    <meta name="docbuild:last-update" content="Jun, 03, 2026"/>
   </head>
   
   
@@ -581,6 +581,10 @@ directory and it will be discovered during plugin initialization.</p>
 <p>Each profile module should register itself by calling
 get_profile_registry().register() at module level.</p>
 <p>This function is called automatically during extractor plugin discovery.</p>
+<p>This function is safe to call repeatedly. If built-in profile modules are
+already imported (e.g., after the registry was cleared by a test fixture),
+it re-registers any InstrumentProfile instances found in those modules
+rather than relying on module-level code to run again.</p>
 <p><strong>Examples:</strong></p>
 <div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.plugins.profiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_all_profiles</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">register_all_profiles</span><span class="p">()</span>

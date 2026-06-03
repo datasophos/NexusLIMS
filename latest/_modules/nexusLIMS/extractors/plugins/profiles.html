@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jun, 01, 2026"/>
+    <meta name="docbuild:last-update" content="Jun, 03, 2026"/>
   </head>
   
   
@@ -859,6 +859,7 @@ window.addEventListener("load", load);
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">contextlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">importlib</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">importlib.util</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -870,6 +871,41 @@ window.addEventListener("load", load);
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;register_all_profiles&quot;</span><span class="p">,</span>
 <span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_re_register_from_imported_modules</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Re-register InstrumentProfile instances from already-imported modules.</span>
+
+<span class="sd">    When the profile registry is cleared (e.g., by a test fixture) and then</span>
+<span class="sd">    ``register_all_profiles()`` is called, ``importlib.import_module()`` returns</span>
+<span class="sd">    cached modules without re-executing their module-level registration code.</span>
+<span class="sd">    This function scans ``sys.modules`` for built-in profile modules and</span>
+<span class="sd">    explicitly re-registers any ``InstrumentProfile`` objects found in them.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>  <span class="c1"># noqa: PLC0415</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">InstrumentProfile</span>  <span class="c1"># noqa: PLC0415</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.extractors.profiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_profile_registry</span>  <span class="c1"># noqa: PLC0415</span>
+
+    <span class="n">registry</span> <span class="o">=</span> <span class="n">get_profile_registry</span><span class="p">()</span>
+    <span class="n">module_prefix</span> <span class="o">=</span> <span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span>
+    <span class="n">existing_ids</span> <span class="o">=</span> <span class="n">registry</span><span class="o">.</span><span class="n">get_all_profiles</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">module_name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">module_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">module_prefix</span><span class="p">)</span> <span class="ow">or</span> <span class="n">module</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+            <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">InstrumentProfile</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span>
+                    <span class="n">attr</span><span class="o">.</span><span class="n">instrument_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">existing_ids</span>
+                <span class="p">):</span>
+                    <span class="n">registry</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                        <span class="s2">&quot;Re-registered profile for </span><span class="si">%s</span><span class="s2"> from cached module </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">attr</span><span class="o">.</span><span class="n">instrument_id</span><span class="p">,</span>
+                        <span class="n">module_name</span><span class="p">,</span>
+                    <span class="p">)</span>
 
 
 <div class="viewcode-block" id="register_all_profiles">
@@ -887,6 +923,11 @@ window.addEventListener("load", load);
 
 <span class="sd">    This function is called automatically during extractor plugin discovery.</span>
 
+<span class="sd">    This function is safe to call repeatedly. If built-in profile modules are</span>
+<span class="sd">    already imported (e.g., after the registry was cleared by a test fixture),</span>
+<span class="sd">    it re-registers any InstrumentProfile instances found in those modules</span>
+<span class="sd">    rather than relying on module-level code to run again.</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from nexusLIMS.extractors.plugins.profiles import register_all_profiles</span>
@@ -895,7 +936,14 @@ window.addEventListener("load", load);
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Discovering instrument profiles...&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Load built-in profiles</span>
+    <span class="c1"># Re-register profiles from already-imported built-in modules first.</span>
+    <span class="c1"># This handles the case where the registry was cleared after initial</span>
+    <span class="c1"># module loading (e.g., by a test fixture). importlib.import_module()</span>
+    <span class="c1"># returns cached modules without re-executing module-level code, so we</span>
+    <span class="c1"># must explicitly scan for InstrumentProfile instances.</span>
+    <span class="n">_re_register_from_imported_modules</span><span class="p">()</span>
+
+    <span class="c1"># Load built-in profiles (imports any not-yet-imported modules)</span>
     <span class="n">package_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
     <span class="n">profile_count</span> <span class="o">=</span> <span class="n">_load_profiles_from_directory</span><span class="p">(</span><span class="n">package_path</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
 

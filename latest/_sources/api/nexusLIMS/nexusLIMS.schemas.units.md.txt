@@ -69,6 +69,11 @@
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
+* - {py:obj}`QUDT_UNIT_MAP_PATH <nexusLIMS.schemas.units.QUDT_UNIT_MAP_PATH>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_UNIT_MAP_PATH
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 * - {py:obj}`QUDT_VERSION <nexusLIMS.schemas.units.QUDT_VERSION>`
   - ```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_VERSION
     :parser: autodoc2_docstrings_parser
@@ -114,6 +119,15 @@
 :canonical: nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH
 
 ```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} QUDT_UNIT_MAP_PATH
+:canonical: nexusLIMS.schemas.units.QUDT_UNIT_MAP_PATH
+
+```{autodoc2-docstring} nexusLIMS.schemas.units.QUDT_UNIT_MAP_PATH
 :parser: autodoc2_docstrings_parser
 ```
 

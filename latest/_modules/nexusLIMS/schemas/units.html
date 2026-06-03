@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jun, 01, 2026"/>
+    <meta name="docbuild:last-update" content="Jun, 03, 2026"/>
   </head>
   
   
@@ -858,6 +858,7 @@ window.addEventListener("load", load);
 <span class="sd">&lt;meta name=&#39;Voltage&#39; unit=&#39;kV&#39;&gt;10.0&lt;/meta&gt;</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">decimal</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decimal</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
@@ -904,6 +905,7 @@ window.addEventListener("load", load);
 
 <span class="c1"># Path to QUDT unit vocabulary file</span>
 <span class="n">QUDT_UNIT_TTL_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;references&quot;</span> <span class="o">/</span> <span class="s2">&quot;qudt_unit.ttl&quot;</span>
+<span class="n">QUDT_UNIT_MAP_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;references&quot;</span> <span class="o">/</span> <span class="s2">&quot;qudt_unit_map.json&quot;</span>
 <span class="n">QUDT_VERSION</span> <span class="o">=</span> <span class="s2">&quot;3.1.9&quot;</span>
 
 <span class="c1"># RDF namespace for QUDT</span>
@@ -961,10 +963,9 @@ window.addEventListener("load", load);
 <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_load_qudt_units</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Load QUDT unit URIs from the Turtle file.</span>
+<span class="sd">    Load generated QUDT unit URI mappings.</span>
 
-<span class="sd">    Parses the QUDT unit vocabulary to extract unit labels and their URIs.</span>
-<span class="sd">    This provides a mapping from Pint unit names to QUDT ontology URIs.</span>
+<span class="sd">    Loads a generated JSON mapping from Pint unit names to QUDT ontology URIs.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -979,37 +980,48 @@ window.addEventListener("load", load);
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    Results are cached for performance. The mapping uses rdfs:label to match</span>
-<span class="sd">    Pint unit names (e.g., &quot;kilovolt&quot;) to QUDT URIs.</span>
+<span class="sd">    Results are cached for performance. The mapping is generated from the QUDT</span>
+<span class="sd">    Turtle vocabulary by ``scripts/generate_qudt_unit_map.py``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">QUDT_UNIT_MAP_PATH</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;QUDT unit map not found at </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">QUDT_UNIT_MAP_PATH</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">unit_map</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">QUDT_UNIT_MAP_PATH</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Loaded QUDT unit mappings from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">QUDT_UNIT_MAP_PATH</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to load QUDT unit map.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{}</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Loaded </span><span class="si">%s</span><span class="s2"> QUDT unit mappings&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">unit_map</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">unit_map</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_build_qudt_units_from_ttl</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build QUDT unit URI mappings from the source Turtle vocabulary.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">QUDT_UNIT_TTL_PATH</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;QUDT unit file not found at </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">QUDT_UNIT_TTL_PATH</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{}</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">QUDT_UNIT_TTL_PATH</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;turtle&quot;</span><span class="p">)</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+        <span class="n">graph</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">QUDT_UNIT_TTL_PATH</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;turtle&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Loaded QUDT unit vocabulary from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">QUDT_UNIT_TTL_PATH</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to parse QUDT unit file.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{}</span>
 
-    <span class="c1"># Build mapping from label -&gt; URI</span>
     <span class="n">unit_map</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="c1"># Iterate over all QUDT unit instances</span>
-    <span class="k">for</span> <span class="n">unit_uri</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">subjects</span><span class="p">(</span><span class="n">predicate</span><span class="o">=</span><span class="n">RDFS</span><span class="o">.</span><span class="n">label</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">unit_uri</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">subjects</span><span class="p">(</span><span class="n">predicate</span><span class="o">=</span><span class="n">RDFS</span><span class="o">.</span><span class="n">label</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_uri</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">QUDT_UNIT</span><span class="p">)):</span>
             <span class="k">continue</span>
 
-        <span class="c1"># Get the label(s) for this unit</span>
-        <span class="k">for</span> <span class="n">label_obj</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">unit_uri</span><span class="p">,</span> <span class="n">RDFS</span><span class="o">.</span><span class="n">label</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">label_obj</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">unit_uri</span><span class="p">,</span> <span class="n">RDFS</span><span class="o">.</span><span class="n">label</span><span class="p">):</span>
             <span class="n">label</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">label_obj</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-
-            <span class="c1"># Map label to URI</span>
             <span class="n">unit_map</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_uri</span><span class="p">)</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Loaded </span><span class="si">%s</span><span class="s2"> QUDT unit mappings&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">unit_map</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">unit_map</span>
 
 
