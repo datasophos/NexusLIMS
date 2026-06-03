@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage for nexusLIMS/schemas/em_glossary.py: 100%</title>
+    <title>Coverage for nexusLIMS/schemas/em_glossary.py: 72%</title>
     <link rel="icon" sizes="32x32" href="favicon_32_cb_58284776.png">
     <link rel="stylesheet" href="style_cb_a37fa487.css" type="text/css">
     <script src="coverage_html_cb_cadff66e.js" defer></script>
@@ -12,7 +12,7 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>nexusLIMS/schemas/em_glossary.py</b>:
-            <span class="pc_cov">100%</span>
+            <span class="pc_cov">72%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -55,8 +55,8 @@
         </aside>
         <h2>
             <span class="text">116 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">116<span class="text"> run</span></button>
-            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">0<span class="text"> missing</span></button>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">84<span class="text"> run</span></button>
+            <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">32<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
         </h2>
         <p class="text">
@@ -65,7 +65,7 @@
             <a id="nextFileLink" class="nav" href="z_ed0514014fe7877c_metadata_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2026-06-03 00:04 +0000
+            created at 2026-06-03 00:33 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"></button>
@@ -184,17 +184,17 @@
     <p class="pln"><span class="n"><a id="t102" href="#t102">102</a></span><span class="t"><span class="str">        If the OWL file cannot be parsed</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t103" href="#t103">103</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t104" href="#t104">104</a></span><span class="t">    <span class="key">if</span> <span class="key">not</span> <span class="nam">EMG_OWL_PATH</span><span class="op">.</span><span class="nam">exists</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t105" href="#t105">105</a></span><span class="t">        <span class="nam">msg</span> <span class="op">=</span> <span class="str">f"EM Glossary OWL file not found at {EMG_OWL_PATH}"</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t106" href="#t106">106</a></span><span class="t">        <span class="key">raise</span> <span class="nam">FileNotFoundError</span><span class="op">(</span><span class="nam">msg</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t105" href="#t105">105</a></span><span class="t">        <span class="nam">msg</span> <span class="op">=</span> <span class="str">f"EM Glossary OWL file not found at {EMG_OWL_PATH}"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t106" href="#t106">106</a></span><span class="t">        <span class="key">raise</span> <span class="nam">FileNotFoundError</span><span class="op">(</span><span class="nam">msg</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t107" href="#t107">107</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t108" href="#t108">108</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t109" href="#t109">109</a></span><span class="t">        <span class="nam">g</span> <span class="op">=</span> <span class="nam">Graph</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t110" href="#t110">110</a></span><span class="t">        <span class="nam">g</span><span class="op">.</span><span class="nam">parse</span><span class="op">(</span><span class="nam">EMG_OWL_PATH</span><span class="op">,</span> <span class="nam">format</span><span class="op">=</span><span class="str">"xml"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t111" href="#t111">111</a></span><span class="t">        <span class="nam">_logger</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span><span class="str">"Loaded EM Glossary ontology from %s"</span><span class="op">,</span> <span class="nam">EMG_OWL_PATH</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t112" href="#t112">112</a></span><span class="t">        <span class="nam">_logger</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span><span class="str">"Graph contains %s triples"</span><span class="op">,</span> <span class="nam">len</span><span class="op">(</span><span class="nam">g</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t113" href="#t113">113</a></span><span class="t">    <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t114" href="#t114">114</a></span><span class="t">        <span class="nam">msg</span> <span class="op">=</span> <span class="str">f"Failed to parse EM Glossary OWL file: {e}"</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t115" href="#t115">115</a></span><span class="t">        <span class="key">raise</span> <span class="nam">ValueError</span><span class="op">(</span><span class="nam">msg</span><span class="op">)</span> <span class="key">from</span> <span class="nam">e</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t113" href="#t113">113</a></span><span class="t">    <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t114" href="#t114">114</a></span><span class="t">        <span class="nam">msg</span> <span class="op">=</span> <span class="str">f"Failed to parse EM Glossary OWL file: {e}"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t115" href="#t115">115</a></span><span class="t">        <span class="key">raise</span> <span class="nam">ValueError</span><span class="op">(</span><span class="nam">msg</span><span class="op">)</span> <span class="key">from</span> <span class="nam">e</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t116" href="#t116">116</a></span><span class="t">    <span class="key">return</span> <span class="nam">g</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t117" href="#t117">117</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t118" href="#t118">118</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -239,7 +239,7 @@
     <p class="run"><span class="n"><a id="t157" href="#t157">157</a></span><span class="t">            <span class="key">break</span>  <span class="com"># Take first label</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t158" href="#t158">158</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t159" href="#t159">159</a></span><span class="t">        <span class="key">if</span> <span class="nam">label</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t160" href="#t160">160</a></span><span class="t">            <span class="key">continue</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t160" href="#t160">160</a></span><span class="t">            <span class="key">continue</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t161" href="#t161">161</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t162" href="#t162">162</a></span><span class="t">        <span class="com"># Get definition (IAO_0000115 is the standard definition property)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t163" href="#t163">163</a></span><span class="t">        <span class="nam">definition</span> <span class="op">=</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
@@ -253,8 +253,8 @@
     <p class="run run2"><span class="n"><a id="t171" href="#t171">171</a></span><span class="t">        <span class="op">}</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t172" href="#t172">172</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t173" href="#t173">173</a></span><span class="t">    <span class="key">if</span> <span class="key">not</span> <span class="nam">emg_terms</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t174" href="#t174">174</a></span><span class="t">        <span class="nam">msg</span> <span class="op">=</span> <span class="str">"No EMG terms found in OWL file. File may be corrupted."</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t175" href="#t175">175</a></span><span class="t">        <span class="key">raise</span> <span class="nam">ValueError</span><span class="op">(</span><span class="nam">msg</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t174" href="#t174">174</a></span><span class="t">        <span class="nam">msg</span> <span class="op">=</span> <span class="str">"No EMG terms found in OWL file. File may be corrupted."</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t175" href="#t175">175</a></span><span class="t">        <span class="key">raise</span> <span class="nam">ValueError</span><span class="op">(</span><span class="nam">msg</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t176" href="#t176">176</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t177" href="#t177">177</a></span><span class="t">    <span class="nam">_logger</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span><span class="str">"Loaded %s EMG terms from ontology"</span><span class="op">,</span> <span class="nam">len</span><span class="op">(</span><span class="nam">emg_terms</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t178" href="#t178">178</a></span><span class="t">    <span class="key">return</span> <span class="nam">emg_terms</span>&nbsp;</span><span class="r"></span></p>
@@ -516,9 +516,9 @@
     <p class="run"><span class="n"><a id="t434" href="#t434">434</a></span><span class="t">        <span class="nam">emg_terms</span> <span class="op">=</span> <span class="nam">_load_emg_terms</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t435" href="#t435">435</a></span><span class="t">        <span class="nam">term_info</span> <span class="op">=</span> <span class="nam">emg_terms</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="nam">emg_id</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t436" href="#t436">436</a></span><span class="t">        <span class="key">return</span> <span class="nam">term_info</span><span class="op">[</span><span class="str">"label"</span><span class="op">]</span> <span class="key">if</span> <span class="nam">term_info</span> <span class="key">else</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t437" href="#t437">437</a></span><span class="t">    <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t438" href="#t438">438</a></span><span class="t">        <span class="nam">_logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span><span class="str">"Failed to load EMG ontology: %s"</span><span class="op">,</span> <span class="nam">e</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t439" href="#t439">439</a></span><span class="t">        <span class="key">return</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t437" href="#t437">437</a></span><span class="t">    <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t438" href="#t438">438</a></span><span class="t">        <span class="nam">_logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span><span class="str">"Failed to load EMG ontology: %s"</span><span class="op">,</span> <span class="nam">e</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t439" href="#t439">439</a></span><span class="t">        <span class="key">return</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t440" href="#t440">440</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t441" href="#t441">441</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t442" href="#t442">442</a></span><span class="t"><span class="key">def</span> <span class="nam">get_emg_definition</span><span class="op">(</span><span class="nam">emg_id</span><span class="op">:</span> <span class="nam">str</span><span class="op">)</span> <span class="op">-></span> <span class="nam">str</span> <span class="op">|</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -546,13 +546,13 @@
     <p class="pln"><span class="n"><a id="t464" href="#t464">464</a></span><span class="t"><span class="str">    >>> get_emg_definition("EMG_99999999") is None</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t465" href="#t465">465</a></span><span class="t"><span class="str">    True</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t466" href="#t466">466</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t467" href="#t467">467</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t468" href="#t468">468</a></span><span class="t">        <span class="nam">emg_terms</span> <span class="op">=</span> <span class="nam">_load_emg_terms</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t469" href="#t469">469</a></span><span class="t">        <span class="nam">term_info</span> <span class="op">=</span> <span class="nam">emg_terms</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="nam">emg_id</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t470" href="#t470">470</a></span><span class="t">        <span class="key">return</span> <span class="nam">term_info</span><span class="op">[</span><span class="str">"definition"</span><span class="op">]</span> <span class="key">if</span> <span class="nam">term_info</span> <span class="key">else</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t471" href="#t471">471</a></span><span class="t">    <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t472" href="#t472">472</a></span><span class="t">        <span class="nam">_logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span><span class="str">"Failed to load EMG ontology: %s"</span><span class="op">,</span> <span class="nam">e</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t473" href="#t473">473</a></span><span class="t">        <span class="key">return</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t467" href="#t467">467</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t468" href="#t468">468</a></span><span class="t">        <span class="nam">emg_terms</span> <span class="op">=</span> <span class="nam">_load_emg_terms</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t469" href="#t469">469</a></span><span class="t">        <span class="nam">term_info</span> <span class="op">=</span> <span class="nam">emg_terms</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="nam">emg_id</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t470" href="#t470">470</a></span><span class="t">        <span class="key">return</span> <span class="nam">term_info</span><span class="op">[</span><span class="str">"definition"</span><span class="op">]</span> <span class="key">if</span> <span class="nam">term_info</span> <span class="key">else</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t471" href="#t471">471</a></span><span class="t">    <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t472" href="#t472">472</a></span><span class="t">        <span class="nam">_logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span><span class="str">"Failed to load EMG ontology: %s"</span><span class="op">,</span> <span class="nam">e</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t473" href="#t473">473</a></span><span class="t">        <span class="key">return</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t474" href="#t474">474</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t475" href="#t475">475</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t476" href="#t476">476</a></span><span class="t"><span class="key">def</span> <span class="nam">get_emg_id</span><span class="op">(</span><span class="nam">field_name</span><span class="op">:</span> <span class="nam">str</span><span class="op">)</span> <span class="op">-></span> <span class="nam">str</span> <span class="op">|</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -602,12 +602,12 @@
     <p class="run"><span class="n"><a id="t520" href="#t520">520</a></span><span class="t">        <span class="key">for</span> <span class="nam">emg_id</span><span class="op">,</span> <span class="nam">term_info</span> <span class="key">in</span> <span class="nam">emg_terms</span><span class="op">.</span><span class="nam">items</span><span class="op">(</span><span class="op">)</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t521" href="#t521">521</a></span><span class="t">            <span class="key">if</span> <span class="nam">term_info</span><span class="op">[</span><span class="str">"label"</span><span class="op">]</span> <span class="op">==</span> <span class="nam">emg_label</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t522" href="#t522">522</a></span><span class="t">                <span class="key">return</span> <span class="nam">emg_id</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t523" href="#t523">523</a></span><span class="t">    <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t524" href="#t524">524</a></span><span class="t">        <span class="nam">_logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span><span class="str">"Failed to load EMG ontology: %s"</span><span class="op">,</span> <span class="nam">e</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t525" href="#t525">525</a></span><span class="t">        <span class="key">return</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t523" href="#t523">523</a></span><span class="t">    <span class="key">except</span> <span class="nam">Exception</span> <span class="key">as</span> <span class="nam">e</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t524" href="#t524">524</a></span><span class="t">        <span class="nam">_logger</span><span class="op">.</span><span class="nam">warning</span><span class="op">(</span><span class="str">"Failed to load EMG ontology: %s"</span><span class="op">,</span> <span class="nam">e</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t525" href="#t525">525</a></span><span class="t">        <span class="key">return</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t526" href="#t526">526</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t527" href="#t527">527</a></span><span class="t">    <span class="nam">_logger</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span><span class="str">"EMG label '%s' not found in ontology"</span><span class="op">,</span> <span class="nam">emg_label</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t528" href="#t528">528</a></span><span class="t">    <span class="key">return</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t527" href="#t527">527</a></span><span class="t">    <span class="nam">_logger</span><span class="op">.</span><span class="nam">debug</span><span class="op">(</span><span class="str">"EMG label '%s' not found in ontology"</span><span class="op">,</span> <span class="nam">emg_label</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t528" href="#t528">528</a></span><span class="t">    <span class="key">return</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t529" href="#t529">529</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t530" href="#t530">530</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t531" href="#t531">531</a></span><span class="t"><span class="key">def</span> <span class="nam">get_display_name</span><span class="op">(</span><span class="nam">field_name</span><span class="op">:</span> <span class="nam">str</span><span class="op">)</span> <span class="op">-></span> <span class="nam">str</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -681,7 +681,7 @@
     <p class="pln"><span class="n"><a id="t599" href="#t599">599</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t600" href="#t600">600</a></span><span class="t">    <span class="nam">mapping</span> <span class="op">=</span> <span class="nam">NEXUSLIMS_TO_EMG_MAPPINGS</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="nam">field_name</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t601" href="#t601">601</a></span><span class="t">    <span class="key">if</span> <span class="nam">mapping</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t602" href="#t602">602</a></span><span class="t">        <span class="key">return</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t602" href="#t602">602</a></span><span class="t">        <span class="key">return</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t603" href="#t603">603</a></span><span class="t">    <span class="key">return</span> <span class="nam">mapping</span><span class="op">[</span><span class="num">2</span><span class="op">]</span>  <span class="com"># Return description (third element of tuple)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t604" href="#t604">604</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t605" href="#t605">605</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -713,8 +713,8 @@
     <p class="pln"><span class="n"><a id="t631" href="#t631">631</a></span><span class="t"><span class="str">    >>> has_emg_id("custom_field")</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t632" href="#t632">632</a></span><span class="t"><span class="str">    False</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t633" href="#t633">633</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t634" href="#t634">634</a></span><span class="t">    <span class="nam">emg_id</span> <span class="op">=</span> <span class="nam">get_emg_id</span><span class="op">(</span><span class="nam">field_name</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t635" href="#t635">635</a></span><span class="t">    <span class="key">return</span> <span class="nam">emg_id</span> <span class="key">is</span> <span class="key">not</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t634" href="#t634">634</a></span><span class="t">    <span class="nam">emg_id</span> <span class="op">=</span> <span class="nam">get_emg_id</span><span class="op">(</span><span class="nam">field_name</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t635" href="#t635">635</a></span><span class="t">    <span class="key">return</span> <span class="nam">emg_id</span> <span class="key">is</span> <span class="key">not</span> <span class="key">None</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t636" href="#t636">636</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t637" href="#t637">637</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t638" href="#t638">638</a></span><span class="t"><span class="key">def</span> <span class="nam">get_emg_uri</span><span class="op">(</span><span class="nam">field_name</span><span class="op">:</span> <span class="nam">str</span><span class="op">)</span> <span class="op">-></span> <span class="nam">str</span> <span class="op">|</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -803,7 +803,7 @@
     <p class="pln"><span class="n"><a id="t721" href="#t721">721</a></span><span class="t"><span class="str">    >>> "magnification" in fields  # Has display name but no EMG ID</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t722" href="#t722">722</a></span><span class="t"><span class="str">    False</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t723" href="#t723">723</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t724" href="#t724">724</a></span><span class="t">    <span class="key">return</span> <span class="nam">sorted</span><span class="op">(</span><span class="op">[</span><span class="nam">field</span> <span class="key">for</span> <span class="nam">field</span> <span class="key">in</span> <span class="nam">NEXUSLIMS_TO_EMG_MAPPINGS</span> <span class="key">if</span> <span class="nam">has_emg_id</span><span class="op">(</span><span class="nam">field</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t724" href="#t724">724</a></span><span class="t">    <span class="key">return</span> <span class="nam">sorted</span><span class="op">(</span><span class="op">[</span><span class="nam">field</span> <span class="key">for</span> <span class="nam">field</span> <span class="key">in</span> <span class="nam">NEXUSLIMS_TO_EMG_MAPPINGS</span> <span class="key">if</span> <span class="nam">has_emg_id</span><span class="op">(</span><span class="nam">field</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t725" href="#t725">725</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t726" href="#t726">726</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t727" href="#t727">727</a></span><span class="t"><span class="key">def</span> <span class="nam">get_all_emg_terms</span><span class="op">(</span><span class="op">)</span> <span class="op">-></span> <span class="nam">Dict</span><span class="op">[</span><span class="nam">str</span><span class="op">,</span> <span class="nam">Dict</span><span class="op">[</span><span class="nam">str</span><span class="op">,</span> <span class="nam">str</span><span class="op">]</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -828,11 +828,11 @@
     <p class="pln"><span class="n"><a id="t746" href="#t746">746</a></span><span class="t"><span class="str">    >>> print(terms["EMG_00000004"]["definition"])</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t747" href="#t747">747</a></span><span class="t"><span class="str">    The potential difference between anode and cathode.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t748" href="#t748">748</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t749" href="#t749">749</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t750" href="#t750">750</a></span><span class="t">        <span class="key">return</span> <span class="nam">_load_emg_terms</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t751" href="#t751">751</a></span><span class="t">    <span class="key">except</span> <span class="nam">Exception</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t752" href="#t752">752</a></span><span class="t">        <span class="nam">_logger</span><span class="op">.</span><span class="nam">exception</span><span class="op">(</span><span class="str">"Failed to load EMG ontology"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t753" href="#t753">753</a></span><span class="t">        <span class="key">return</span> <span class="op">{</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t749" href="#t749">749</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t750" href="#t750">750</a></span><span class="t">        <span class="key">return</span> <span class="nam">_load_emg_terms</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t751" href="#t751">751</a></span><span class="t">    <span class="key">except</span> <span class="nam">Exception</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t752" href="#t752">752</a></span><span class="t">        <span class="nam">_logger</span><span class="op">.</span><span class="nam">exception</span><span class="op">(</span><span class="str">"Failed to load EMG ontology"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="mis show_mis"><span class="n"><a id="t753" href="#t753">753</a></span><span class="t">        <span class="key">return</span> <span class="op">{</span><span class="op">}</span>&nbsp;</span><span class="r"></span></p>
 </main>
 <footer>
     <div class="content">
@@ -842,7 +842,7 @@
             <a class="nav" href="z_ed0514014fe7877c_metadata_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.11.3">coverage.py v7.11.3</a>,
-            created at 2026-06-03 00:04 +0000
+            created at 2026-06-03 00:33 +0000
         </p>
     </div>
 </footer>
