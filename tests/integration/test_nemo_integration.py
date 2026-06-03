@@ -821,29 +821,18 @@ class TestNemoUtilityFunctions:
         # NEMO API requires either event_id or date range
         # Provide a wide date range that covers all test data
         # Note: Event 999 is in June 2025, so we need to extend to end of 2025
-        before_logs = get_all_session_logs()
         add_all_usage_events_to_db(
             dt_from=datetime(2018, 1, 1), dt_to=datetime(2026, 1, 1)
         )
 
-        # Test the contents of the database to ensure it was updated
-        # Query the session_log table to verify usage events were added
+        # Verify exactly 24 session logs were added:
+        # 2 per usage event x 12 events (IDs 29-32, 100-106, and 999)
+        logs = get_all_session_logs()
+        assert len(logs) == 24, f"Expected 24 session logs, got {len(logs)}"
 
-        # Query all session logs
-        after_logs = get_all_session_logs()
-
-        # Check that we added exactly 24 new session logs
-        # (2 per usage event * 12 usage events: 29-32, 100-106, and 999)
-        new_logs_count = len(after_logs) - len(before_logs)
-        assert new_logs_count == 24, (
-            f"Expected 24 new session logs, got {new_logs_count}"
-        )
-
-        # Also verify that the new logs contain the expected usage event IDs
-        # Each usage event should have a START and END log
-        new_logs = [log for log in after_logs if log not in before_logs]
+        # Verify the expected usage event IDs are present
         usage_event_ids = set()
-        for log in new_logs:
+        for log in logs:
             # Extract usage event ID from session_identifier
             if "?id=" in log.session_identifier:
                 event_id = log.session_identifier.split("?id=")[1].split("&")[0]

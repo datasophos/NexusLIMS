@@ -15,7 +15,6 @@ Run with Docker services up:
 import pytest
 from alembic.config import Config
 from alembic.script import ScriptDirectory
-from sqlalchemy import text
 
 from nexusLIMS.builder.preflight import (
     _ALEMBIC_INI_PATH,
@@ -26,46 +25,19 @@ from nexusLIMS.builder.preflight import (
 )
 
 # ---------------------------------------------------------------------------
-# Session-scoped helper: seed alembic_version into the shared integration DB
+# Per-test helper: use the populated integration DB template
 # ---------------------------------------------------------------------------
 
 
-@pytest.fixture(scope="session")
-def integration_db_with_alembic(docker_services):
-    """Add an alembic_version row at the current head to the session DB.
-
-    The shared integration DB is created via SQLModel (no alembic migrations
-    are run), so it has all ORM tables but no alembic_version table.  This
-    fixture seeds that row so ``_check_alembic_migration`` reports PASS rather
-    than a hard error during full-run tests.
-    """
-    from nexusLIMS.db.engine import get_engine
-
+@pytest.fixture
+def integration_db_with_alembic(fresh_test_db):
+    """Use a per-test database with ORM tables and the current Alembic head."""
     cfg = Config(str(_ALEMBIC_INI_PATH))
     cfg.set_main_option(
         "script_location",
         str(_ALEMBIC_INI_PATH.parent / "nexusLIMS" / "db" / "migrations"),
     )
-    head = ScriptDirectory.from_config(cfg).get_current_head()
-
-    engine = get_engine()
-    with engine.connect() as conn:
-        conn.execute(
-            text(
-                "CREATE TABLE IF NOT EXISTS alembic_version "
-                "(version_num VARCHAR(32) NOT NULL)"
-            )
-        )
-        conn.execute(text("DELETE FROM alembic_version"))
-        conn.execute(text(f"INSERT INTO alembic_version VALUES ('{head}')"))
-        conn.commit()
-
-    yield head
-
-    # Cleanup: drop so other tests that expect the table to be absent aren't affected
-    with engine.connect() as conn:
-        conn.execute(text("DROP TABLE IF EXISTS alembic_version"))
-        conn.commit()
+    return ScriptDirectory.from_config(cfg).get_current_head()
 
 
 # ---------------------------------------------------------------------------

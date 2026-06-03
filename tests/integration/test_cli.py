@@ -16,6 +16,7 @@ import pytest
 
 
 @pytest.mark.integration
+@pytest.mark.xdist_group("cli")
 class TestProcessRecordsScript:
     """Test the nexuslims build-records CLI script behavior."""
 
@@ -171,72 +172,51 @@ class TestProcessRecordsScript:
         This test verifies that the script uses file locking to prevent
         multiple instances from running simultaneously.
 
-        Note: This test uses subprocess because it requires testing
-        actual concurrent execution with separate processes.
+        The lock is held by the test process itself (not a subprocess) to
+        avoid unreliable startup timing with ``uv run``.
 
         Parameters
         ----------
         test_environment_setup : dict
             Test environment configuration (includes all necessary fixtures)
         """
-        # Start first instance in background (with a sleep to hold the lock)
-        # We'll use a python script that acquires the lock and sleeps
-        lock_holder_script = """
-import time
-from pathlib import Path
-from filelock import FileLock
-from nexusLIMS.config import settings
+        from filelock import FileLock
 
-lock_file = settings.lock_file_path
-lock = FileLock(str(lock_file), timeout=0)
+        from nexusLIMS.config import settings
 
-with lock:
-    print("Lock acquired, sleeping...")
-    time.sleep(10)
-"""
+        lock_file = settings.lock_file_path
+        lock = FileLock(str(lock_file), timeout=0)
 
-        # Start the lock holder
-        process1 = subprocess.Popen(
-            ["uv", "run", "python", "-c", lock_holder_script],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        )
-
-        # Give it time to acquire the lock
-        time.sleep(2)
-
-        try:
-            # Try to run the script - should exit immediately due to lock
+        # Hold the lock in this process while running nexuslims build-records.
+        # The child process must detect the lock and exit immediately.
+        # Timeout is generous because uv startup under parallel test load can
+        # be slow even though the actual lock-detection path exits instantly.
+        with lock:
             result = subprocess.run(
                 ["uv", "run", "nexuslims", "build-records", "-vv"],
                 check=False,
                 capture_output=True,
                 text=True,
-                timeout=10,
+                timeout=60,
             )
 
-            # Should exit cleanly (exit code 0) but indicate lock exists
-            assert result.returncode == 0, "Script should exit cleanly when locked"
+        # Should exit cleanly (exit code 0) but indicate lock exists
+        assert result.returncode == 0, "Script should exit cleanly when locked"
 
-            # Should log that another instance is running
-            assert "another instance is running" in result.stderr.lower(), (
-                "Missing concurrent run warning"
-            )
-            assert "lock file already exists at " in result.stderr.lower(), (
-                "Missing concurrent run warning"
-            )
-
-        finally:
-            # Clean up the lock holder
-            process1.terminate()
-            process1.wait(timeout=5)
+        # The lock messages may appear on stdout (via Rich Console) or stderr
+        combined_output = (result.stdout + result.stderr).lower()
+        assert "another instance is running" in combined_output, (
+            "Missing concurrent run warning"
+        )
+        assert "lock file already exists at" in combined_output, (
+            "Missing lock-file path in output"
+        )
 
     def test_script_error_email_notification(
         self,
         mailpit_client,
         test_data_dirs,
-        populated_test_database,
+        fresh_test_db,
         monkeypatch,
     ):
         """
@@ -251,7 +231,7 @@ with lock:
             MailPit client for email testing (also configures NX_EMAIL_*)
         test_data_dirs : dict
             Test data directories (instrument_data and nexuslims_data paths)
-        populated_test_database : Path
+        fresh_test_db : Path
             Test database with instruments
         monkeypatch : pytest.MonkeyPatch
             Pytest fixture for modifying environment and mocking
@@ -508,25 +488,20 @@ with lock:
         This test verifies that the --version flag displays version
         information and exits without running the main logic.
 
-        Note: This test uses subprocess because it tests the Click CLI
-        interface directly, which is simpler than mocking the version
-        detection logic.
+        This test uses Click's in-process runner to avoid process startup
+        overhead while still exercising the command's Click version callback.
         """
-        result = subprocess.run(
-            ["uv", "run", "nexuslims", "build-records", "--version"],
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
+        from click.testing import CliRunner
+
+        from nexusLIMS.cli.process_records import main
+
+        result = CliRunner().invoke(main, ["--version"])
 
         # Should succeed
-        assert result.returncode == 0, f"Version flag failed: {result.stderr}"
+        assert result.exit_code == 0, f"Version flag failed: {result.output}"
 
         # Should output version information
-        assert "nexusLIMS, version" in result.stdout.lower() or result.stdout.strip(), (
-            f"No version output: {result.stdout}"
-        )
+        assert "nexuslims build-records" in result.output.lower()
 
     def test_script_help_flag(self):
         """
@@ -535,33 +510,30 @@ with lock:
         This test verifies that the --help flag displays usage information
         and exits without running the main logic.
 
-        Note: This test uses subprocess because it tests the Click CLI
-        interface directly, which is simpler than mocking the help
-        generation logic.
+        This test uses Click's in-process runner to avoid process startup
+        overhead while still exercising the command's Click help generation.
         """
-        result = subprocess.run(
-            ["uv", "run", "nexuslims", "build-records", "--help"],
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
+        from click.testing import CliRunner
+
+        from nexusLIMS.cli.process_records import main
+
+        result = CliRunner().invoke(main, ["--help"])
 
         # Should succeed
-        assert result.returncode == 0, f"Help flag failed: {result.stderr}"
+        assert result.exit_code == 0, f"Help flag failed: {result.output}"
 
         # Should output help information
-        assert "usage" in result.stdout.lower() or "options" in result.stdout.lower(), (
-            f"No help output: {result.stdout}"
+        assert "usage" in result.output.lower() or "options" in result.output.lower(), (
+            f"No help output: {result.output}"
         )
 
         # Should document the -n/--dry-run option
-        assert "--dry-run" in result.stdout or "-n" in result.stdout, (
+        assert "--dry-run" in result.output or "-n" in result.output, (
             "Missing dry-run option in help"
         )
 
         # Should document the -v/--verbose option
-        assert "--verbose" in result.stdout or "-v" in result.stdout, (
+        assert "--verbose" in result.output or "-v" in result.output, (
             "Missing verbose option in help"
         )
 

@@ -5,6 +5,7 @@
 import contextlib
 import os
 import shutil
+import tempfile
 from datetime import datetime as dt
 from datetime import timedelta as td
 from pathlib import Path
@@ -17,12 +18,23 @@ from pathlib import Path
 
 # Define paths for test database and data directories
 _test_files_dir = Path(__file__).parent / "files"
-_nexuslims_path = _test_files_dir / "NexusLIMS"
-_instr_data_path = _test_files_dir / "InstrumentData"
+
+# When running under pytest-xdist, each worker must have its own isolated
+# filesystem paths to avoid races on file extraction/deletion.  PYTEST_XDIST_WORKER
+# is set to the worker ID (e.g. "gw0") by xdist before conftest files are imported.
+_xdist_worker = os.environ.get("PYTEST_XDIST_WORKER", "")
+if _xdist_worker:
+    _worker_tmp = Path(tempfile.mkdtemp(prefix=f"nexuslims-{_xdist_worker}-"))
+    _nexuslims_path = _worker_tmp / "NexusLIMS"
+    _instr_data_path = _worker_tmp / "InstrumentData"
+else:
+    _worker_tmp = None
+    _nexuslims_path = _test_files_dir / "NexusLIMS"
+    _instr_data_path = _test_files_dir / "InstrumentData"
 
 # Create the directories
-_nexuslims_path.mkdir(exist_ok=True)
-_instr_data_path.mkdir(exist_ok=True)
+_nexuslims_path.mkdir(exist_ok=True, parents=True)
+_instr_data_path.mkdir(exist_ok=True, parents=True)
 
 # Define path for dynamically-created test database
 _test_db_path = _nexuslims_path / "test_db.sqlite"
@@ -132,16 +144,23 @@ def clear_settings_cache():
     -----
     This fixture is kept for backwards compatibility and as an additional
     safety net. The primary cleanup is now handled by reset_unit_test_environment.
+
+    This also clears ``settings.__dict__`` to remove any direct instance-attribute
+    overrides that ``monkeypatch.setattr(settings, ...)`` may have left behind.
+    When monkeypatch undoes a setattr it calls setattr with the old value (not
+    delattr), so the instance attribute persists and shadows ``__getattr__`` for
+    all subsequent tests on the same xdist worker.
     """
-    # Clear BEFORE test (in case previous test left pollution)
-    from nexusLIMS.config import clear_settings
+    from nexusLIMS.config import clear_settings, settings
 
     clear_settings()
+    settings.__dict__.clear()
 
     yield  # Test runs here
 
     # Clear AFTER test (to prevent pollution to next test)
     clear_settings()
+    settings.__dict__.clear()
 
 
 @pytest.fixture
@@ -229,6 +248,12 @@ def pytest_configure(config):
         "markers",
         "record_builder: Tests for record builder functionality",
     )
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """Clean up xdist worker temp directory after the session ends."""
+    if _worker_tmp is not None:
+        shutil.rmtree(_worker_tmp, ignore_errors=True)
 
 
 def pytest_collection_modifyitems(config, items):

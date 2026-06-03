@@ -95,7 +95,7 @@ def multi_instance_env(monkeypatch, nemo_client):
 
 
 @pytest.fixture
-def multi_instance_instruments(populated_test_database, multi_instance_env):
+def multi_instance_instruments(fresh_test_db, multi_instance_env):
     """
     Create test instruments configured for different NEMO instances.
 
@@ -105,8 +105,8 @@ def multi_instance_instruments(populated_test_database, multi_instance_env):
 
     Parameters
     ----------
-    populated_test_database : Path
-        Path to the populated test database
+    fresh_test_db : Path
+        Path to the fresh test database
     multi_instance_env : dict
         Multi-instance environment configuration
 
@@ -121,7 +121,7 @@ def multi_instance_instruments(populated_test_database, multi_instance_env):
 
     from nexusLIMS import instruments
 
-    conn = sqlite3.connect(populated_test_database)
+    conn = sqlite3.connect(fresh_test_db)
     cursor = conn.cursor()
 
     try:
@@ -152,9 +152,7 @@ def multi_instance_instruments(populated_test_database, multi_instance_env):
 
         # Reload the instrument database to pick up modified instruments
         # SLF001: Using private method is intentional for test setup
-        test_instrument_db = instruments._get_instrument_db(
-            db_path=populated_test_database
-        )
+        test_instrument_db = instruments._get_instrument_db(db_path=fresh_test_db)
 
         yield {
             "MULTI-INST-1": test_instrument_db.get("test-tool-10"),
@@ -338,7 +336,7 @@ class TestMultiInstanceConnectorSelection:
         assert connector_1 != connector_2
 
     def test_get_connector_for_session_raises_on_unknown_instance(
-        self, multi_instance_env, populated_test_database
+        self, multi_instance_env, fresh_test_db
     ):
         """Test that get_connector_for_session raises error for unknown instance."""
         from nexusLIMS.instruments import Instrument

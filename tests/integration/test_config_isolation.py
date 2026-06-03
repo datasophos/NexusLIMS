@@ -83,6 +83,13 @@ def test_nemo_harvesters_no_env_file_in_test_mode(monkeypatch, tmp_path):
         "NX_NEMO_TOKEN_1=POISON_NEMO_TOKEN\n"
     )
 
+    # Remove any NEMO env vars that may be set in the test environment or
+    # by a prior test so that this test fully controls what is visible.
+    monkeypatch.delenv("NX_NEMO_ADDRESS_1", raising=False)
+    monkeypatch.delenv("NX_NEMO_TOKEN_1", raising=False)
+    monkeypatch.delenv("NX_NEMO_ADDRESS_2", raising=False)
+    monkeypatch.delenv("NX_NEMO_TOKEN_2", raising=False)
+
     # Change to the temporary directory
     original_cwd = Path.cwd()
     try:

@@ -35,12 +35,16 @@ from tests.unit.test_instrument_factory import make_quanta_sem, make_titan_stem
 def registry():
     """Provide a fresh profile registry instance for each test.
 
-    Clears the registry before the test to ensure isolation.
-    Individual tests are responsible for cleanup in finally blocks.
+    Saves the current profiles, clears the registry to provide an empty
+    slate, then restores the original profiles after the test. This
+    prevents tests that call registry.clear() from leaving the global
+    registry empty for subsequent tests on the same worker.
     """
     reg = get_profile_registry()
-    reg.clear()  # Start with clean slate
-    return reg
+    saved_profiles = reg._profiles.copy()
+    reg.clear()
+    yield reg
+    reg._profiles.update(saved_profiles)
 
 
 @pytest.fixture
@@ -562,33 +566,24 @@ get_profile_registry().register(profile)
 
     def test_register_all_profiles_without_local_path(self):
         """register_all_profiles() works without NX_LOCAL_PROFILES_PATH set."""
-        # This test verifies that register_all_profiles() runs without error
-        # when NX_LOCAL_PROFILES_PATH is not set. Since Python caches module imports,
-        # the built-in profile modules have already been imported and their
-        # registration code has already run, so we can't test the actual
-        # registration here. Instead, we just verify no errors occur and
-        # that built-in profiles exist in the registry (from earlier imports).
         registry = get_profile_registry()
 
-        # Get current profiles count before
-        profiles_before = len(registry.get_all_profiles())
-
         try:
-            # Ensure variable is not set
             env_backup = os.environ.get("NX_LOCAL_PROFILES_PATH")
             if "NX_LOCAL_PROFILES_PATH" in os.environ:
                 del os.environ["NX_LOCAL_PROFILES_PATH"]
 
             config.refresh_settings()
 
-            # Should not raise
+            # First call: should load (or re-load from cache) all built-in profiles
             register_all_profiles()
+            profiles_after_first = len(registry.get_all_profiles())
 
-            # Profile count should be unchanged (modules already imported)
+            # Second call: should be idempotent — same count, no duplicates
+            register_all_profiles()
             all_profiles = registry.get_all_profiles()
-            assert len(all_profiles) == profiles_before
+            assert len(all_profiles) == profiles_after_first
         finally:
-            # Restore environment variable if it existed
             if env_backup is not None:
                 os.environ["NX_LOCAL_PROFILES_PATH"] = env_backup
             config.refresh_settings()
@@ -652,9 +647,6 @@ get_profile_registry().register(profile)
     def test_local_and_builtin_profiles_coexist(self, tmp_path, registry):
         """Local profiles can be loaded alongside built-in profiles."""
         try:
-            # Get existing profile count
-            existing_count = len(registry.get_all_profiles())
-
             # Create local profile
             local_profile = tmp_path / "local_test.py"
             local_profile.write_text("""
@@ -671,10 +663,11 @@ get_profile_registry().register(profile)
 
                 all_profiles = registry.get_all_profiles()
 
-                # Should have local profile
+                # Local profile must be present
                 assert "Local-Test-Instrument" in all_profiles
-                # Should have existing profiles plus new local profile
-                assert len(all_profiles) == existing_count + 1
+                # Built-in profiles must also be present (coexistence check)
+                for built_in_id in ["FEI-Titan-STEM", "FEI-Titan-TEM", "JEOL-JEM-TEM"]:
+                    assert built_in_id in all_profiles
         finally:
             # Clean up only the test profile we added
             all_profiles = registry.get_all_profiles()

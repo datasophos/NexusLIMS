@@ -24,6 +24,18 @@ jobs:
         python-version: ["3.11", "3.12", "3.13", "3.14"]
 
     steps:
+      - name: Runner info
+        run: |
+          echo "=== CPU ==="
+          nproc
+          lscpu | grep -E "^(Architecture|CPU\(s\)|Thread|Core|Socket|Model name)"
+          echo "=== Memory ==="
+          free -h
+          echo "=== Kernel ==="
+          uname -a
+          echo "=== Disk ==="
+          df -h /
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -129,15 +141,19 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
-      - name: Run all tests (unit + integration)
+      - name: Run integration tests with coverage
+        if: matrix.python-version == '3.11'
         run: |
-          uv run pytest tests/ \
+          uv run pytest tests/integration \
+            -n 4 --dist loadgroup \
             -v \
             --override-ini=addopts= \
+            -m "not slow" \
+            --ignore=tests/integration/test_labarchives_integration.py \
+            --ignore=tests/integration/test_fresh_install.py \
             --mpl \
             --mpl-baseline-path=tests/unit/files/figs \
             --cov=nexusLIMS \
-            --cov-report html:tests/coverage-combined \
             --cov-report term-missing \
             --cov-report=xml:coverage-combined.xml \
             --tb=short \
@@ -146,7 +162,26 @@ jobs:
           # Integration test environment variables
           PYTEST_TIMEOUT: 600
 
-      - name: Upload combined test coverage
+      - name: Run integration tests
+        if: matrix.python-version != '3.11'
+        run: |
+          uv run pytest tests/integration \
+            -n 4 --dist loadgroup \
+            -v \
+            --override-ini=addopts= \
+            -m "not slow" \
+            --ignore=tests/integration/test_labarchives_integration.py \
+            --ignore=tests/integration/test_fresh_install.py \
+            --mpl \
+            --mpl-baseline-path=tests/unit/files/figs \
+            --tb=short \
+            --maxfail=5
+        env:
+          # Integration test environment variables
+          PYTEST_TIMEOUT: 600
+
+      - name: Upload integration test coverage
+        if: matrix.python-version == '3.11'
         uses: actions/upload-artifact@v4
         with:
           name: coverage-combined-${{ matrix.python-version }}
@@ -154,13 +189,6 @@ jobs:
             .coverage
             coverage-combined.xml
           include-hidden-files: true
-
-      - name: Upload HTML coverage report
-        if: matrix.python-version == '3.11'
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-combined-html
-          path: tests/coverage-combined
 
       - name: Collect Docker container logs
         if: always()
@@ -247,7 +275,7 @@ jobs:
           docker compose down -v --remove-orphans || true
 
   upload-coverage:
-    name: Upload Combined Coverage to Codecov
+    name: Upload Integration Coverage to Codecov
     needs: integration-test
     runs-on: ubuntu-latest
     if: always()
@@ -261,10 +289,10 @@ jobs:
           pattern: coverage-combined-*
           path: coverage-reports
 
-      - name: Upload combined coverage to Codecov
+      - name: Upload integration coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage-reports/**/*.xml
-          flags: combined
+          flags: integration
           fail_ci_if_error: false

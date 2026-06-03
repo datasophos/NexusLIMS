@@ -33,6 +33,7 @@ Creating a new instrument profile (in profiles/my_instrument.py):
 
 from __future__ import annotations
 
+import contextlib
 import importlib
 import importlib.util
 import logging
@@ -44,6 +45,41 @@ _logger = logging.getLogger(__name__)
 __all__ = [
     "register_all_profiles",
 ]
+
+
+def _re_register_from_imported_modules() -> None:
+    """Re-register InstrumentProfile instances from already-imported modules.
+
+    When the profile registry is cleared (e.g., by a test fixture) and then
+    ``register_all_profiles()`` is called, ``importlib.import_module()`` returns
+    cached modules without re-executing their module-level registration code.
+    This function scans ``sys.modules`` for built-in profile modules and
+    explicitly re-registers any ``InstrumentProfile`` objects found in them.
+    """
+    import sys  # noqa: PLC0415
+
+    from nexusLIMS.extractors.base import InstrumentProfile  # noqa: PLC0415
+    from nexusLIMS.extractors.profiles import get_profile_registry  # noqa: PLC0415
+
+    registry = get_profile_registry()
+    module_prefix = __name__ + "."
+    existing_ids = registry.get_all_profiles()
+
+    for module_name, module in list(sys.modules.items()):
+        if not module_name.startswith(module_prefix) or module is None:
+            continue
+        for attr_name in dir(module):
+            with contextlib.suppress(Exception):
+                attr = getattr(module, attr_name, None)
+                if isinstance(attr, InstrumentProfile) and (
+                    attr.instrument_id not in existing_ids
+                ):
+                    registry.register(attr)
+                    _logger.debug(
+                        "Re-registered profile for %s from cached module %s",
+                        attr.instrument_id,
+                        module_name,
+                    )
 
 
 def register_all_profiles() -> None:
@@ -59,6 +95,11 @@ def register_all_profiles() -> None:
 
     This function is called automatically during extractor plugin discovery.
 
+    This function is safe to call repeatedly. If built-in profile modules are
+    already imported (e.g., after the registry was cleared by a test fixture),
+    it re-registers any InstrumentProfile instances found in those modules
+    rather than relying on module-level code to run again.
+
     Examples
     --------
     >>> from nexusLIMS.extractors.plugins.profiles import register_all_profiles
@@ -67,7 +108,14 @@ def register_all_profiles() -> None:
     """
     _logger.info("Discovering instrument profiles...")
 
-    # Load built-in profiles
+    # Re-register profiles from already-imported built-in modules first.
+    # This handles the case where the registry was cleared after initial
+    # module loading (e.g., by a test fixture). importlib.import_module()
+    # returns cached modules without re-executing module-level code, so we
+    # must explicitly scan for InstrumentProfile instances.
+    _re_register_from_imported_modules()
+
+    # Load built-in profiles (imports any not-yet-imported modules)
     package_path = Path(__file__).parent
     profile_count = _load_profiles_from_directory(package_path, __name__)
 

@@ -8,7 +8,11 @@ CDCS services, database setup, and cleanup operations.
 """
 
 import contextlib
+import fcntl
+import os
+import re
 import subprocess
+import tempfile
 import time
 from http import HTTPStatus
 from pathlib import Path
@@ -65,6 +69,67 @@ TEST_DATA_DIR = Path("/tmp/nexuslims-test-data")
 
 
 # ============================================================================
+# xdist Coordination Helpers
+# ============================================================================
+# When running integration tests with pytest-xdist, multiple worker processes
+# share a single Docker stack.  These helpers serialize startup/teardown so
+# only the first worker starts Docker (and cleans data dirs) and only the last
+# worker tears it down.
+
+_COORD_LOCK_FILE = Path(tempfile.gettempdir()) / "nexuslims-integ-coord.lock"
+_COORD_COUNT_FILE = Path(tempfile.gettempdir()) / "nexuslims-integ-coord.count"
+_FILESERVER_PID_FILE = Path(tempfile.gettempdir()) / "nexuslims-integ-fileserver.pid"
+
+
+@contextlib.contextmanager
+def _coord_lock():
+    """Acquire an exclusive OS-level file lock for worker coordination."""
+    lock_fd = _COORD_LOCK_FILE.open("w")
+    try:
+        fcntl.flock(lock_fd.fileno(), fcntl.LOCK_EX)
+        yield
+    finally:
+        fcntl.flock(lock_fd.fileno(), fcntl.LOCK_UN)
+        lock_fd.close()
+
+
+def _register_worker_and_setup(setup_fn) -> bool:
+    """Register worker; if first, call setup_fn() under lock. Return True if first.
+
+    The count is written BEFORE calling setup_fn so that if setup_fn raises, other
+    workers see count > 0 and skip the retry rather than all attempting a failing
+    setup command in a cascade.
+    """
+    with _coord_lock():
+        count = int(_COORD_COUNT_FILE.read_text()) if _COORD_COUNT_FILE.exists() else 0
+        is_first = count == 0
+        _COORD_COUNT_FILE.write_text(str(count + 1))
+        if is_first:
+            setup_fn()
+        return is_first
+
+
+def _deregister_worker() -> bool:
+    """Deregister this worker. Returns True if this is the last active worker."""
+    with _coord_lock():
+        count = int(_COORD_COUNT_FILE.read_text()) if _COORD_COUNT_FILE.exists() else 1
+        remaining = max(0, count - 1)
+        if remaining == 0:
+            _COORD_COUNT_FILE.unlink(missing_ok=True)
+            _COORD_LOCK_FILE.unlink(missing_ok=True)
+        else:
+            _COORD_COUNT_FILE.write_text(str(remaining))
+        return remaining == 0
+
+
+def _safe_test_id(nodeid: str) -> str:
+    """Return a filesystem-safe identifier for a pytest node ID."""
+    worker = os.environ.get("PYTEST_XDIST_WORKER", "controller")
+    safe = re.sub(r"[^A-Za-z0-9_.-]+", "_", nodeid).strip("_")
+    return f"{worker}-{safe[:180]}"
+
+
+# ============================================================================
 # Pytest Hooks
 # ============================================================================
 
@@ -94,6 +159,14 @@ def pytest_configure(config):
         )
         raise RuntimeError(msg)
 
+    # Clean up stale coordinator files from a previous crashed run.
+    # Only the controller process (or a non-xdist session) does this;
+    # workers have config.workerinput set.
+    if not hasattr(config, "workerinput"):
+        _COORD_LOCK_FILE.unlink(missing_ok=True)
+        _COORD_COUNT_FILE.unlink(missing_ok=True)
+        _stop_fileserver_subprocess()  # kill any lingering fileserver from previous run
+
     # Create test directories (for actual test execution)
     test_dirs = [
         TEST_INSTRUMENT_DATA_DIR,
@@ -105,21 +178,28 @@ def pytest_configure(config):
         dir_path.mkdir(parents=True, exist_ok=True)
 
     # Set up environment variables BEFORE any nexusLIMS imports
-    # These are the minimum required for Settings validation
-    # CRITICAL: Use unconditional assignment to ensure test values are used
-    # even if variables are already set in the shell environment
-    os.environ["NX_INSTRUMENT_DATA_PATH"] = str(TEST_INSTRUMENT_DATA_DIR)
-    os.environ["NX_DATA_PATH"] = str(TEST_DATA_DIR)
+    # These are the minimum required for Settings validation.
+    #
+    # When running the full test suite with -n auto (xdist), the unit conftest's
+    # module-level code already set per-worker isolated paths (e.g.,
+    # /tmp/nexuslims-gw0-XXXX/InstrumentData).  Don't override those: unit tests
+    # need their own isolated paths, and integration tests get the correct
+    # TEST_INSTRUMENT_DATA_DIR via monkeypatch inside fresh_test_db.
+    _xdist_worker = os.environ.get("PYTEST_XDIST_WORKER", "")
+    _current_instr = os.environ.get("NX_INSTRUMENT_DATA_PATH", "")
+    _current_data = os.environ.get("NX_DATA_PATH", "")
+    _worker_owns_paths = _xdist_worker and _xdist_worker in _current_instr
 
-    # Create a temporary database file for integration tests
-    # Always use integration test database (don't reuse unit test database)
-    db_path = TEST_DATA_DIR / "integration_test.db"
+    if not _worker_owns_paths:
+        os.environ["NX_INSTRUMENT_DATA_PATH"] = str(TEST_INSTRUMENT_DATA_DIR)
+        os.environ["NX_DATA_PATH"] = str(TEST_DATA_DIR)
 
-    # Use shared database creation function from top-level conftest
-    from tests.conftest import create_test_database
-
-    create_test_database(db_path)
-    os.environ["NX_DB_PATH"] = str(db_path)
+    # Set NX_DB_PATH to a placeholder path so Settings validation passes.
+    # The actual per-test DB is created by the db_template + fresh_test_db
+    # fixtures at test time. The placeholder file does not need to exist.
+    db_suffix = f"_{_xdist_worker}" if _xdist_worker else ""
+    db_placeholder = TEST_DATA_DIR / f"integration_test{db_suffix}.db"
+    os.environ["NX_DB_PATH"] = str(db_placeholder)
 
     # Set required CDCS environment variables to dummy values
     # (actual values will be set per-test via fixtures)
@@ -128,6 +208,18 @@ def pytest_configure(config):
     os.environ["NX_CERT_BUNDLE"] = (
         "-----BEGIN CERTIFICATE-----\nDUMMY\n-----END CERTIFICATE-----"
     )
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """Stop the host fileserver when the test session finishes.
+
+    In xdist runs this is called once per worker AND once on the controller
+    after all workers finish.  We only stop the fileserver on the controller
+    (or in a non-xdist single-process run) so the subprocess stays alive for
+    the entire test session regardless of which workers use it.
+    """
+    if not hasattr(session.config, "workerinput"):
+        _stop_fileserver_subprocess()
 
 
 # ============================================================================
@@ -174,115 +266,132 @@ def reset_caches_between_tests():
     # Don't reset engine/database - those are session-scoped
 
 
+@pytest.fixture
+def integration_paths(request, monkeypatch) -> dict[str, Path | str]:
+    """
+    Provide path isolation for one integration test.
+
+    Docker services and the host fileserver are shared across xdist workers,
+    so their public roots remain stable. Each test gets a unique filestore
+    prefix under those roots, plus private log and record directories.
+    """
+    from nexusLIMS.config import refresh_settings
+
+    test_id = _safe_test_id(request.node.nodeid)
+    instrument_prefix = Path(test_id)
+    instrument_data_dir = TEST_INSTRUMENT_DATA_DIR / instrument_prefix
+    data_dir = TEST_DATA_DIR
+    test_data_dir = data_dir / instrument_prefix
+    log_dir = test_data_dir / "logs"
+    records_dir = test_data_dir / "records"
+
+    instrument_data_dir.mkdir(parents=True, exist_ok=True)
+    test_data_dir.mkdir(parents=True, exist_ok=True)
+    log_dir.mkdir(parents=True, exist_ok=True)
+    records_dir.mkdir(parents=True, exist_ok=True)
+
+    monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(TEST_INSTRUMENT_DATA_DIR))
+    monkeypatch.setenv("NX_DATA_PATH", str(data_dir))
+    monkeypatch.setenv("NX_LOG_PATH", str(log_dir))
+    monkeypatch.setenv("NX_RECORDS_PATH", str(records_dir))
+    monkeypatch.setenv("NX_TEST_INSTRUMENT_DATA_PATH", str(instrument_data_dir))
+    monkeypatch.setenv("NX_TEST_FILESTORE_PREFIX", instrument_prefix.as_posix())
+    refresh_settings()
+
+    return {
+        "test_id": test_id,
+        "filestore_prefix": instrument_prefix,
+        "instrument_data": instrument_data_dir,
+        "nexuslims_data": data_dir,
+        "test_data": test_data_dir,
+        "logs": log_dir,
+        "records": records_dir,
+    }
+
+
 # ============================================================================
 # Docker Service Management
 # ============================================================================
 
 
-def start_fileserver():
+def _start_fileserver_subprocess() -> int:
+    """Start fileserver as a detached subprocess; return its PID.
+
+    The subprocess runs independently of any pytest worker process, so it
+    survives when the worker that started it finishes.  The last worker's
+    docker_services teardown is responsible for stopping it.
     """
-    Start a host-based fileserver to serve test files.
+    import select as _select
+    import sys as _sys
 
-    This avoids Docker volume mount issues on macOS by running the fileserver
-    directly on the host machine instead of in a Docker container.
-
-    Returns
-    -------
-    ThreadingHTTPServer
-        The running HTTP server instance. Call shutdown() and server_close() to stop.
-
-    Notes
-    -----
-    - Fileserver runs on port 48081
-    - Serves files from TEST_INSTRUMENT_DATA_DIR and TEST_DATA_DIR
-    - Uses Python's built-in HTTP server with custom routing
-    - Server runs in a daemon thread
-    """
-    import threading
-    from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
-    from urllib.parse import unquote, urlparse
-
-    class TestFileHandler(SimpleHTTPRequestHandler):
-        """Custom handler that serves files from test directories."""
-
-        def __init__(self, *args, **kwargs):
-            self.instrument_data_dir = TEST_INSTRUMENT_DATA_DIR
-            self.nexuslims_data_dir = TEST_DATA_DIR
-            super().__init__(*args, **kwargs)
-
-        def translate_path(self, path):
-            """Translate URL path to filesystem path, handling our test directories."""
-            # Decode URL and normalize path
-            path = unquote(path)
-            path = urlparse(path).path
-            path = path.lstrip("/")
-
-            # Handle instrument-data requests
-            if path.startswith("instrument-data/"):
-                relative_path = path[len("instrument-data/") :]
-                full_path = self.instrument_data_dir / relative_path
-
-            # Handle data requests
-            elif path.startswith("data/"):
-                relative_path = path[len("data/") :]
-                full_path = self.nexuslims_data_dir / relative_path
-
-            else:
-                # Reject any other paths - only serve from our two test directories
-                # Return a non-existent path to trigger 404
-                return "/dev/null/nonexistent"
-
-            return str(full_path)
-
-        def do_GET(self):
-            """Handle GET requests with CORS headers."""
-            # Call parent method to handle the actual file serving first
-            super().do_GET()
-
-            # Then add CORS headers to the response
-            # Note: We need to override end_headers to add our custom headers
-
-        def end_headers(self):
-            """Override to add CORS and cache control headers."""
-            # Add CORS headers
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS")
-            self.send_header("Access-Control-Allow-Headers", "*")
-
-            # Disable caching
-            self.send_header(
-                "Cache-Control",
-                "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0",
-            )
-            self.send_header("Pragma", "no-cache")
-            self.send_header("Expires", "0")
-
-            # Call parent method to finalize headers
-            super().end_headers()
-
-        def log_message(self, msg_format, *args):
-            """Override to reduce logging verbosity."""
-            # Only log errors, not every request
-            if "404" in msg_format or "500" in msg_format:
-                import sys
-
-                sys.stderr.write(
-                    f"[{self.log_date_time_string()}] {msg_format % args}\n"
-                )
-
-    # Create and start the server
-    server_address = ("", 48081)
-    httpd = ThreadingHTTPServer(server_address, TestFileHandler)
-
-    print("[+] Host fileserver started successfully on port 48081")
+    server_code = (
+        "import sys\n"
+        "from pathlib import Path\n"
+        "from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer\n"
+        "from urllib.parse import unquote, urlparse\n"
+        "\n"
+        "INSTR = Path('/tmp/nexuslims-test-instrument-data')\n"
+        "DATA  = Path('/tmp/nexuslims-test-data')\n"
+        "\n"
+        "class H(SimpleHTTPRequestHandler):\n"
+        "    def translate_path(self, path):\n"
+        "        path = unquote(urlparse(path).path).lstrip('/')\n"
+        "        if path.startswith('instrument-data/'):\n"
+        "            return str(INSTR / path[len('instrument-data/'):])\n"
+        "        if path.startswith('data/'):\n"
+        "            return str(DATA / path[len('data/'):])\n"
+        "        return '/dev/null/nonexistent'\n"
+        "    def end_headers(self):\n"
+        "        self.send_header('Access-Control-Allow-Origin', '*')\n"
+        "        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')\n"
+        "        self.send_header('Access-Control-Allow-Headers', '*')\n"
+        "        cc = ('no-store, no-cache, must-revalidate,'\n"
+        "              ' proxy-revalidate, max-age=0')\n"
+        "        self.send_header('Cache-Control', cc)\n"
+        "        self.send_header('Pragma', 'no-cache')\n"
+        "        self.send_header('Expires', '0')\n"
+        "        super().end_headers()\n"
+        "    def log_message(self, *a): pass\n"
+        "\n"
+        "srv = ThreadingHTTPServer(('', 48081), H)\n"
+        "sys.stdout.write('ready\\n'); sys.stdout.flush()\n"
+        "srv.serve_forever()\n"
+    )
+    proc = subprocess.Popen(
+        [_sys.executable, "-c", server_code],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+    rlist, _, _ = _select.select([proc.stdout], [], [], 10.0)
+    if rlist:
+        proc.stdout.readline()  # consume "ready\n"
+    else:
+        print("[!] Fileserver subprocess did not signal ready within 10 s")
+    _FILESERVER_PID_FILE.write_text(str(proc.pid))
+    print(f"[+] Host fileserver subprocess started (PID={proc.pid}) on port 48081")
     print(f"[+] Serving instrument data from: {TEST_INSTRUMENT_DATA_DIR}")
     print(f"[+] Serving NexusLIMS data from: {TEST_DATA_DIR}")
+    return proc.pid
 
-    # Start server in a separate thread
-    server_thread = threading.Thread(target=httpd.serve_forever, daemon=True)
-    server_thread.start()
 
-    return httpd
+def _stop_fileserver_subprocess() -> None:
+    """Stop the fileserver subprocess identified by _FILESERVER_PID_FILE."""
+    import signal as _signal
+
+    if not _FILESERVER_PID_FILE.exists():
+        return
+    try:
+        pid = int(_FILESERVER_PID_FILE.read_text().strip())
+    except (ValueError, OSError):
+        _FILESERVER_PID_FILE.unlink(missing_ok=True)
+        return
+    try:
+        os.kill(pid, _signal.SIGTERM)
+        print(f"[+] Host fileserver subprocess stopped (PID={pid})")
+    except ProcessLookupError:
+        print(f"[*] Fileserver process {pid} already gone")
+    _FILESERVER_PID_FILE.unlink(missing_ok=True)
 
 
 @pytest.fixture(scope="session")
@@ -290,21 +399,23 @@ def host_fileserver():
     """
     Pytest fixture for host-based fileserver.
 
-    Yields
-    ------
-    None
-        Fileserver is running when fixture yields control to tests
-    """
-    httpd = start_fileserver()
+    When running under pytest-xdist, multiple workers share a single
+    fileserver subprocess.  The first worker starts it as a detached
+    subprocess (via _start_fileserver_subprocess) so it outlives any
+    individual worker process.  The subprocess is stopped by the controller
+    in pytest_sessionfinish after all workers have completed, ensuring it
+    remains alive for all tests regardless of which workers use it.
 
-    try:
-        yield
-    finally:
-        # Clean up server
-        print("[*] Stopping host fileserver...")
-        httpd.shutdown()
-        httpd.server_close()
-        print("[+] Host fileserver stopped successfully")
+    Returns
+    -------
+    None
+        Fileserver is running when the fixture completes setup
+    """
+    with _coord_lock():
+        if not _FILESERVER_PID_FILE.exists():
+            _start_fileserver_subprocess()
+        else:
+            print("[*] Host fileserver already running (started by another worker)")
 
 
 @pytest.fixture(scope="session")
@@ -316,6 +427,11 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
     docker-compose.yml including NEMO, CDCS, PostgreSQL, Redis, and Mailpit.
     Note that the fileserver now runs on the host machine (via host_fileserver fixture)
     to avoid Docker volume mount issues on macOS.
+
+    When running under pytest-xdist, multiple workers share a single Docker
+    stack.  The first worker to reach this fixture cleans data directories and
+    starts Docker; subsequent workers wait for services to become healthy.
+    Only the last active worker tears Docker down.
 
     Parameters
     ----------
@@ -341,128 +457,45 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
     import os
     import shutil
 
-    # Check if we should keep Docker services running for debugging
     keep_running = os.environ.get("NX_TESTS_KEEP_DOCKER_RUNNING", "0") == "1"
-    # Debug: Show keep_running status before yield (during test execution)
-    print(f"\n[DEBUG] keep_running status before tests: {keep_running}")
 
-    # Always clean test data directories to ensure clean state
-    print("\n[*] Checking test data directories...")
-    for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
-        if test_dir.exists():
-            print(f"[!] WARNING: Test data directory already exists: {test_dir}")
-            print("[!] This may indicate a previous test run did not clean up properly")
-            print("[!] Removing directory to ensure clean test environment...")
-            shutil.rmtree(test_dir)
-        test_dir.mkdir(parents=True, exist_ok=True)
-        print(f"[+] Created {test_dir}")
+    # ------------------------------------------------------------------
+    # First-worker setup: clean data dirs + start Docker (under lock so
+    # only one worker does it; others wait and then proceed to health checks)
+    # ------------------------------------------------------------------
+    def _first_worker_setup():
+        print("\n[*] Checking test data directories...")
+        for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
+            if test_dir.exists():
+                print(f"[!] Removing existing test data directory: {test_dir}")
+                shutil.rmtree(test_dir)
+            test_dir.mkdir(parents=True, exist_ok=True)
+            print(f"[+] Created {test_dir}")
 
-    # Initialize default database for Settings validation
-    print("[*] Initializing default test database...")
-    from sqlmodel import SQLModel
-
-    from nexusLIMS.db.engine import create_transient_sqlite_engine
-    from nexusLIMS.db.models import (  # noqa: F401
-        Instrument,
-        SessionLog,
-        UploadLog,
-    )
-
-    db_path = TEST_DATA_DIR / "integration_test.db"
-
-    # Create engine and tables using SQLModel
-    engine = create_transient_sqlite_engine(db_path)
-    SQLModel.metadata.create_all(engine)
-
-    # Seed alembic_version at the current head so _check_alembic_migration passes.
-    # The integration DB is created via SQLModel (no alembic run), so we must
-    # manually insert the head revision to avoid a hard PreflightError when
-    # tests call process_new_records().
-    from alembic.config import Config as AlembicConfig
-    from alembic.script import ScriptDirectory
-    from sqlalchemy import text
-
-    _alembic_ini = Path(__file__).parents[2] / "alembic.ini"
-    _cfg = AlembicConfig(str(_alembic_ini))
-    _cfg.set_main_option(
-        "script_location",
-        str(_alembic_ini.parent / "nexusLIMS" / "db" / "migrations"),
-    )
-    _head = ScriptDirectory.from_config(_cfg).get_current_head()
-    if _head:
-        with engine.connect() as _conn:
-            _conn.execute(
-                text(
-                    "CREATE TABLE IF NOT EXISTS alembic_version "
-                    "(version_num VARCHAR(32) NOT NULL)"
-                )
-            )
-            _conn.execute(text("DELETE FROM alembic_version"))
-            _conn.execute(text(f"INSERT INTO alembic_version VALUES ('{_head}')"))
-            _conn.commit()
-        print(f"[+] Seeded alembic_version at {_head}")
-
-    print(f"[+] Initialized {db_path}")
-    engine.dispose()
-
-    # Check if services are already running
-    max_wait = 1  # Short timeout for checking existing services
-    start_time = time.time()
-    nemo_ready = False
-    cdcs_ready = False
-    mailpit_ready = False
-
-    print("[*] Checking if Docker services are already running...")
-
-    while time.time() - start_time < max_wait:
+        # Check if Docker services are already running before trying to start
+        already_running = False
         try:
-            # Check NEMO
-            if not nemo_ready:
-                nemo_response = requests.get(NEMO_HEALTH_URL, timeout=2)
-                nemo_ready = nemo_response.status_code == HTTPStatus.OK
-                if nemo_ready:
-                    print("[+] NEMO service is ready")
-
-            # Check CDCS
-            if not cdcs_ready:
-                cdcs_response = requests.get(CDCS_HEALTH_URL, timeout=2)
-                cdcs_ready = cdcs_response.status_code == HTTPStatus.OK
-                if cdcs_ready:
-                    print("[+] CDCS service is ready")
-
-            # Check Mailpit
-            if not mailpit_ready:
-                mailpit_response = requests.get(MAILPIT_HEALTH_URL, timeout=2)
-                mailpit_ready = mailpit_response.status_code == HTTPStatus.OK
-                if mailpit_ready:
-                    print("[+] Mailpit service is ready")
-
-            # All services ready
-            if nemo_ready and cdcs_ready and mailpit_ready:
-                print("[+] All services are ready!")
-                break
-
+            nemo_ok = (
+                requests.get(NEMO_HEALTH_URL, timeout=2).status_code == HTTPStatus.OK
+            )
+            cdcs_ok = (
+                requests.get(CDCS_HEALTH_URL, timeout=2).status_code == HTTPStatus.OK
+            )
+            mailpit_ok = (
+                requests.get(MAILPIT_HEALTH_URL, timeout=2).status_code == HTTPStatus.OK
+            )
+            already_running = nemo_ok and cdcs_ok and mailpit_ok
         except (requests.ConnectionError, requests.Timeout):
             pass
 
-        time.sleep(1)
+        if already_running:
+            print("[+] Docker services already running — skipping startup")
+            return
 
-    # If services are not running, start them
-    if not (nemo_ready and cdcs_ready and mailpit_ready):
-        print("[*] Docker services not running - starting them now...")
-
-        # Build docker compose command - use CI override if available and in CI context
-        compose_cmd = ["docker", "compose"]
-
-        # Always use base docker-compose.yml
-        compose_cmd.extend(["-f", "docker-compose.yml"])
-
-        # Add CI override only if running in CI environment (for pre-built images)
-        # Check common CI environment variables to detect CI context
+        print("[*] Docker services not running — starting them now...")
+        compose_cmd = ["docker", "compose", "-f", "docker-compose.yml"]
         ci_override = DOCKER_DIR / "docker-compose.ci.yml"
-        in_ci = any(
-            os.environ.get(var) for var in ["CI", "GITHUB_ACTIONS", "GITLAB_CI"]
-        )
+        in_ci = any(os.environ.get(v) for v in ["CI", "GITHUB_ACTIONS", "GITLAB_CI"])
         if ci_override.exists() and in_ci:
             print(
                 "[*] Detected CI environment, using CI override with pre-built images"
@@ -470,114 +503,114 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
             compose_cmd.extend(["-f", "docker-compose.ci.yml"])
         elif not in_ci:
             print("[*] Running locally, using base docker-compose.yml to build images")
+        compose_cmd.append("up")
+        compose_cmd.append("-d")
 
-        compose_cmd.extend(["up", "-d"])
-
-        subprocess.run(
-            compose_cmd,
-            cwd=DOCKER_DIR,
-            check=True,
-            capture_output=True,
+        result = subprocess.run(
+            compose_cmd, check=False, cwd=DOCKER_DIR, capture_output=True, text=True
         )
+        if result.returncode != 0:
+            print(f"[!] docker compose up failed (exit {result.returncode})")
+            if result.stdout:
+                print(f"[!] stdout:\n{result.stdout}")
+            if result.stderr:
+                print(f"[!] stderr:\n{result.stderr}")
+            result.check_returncode()
 
-        # Wait for health checks
-        max_wait = 60  # 1 minute
-        start_time = time.time()
-        nemo_ready = False
-        cdcs_ready = False
-        mailpit_ready = False
+    _register_worker_and_setup(_first_worker_setup)
 
-        print("[*] Waiting for services to be healthy...")
+    # ------------------------------------------------------------------
+    # All workers wait for services to be healthy
+    # ------------------------------------------------------------------
+    max_wait = 180
+    start_time = time.time()
+    nemo_ready = cdcs_ready = mailpit_ready = False
 
-        while time.time() - start_time < max_wait:
-            try:
-                # Check NEMO
-                if not nemo_ready:
-                    nemo_response = requests.get(NEMO_HEALTH_URL, timeout=2)
-                    nemo_ready = nemo_response.status_code == 200
-                    if nemo_ready:
-                        print("[+] NEMO service is ready")
-
-                # Check CDCS
-                if not cdcs_ready:
-                    cdcs_response = requests.get(CDCS_HEALTH_URL, timeout=2)
-                    cdcs_ready = cdcs_response.status_code == 200
-                    if cdcs_ready:
-                        print("[+] CDCS service is ready")
-
-                # Check Mailpit
-                if not mailpit_ready:
-                    mailpit_response = requests.get(MAILPIT_HEALTH_URL, timeout=2)
-                    mailpit_ready = mailpit_response.status_code == 200
-                    if mailpit_ready:
-                        print("[+] Mailpit service is ready")
-
-                # All services ready
-                if nemo_ready and cdcs_ready and mailpit_ready:
-                    print("[+] All services are ready!")
-                    break
-
-            except (requests.ConnectionError, requests.Timeout):
-                pass
-
-            time.sleep(2)
-        else:
-            # Timeout - collect logs for debugging
-            print("[-] Service health checks timed out")
-            subprocess.run(
-                ["docker", "compose", "logs"],
-                check=False,
-                cwd=DOCKER_DIR,
-            )
-            msg = (
-                f"Services failed to start within {max_wait} seconds. "
-                "Check Docker logs above for details."
-            )
-            raise RuntimeError(msg)
+    print("[*] Waiting for Docker services to be healthy...")
+    while time.time() - start_time < max_wait:
+        try:
+            if not nemo_ready:
+                nemo_ready = (
+                    requests.get(NEMO_HEALTH_URL, timeout=2).status_code
+                    == HTTPStatus.OK
+                )
+                if nemo_ready:
+                    print("[+] NEMO service is ready")
+            if not cdcs_ready:
+                cdcs_ready = (
+                    requests.get(CDCS_HEALTH_URL, timeout=2).status_code
+                    == HTTPStatus.OK
+                )
+                if cdcs_ready:
+                    print("[+] CDCS service is ready")
+            if not mailpit_ready:
+                mailpit_ready = (
+                    requests.get(MAILPIT_HEALTH_URL, timeout=2).status_code
+                    == HTTPStatus.OK
+                )
+                if mailpit_ready:
+                    print("[+] Mailpit service is ready")
+            if nemo_ready and cdcs_ready and mailpit_ready:
+                print("[+] All services are ready!")
+                break
+        except (requests.ConnectionError, requests.Timeout):
+            pass
+        time.sleep(2)
+    else:
+        print("[-] Service health checks timed out")
+        subprocess.run(["docker", "compose", "logs"], check=False, cwd=DOCKER_DIR)
+        msg = (
+            f"Services failed to start within {max_wait} seconds. "
+            "Check Docker logs above for details."
+        )
+        raise RuntimeError(msg)
 
     yield
-    # Debug: Show keep_running status after yield (during cleanup)
-    print(f"\n[DEBUG] keep_running status during cleanup: {keep_running}")
 
-    # Cleanup logic based on keep_running flag
+    # ------------------------------------------------------------------
+    # Last-worker teardown: only the final worker cleans up
+    # ------------------------------------------------------------------
+    is_last = _deregister_worker()
+
     if keep_running:
-        print("\n[*] NX_TESTS_KEEP_DOCKER_RUNNING=1: Keeping Docker services running")
-        print("[!] Remember to manually clean up with: docker compose down -v")
-        print("\n[*] NX_TESTS_KEEP_DOCKER_RUNNING=1: Keeping test data directories")
-        print(f"[!] Test instrument data: {TEST_INSTRUMENT_DATA_DIR}")
-        print(f"[!] Test NexusLIMS data: {TEST_DATA_DIR}")
+        if is_last:
+            print(
+                "\n[*] NX_TESTS_KEEP_DOCKER_RUNNING=1: Keeping Docker services running"
+            )
+            print("[!] Remember to manually clean up with: docker compose down -v")
+        return
+
+    if not is_last:
+        return
+
+    print("\n[*] Last worker — cleaning up Docker services...")
+    subprocess.run(
+        ["docker", "compose", "down", "-v"],
+        check=False,
+        cwd=DOCKER_DIR,
+        capture_output=True,
+    )
+    print("[+] Docker services cleaned up")
+
+    print("[*] Cleaning test data directories...")
+    cleanup_errors = []
+    for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
+        if test_dir.exists():
+            try:
+                shutil.rmtree(test_dir)
+                print(f"[+] Removed {test_dir}")
+            except Exception as exc:
+                msg = f"Failed to remove {test_dir}: {exc}"
+                print(f"[!] {msg}")
+                cleanup_errors.append(msg)
+
+    if cleanup_errors:
+        print("\n[!] WARNING: Some cleanup operations failed:")
+        for err in cleanup_errors:
+            print(f"    - {err}")
+        print("  rm -rf /tmp/nexuslims-test-*")
     else:
-        # Always stop services (regardless of who started them)
-        print("\n[*] Cleaning up Docker services...")
-        subprocess.run(
-            ["docker", "compose", "down", "-v"],
-            check=False,
-            cwd=DOCKER_DIR,
-            capture_output=True,
-        )
-        print("[+] Docker services cleaned up")
-
-        # Clean test data directories
-        print("[*] Cleaning test data directories...")
-        cleanup_errors = []
-        for test_dir in [TEST_INSTRUMENT_DATA_DIR, TEST_DATA_DIR]:
-            if test_dir.exists():
-                try:
-                    shutil.rmtree(test_dir)
-                    print(f"[+] Removed {test_dir}")
-                except Exception as e:
-                    error_msg = f"Failed to remove {test_dir}: {e}"
-                    print(f"[!] {error_msg}")
-                    cleanup_errors.append(error_msg)
-
-        if cleanup_errors:
-            print("\n[!] WARNING: Some cleanup operations failed:")
-            for error in cleanup_errors:
-                print(f"    - {error}")
-            print("\nYou may need to manually remove directories:")
-            print("  rm -rf /tmp/nexuslims-test-*")
-        else:
-            print("[+] Test environment cleanup complete")
+        print("[+] Test environment cleanup complete")
 
 
 @pytest.fixture(scope="session")
@@ -855,9 +888,7 @@ def nemo_client(nemo_api_url, monkeypatch):
 
 
 @pytest.fixture
-def nemo_connector(
-    nemo_client, populated_test_database, monkeypatch
-) -> "NemoConnector":
+def nemo_connector(nemo_client, fresh_test_db, monkeypatch) -> "NemoConnector":
     """
     Provide a NemoConnector instance for integration tests.
 
@@ -869,8 +900,8 @@ def nemo_connector(
     ----------
     nemo_client : dict
         NEMO connection configuration from nemo_client fixture
-    populated_test_database : Path
-        Ensures the test database is populated before creating connector
+    fresh_test_db : Path
+        Per-test isolated database copy with instruments populated
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture for patching
 
@@ -883,7 +914,7 @@ def nemo_connector(
     from nexusLIMS.harvesters.nemo import connector
 
     # Reload instrument_db from the test database
-    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
+    test_instrument_db = instruments._get_instrument_db(db_path=fresh_test_db)
 
     # Patch the instrument_db in both the instruments module and the connector module
     # This is necessary because the connector imports instrument_db at module level
@@ -1073,6 +1104,25 @@ def setup_cdcs_environment(cdcs_url, cdcs_credentials):
     refresh_settings()
 
 
+def _get_uploaded_cdcs_record_ids() -> list[str]:
+    """Return successful CDCS record IDs from the current test database."""
+    from sqlmodel import select
+
+    from nexusLIMS.db.engine import get_engine
+    from nexusLIMS.db.models import UploadLog
+
+    with DBSession(get_engine()) as db_session:
+        upload_logs = db_session.exec(
+            select(UploadLog).where(
+                UploadLog.destination_name == "cdcs",
+                UploadLog.success.is_(True),
+                UploadLog.record_id.is_not(None),
+            )
+        ).all()
+
+    return [log.record_id for log in upload_logs if log.record_id is not None]
+
+
 @pytest.fixture
 def cdcs_client(cdcs_url, cdcs_credentials, monkeypatch):
     """
@@ -1183,8 +1233,13 @@ def cdcs_test_record_xml():
         - title: The record title
         - xml_content: The complete XML as a string
     """
+    # Make titles unique per xdist worker to prevent CDCS search collisions
+    # when multiple workers run in parallel and each uploads their own copy.
+    _worker = os.environ.get("PYTEST_XDIST_WORKER", "main")
+    _worker_suffix = f" [{_worker}]"
+
     # First record: STEM imaging with EDS spectrum
-    test_record_1_title = "NexusLIMS Integration Test Record - STEM"
+    test_record_1_title = f"NexusLIMS Integration Test Record - STEM{_worker_suffix}"
     test_record_1_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Experiment xmlns="https://data.nist.gov/od/dm/nexus/experiment/v1.0">
     <title>{test_record_1_title}</title>
@@ -1230,7 +1285,7 @@ def cdcs_test_record_xml():
 """
 
     # Second record: SEM imaging with different instrument and metadata
-    test_record_2_title = "NexusLIMS Integration Test Record - SEM"
+    test_record_2_title = f"NexusLIMS Integration Test Record - SEM{_worker_suffix}"
     test_record_2_xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <Experiment xmlns="https://data.nist.gov/od/dm/nexus/experiment/v1.0">
     <title>{test_record_2_title}</title>
@@ -1361,62 +1416,6 @@ def cdcs_test_record(
 
 
 @pytest.fixture
-def clear_session_logs():
-    """
-    Clear all session_log entries from the database.
-
-    This fixture clears the session_log table before each test to ensure
-    a clean state. It uses the database configured in settings (typically
-    the session-scoped integration test database).
-
-    Returns
-    -------
-    None
-        Returns after clearing session logs
-    """
-    from sqlmodel import Session as DBSession
-    from sqlmodel import delete
-
-    from nexusLIMS.db.engine import get_engine
-    from nexusLIMS.db.models import SessionLog
-
-    # Clear session_log table before test
-    with DBSession(get_engine()) as db_session:
-        # Delete all session logs
-        statement = delete(SessionLog)
-        db_session.exec(statement)
-        db_session.commit()
-
-
-@pytest.fixture
-def clear_upload_logs():
-    """
-    Clear all upload_log entries from the database.
-
-    This fixture clears the upload_log table before each test to ensure
-    a clean state. It uses the database configured in settings (typically
-    the session-scoped integration test database).
-
-    Returns
-    -------
-    None
-        Returns after clearing upload logs
-    """
-    from sqlmodel import Session as DBSession
-    from sqlmodel import delete
-
-    from nexusLIMS.db.engine import get_engine
-    from nexusLIMS.db.models import UploadLog
-
-    # Clear upload_log table before test
-    with DBSession(get_engine()) as db_session:
-        # Delete all upload logs
-        statement = delete(UploadLog)
-        db_session.exec(statement)
-        db_session.commit()
-
-
-@pytest.fixture
 def test_database(tmp_path, monkeypatch):
     """
     Create fresh test database for integration tests.
@@ -1469,123 +1468,127 @@ def test_database(tmp_path, monkeypatch):
 
 
 @pytest.fixture(scope="session")
-def populated_test_database(docker_services, mock_tools_data):
+def db_template(docker_services, mock_tools_data, tmp_path_factory):
     """
-    Populate the session-scoped test database with sample instruments.
+    Create a populated, read-only SQLite DB template once per worker.
 
-    This fixture adds sample instrument entries to the session-scoped database
-    that match the NEMO test tools from shared mock data. It uses the database
-    created by docker_services fixture to ensure consistency with the engine.
+    Lives in pytest's own tmp space (``tmp_path_factory``), which is never
+    wiped by ``_first_worker_setup``.  ``fresh_test_db`` copies this file for
+    every test that needs an isolated, writable DB.
 
     Parameters
     ----------
     docker_services : None
-        Ensures Docker services and database are initialized
+        Ensures Docker services are running before the DB is created.
     mock_tools_data : list[dict]
-        Mock NEMO tools data from unit test fixtures
+        Mock NEMO tool records (shared with unit tests).
+    tmp_path_factory : pytest.TempPathFactory
+        Session-scoped factory for temporary directories.
 
     Returns
     -------
     Path
-        Path to the populated test database (session-scoped)
-
-    Notes
-    -----
-    Uses mock_tools_data from tests/unit/fixtures/nemo_mock_data.py to ensure
-    consistency between unit and integration tests. This fixture populates the
-    session-scoped database, so instruments persist across tests unless cleared.
-
-    IMPORTANT: Now uses unified instrument configurations from tests.fixtures.test_data
-    to ensure consistency between unit and integration tests.
+        Path to the read-only template database file.
     """
     import sqlite3
 
+    from alembic.config import Config as AlembicConfig
+    from alembic.script import ScriptDirectory
+    from sqlalchemy import text
+
+    from nexusLIMS.db.engine import create_transient_sqlite_engine
+    from tests.conftest import create_test_database
     from tests.fixtures.test_data import INSTRUMENTS
 
-    # Use the session-scoped database (created by pytest_configure and docker_services)
-    db_path = TEST_DATA_DIR / "integration_test.db"
+    template_dir = tmp_path_factory.mktemp("db_template")
+    db_path = template_dir / "template.db"
 
-    # Build instruments from mock tools data using unified configurations
-    # Map tool IDs to instrument PIDs from unified test data
-    # Note: Tool ID 10 is used for TWO different purposes:
-    #   - test-tool-10: For NEMO API integration tests
-    #   - TEST-TOOL: For multi-signal file testing (has different filestore_path)
-    # We create both instruments, using the mock tool name for test-tool-10
+    # Create schema
+    create_test_database(db_path)
+
+    # Seed alembic_version so _check_alembic_migration passes.
+    _alembic_ini = Path(__file__).parents[2] / "alembic.ini"
+    _cfg = AlembicConfig(str(_alembic_ini))
+    _cfg.set_main_option(
+        "script_location",
+        str(_alembic_ini.parent / "nexusLIMS" / "db" / "migrations"),
+    )
+    _head = ScriptDirectory.from_config(_cfg).get_current_head()
+    if _head:
+        _engine = create_transient_sqlite_engine(db_path)
+        with _engine.connect() as _conn:
+            _conn.execute(
+                text(
+                    "CREATE TABLE IF NOT EXISTS alembic_version "
+                    "(version_num VARCHAR(32) NOT NULL)"
+                )
+            )
+            _conn.execute(text("DELETE FROM alembic_version"))
+            _conn.execute(text(f"INSERT INTO alembic_version VALUES ('{_head}')"))
+            _conn.commit()
+        _engine.dispose()
+
+    # Map mock tool IDs to instrument PIDs from unified test data.
     tool_id_to_pid = {
-        1: "FEI-Titan-STEM",  # 643 Titan (S)TEM
-        3: "FEI-Titan-TEM",  # 642 FEI Titan
-        10: "test-tool-10",  # Test tool for NEMO API tests
+        1: "FEI-Titan-STEM",
+        3: "FEI-Titan-TEM",
+        10: "test-tool-10",
     }
 
     instruments = []
     for tool in mock_tools_data:
         if tool["id"] in tool_id_to_pid:
-            # Get unified configuration from test_data
             instrument_pid = tool_id_to_pid[tool["id"]]
-            config = INSTRUMENTS[instrument_pid]
-
-            # Build instrument dict, preferring unified values but using
-            # tool name from mock data for display_name
+            cfg = INSTRUMENTS[instrument_pid]
             instruments.append(
                 {
-                    "instrument_pid": config["instrument_pid"],
+                    "instrument_pid": cfg["instrument_pid"],
                     "api_url": f"{NEMO_URL}tools/?id={tool['id']}",
-                    "calendar_url": config["calendar_url"],
-                    "location": config["location"],
-                    "display_name": tool["name"],  # Use NEMO tool name for realism
-                    "property_tag": config["property_tag"],
-                    "filestore_path": config["filestore_path"],
-                    "harvester": config["harvester"],
-                    "timezone": config["timezone"],
+                    "calendar_url": cfg["calendar_url"],
+                    "location": cfg["location"],
+                    "display_name": tool["name"],
+                    "property_tag": cfg["property_tag"],
+                    "filestore_path": cfg["filestore_path"],
+                    "harvester": cfg["harvester"],
+                    "timezone": cfg["timezone"],
                 }
             )
 
-    # Also add TEST-TOOL for multi-signal integration testing
-    # This instrument uses a different filestore_path (./Nexus_Test_Instrument)
-    # where the multi_signal_test_files fixture places test files
-    # NOTE: Uses tool ID 10 same as test-tool-10 since the multi_signal tests
-    # manually create reservation data for usage event 999 which is for tool 10
-    test_tool_config = INSTRUMENTS["TEST-TOOL"]
+    # TEST-TOOL for multi-signal integration testing (tool ID 999)
+    test_tool_cfg = INSTRUMENTS["TEST-TOOL"]
     instruments.append(
         {
-            "instrument_pid": test_tool_config["instrument_pid"],
-            # Use unique test API URL to avoid UNIQUE constraint on api_url
-            "api_url": f"{NEMO_URL}tools/?id=999",  # Dummy tool ID for unique URL
-            "calendar_url": test_tool_config["calendar_url"],
-            "location": test_tool_config["location"],
-            "display_name": "Test Tool (Multi-signal)",  # Distinguish from test-tool-10
-            "property_tag": test_tool_config["property_tag"],
-            "filestore_path": test_tool_config["filestore_path"],
-            "harvester": "nemo",  # Use NEMO harvester with tool ID 999
-            "timezone": test_tool_config["timezone"],
+            "instrument_pid": test_tool_cfg["instrument_pid"],
+            "api_url": f"{NEMO_URL}tools/?id=999",
+            "calendar_url": test_tool_cfg["calendar_url"],
+            "location": test_tool_cfg["location"],
+            "display_name": "Test Tool (Multi-signal)",
+            "property_tag": test_tool_cfg["property_tag"],
+            "filestore_path": test_tool_cfg["filestore_path"],
+            "harvester": "nemo",
+            "timezone": test_tool_cfg["timezone"],
         }
     )
 
-    # Also add Tofwerk-pFIB-TOFSIMS for pFIB-ToF-SIMS integration testing.
-    # Uses a dummy tool ID (tool 7) since the NEMO mock data does not include it;
-    # session logs are created directly in the fixture rather than via harvesting.
-    tofwerk_config = INSTRUMENTS["Tofwerk-pFIB-TOFSIMS"]
+    # Tofwerk-pFIB-TOFSIMS (dummy tool ID 7)
+    tofwerk_cfg = INSTRUMENTS["Tofwerk-pFIB-TOFSIMS"]
     instruments.append(
         {
-            "instrument_pid": tofwerk_config["instrument_pid"],
+            "instrument_pid": tofwerk_cfg["instrument_pid"],
             "api_url": f"{NEMO_URL}tools/?id=7",
-            "calendar_url": tofwerk_config["calendar_url"],
-            "location": tofwerk_config["location"],
-            "display_name": tofwerk_config["display_name"],
-            "property_tag": tofwerk_config["property_tag"],
-            "filestore_path": tofwerk_config["filestore_path"],
-            "harvester": tofwerk_config["harvester"],
-            "timezone": tofwerk_config["timezone"],
+            "calendar_url": tofwerk_cfg["calendar_url"],
+            "location": tofwerk_cfg["location"],
+            "display_name": tofwerk_cfg["display_name"],
+            "property_tag": tofwerk_cfg["property_tag"],
+            "filestore_path": tofwerk_cfg["filestore_path"],
+            "harvester": tofwerk_cfg["harvester"],
+            "timezone": tofwerk_cfg["timezone"],
         }
     )
 
-    # Insert instruments into database (or update if they exist)
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
-
-    # Clear existing instruments first to ensure clean state
     cursor.execute("DELETE FROM instruments")
-
     for inst in instruments:
         cursor.execute(
             """
@@ -1607,35 +1610,79 @@ def populated_test_database(docker_services, mock_tools_data):
                 inst["timezone"],
             ),
         )
-
     conn.commit()
     conn.close()
 
-    # CRITICAL: Recreate the database engine to point to the integration test database
-    # The engine uses a lazy _engine singleton, so we set it directly
+    return db_path
+
+
+@pytest.fixture
+def fresh_test_db(db_template, tmp_path, monkeypatch, integration_paths):
+    """
+    Provide a per-test copy of the instrument-populated DB template.
+
+    Copies the read-only template created by ``db_template`` into the
+    test's ``tmp_path``, patches ``NX_DB_PATH``, the SQLAlchemy engine
+    singleton, and the ``instrument_db`` cache for the duration of one test,
+    then restores them on teardown.
+
+    Parameters
+    ----------
+    db_template : Path
+        Path to the populated template DB (session-scoped).
+    tmp_path : Path
+        Per-test temporary directory provided by pytest.
+    monkeypatch : pytest.MonkeyPatch
+        Pytest monkeypatch fixture; restores ``NX_DB_PATH`` automatically.
+
+    Yields
+    ------
+    Path
+        Path to the writable per-test copy of the database.
+    """
+    import shutil
+    import sqlite3
+
+    from nexusLIMS import instruments as instruments_module
+    from nexusLIMS.config import refresh_settings
     from nexusLIMS.db import engine as engine_module
     from nexusLIMS.db.engine import create_transient_sqlite_engine
 
-    new_engine = create_transient_sqlite_engine(db_path)
-    # Update the lazy engine singleton so get_engine() returns the test engine
-    engine_module._engine = new_engine
+    test_db = tmp_path / "test.db"
+    shutil.copy(str(db_template), str(test_db))
 
-    # Reload the instrument_db cache to pick up the newly inserted instruments
-    # This is necessary because instrument_db is loaded at module import time
-    # IMPORTANT: Use clear() and update() to modify the dict in-place rather than
-    # assigning a new dict, which would break references in already-imported modules
-    from nexusLIMS import instruments as instruments_module
+    filestore_prefix = integration_paths["filestore_prefix"]
+    with sqlite3.connect(test_db) as conn:
+        rows = conn.execute("SELECT instrument_pid, filestore_path FROM instruments")
+        for instrument_pid, filestore_path in rows.fetchall():
+            prefixed_path = (filestore_prefix / filestore_path).as_posix()
+            conn.execute(
+                "UPDATE instruments SET filestore_path = ? WHERE instrument_pid = ?",
+                (prefixed_path, instrument_pid),
+            )
+        conn.commit()
+
+    monkeypatch.setenv("NX_DB_PATH", str(test_db))
+    monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(TEST_INSTRUMENT_DATA_DIR))
+    monkeypatch.setenv("NX_DATA_PATH", str(TEST_DATA_DIR))
+    monkeypatch.setenv("NX_LOG_PATH", str(integration_paths["logs"]))
+    monkeypatch.setenv("NX_RECORDS_PATH", str(integration_paths["records"]))
+
+    old_engine = engine_module._engine
+    new_engine = create_transient_sqlite_engine(test_db)
+    engine_module._engine = new_engine
 
     instruments_module.instrument_db.clear()
     instruments_module.instrument_db.update(
-        instruments_module._get_instrument_db(db_path=db_path)
+        instruments_module._get_instrument_db(db_path=test_db)
     )
     instruments_module._instrument_db_initialized = True
+    refresh_settings()
 
-    yield Path(db_path)
+    yield test_db
 
     new_engine.dispose()
-    engine_module._engine = None
+    engine_module._engine = old_engine
 
 
 # Test Data Fixtures
@@ -1643,18 +1690,18 @@ def populated_test_database(docker_services, mock_tools_data):
 
 
 @pytest.fixture
-def test_instrument_db(populated_test_database):
+def test_instrument_db(fresh_test_db):
     """
     Provide instrument database loaded from the test database.
 
-    This fixture loads the instrument database from the populated test database,
-    making it easy for tests to access the instruments that were created by the
-    populated_test_database fixture.
+    This fixture loads the instrument database from the per-test isolated
+    database, making it easy for tests to access the instruments that were
+    created by the fresh_test_db fixture.
 
     Parameters
     ----------
-    populated_test_database : Path
-        Path to the populated test database from populated_test_database fixture
+    fresh_test_db : Path
+        Path to the per-test isolated database copy from fresh_test_db fixture
 
     Returns
     -------
@@ -1664,7 +1711,7 @@ def test_instrument_db(populated_test_database):
     from nexusLIMS.instruments import _get_instrument_db
 
     # Load instrument database from the test database path
-    return _get_instrument_db(db_path=populated_test_database)
+    return _get_instrument_db(db_path=fresh_test_db)
 
 
 # ============================================================================
@@ -1675,7 +1722,7 @@ def test_instrument_db(populated_test_database):
 
 
 @pytest.fixture
-def test_data_dirs(tmp_path, monkeypatch) -> dict[str, Path]:
+def test_data_dirs(integration_paths, monkeypatch) -> dict[str, Path]:
     """
     Create test data directories for integration tests.
 
@@ -1699,16 +1746,18 @@ def test_data_dirs(tmp_path, monkeypatch) -> dict[str, Path]:
     from nexusLIMS.config import refresh_settings
 
     # Create directories
-    instrument_data_dir = TEST_INSTRUMENT_DATA_DIR
-    nexuslims_data_dir = TEST_DATA_DIR
+    instrument_data_dir = integration_paths["instrument_data"]
+    nexuslims_data_dir = integration_paths["nexuslims_data"]
 
     # Ensure they exist
     instrument_data_dir.mkdir(parents=True, exist_ok=True)
     nexuslims_data_dir.mkdir(parents=True, exist_ok=True)
 
-    # Set environment variables for data paths
-    monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(instrument_data_dir))
+    # Keep public roots stable; instrument DB rows include the per-test prefix.
+    monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(TEST_INSTRUMENT_DATA_DIR))
     monkeypatch.setenv("NX_DATA_PATH", str(nexuslims_data_dir))
+    monkeypatch.setenv("NX_LOG_PATH", str(integration_paths["logs"]))
+    monkeypatch.setenv("NX_RECORDS_PATH", str(integration_paths["records"]))
 
     # Refresh settings to pick up new environment variables
     refresh_settings()
@@ -1724,117 +1773,87 @@ def test_data_dirs(tmp_path, monkeypatch) -> dict[str, Path]:
 
 
 @pytest.fixture
-def sample_microscopy_files():
+def sample_microscopy_files(extracted_test_files):
     """
-    Extract sample microscopy data files for testing from unit test archive.
+    Provide paths to sample microscopy data files for testing.
 
-    This fixture extracts test files from test_record_files.tar.gz (shared
-    with unit tests) into the instrument data directory. These files can be
-    used for testing file discovery, metadata extraction, and record building.
+    These files are managed by the session-scoped ``extracted_test_files``
+    fixture; this fixture just returns the already-extracted paths without
+    re-extracting or cleaning up.  Cleanup happens at session teardown via
+    ``extracted_test_files``.
+
+    Parameters
+    ----------
+    extracted_test_files : dict
+        Session-scoped fixture that extracts and owns the test archive.
 
     Yields
     ------
     list[Path]
-        List of extracted file paths
-
-    Notes
-    -----
-    Uses test_record_files.tar.gz from tests/unit/files/, which contains:
-    - Titan_TEM/researcher_a/project_alpha/20181113/ (8 .dm3, 2 .ser, 1 .emi)
-    - JEOL_TEM/researcher_b/project_beta/20190724/ (multiple .dm3 files)
-    - Nexus_Test_Instrument/test_files/ (sample .dm3 files)
-
-    Files are extracted to NX_INSTRUMENT_DATA_PATH and cleaned up after test.
+        List of existing file paths from the test archive.
     """
-    # Import extraction utilities from unit tests
-    from tests.unit.utils import delete_files, extract_files
+    import tarfile
 
-    # Extract test record files (same as used in unit tests)
-    files = extract_files("TEST_RECORD_FILES")
+    archive_path = Path(__file__).parents[1] / "unit/files/test_record_files.tar.gz"
+    with tarfile.open(archive_path, "r:gz") as tar:
+        names = tar.getnames()
 
-    yield files
-
-    # Cleanup after test
-    delete_files("TEST_RECORD_FILES")
+    instrument_data_dir = extracted_test_files["base_dir"]
+    return [
+        instrument_data_dir / n for n in names if (instrument_data_dir / n).exists()
+    ]
 
 
 @pytest.fixture
-def extracted_test_files(test_data_dirs):
-    """
-    Extract test_record_files.tar.gz to test instrument data directory.
-
-    This fixture extracts the test record files archive to the temporary
-    test instrument data directory with metadata about the extracted files.
-    This is useful for end-to-end and error recovery tests that need to know
-    the expected file dates and directory structure.
-
-    Parameters
-    ----------
-    test_data_dirs : dict
-        Test data directories fixture
+def extracted_test_files(integration_paths):
+    """Extract test files archive into this test's isolated filestore subtree.
 
     Yields
     ------
     dict
-        Dictionary with paths and metadata:
-        - 'base_dir': Base directory where files were extracted
-        - 'titan_date': Expected date for Titan files (2018-11-13)
-        - 'jeol_date': Expected date for JEOL files (2019-07-24)
-        - 'extracted_dirs': List of top-level directories extracted
+        - 'base_dir': ``TEST_INSTRUMENT_DATA_DIR``
+        - 'titan_date': ``datetime(2018, 11, 13, tzinfo=America/Denver)``
+        - 'jeol_date': ``datetime(2019, 7, 24, tzinfo=America/Denver)``
+        - 'extracted_dirs': list of top-level directory names extracted
+        - 'orion_files': dict with 'zeiss' and 'fibics' Paths (if present)
+        - 'tescan_files': dict with 'tif' and 'hdr' Paths (if present)
     """
-    import shutil
     import tarfile
+    import zoneinfo
     from datetime import datetime
 
-    from nexusLIMS.config import settings
-
-    # Test data archive location
     archive_path = Path(__file__).parents[1] / "unit/files/test_record_files.tar.gz"
+    instrument_data_dir = integration_paths["instrument_data"]
 
-    # Get the test instrument data directory from settings
-    instrument_data_dir = Path(settings.NX_INSTRUMENT_DATA_PATH)
-    nx_data_dir = Path(settings.NX_DATA_PATH)
-
-    # Extract archive to instrument data directory and track what was extracted
     print(f"\n[*] Extracting test files to {instrument_data_dir}")
     extracted_top_level_dirs = []
 
     with tarfile.open(archive_path, "r:gz") as tar:
-        # Get list of top-level directories that will be extracted
         for member in tar.getmembers():
             if member.isdir():
                 top_level = member.name.split("/")[0]
                 if top_level not in extracted_top_level_dirs:
                     extracted_top_level_dirs.append(top_level)
-
         tar.extractall(instrument_data_dir, filter="data")
 
     print(f"[+] Top-level directories extracted: {extracted_top_level_dirs}")
-
-    # Dates from the archive structure (Titan: 20181113, JEOL: 20190724)
-    # Use America/Denver timezone to properly handle DST and match NEMO seed data
-    # This ensures tests work consistently across different runner timezones
-    import zoneinfo
 
     denver_tz = zoneinfo.ZoneInfo("America/Denver")
     titan_date = datetime(2018, 11, 13, tzinfo=denver_tz)
     jeol_date = datetime(2019, 7, 24, tzinfo=denver_tz)
 
-    # Locate special test files if Titan_TEM was extracted
     orion_files = {}
     tescan_files = {}
     if "Titan_TEM" in extracted_top_level_dirs:
         titan_dir = (
             instrument_data_dir / "Titan_TEM/researcher_a/project_alpha/20181113"
         )
-        # Orion (Zeiss/Fibics) files
         zeiss_file = titan_dir / "orion-zeiss_dataZeroed.tif"
         fibics_file = titan_dir / "orion-fibics_dataZeroed.tif"
         if zeiss_file.exists():
             orion_files["zeiss"] = zeiss_file
         if fibics_file.exists():
             orion_files["fibics"] = fibics_file
-        # Tescan PFIB files
         tescan_tif = titan_dir / "tescan-pfib_dataZeroed.tif"
         tescan_hdr = titan_dir / "tescan-pfib_dataZeroed.hdr"
         if tescan_tif.exists():
@@ -1842,7 +1861,7 @@ def extracted_test_files(test_data_dirs):
         if tescan_hdr.exists():
             tescan_files["hdr"] = tescan_hdr
 
-    yield {
+    return {
         "base_dir": instrument_data_dir,
         "titan_date": titan_date,
         "jeol_date": jeol_date,
@@ -1850,32 +1869,19 @@ def extracted_test_files(test_data_dirs):
         "orion_files": orion_files,
         "tescan_files": tescan_files,
     }
-
-    # Cleanup: Remove extracted directories from both instrument data and NX_DATA_PATH
-    print("\n[*] Cleaning up extracted test files and generated metadata")
-    for dir_name in extracted_top_level_dirs:
-        # Clean up source files in instrument data directory
-        source_dir = instrument_data_dir / dir_name
-        if source_dir.exists():
-            print(f"[*] Removing {source_dir}")
-            shutil.rmtree(source_dir)
-
-        # Clean up generated metadata in NX_DATA_PATH
-        metadata_dir = nx_data_dir / dir_name
-        if metadata_dir.exists():
-            print(f"[*] Removing generated metadata {metadata_dir}")
-            shutil.rmtree(metadata_dir)
+    # Source files are cleaned up by docker_services teardown on the last
+    # worker, which removes TEST_INSTRUMENT_DATA_DIR entirely.  Doing it here
+    # would race with other workers that are still running workflow tests.
 
 
 @pytest.fixture
 def test_environment_setup(  # noqa: PLR0913
     docker_services_running,
     nemo_connector,
-    populated_test_database,
+    fresh_test_db,
+    integration_paths,
     extracted_test_files,
     cdcs_client,
-    clear_session_logs,
-    clear_upload_logs,
     monkeypatch,
 ):
     """
@@ -1891,16 +1897,13 @@ def test_environment_setup(  # noqa: PLR0913
         Ensures all Docker services (including fileserver) are running
     nemo_connector : NemoConnector
         Configured NEMO connector from fixture (mocked for test usage events)
-    populated_test_database : Path
-        Test database with instruments (also configures NX_DB_PATH)
+    fresh_test_db : Path
+        Per-test isolated database copy with instruments populated and empty
+        session/upload log tables
     extracted_test_files : dict
         Extracted test files information
     cdcs_client : dict
         CDCS client configuration for record uploads
-    clear_session_logs : None
-        Ensures session_log table is cleared before test
-    clear_upload_logs : None
-        Ensures upload_log table is cleared before test
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture
 
@@ -1925,7 +1928,7 @@ def test_environment_setup(  # noqa: PLR0913
     from nexusLIMS import instruments
 
     # Patch the instrument_db to use test database
-    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
+    test_instrument_db = instruments._get_instrument_db(db_path=fresh_test_db)
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
     monkeypatch.setattr(instruments, "_instrument_db_initialized", True)
 
@@ -1953,6 +1956,14 @@ def test_environment_setup(  # noqa: PLR0913
     print(f"    Expected session time: {session_start} to {session_end}")
     print("    Expected user: captain")
 
+    # Snapshot TEST_DATA_DIR subdirectories before test runs
+    test_data_dir = integration_paths["test_data"]
+    before_data_dirs = (
+        {p.name for p in test_data_dir.iterdir() if p.is_dir()}
+        if test_data_dir.exists()
+        else set()
+    )
+
     yield {
         "instrument_pid": instrument.name,  # instrument.name is the PID
         "dt_from": session_start,
@@ -1962,8 +1973,33 @@ def test_environment_setup(  # noqa: PLR0913
         "cdcs_client": cdcs_client,
     }
 
-    # Cleanup: Delete all records from CDCS
-    delete_all_cdcs_records()
+    # Cleanup: Delete only CDCS records created during this test
+    import shutil
+
+    from nexusLIMS.utils import cdcs as cdcs_utils
+
+    for record_id in _get_uploaded_cdcs_record_ids():
+        try:
+            cdcs_utils.delete_record(record_id)
+        except Exception as e:
+            print(f"[!] Failed to cleanup record {record_id}: {e}")
+
+    # Cleanup: Remove TEST_DATA_DIR subdirectories created during this test.
+    # Skip "logs/" — it is shared across xdist workers (CLI tests write logs
+    # here while workflow tests may be tearing down concurrently).  Deleting
+    # it here would race with the CLI worker's runner.invoke() which holds a
+    # FileHandler into that directory.  The docker_services teardown removes
+    # TEST_DATA_DIR entirely at the end of the session.
+    _worker_shared_dirs = {"logs"}
+    if test_data_dir.exists():
+        for subdir in test_data_dir.iterdir():
+            if subdir.name in _worker_shared_dirs:
+                continue
+            if subdir.is_dir() and subdir.name not in before_data_dirs:
+                try:
+                    shutil.rmtree(subdir)
+                except Exception as e:
+                    print(f"[!] Failed to remove {subdir}: {e}")
 
 
 # ============================================================================
@@ -2233,10 +2269,10 @@ def _verify_url_accessible(url, index, total, expected_type=None):
 def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     docker_services_running,
     nemo_connector,
-    populated_test_database,
+    fresh_test_db,
     cdcs_client,
     multi_signal_test_files,
-    clear_session_logs,
+    integration_paths,
     monkeypatch,
 ):
     """
@@ -2252,14 +2288,13 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
         Ensures Docker services are running
     nemo_connector : NemoConnector
         Configured NEMO connector
-    populated_test_database : Path
-        Test database with instruments
+    fresh_test_db : Path
+        Per-test isolated database copy with instruments populated and empty
+        session/upload log tables
     cdcs_client : dict
         CDCS client configuration
     multi_signal_test_files : list[Path]
         Multi-signal test files from unit test fixtures
-    clear_session_logs : None
-        Ensures session_log table is cleared before test
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture
 
@@ -2286,12 +2321,14 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     # (unit test fixtures may have overwritten them)
     monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(TEST_INSTRUMENT_DATA_DIR))
     monkeypatch.setenv("NX_DATA_PATH", str(TEST_DATA_DIR))
+    monkeypatch.setenv("NX_LOG_PATH", str(integration_paths["logs"]))
+    monkeypatch.setenv("NX_RECORDS_PATH", str(integration_paths["records"]))
 
     # Ensure settings are using integration test directories
     refresh_settings()
 
     # Patch the instrument_db to use test database
-    test_instrument_db = instruments._get_instrument_db(db_path=populated_test_database)
+    test_instrument_db = instruments._get_instrument_db(db_path=fresh_test_db)
     monkeypatch.setattr(instruments, "instrument_db", test_instrument_db)
     monkeypatch.setattr(instruments, "_instrument_db_initialized", True)
 
@@ -2420,11 +2457,13 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
     from nexusLIMS.utils import cdcs
 
     record_title = record_path.stem
-    search_results = cdcs.search_records(title=record_title)
-    if not search_results:
-        pytest.fail(f"Record '{record_title}' not found in CDCS after upload")
+    uploaded_record_ids = _get_uploaded_cdcs_record_ids()
+    if len(uploaded_record_ids) != 1:
+        pytest.fail(
+            f"Expected one CDCS upload for '{record_title}', got {uploaded_record_ids}"
+        )
 
-    record_id = search_results[0]["id"]
+    record_id = uploaded_record_ids[0]
     print(f"  Record ID: {record_id}")
     print("[+] Multi-signal record fixture setup complete")
 
@@ -2448,10 +2487,10 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
 @pytest.fixture
 def tofwerk_integration_record(  # noqa: PLR0913, PLR0915
     docker_services_running,
-    populated_test_database,
+    fresh_test_db,
+    integration_paths,
     extracted_test_files,
     cdcs_client,
-    clear_session_logs,
     monkeypatch,
 ):
     """
@@ -2466,14 +2505,13 @@ def tofwerk_integration_record(  # noqa: PLR0913, PLR0915
     ----------
     docker_services_running : dict
         Ensures Docker services are running.
-    populated_test_database : Path
-        Test database with instruments (includes Tofwerk-pFIB-TOFSIMS).
+    fresh_test_db : Path
+        Per-test isolated database copy with instruments populated and empty
+        session/upload log tables (includes Tofwerk-pFIB-TOFSIMS).
     extracted_test_files : dict
         Extracts test_record_files.tar.gz, including Tofwerk_pFIB_TOFSIMS/.
     cdcs_client : dict
         CDCS client configuration for record uploads.
-    clear_session_logs : None
-        Ensures session_log table is cleared before the test.
     monkeypatch : pytest.MonkeyPatch
         Pytest monkeypatch fixture.
 
@@ -2501,11 +2539,11 @@ def tofwerk_integration_record(  # noqa: PLR0913, PLR0915
 
     monkeypatch.setenv("NX_INSTRUMENT_DATA_PATH", str(TEST_INSTRUMENT_DATA_DIR))
     monkeypatch.setenv("NX_DATA_PATH", str(TEST_DATA_DIR))
+    monkeypatch.setenv("NX_LOG_PATH", str(integration_paths["logs"]))
+    monkeypatch.setenv("NX_RECORDS_PATH", str(integration_paths["records"]))
     refresh_settings()
 
-    test_instrument_db = instruments_module._get_instrument_db(
-        db_path=populated_test_database
-    )
+    test_instrument_db = instruments_module._get_instrument_db(db_path=fresh_test_db)
     monkeypatch.setattr(instruments_module, "instrument_db", test_instrument_db)
     monkeypatch.setattr(instruments_module, "_instrument_db_initialized", True)
 
@@ -2629,11 +2667,13 @@ def tofwerk_integration_record(  # noqa: PLR0913, PLR0915
     from nexusLIMS.utils import cdcs
 
     record_title = record_path.stem
-    search_results = cdcs.search_records(title=record_title)
-    if not search_results:
-        pytest.fail(f"Record '{record_title}' not found in CDCS after upload")
+    uploaded_record_ids = _get_uploaded_cdcs_record_ids()
+    if len(uploaded_record_ids) != 1:
+        pytest.fail(
+            f"Expected one CDCS upload for '{record_title}', got {uploaded_record_ids}"
+        )
 
-    record_id = search_results[0]["id"]
+    record_id = uploaded_record_ids[0]
     print(f"  Record ID in CDCS: {record_id}")
     print("[+] Tofwerk integration record fixture setup complete")
 

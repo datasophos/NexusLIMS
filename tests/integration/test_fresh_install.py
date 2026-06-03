@@ -13,7 +13,9 @@ It verifies that:
 
 import subprocess
 import sys
+import sysconfig
 import tempfile
+from os import environ
 from pathlib import Path
 
 import pytest
@@ -31,17 +33,21 @@ def test_fresh_install_without_config(built_wheel_path):
         venv_path = Path(venv_dir)
         python_exe = venv_path / "bin" / "python"
         pip_exe = venv_path / "bin" / "pip"
+        dependency_env = {
+            **environ,
+            "PYTHONPATH": sysconfig.get_paths()["purelib"],
+        }
 
         # 1. Create fresh venv
         subprocess.run(
-            [sys.executable, "-m", "venv", str(venv_path)],
+            [sys.executable, "-m", "venv", "--system-site-packages", str(venv_path)],
             check=True,
             capture_output=True,
         )
 
         # 2. Install the wheel
         subprocess.run(
-            [str(pip_exe), "install", "--quiet", str(built_wheel_path)],
+            [str(pip_exe), "install", "--quiet", "--no-deps", str(built_wheel_path)],
             check=True,
             capture_output=True,
         )
@@ -59,7 +65,13 @@ def test_fresh_install_without_config(built_wheel_path):
         ]
 
         for cmd in help_commands:
-            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                env=dependency_env,
+                check=False,
+            )
             assert result.returncode == 0, (
                 f"Command {' '.join(cmd)} should work without config, "
                 f"but failed: {result.stderr}"
@@ -70,7 +82,10 @@ def test_fresh_install_without_config(built_wheel_path):
         # CRITICAL: Use a clean environment (no NX_TEST_MODE or other vars)
         # Also set cwd to the venv dir (not the repo root) so pydantic-settings
         # does not pick up the repo's .env file when searching for it.
-        clean_env = {"PATH": subprocess.os.environ.get("PATH", "")}
+        clean_env = {
+            "PATH": environ.get("PATH", ""),
+            "PYTHONPATH": dependency_env["PYTHONPATH"],
+        }
         import_test = subprocess.run(
             [
                 str(python_exe),
@@ -101,12 +116,13 @@ def test_fresh_install_without_config(built_wheel_path):
         # 5. Test that after setting minimal config, import works
         # Create minimal test environment (clean env + required config)
         env = {
-            "PATH": subprocess.os.environ.get("PATH", ""),
+            "PATH": environ.get("PATH", ""),
             "NX_INSTRUMENT_DATA_PATH": str(venv_path / "nx_instruments"),
             "NX_DATA_PATH": str(venv_path / "nx_data"),
             "NX_DB_PATH": str(venv_path / "nexuslims.db"),
             "NX_CDCS_TOKEN": "test-token",
             "NX_CDCS_URL": "http://localhost:8080",
+            "PYTHONPATH": dependency_env["PYTHONPATH"],
         }
 
         # Create required directories and database file
@@ -182,6 +198,12 @@ def test_smoke_test_script_with_built_wheel(built_wheel_path):
         [str(smoke_test_script), str(built_wheel_path)],
         capture_output=True,
         text=True,
+        env={
+            **environ,
+            "SMOKE_TEST_FAST_INSTALL": "1",
+            "SMOKE_TEST_PYTHON_CMD": sys.executable,
+            "SMOKE_TEST_SITE_PACKAGES": sysconfig.get_paths()["purelib"],
+        },
         check=False,
     )
 

@@ -7,6 +7,7 @@ import pytest
 
 from nexusLIMS.schemas.units import (
     PREFERRED_UNITS,
+    _build_qudt_units_from_ttl,
     _load_qudt_units,
     deserialize_quantity,
     get_qudt_uri,
@@ -60,11 +61,15 @@ class TestUnitRegistry:
         assert "beam_current" in PREFERRED_UNITS
 
     def test_qudt_unit_loading(self):
-        """Test that QUDT units are loaded from TTL file."""
+        """Test that generated QUDT units are loaded."""
         qudt_map = _load_qudt_units()
         assert len(qudt_map) > 1000  # Should have thousands of units
         assert "kilovolt" in qudt_map
         assert qudt_map["kilovolt"] == "http://qudt.org/vocab/unit/KiloV"
+
+    def test_generated_qudt_map_matches_ttl_source(self):
+        """Test that the generated map matches the source Turtle vocabulary."""
+        assert _load_qudt_units() == _build_qudt_units_from_ttl()
 
 
 class TestNormalizeQuantity:
@@ -262,11 +267,11 @@ class TestLoadQudtUnitsErrorHandling:
     """Test error handling in _load_qudt_units function."""
 
     def test_qudt_file_not_found_returns_empty_dict(self, caplog):
-        """Test that missing QUDT file returns empty dict and logs warning."""
+        """Test that missing QUDT map returns empty dict and logs warning."""
         # Clear the cache to force re-loading
         _load_qudt_units.cache_clear()
 
-        with patch("nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH") as mock_path:
+        with patch("nexusLIMS.schemas.units.QUDT_UNIT_MAP_PATH") as mock_path:
             # Mock the path to not exist
             mock_path.exists.return_value = False
 
@@ -281,15 +286,15 @@ class TestLoadQudtUnitsErrorHandling:
             )
 
     def test_qudt_parse_exception_returns_empty_dict(self, caplog, tmp_path):
-        """Test that parsing exception returns empty dict and logs error."""
+        """Test that invalid JSON returns empty dict and logs error."""
         # Clear the cache to force re-loading
         _load_qudt_units.cache_clear()
 
         # Create a temporary invalid TTL file
-        invalid_ttl_file = tmp_path / "invalid.ttl"
-        invalid_ttl_file.write_text("not valid ttl syntax }{]")
+        invalid_json_file = tmp_path / "invalid.json"
+        invalid_json_file.write_text("not valid json }{]")
 
-        with patch("nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH", invalid_ttl_file):
+        with patch("nexusLIMS.schemas.units.QUDT_UNIT_MAP_PATH", invalid_json_file):
             with caplog.at_level(logging.ERROR):
                 result = _load_qudt_units()
 
@@ -297,8 +302,39 @@ class TestLoadQudtUnitsErrorHandling:
             assert result == {}
             # Should log error about parsing failure
             assert any(
-                "failed to parse" in record.message.lower() for record in caplog.records
+                "failed to load" in record.message.lower() for record in caplog.records
             )
+
+
+class TestBuildQudtUnitsFromTtlErrorHandling:
+    """Test error handling in _build_qudt_units_from_ttl function."""
+
+    def test_qudt_ttl_file_not_found_returns_empty_dict(self, caplog):
+        """Test that missing QUDT source TTL returns empty dict and logs warning."""
+        with patch("nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH") as mock_path:
+            mock_path.exists.return_value = False
+
+            with caplog.at_level(logging.WARNING):
+                result = _build_qudt_units_from_ttl()
+
+        assert result == {}
+        assert any("not found" in record.message.lower() for record in caplog.records)
+
+    def test_qudt_ttl_parse_exception_returns_empty_dict(self, caplog, tmp_path):
+        """Test that invalid QUDT source TTL returns empty dict and logs error."""
+        invalid_ttl_file = tmp_path / "invalid.ttl"
+        invalid_ttl_file.write_text("not valid turtle }{]")
+
+        with (
+            patch("nexusLIMS.schemas.units.QUDT_UNIT_TTL_PATH", invalid_ttl_file),
+            caplog.at_level(logging.ERROR),
+        ):
+            result = _build_qudt_units_from_ttl()
+
+        assert result == {}
+        assert any(
+            "failed to parse" in record.message.lower() for record in caplog.records
+        )
 
 
 class TestNormalizeQuantityErrorHandling:
