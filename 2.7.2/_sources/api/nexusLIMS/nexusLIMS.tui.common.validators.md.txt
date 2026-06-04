@@ -1,0 +1,99 @@
+# {py:mod}`nexusLIMS.tui.common.validators`
+
+```{py:module} nexusLIMS.tui.common.validators
+```
+
+```{autodoc2-docstring} nexusLIMS.tui.common.validators
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`validate_required <nexusLIMS.tui.common.validators.validate_required>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.common.validators.validate_required
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_max_length <nexusLIMS.tui.common.validators.validate_max_length>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.common.validators.validate_max_length
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_timezone <nexusLIMS.tui.common.validators.validate_timezone>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.common.validators.validate_timezone
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_url <nexusLIMS.tui.common.validators.validate_url>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.common.validators.validate_url
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_path <nexusLIMS.tui.common.validators.validate_path>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.common.validators.validate_path
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`validate_ip_address <nexusLIMS.tui.common.validators.validate_ip_address>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.common.validators.validate_ip_address
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} validate_required(value: str | None, field_name: str = 'Field') -> tuple[bool, str]
+:canonical: nexusLIMS.tui.common.validators.validate_required
+
+```{autodoc2-docstring} nexusLIMS.tui.common.validators.validate_required
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_max_length(value: str | None, max_len: int, field_name: str = 'Field') -> tuple[bool, str]
+:canonical: nexusLIMS.tui.common.validators.validate_max_length
+
+```{autodoc2-docstring} nexusLIMS.tui.common.validators.validate_max_length
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_timezone(tz_str: str | None) -> tuple[bool, str]
+:canonical: nexusLIMS.tui.common.validators.validate_timezone
+
+```{autodoc2-docstring} nexusLIMS.tui.common.validators.validate_timezone
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_url(url: str | None, field_name: str = 'URL') -> tuple[bool, str]
+:canonical: nexusLIMS.tui.common.validators.validate_url
+
+```{autodoc2-docstring} nexusLIMS.tui.common.validators.validate_url
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_path(path: str | None, must_exist: bool = False, field_name: str = 'Path') -> tuple[bool, str]
+:canonical: nexusLIMS.tui.common.validators.validate_path
+
+```{autodoc2-docstring} nexusLIMS.tui.common.validators.validate_path
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} validate_ip_address(ip: str | None) -> tuple[bool, str]
+:canonical: nexusLIMS.tui.common.validators.validate_ip_address
+
+```{autodoc2-docstring} nexusLIMS.tui.common.validators.validate_ip_address
+:parser: autodoc2_docstrings_parser
+```
+````
