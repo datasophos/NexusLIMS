@@ -14,6 +14,22 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.7.2 (2026-06-03)
+
+### Bug fixes
+
+- Skipped PR documentation preview deployment when the pull request has already closed, avoiding failed `gh-pages` updates after merge.
+
+### Documentation improvements
+
+- Updated frontend changelog and screenshot gallery for NexusLIMS-CDCS v3.21.0-nx0 (sample/activity management in annotator, inline title editing, pending-changes modal, multi-sample Bootstrap cards); restored missing 2.7.0 changelog entry; added v3.21.0-nx0 row to the version compatibility matrix. ([#111](https://github.com/datasophos/NexusLIMS/issues/111))
+
+### Miscellaneous/Development changes
+
+- Test suite now runs in parallel using `pytest-xdist`, reducing local and CI test time significantly. ([#110](https://github.com/datasophos/NexusLIMS/issues/110))
+- Moved the release workflow guidance into shared agent skill files so release preparation stays consistent across supported agent tooling.
+
+
 ## 2.7.1 (2026-05-25)
 
 ### Bug fixes
