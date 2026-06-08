@@ -99,6 +99,34 @@ Data files and metadata can be downloaded in bulk using the *file downloader too
 Large records can be displayed with a simplified view to keep the application performant.
 ```
 
+---
+
+## Public Dataset Gallery
+
+```{figure} ../images/cdcs/16_public_gallery.png
+:alt: Full-screen NexusLIMS public dataset gallery
+:width: 100%
+:class: screenshot
+
+The public gallery at `/gallery/` automatically rotates through dataset previews and
+shows the record title, dataset description, experimenter, instrument, and acquisition
+date. Featured datasets receive a visible badge, and **View record** opens the source
+record in a new tab.
+```
+
+The gallery is designed for unattended displays as well as interactive browsing:
+
+- Slides advance automatically after the configured interval.
+- Move the pointer to reveal previous, next, and full-screen controls.
+- Use the left and right arrow keys to browse recent slides, or press **F** to toggle
+  full-screen mode.
+- Only records with at least one previewable dataset are eligible.
+- For each selected record, the gallery chooses a featured preview first, then a
+  highest-rated preview, then the first available preview.
+
+The page does not require authentication. Administrators can disable or brand it using
+the settings described in {ref}`cdcs-gallery-configuration`.
+
 
 ---
 
@@ -162,6 +190,22 @@ The **Pending Changes** modal (opened via the toolbar) summarises all unsaved ed
 before saving or navigating away: title changes, dataset description edits, added or
 modified samples, dataset moves, and activity changes.
 ```
+
+### Dataset Ratings and Featured Status
+
+```{figure} ../images/cdcs/17_dataset_curation_controls.png
+:alt: Dataset table with featured stars and one-to-five rating controls
+:width: 85%
+:class: screenshot
+
+Users with write access can mark a dataset as featured with the star control or rate it
+from 1 to 5 with the circular rating control. The same controls are available in the
+**Annotate Record** panel and save immediately.
+```
+
+Click the small "x" next to an active rating again to clear it. Featured status and ratings are stored in the
+record XML under the dataset's `<curation>` element and influence which preview the public
+gallery selects for that record.
 
 ---
 

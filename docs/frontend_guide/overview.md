@@ -12,6 +12,8 @@ CDCS (Configurable Data Curation System) is an open-source web application devel
 - Pre-configured deployment with Docker Compose
 - Integration with the NexusLIMS backend for automated record generation
 - File server for instrument data and preview images
+- Dataset-level descriptions, ratings, and featured status for curation
+- A public, full-screen gallery for showcasing preview images
 
 ## Key Capabilities
 
@@ -40,14 +42,27 @@ XSLT stylesheets transform raw XML into human-readable HTML:
 - **Preview images** display inline from the file server
 - **Links to raw data** for downloading original instrument files
 
-### Dataset Annotation
+### Dataset Curation
 
-Authenticated users can add free-text descriptions to individual datasets within a record:
+Authenticated users with write access can curate individual datasets within a record:
 
 - **Annotate Record** button on the detail page opens a slide-in panel
 - Datasets are grouped by acquisition activity with preview thumbnails
-- Descriptions are stored directly in the XML record and appear in the dataset metadata modal
+- Add plain-language descriptions, assign a rating from 1 to 5, or mark datasets as featured
+- Curation values are stored directly in the XML record
+- Rating and featured controls are also available from dataset tables on the detail page
 - Controlled by the `NX_ENABLE_ANNOTATOR` feature flag (enabled by default)
+
+### Public Gallery
+
+The public gallery at `/gallery/` presents preview images from NexusLIMS records in a
+full-screen, automatically rotating display:
+
+- Shows the record title, dataset description, experimenter, instrument, and date
+- Prioritizes featured datasets, then the highest-rated preview in each selected record
+- Provides previous/next controls, keyboard navigation, and a full-screen mode
+- Links every slide to the corresponding public record
+- Can be branded and configured with `NX_GALLERY_*` environment variables
 
 ### RESTful API
 
