@@ -476,22 +476,29 @@ Restart Docker: `sudo systemctl restart docker`
 
 ### Application Updates
 
+```{important}
+Releases that include a schema change require one extra step after rebuild:
+`admin-upgrade-schema` adds the new schema version to the database, migrates
+all existing records to it, and refreshes the XSLT stylesheets. It is safe
+to run on every upgrade — if nothing changed, it exits cleanly.
+```
+
 1. **Backup current deployment:**
    ```bash
    source admin-commands.sh
    admin-backup
    ```
 
-2. **Pull latest code:**
+2. **Pull latest code and check out the release tag:**
    ```bash
    cd /opt/nexuslims/NexusLIMS-CDCS
    git fetch
-   git checkout v3.20.0-nx0  # or desired version — see {ref}`compatibility` for version requirements
+   git checkout v3.21.0-nx1  # or desired version — see {ref}`compatibility`
    ```
 
-3. **Review changelog** for breaking changes
+3. **Review the changelog** for breaking changes and new environment variables
 
-4. **Check for new environment variables** in `.env.prod.example`
+4. **Apply any new environment variables** from `.env.prod.example` to your `.env` file
 
 5. **Rebuild and restart:**
    ```bash
@@ -502,10 +509,90 @@ Restart Docker: `sudo systemctl restart docker`
    dc-prod up -d
    ```
 
-6. **Run migrations:**
+6. **Run Django database migrations:**
    ```bash
    docker exec nexuslims_prod_cdcs python manage.py migrate
    ```
+
+7. **Upgrade schema, records, and XSLT:**
+   ```bash
+   source admin-commands.sh
+   admin-upgrade-schema
+   ```
+
+   Expected output when a schema change is present:
+   ```
+   Step 1/3: Schema check
+     → On-disk hash differs from active version — adding Version 2
+     ✓ Added Version 2 to "Nexus Experiment Schema"
+     ✓ Version 2 set as current
+
+   Step 2/3: Record migration
+     ✓ Migrated 42 record(s) to current schema version
+
+   Step 3/3: XSLT update
+     ✓ detail_stylesheet.xsl updated
+     ✓ list_stylesheet.xsl updated
+
+   Schema upgrade complete.
+   ```
+
+   Expected output when nothing changed:
+   ```
+   Step 1/3: Schema check
+     ✓ Active version hash matches on-disk schema — no upgrade needed
+
+   Step 2/3: Record migration
+     ✓ All records already on current version — no migration needed
+
+   Step 3/3: XSLT update
+     ✓ detail_stylesheet.xsl updated
+     ✓ list_stylesheet.xsl updated
+
+   Nothing to upgrade.
+   ```
+
+8. **Verify:**
+   ```bash
+   admin-stats
+   ```
+
+### Manual upgrade via web UI (fallback)
+
+Use this path if the script does not work or you want to verify each step interactively.
+
+**Step 1 — Upload new schema version**
+
+Navigate to `https://<your-domain>/staff-core-admin/templates`, click on the "Versions"
+button for "Nexus Experiment Schema", then click "Upload New Version" button to upload the updated
+`nexus-experiment.xsd` from `deployment/schemas/`.
+
+**Step 2 — Migrate records**
+
+After uploading the version, you will be redirected to `https://<your-domain>/staff-core-admin/template/data-migration`
+to migrate records from the previous version to the one you just uploaded. It should be safe to just click "Migrate"
+without anything else
+
+- **1. Source template:** select the old version(s)
+- **2. Select data:** select all existing records
+- **3. XSLT:** leave blank — no XML transformation is needed for purely additive schema changes
+- **4. Target template:** Choose the latest version, which should be what you just uploaded 
+- Click **Migrate** and wait for the progress bar to complete
+
+**Step 3 — Set new version as current**
+
+Navigate back to `https://<your-domain>/staff-core-admin/templates`, click on the "Versions"
+button for "Nexus Experiment Schema", then click "Set Current" on the latest version you just uploaded.
+
+**Update XSLT**
+
+This is most easily done from the admin script. Run:
+
+```bash
+cd deployment
+source admin-commands.sh
+admin-update-xslt
+```
 
 ### Rollback
 
