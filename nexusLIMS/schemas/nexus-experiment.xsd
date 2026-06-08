@@ -737,6 +737,16 @@
         </xs:annotation>
       </xs:element>
 
+      <xs:element name="curation" type="nx:Curation" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+                 Curation metadata assigned by a facility annotator. Both
+                 child elements are optional; the block is removed when both
+                 are cleared.
+               </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+
     </xs:sequence>
 
     <xs:attribute name="type" type="nx:DatasetType">
@@ -756,6 +766,26 @@
             </xs:documentation>
       </xs:annotation>
     </xs:attribute>
+  </xs:complexType>
+
+  <xs:complexType name="Curation">
+    <xs:annotation>
+      <xs:documentation>
+           Curation metadata for a dataset, assigned by a facility annotator.
+         </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="rating" type="xs:integer" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>A curator rating from 1 (lowest) to 5 (highest).</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="featured" type="xs:boolean" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>True if this dataset should appear prominently in the public gallery.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="Parameter">
