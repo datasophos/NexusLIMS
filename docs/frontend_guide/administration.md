@@ -3,6 +3,8 @@
 
 This guide covers day-to-day administration tasks for NexusLIMS-CDCS including backups, XSLT management, user administration, and monitoring.
 
+For the full upgrade procedure when updating to a new release, see {ref}`cdcs-production-upgrading`.
+
 ## Admin Commands Overview
 
 Load admin commands before running any administrative task:
@@ -26,6 +28,8 @@ source admin-commands.sh
 | `admin-import-users <file>` | Import users from JSON |
 | `admin-stats` | Show system statistics |
 | `admin-init` | Initialize environment (superuser, schema, XSLT) |
+| `admin-update-xslt [detail\|list\|all]` | Update XSLT stylesheets in the database |
+| `admin-upgrade-schema` | Upgrade schema version, migrate records, and update XSLT |
 
 ---
 
@@ -166,14 +170,21 @@ dev-update-xslt
 ```
 
 **Production:**
+
+XSLT files are included in the Docker image, so after pulling a new release
+you will need to rebuild the image before pushing updates to the database:
+
 ```bash
-# Re-run initialization (uploads XSLT along with schema)
-docker exec -it nexuslims_prod_cdcs python /srv/scripts/init_environment.py
+dc-prod pull && dc-prod up -d  # pull new image and restart
+source admin-commands.sh
+admin-update-xslt        # Update both stylesheets
+admin-update-xslt detail # Update only detail_stylesheet.xsl
+admin-update-xslt list   # Update only list_stylesheet.xsl
 ```
 
-Or use the update script directly:
-```bash
-docker exec nexuslims_prod_cdcs bash /srv/scripts/update-xslt.sh
+```{note}
+`admin-init` skips stylesheets that already exist, so it cannot push XSLT updates after
+initial setup. Always use `admin-update-xslt` to update stylesheets on an existing instance.
 ```
 
 ### URL Patching
@@ -204,19 +215,43 @@ The NexusLIMS schema (`nexus-experiment.xsd`) is located at:
 
 ### Updating the Schema
 
-1. **Download latest schema** from the NexusLIMS repository:
-   ```bash
-   cd deployment
-   bash scripts/update-schema.sh
-   ```
+After pulling a new NexusLIMS-CDCS release, apply the updated schema to the database:
 
-2. **Apply to database** by re-running initialization:
-   ```bash
-   docker exec -it nexuslims_prod_cdcs python /srv/scripts/init_environment.py
-   ```
+```bash
+source admin-commands.sh
+admin-upgrade-schema
+```
+
+The `admin-upgrade-schema` command runs a three-step automated upgrade:
+
+| Step | Action |
+|------|--------|
+| 1. Schema check | Compares on-disk schema hash to active database version; creates a new template version if different |
+| 2. Record migration | Re-points any records on old template versions to the current version |
+| 3. XSLT update | Pushes the current XSLT stylesheets to the database |
+
+The command is **idempotent** - running it when nothing has changed reports "Nothing to upgrade" without making any modifications.
+
+**Example output:**
+
+```text
+Step 1/3: Schema check
+✓ Added Version 2 to 'Nexus Experiment Schema'
+✓ Version 2 set as current
+
+Step 2/3: Record migration
+✓ Migrated 42 record(s) to current schema version
+
+Step 3/3: XSLT update
+✓ detail_stylesheet.xsl updated
+✓ list_stylesheet.xsl updated
+
+Schema upgrade complete.
+```
 
 ```{note}
-Schema updates create a new template version. Existing records remain valid against their original template version.
+Schema upgrades create a new template version rather than replacing the old one. Existing records are
+migrated to the new version automatically.
 ```
 
 ---

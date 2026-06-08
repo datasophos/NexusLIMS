@@ -472,6 +472,7 @@ Restart Docker: `sudo systemctl restart docker`
 
 ---
 
+(cdcs-production-upgrading)=
 ## Upgrading
 
 ### Application Updates
@@ -493,7 +494,7 @@ to run on every upgrade — if nothing changed, it exits cleanly.
    ```bash
    cd /opt/nexuslims/NexusLIMS-CDCS
    git fetch
-   git checkout v3.21.0-nx1  # or desired version — see {ref}`compatibility`
+   git checkout v3.21.0-nx1  # or desired version (downgrades are not supported)
    ```
 
 3. **Review the changelog** for breaking changes and new environment variables
@@ -521,7 +522,7 @@ to run on every upgrade — if nothing changed, it exits cleanly.
    ```
 
    Expected output when a schema change is present:
-   ```
+   ```text
    Step 1/3: Schema check
      → On-disk hash differs from active version — adding Version 2
      ✓ Added Version 2 to "Nexus Experiment Schema"
@@ -538,7 +539,7 @@ to run on every upgrade — if nothing changed, it exits cleanly.
    ```
 
    Expected output when nothing changed:
-   ```
+   ```text
    Step 1/3: Schema check
      ✓ Active version hash matches on-disk schema — no upgrade needed
 
