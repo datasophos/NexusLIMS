@@ -245,6 +245,13 @@ Each instrument in `instruments` table must specify:
 - Whenever adding a feature or making a significant change, create a corresponding changelog blurb in docs/changes at commit time
 - When creating these blurbs, follow the instructions in `docs/changes/README.rst`
 
+### Frontend changelog management
+- `docs/frontend_guide/changelog.md` tracks NexusLIMS-specific changes to the [NexusLIMS-CDCS](https://github.com/datasophos/NexusLIMS-CDCS) frontend
+- It is **manually maintained** (towncrier does not apply -- changes are in the separate frontend repo)
+- Update it when cutting a new NexusLIMS-CDCS release
+- Follow the [keepachangelog.com](https://keepachangelog.com/) format with version numbers in the form `{cdcs_base_version}-nx{N}` (e.g., `3.21.0-nx0`)
+- Include the date and which NexusLIMS backend versions the frontend release is compatible with
+
 ### Configuration Management (CRITICAL RULE)
 
 **NEVER use `os.getenv()` or `os.environ` directly for configuration.**

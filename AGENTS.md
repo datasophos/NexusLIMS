@@ -213,6 +213,14 @@ Each instrument in `instruments` must specify:
 - Follow the instructions in `docs/changes/README.rst`
 - When preparing or cutting a release in Codex, use the `nexuslims-release` skill
 
+### Frontend Changelog Management
+
+- `docs/frontend_guide/changelog.md` tracks NexusLIMS-specific changes to the NexusLIMS-CDCS frontend (separate repo at <https://github.com/datasophos/NexusLIMS-CDCS>)
+- It is manually maintained -- towncrier does not apply here
+- Update it when cutting a new NexusLIMS-CDCS release
+- Follow the keepachangelog.com format with version numbers in the form `{cdcs_base_version}-nx{N}` (e.g., `3.21.0-nx0`)
+- Include the date and which NexusLIMS backend versions the frontend release is compatible with
+
 ### Configuration Management Rule
 
 Never use `os.getenv()` or `os.environ` directly for application configuration access outside `nexusLIMS/config.py`.
