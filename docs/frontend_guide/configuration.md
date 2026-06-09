@@ -106,6 +106,17 @@ python3 -c "from secrets import token_urlsafe; print(token_urlsafe(32))"
 
 These URLs are patched into XSLT stylesheets when they're uploaded to the database.
 
+### Gallery Configuration
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `NX_ENABLE_GALLERY` | Enable the unauthenticated gallery at `/gallery/` | `true` |
+| `NX_GALLERY_FACILITY_NAME` | Facility name displayed in the upper-left corner | `NexusLIMS` |
+| `NX_GALLERY_ROTATION_INTERVAL` | Seconds between automatic slide changes | `30` |
+| `NX_GALLERY_LOGO` | Static asset path for the upper-right logo; falls back to `NX_NAV_LOGO` when unset | unset |
+
+The gallery requires `XSLT_PREVIEW_BASE_URL` to resolve dataset preview images.
+
 ### Backup Configuration
 
 | Variable | Description | Dev Default | Prod Example |
@@ -229,7 +240,7 @@ The following Python-level feature flags can be set in your custom settings file
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `NX_ENABLE_ANNOTATOR` | `True` | Show "Annotate Record" button on detail pages, allowing authenticated users to add text descriptions to individual datasets |
+| `NX_ENABLE_ANNOTATOR` | `True` | Enable dataset descriptions, ratings, and featured controls for authenticated users with write access |
 | `NX_ENABLE_TUTORIALS` | `True` | Show interactive tutorial prompts for new users |
 | `NX_MAX_DATASET_DISPLAY_COUNT` | `100` | Records with more datasets than this threshold use a simplified (non-interactive) display mode |
 

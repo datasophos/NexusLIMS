@@ -41,7 +41,8 @@ NexusLIMS-CDCS provides:
 - **Structured Data Capture** - XML schema-based templates for consistent metadata
 - **Powerful Search** - Full-text and field-specific search across all records
 - **Data Visualization** - XSLT-based rendering of XML records to rich HTML
-- **Dataset Annotation** - Attach plain-language descriptions to individual datasets
+- **Dataset Curation** - Describe, rate, and feature individual datasets
+- **Public Gallery** - Rotate through curated preview images in a presentation-ready display
 - **RESTful API** - Programmatic access for automation and integration
 - **User Authentication** - Role-based access control and permissions
 - **Instrument Data Integration** - Links to raw experimental files via file server
@@ -170,8 +171,8 @@ NexusLIMS-CDCS works alongside the [NexusLIMS backend](https://github.com/dataso
 
 Screenshots and Features <frontend_guide/gallery>
 frontend_guide/overview
-frontend_guide/development
 frontend_guide/production
+frontend_guide/development
 frontend_guide/local-test-deployment
 frontend_guide/configuration
 frontend_guide/customization

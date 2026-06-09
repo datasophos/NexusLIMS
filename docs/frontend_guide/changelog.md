@@ -12,6 +12,29 @@ and `nx{N}` is an incrementing counter for NexusLIMS-specific releases on that b
 
 ---
 
+## 3.21.0-nx1 -- 2026-06-08
+
+This version is intended to be used with NexusLIMS backend versions 2.7.3+.
+
+### Added
+
+- **Public dataset gallery**: Added an unauthenticated, presentation-ready gallery at
+  `/gallery/` with automatic rotation, previous/next controls, keyboard navigation,
+  full-screen mode, configurable facility branding, and links to source records
+- **Dataset curation controls**: Users with write access can assign 1-to-5 ratings and
+  featured status from record dataset tables or the annotation panel
+- Gallery slide selection prioritizes featured datasets, then the highest-rated
+  previewable dataset within each selected record
+
+### Upgrade Notes
+
+Upgrade the Nexus Experiment schema and migrate existing records by running
+`admin-upgrade-schema` after deploying this release. Follow the
+{ref}`production upgrade procedure <cdcs-production-upgrading>` for the complete
+sequence.
+
+---
+
 ## 3.21.0-nx0 -- 2026-05-30
 
 This version is intended to be used with NexusLIMS backend versions 2.7.1+.
