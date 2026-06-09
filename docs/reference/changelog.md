@@ -14,6 +14,17 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.7.3 (2026-06-08)
+
+### New features
+
+- Added optional `<curation>` element to the Nexus Experiment XML schema, supporting per-dataset curator ratings (1-5) and featured status used by the NexusLIMS-CDCS public gallery. ([#116](https://github.com/datasophos/NexusLIMS/issues/116))
+
+### Documentation improvements
+
+- Added documentation for the NexusLIMS-CDCS 3.21.0-nx1 release, covering the public dataset gallery, dataset rating and featured-status controls, expanded production upgrade procedures, and updated compatibility matrix. ([#116](https://github.com/datasophos/NexusLIMS/issues/116))
+
+
 ## 2.7.2 (2026-06-03)
 
 ### Bug fixes
