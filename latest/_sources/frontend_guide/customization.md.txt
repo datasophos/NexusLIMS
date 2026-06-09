@@ -246,15 +246,21 @@ NX_ENABLE_TUTORIALS = True
 NX_ENABLE_ANNOTATOR = True
 ```
 
-### Record Annotator (`NX_ENABLE_ANNOTATOR`)
+### Record Annotator and Curation (`NX_ENABLE_ANNOTATOR`)
 
-When enabled, authenticated users with write access to a record can attach plain-language descriptions to each dataset (file) in that record. Descriptions are stored in the XML under each `<dataset>/<description>` element and appear in the gallery, dataset activity tables, and metadata modals.
+When enabled, authenticated users with write access to a record can attach
+plain-language descriptions, 1-to-5 ratings, and featured status to each dataset.
+Descriptions are stored under `<dataset>/<description>`, while ratings and featured
+status are stored under `<dataset>/<curation>`.
 
 **Entry points:**
 
 - **Side panel** -- the **Annotate Record** button in the top action bar opens a slide-in offcanvas panel. Datasets are listed grouped by acquisition activity, each with a preview thumbnail and a text field. Press **Save Annotations** or **Ctrl+Enter** / **Cmd+Enter** to save all at once.
 - **Inline editing** -- hovering over a row in a dataset activity table reveals a pencil icon next to the description. Clicking it opens a small floating popup for quick single-dataset edits (**Ctrl+Enter** to save, **Escape** to cancel).
 - **Full-page editor** -- the expand icon (⤢) in the panel header opens `/annotate/<record_id>/` as a full-page form. In addition to editing descriptions, the full-page editor supports **reassigning datasets between acquisition activities** within the same record.
+- **Rating and featuring** -- click a rating circle or star in the annotation panel or
+  detail-page dataset table. These curation changes save immediately and help determine
+  which preview represents the record in the public gallery.
 
 A `?` help button is available in both the side panel and full-page editor.
 
@@ -266,6 +272,22 @@ NX_ENABLE_ANNOTATOR = False
 Disabling removes the Annotate Record button and all annotation UI from detail pages. Existing descriptions stored in XML records are unaffected.
 
 > **Note:** Requires a container restart to take effect (`docker compose restart cdcs`).
+
+(cdcs-gallery-configuration)=
+### Public Gallery
+
+The unauthenticated gallery is available at `/gallery/` and is enabled by default.
+Configure it in the deployment `.env` file:
+
+```text
+NX_ENABLE_GALLERY=true
+NX_GALLERY_FACILITY_NAME=NexusLIMS
+NX_GALLERY_ROTATION_INTERVAL=30
+# NX_GALLERY_LOGO=nexuslims/img/custom_gallery_logo.png
+```
+
+`NX_GALLERY_LOGO` uses a Django static asset path and falls back to `NX_NAV_LOGO` when
+unset. Restart the CDCS container after changing these values.
 
 ### Dataset Display Threshold
 

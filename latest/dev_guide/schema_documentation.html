@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jun, 04, 2026"/>
+    <meta name="docbuild:last-update" content="Jun, 09, 2026"/>
   </head>
   
   
@@ -1014,6 +1014,30 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "description": "An arbitrary metadatum with a name and a value unique to this dataset"
     },
     {
+      "id": "Dataset_curation",
+      "label": "curation (optional)",
+      "type": "optional",
+      "description": "Curation metadata assigned by a facility annotator. Both child elements are optional; the block is removed when both are cleared."
+    },
+    {
+      "id": "Curation",
+      "label": "Curation",
+      "type": "complexType",
+      "description": "Curation metadata for a dataset, assigned by a facility annotator."
+    },
+    {
+      "id": "Curation_rating",
+      "label": "rating (optional)",
+      "type": "optional",
+      "description": "A curator rating from 1 (lowest) to 5 (highest)."
+    },
+    {
+      "id": "Curation_featured",
+      "label": "featured (optional)",
+      "type": "optional",
+      "description": "True if this dataset should appear prominently in the public gallery."
+    },
+    {
       "id": "Parameter",
       "label": "Parameter",
       "type": "complexType",
@@ -1338,6 +1362,26 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
       "source": "Dataset_meta",
       "target": "Parameter",
       "label": "type"
+    },
+    {
+      "source": "Dataset",
+      "target": "Dataset_curation",
+      "label": "has"
+    },
+    {
+      "source": "Dataset_curation",
+      "target": "Curation",
+      "label": "type"
+    },
+    {
+      "source": "Curation",
+      "target": "Curation_rating",
+      "label": "has"
+    },
+    {
+      "source": "Curation",
+      "target": "Curation_featured",
+      "label": "has"
     },
     {
       "source": "PeriodicTableElementType",
@@ -1921,6 +1965,8 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
 </dd>
 <dt><strong>meta</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Parameter</span></code> (optional)</span></dt><dd><p>An arbitrary metadatum with a name and a value unique to this dataset</p>
 </dd>
+<dt><strong>curation</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:Curation</span></code> (optional)</span></dt><dd><p>Curation metadata assigned by a facility annotator. Both child elements are optional; the block is removed when both are cleared.</p>
+</dd>
 </dl>
 </div></blockquote>
 <p><strong>Attributes:</strong></p>
@@ -1929,6 +1975,18 @@ and <strong>click</strong> on any <em>type</em> node to jump to its detailed doc
 <dt><strong>type</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:DatasetType</span></code></span></dt><dd><p>A label indicating the type of this dataset (taken from a controlled list).</p>
 </dd>
 <dt><strong>role</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">nx:DatasetRole</span></code></span></dt><dd><p>A label indicating the experimental role of this dataset (taken from a controlled list).</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="type-header docutils container" id="xsd-type-curation">
+<p><strong>Type: Curation</strong></p>
+<div style="float: right; font-size: 0.9em;"><a href="#schema-structure-interactive">↑ Back to diagram</a></div></div>
+<p>Curation metadata for a dataset, assigned by a facility annotator.</p>
+<blockquote>
+<div><dl>
+<dt><strong>rating</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:integer</span></code> (optional)</span></dt><dd><p>A curator rating from 1 (lowest) to 5 (highest).</p>
+</dd>
+<dt><strong>featured</strong><span class="classifier"><code class="docutils literal notranslate"><span class="pre">xs:boolean</span></code> (optional)</span></dt><dd><p>True if this dataset should appear prominently in the public gallery.</p>
 </dd>
 </dl>
 </div></blockquote>
