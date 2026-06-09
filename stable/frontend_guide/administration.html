@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Administration &#8212; NexusLIMS 2.7.2 documentation</title>
+    <title>Administration &#8212; NexusLIMS 2.7.3 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=4c6c8f0e"></script>
+    <script src="../_static/documentation_options.js?v=e8140b17"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.7.2';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.7.3';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -65,8 +65,8 @@
     <link rel="prev" title="Branding and Customization" href="customization.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.7.2" />
-    <meta name="docbuild:last-update" content="Jun, 04, 2026"/>
+  <meta name="docsearch:version" content="2.7.3" />
+    <meta name="docbuild:last-update" content="Jun, 09, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.7.2 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.7.2 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.7.3 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.7.3 documentation - Home"/>
   
   
 </a></div>
@@ -412,8 +412,8 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshots and Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Development Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="production.html">Production Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="local-test-deployment.html">Local Test Deployment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customization.html">Branding and Customization</a></li>
@@ -483,6 +483,7 @@
   <section id="administration">
 <span id="cdcs-administration"></span><h1>Administration<a class="headerlink" href="#administration" title="Link to this heading">#</a></h1>
 <p>This guide covers day-to-day administration tasks for NexusLIMS-CDCS including backups, XSLT management, user administration, and monitoring.</p>
+<p>For the full upgrade procedure when updating to a new release, see <a class="reference internal" href="production.html#cdcs-production-upgrading"><span class="std std-ref">Upgrading</span></a>.</p>
 <section id="admin-commands-overview">
 <h2>Admin Commands Overview<a class="headerlink" href="#admin-commands-overview" title="Link to this heading">#</a></h2>
 <p>Load admin commands before running any administrative task:</p>
@@ -528,6 +529,12 @@
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">admin-init</span></code></p></td>
 <td><p>Initialize environment (superuser, schema, XSLT)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">admin-update-xslt</span> <span class="pre">[detail|list|all]</span></code></p></td>
+<td><p>Update XSLT stylesheets in the database</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">admin-upgrade-schema</span></code></p></td>
+<td><p>Upgrade schema version, migrate records, and update XSLT</p></td>
 </tr>
 </tbody>
 </table>
@@ -692,13 +699,19 @@ dev-update-xslt
 </pre></div>
 </div>
 <p><strong>Production:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Re-run initialization (uploads XSLT along with schema)</span>
-docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>nexuslims_prod_cdcs<span class="w"> </span>python<span class="w"> </span>/srv/scripts/init_environment.py
+<p>XSLT files are included in the Docker image, so after pulling a new release
+you will need to rebuild the image before pushing updates to the database:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dc-prod<span class="w"> </span>pull<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>dc-prod<span class="w"> </span>up<span class="w"> </span>-d<span class="w">  </span><span class="c1"># pull new image and restart</span>
+<span class="nb">source</span><span class="w"> </span>admin-commands.sh
+admin-update-xslt<span class="w">        </span><span class="c1"># Update both stylesheets</span>
+admin-update-xslt<span class="w"> </span>detail<span class="w"> </span><span class="c1"># Update only detail_stylesheet.xsl</span>
+admin-update-xslt<span class="w"> </span>list<span class="w">   </span><span class="c1"># Update only list_stylesheet.xsl</span>
 </pre></div>
 </div>
-<p>Or use the update script directly:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>nexuslims_prod_cdcs<span class="w"> </span>bash<span class="w"> </span>/srv/scripts/update-xslt.sh
-</pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">admin-init</span></code> skips stylesheets that already exist, so it cannot push XSLT updates after
+initial setup. Always use <code class="docutils literal notranslate"><span class="pre">admin-update-xslt</span></code> to update stylesheets on an existing instance.</p>
 </div>
 </section>
 <section id="url-patching">
@@ -733,22 +746,51 @@ docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </spa
 </section>
 <section id="updating-the-schema">
 <h3>Updating the Schema<a class="headerlink" href="#updating-the-schema" title="Link to this heading">#</a></h3>
-<ol class="arabic">
-<li><p><strong>Download latest schema</strong> from the NexusLIMS repository:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>deployment
-bash<span class="w"> </span>scripts/update-schema.sh
+<p>After pulling a new NexusLIMS-CDCS release, apply the updated schema to the database:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span><span class="w"> </span>admin-commands.sh
+admin-upgrade-schema
 </pre></div>
 </div>
-</li>
-<li><p><strong>Apply to database</strong> by re-running initialization:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>nexuslims_prod_cdcs<span class="w"> </span>python<span class="w"> </span>/srv/scripts/init_environment.py
+<p>The <code class="docutils literal notranslate"><span class="pre">admin-upgrade-schema</span></code> command runs a three-step automated upgrade:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Step</p></th>
+<th class="head"><p>Action</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1. Schema check</p></td>
+<td><p>Compares on-disk schema hash to active database version; creates a new template version if different</p></td>
+</tr>
+<tr class="row-odd"><td><p>2. Record migration</p></td>
+<td><p>Re-points any records on old template versions to the current version</p></td>
+</tr>
+<tr class="row-even"><td><p>3. XSLT update</p></td>
+<td><p>Pushes the current XSLT stylesheets to the database</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The command is <strong>idempotent</strong> - running it when nothing has changed reports “Nothing to upgrade” without making any modifications.</p>
+<p><strong>Example output:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Step 1/3: Schema check
+✓ Added Version 2 to &#39;Nexus Experiment Schema&#39;
+✓ Version 2 set as current
+
+Step 2/3: Record migration
+✓ Migrated 42 record(s) to current schema version
+
+Step 3/3: XSLT update
+✓ detail_stylesheet.xsl updated
+✓ list_stylesheet.xsl updated
+
+Schema upgrade complete.
 </pre></div>
 </div>
-</li>
-</ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Schema updates create a new template version. Existing records remain valid against their original template version.</p>
+<p>Schema upgrades create a new template version rather than replacing the old one. Existing records are
+migrated to the new version automatically.</p>
 </div>
 </section>
 </section>

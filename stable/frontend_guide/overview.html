@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Overview &#8212; NexusLIMS 2.7.2 documentation</title>
+    <title>Overview &#8212; NexusLIMS 2.7.3 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=4c6c8f0e"></script>
+    <script src="../_static/documentation_options.js?v=e8140b17"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.7.2';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.7.3';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,12 +61,12 @@
     <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Development Setup" href="development.html" />
+    <link rel="next" title="Production Deployment" href="production.html" />
     <link rel="prev" title="Screenshot Gallery" href="gallery.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.7.2" />
-    <meta name="docbuild:last-update" content="Jun, 04, 2026"/>
+  <meta name="docsearch:version" content="2.7.3" />
+    <meta name="docbuild:last-update" content="Jun, 09, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.7.2 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.7.2 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.7.3 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.7.3 documentation - Home"/>
   
   
 </a></div>
@@ -412,8 +412,8 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshots and Features</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Development Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="production.html">Production Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="local-test-deployment.html">Local Test Deployment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customization.html">Branding and Customization</a></li>
@@ -492,6 +492,8 @@
 <li><p>Pre-configured deployment with Docker Compose</p></li>
 <li><p>Integration with the NexusLIMS backend for automated record generation</p></li>
 <li><p>File server for instrument data and preview images</p></li>
+<li><p>Dataset-level descriptions, ratings, and featured status for curation</p></li>
+<li><p>A public, full-screen gallery for showcasing preview images</p></li>
 </ul>
 </section>
 <section id="key-capabilities">
@@ -524,14 +526,28 @@
 <li><p><strong>Links to raw data</strong> for downloading original instrument files</p></li>
 </ul>
 </section>
-<section id="dataset-annotation">
-<h3>Dataset Annotation<a class="headerlink" href="#dataset-annotation" title="Link to this heading">#</a></h3>
-<p>Authenticated users can add free-text descriptions to individual datasets within a record:</p>
+<section id="dataset-curation">
+<h3>Dataset Curation<a class="headerlink" href="#dataset-curation" title="Link to this heading">#</a></h3>
+<p>Authenticated users with write access can curate individual datasets within a record:</p>
 <ul class="simple">
 <li><p><strong>Annotate Record</strong> button on the detail page opens a slide-in panel</p></li>
 <li><p>Datasets are grouped by acquisition activity with preview thumbnails</p></li>
-<li><p>Descriptions are stored directly in the XML record and appear in the dataset metadata modal</p></li>
+<li><p>Add plain-language descriptions, assign a rating from 1 to 5, or mark datasets as featured</p></li>
+<li><p>Curation values are stored directly in the XML record</p></li>
+<li><p>Rating and featured controls are also available from dataset tables on the detail page</p></li>
 <li><p>Controlled by the <code class="docutils literal notranslate"><span class="pre">NX_ENABLE_ANNOTATOR</span></code> feature flag (enabled by default)</p></li>
+</ul>
+</section>
+<section id="public-gallery">
+<h3>Public Gallery<a class="headerlink" href="#public-gallery" title="Link to this heading">#</a></h3>
+<p>The public gallery at <code class="docutils literal notranslate"><span class="pre">/gallery/</span></code> presents preview images from NexusLIMS records in a
+full-screen, automatically rotating display:</p>
+<ul class="simple">
+<li><p>Shows the record title, dataset description, experimenter, instrument, and date</p></li>
+<li><p>Prioritizes featured datasets, then the highest-rated preview in each selected record</p></li>
+<li><p>Provides previous/next controls, keyboard navigation, and a full-screen mode</p></li>
+<li><p>Links every slide to the corresponding public record</p></li>
+<li><p>Can be branded and configured with <code class="docutils literal notranslate"><span class="pre">NX_GALLERY_*</span></code> environment variables</p></li>
 </ul>
 </section>
 <section id="restful-api">
@@ -640,11 +656,11 @@ NexusLIMS-CDCS versions are compatible with each NexusLIMS backend release.</p>
       </div>
     </a>
     <a class="right-next"
-       href="development.html"
+       href="production.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Development Setup</p>
+        <p class="prev-next-title">Production Deployment</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -672,7 +688,8 @@ NexusLIMS-CDCS versions are compatible with each NexusLIMS backend release.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#structured-data-capture">Structured Data Capture</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#powerful-search">Powerful Search</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-visualization">Data Visualization</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-annotation">Dataset Annotation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-curation">Dataset Curation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#public-gallery">Public Gallery</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#restful-api">RESTful API</a></li>
 </ul>
 </li>
