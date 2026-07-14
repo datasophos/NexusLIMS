@@ -163,9 +163,13 @@ def get_sessions_to_build() -> list[Session]:
             el_list = [
                 el
                 for el in end_logs
-                if el.session_identifier == start_l.session_identifier
+                if (
+                    el.session_identifier == start_l.session_identifier
+                    and el.instrument == start_l.instrument
+                    and el.user == start_l.user
+                )
             ]
-            if len(el_list) != 1:
+            if not el_list:
                 msg = (
                     "There was not exactly one 'END' log for this 'START' log; "
                     f"len(el_list) was {len(el_list)}; sl was {start_l}; el_list "
@@ -173,7 +177,16 @@ def get_sessions_to_build() -> list[Session]:
                 )
                 raise ValueError(msg)
 
-            end_l = el_list[0]
+            if len(el_list) > 1:
+                _logger.warning(
+                    "Found %i END logs for START log %s; using newest session_log "
+                    "row from %s",
+                    len(el_list),
+                    start_l,
+                    el_list,
+                )
+
+            end_l = max(el_list, key=lambda log: log.id_session_log or 0)
             # Use relationship to get Instrument object (eagerly loaded above)
             session = Session(
                 session_identifier=start_l.session_identifier,
