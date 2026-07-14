@@ -1,0 +1,76 @@
+# {py:mod}`nexusLIMS.cli.main`
+
+```{py:module} nexusLIMS.cli.main
+```
+
+```{autodoc2-docstring} nexusLIMS.cli.main
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`LazyGroup <nexusLIMS.cli.main.LazyGroup>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.main.LazyGroup
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`main <nexusLIMS.cli.main.main>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.main.main
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+`````{py:class} LazyGroup(*args, lazy_commands: dict[str, tuple[str, str]], **kwargs)
+:canonical: nexusLIMS.cli.main.LazyGroup
+
+Bases: {py:obj}`click.Group`
+
+```{autodoc2-docstring} nexusLIMS.cli.main.LazyGroup
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:method} list_commands(ctx: click.Context) -> list[str]
+:canonical: nexusLIMS.cli.main.LazyGroup.list_commands
+
+```{autodoc2-docstring} nexusLIMS.cli.main.LazyGroup.list_commands
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_command(ctx: click.Context, cmd_name: str) -> click.BaseCommand | None
+:canonical: nexusLIMS.cli.main.LazyGroup.get_command
+
+```{autodoc2-docstring} nexusLIMS.cli.main.LazyGroup.get_command
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+````{py:function} main() -> None
+:canonical: nexusLIMS.cli.main.main
+
+```{autodoc2-docstring} nexusLIMS.cli.main.main
+:parser: autodoc2_docstrings_parser
+```
+````
