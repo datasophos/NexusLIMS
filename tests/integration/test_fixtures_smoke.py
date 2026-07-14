@@ -5,6 +5,8 @@ These tests verify that all integration test fixtures are working correctly
 and that the Docker services are accessible.
 """
 
+import socket
+
 import pytest
 import requests
 
@@ -26,6 +28,12 @@ class TestDockerServiceFixtures:
         assert "cdcs_url" in docker_services_running
         assert "fileserver_url" in docker_services_running
         assert docker_services_running["status"] == "ready"
+
+    def test_localhost_service_aliases_resolve(self):
+        """Test that Caddy service aliases resolve on the Python side."""
+        results = socket.getaddrinfo("nemo.localhost", 40080)
+        assert results
+        assert results[0][4][0] == "127.0.0.1"
 
 
 @pytest.mark.integration

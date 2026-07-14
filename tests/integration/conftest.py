@@ -11,6 +11,7 @@ import contextlib
 import fcntl
 import os
 import re
+import socket
 import subprocess
 import tempfile
 import time
@@ -66,6 +67,34 @@ MAILPIT_HEALTH_URL = f"{MAILPIT_URL}/"
 # Test data directories (these should match docker-compose volume mounts)
 TEST_INSTRUMENT_DATA_DIR = Path("/tmp/nexuslims-test-instrument-data")
 TEST_DATA_DIR = Path("/tmp/nexuslims-test-data")
+
+# The integration stack routes several virtual hostnames through Caddy so tests
+# can use stable service URLs. Some host resolvers, notably macOS Python in
+# certain environments, do not treat arbitrary `*.localhost` names as loopback,
+# causing health checks to spin until the session fixture times out. Resolve the
+# known test aliases explicitly inside the pytest process instead of requiring
+# developers to edit `/etc/hosts`.
+_LOCALHOST_ALIASES = frozenset(
+    {
+        "nemo.localhost",
+        "nemo2.localhost",
+        "cdcs.localhost",
+        "elabftw.localhost",
+        "fileserver.localhost",
+        "mailpit.localhost",
+    }
+)
+_ORIGINAL_GETADDRINFO = socket.getaddrinfo
+
+
+def _getaddrinfo_with_localhost_aliases(host, *args, **kwargs):
+    """Resolve Caddy test aliases consistently across host platforms."""
+    if host in _LOCALHOST_ALIASES:
+        host = "127.0.0.1"
+    return _ORIGINAL_GETADDRINFO(host, *args, **kwargs)
+
+
+socket.getaddrinfo = _getaddrinfo_with_localhost_aliases
 
 
 # ============================================================================
