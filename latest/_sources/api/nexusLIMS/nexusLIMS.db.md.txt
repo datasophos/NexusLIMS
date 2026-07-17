@@ -23,8 +23,8 @@ nexusLIMS.db.migrations
 :titlesonly:
 :maxdepth: 1
 
-nexusLIMS.db.enums
-nexusLIMS.db.engine
 nexusLIMS.db.session_handler
+nexusLIMS.db.engine
+nexusLIMS.db.enums
 nexusLIMS.db.models
 ```

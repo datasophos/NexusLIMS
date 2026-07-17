@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jun, 09, 2026"/>
+    <meta name="docbuild:last-update" content="Jul, 17, 2026"/>
   </head>
   
   
@@ -1173,16 +1173,34 @@ window.addEventListener("load", load);
 <span class="sd">            Whether or not the session log row was inserted successfully</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="n">DBSession</span><span class="p">(</span><span class="n">get_engine</span><span class="p">())</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
-            <span class="c1"># Check for existing log</span>
+            <span class="c1"># Check for an existing log for this same session event. Users or</span>
+            <span class="c1"># admins can adjust scheduling-tool timestamps after the fact, so</span>
+            <span class="c1"># the event time may change between harvests, and should not be included</span>
+            <span class="c1"># in the duplicate check</span>
             <span class="n">statement</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">SessionLog</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
                 <span class="n">SessionLog</span><span class="o">.</span><span class="n">session_identifier</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>
                 <span class="n">SessionLog</span><span class="o">.</span><span class="n">instrument</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">instrument</span><span class="p">,</span>
-                <span class="n">SessionLog</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
                 <span class="n">SessionLog</span><span class="o">.</span><span class="n">event_type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_type</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">existing</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="n">statement</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">existing</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">existing</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span> <span class="ow">and</span> <span class="n">existing</span><span class="o">.</span><span class="n">record_status</span> <span class="ow">in</span> <span class="p">{</span>
+                    <span class="n">RecordStatus</span><span class="o">.</span><span class="n">WAITING_FOR_END</span><span class="p">,</span>
+                    <span class="n">RecordStatus</span><span class="o">.</span><span class="n">TO_BE_BUILT</span><span class="p">,</span>
+                <span class="p">}:</span>
+                    <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                        <span class="s2">&quot;Updating existing SessionLog timestamp: </span><span class="si">%s</span><span class="s2">; new timestamp &quot;</span>
+                        <span class="s2">&quot;is </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">existing</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">existing</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timestamp</span>
+                    <span class="n">existing</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span>
+                    <span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">existing</span><span class="p">)</span>
+                    <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+
                 <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;SessionLog already exists: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span>
 

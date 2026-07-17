@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jun, 09, 2026"/>
+    <meta name="docbuild:last-update" content="Jul, 17, 2026"/>
   </head>
   
   
@@ -997,9 +997,13 @@ window.addEventListener("load", load);
             <span class="n">el_list</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">el</span>
                 <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">end_logs</span>
-                <span class="k">if</span> <span class="n">el</span><span class="o">.</span><span class="n">session_identifier</span> <span class="o">==</span> <span class="n">start_l</span><span class="o">.</span><span class="n">session_identifier</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">el</span><span class="o">.</span><span class="n">session_identifier</span> <span class="o">==</span> <span class="n">start_l</span><span class="o">.</span><span class="n">session_identifier</span>
+                    <span class="ow">and</span> <span class="n">el</span><span class="o">.</span><span class="n">instrument</span> <span class="o">==</span> <span class="n">start_l</span><span class="o">.</span><span class="n">instrument</span>
+                    <span class="ow">and</span> <span class="n">el</span><span class="o">.</span><span class="n">user</span> <span class="o">==</span> <span class="n">start_l</span><span class="o">.</span><span class="n">user</span>
+                <span class="p">)</span>
             <span class="p">]</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">el_list</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">el_list</span><span class="p">:</span>
                 <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="s2">&quot;There was not exactly one &#39;END&#39; log for this &#39;START&#39; log; &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;len(el_list) was </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">el_list</span><span class="p">)</span><span class="si">}</span><span class="s2">; sl was </span><span class="si">{</span><span class="n">start_l</span><span class="si">}</span><span class="s2">; el_list &quot;</span>
@@ -1007,7 +1011,16 @@ window.addEventListener("load", load);
                 <span class="p">)</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
-            <span class="n">end_l</span> <span class="o">=</span> <span class="n">el_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">el_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">_logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Found </span><span class="si">%i</span><span class="s2"> END logs for START log </span><span class="si">%s</span><span class="s2">; using newest session_log &quot;</span>
+                    <span class="s2">&quot;row from </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">el_list</span><span class="p">),</span>
+                    <span class="n">start_l</span><span class="p">,</span>
+                    <span class="n">el_list</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="n">end_l</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">el_list</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">log</span><span class="p">:</span> <span class="n">log</span><span class="o">.</span><span class="n">id_session_log</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">)</span>
             <span class="c1"># Use relationship to get Instrument object (eagerly loaded above)</span>
             <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span>
                 <span class="n">session_identifier</span><span class="o">=</span><span class="n">start_l</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>

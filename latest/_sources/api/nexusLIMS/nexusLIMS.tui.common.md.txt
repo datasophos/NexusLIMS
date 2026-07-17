@@ -15,8 +15,8 @@
 :maxdepth: 1
 
 nexusLIMS.tui.common.base_screens
-nexusLIMS.tui.common.db_utils
 nexusLIMS.tui.common.validators
 nexusLIMS.tui.common.base_app
+nexusLIMS.tui.common.db_utils
 nexusLIMS.tui.common.widgets
 ```
