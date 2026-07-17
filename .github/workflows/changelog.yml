@@ -1,0 +1,23 @@
+name: Changelog
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  changelog:
+    name: Changelog Fragment Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Check changelog fragment
+        run: uvx towncrier check --compare-with origin/${{ github.base_ref || 'main' }}
