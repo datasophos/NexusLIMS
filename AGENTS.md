@@ -209,8 +209,16 @@ Each instrument in `instruments` must specify:
 ### Changelog Management
 
 - Changelog content is managed by `towncrier`
-- When adding a feature or making a significant change, create a changelog blurb in `docs/changes`
-- Follow the instructions in `docs/changes/README.rst`
+- Always include a Towncrier fragment in `docs/changes` when working on a
+  specific issue, feature set, bug fix, behavior change, packaging change, or
+  other user-visible development work. Only skip a fragment for truly internal
+  cleanup that has no release-note value.
+- Follow the instructions in `docs/changes/README.md`
+- Prefer `uv run towncrier create <issue>.<type>.md --content "<summary>"` to
+  create fragments. Use the issue number when one exists; use a leading `+`
+  fragment name for work without an issue number.
+- Before opening or updating a PR, verify the branch has a valid fragment with
+  `uv run towncrier check --compare-with origin/main`
 - When preparing or cutting a release in Codex, use the `nexuslims-release` skill
 
 ### Frontend Changelog Management
