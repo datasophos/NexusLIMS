@@ -83,6 +83,54 @@ class TestSession:
                 db_session.delete(log)
                 db_session.commit()
 
+    @pytest.mark.usefixtures("_cleanup_session_log")
+    def test_get_sessions_to_build_handles_duplicate_end_logs(self):
+        session_id = str(uuid4())
+        start_dt = dt.fromisoformat("2026-06-30T14:26:15-04:00")
+        first_end_dt = dt.fromisoformat("2026-06-30T17:02:06.190329-04:00")
+        revised_end_dt = dt.fromisoformat("2026-06-30T17:00:06-04:00")
+
+        with DBSession(get_engine()) as db_session:
+            db_session.add(
+                SessionLog(
+                    session_identifier=session_id,
+                    instrument="TEST-TOOL",
+                    timestamp=start_dt,
+                    event_type=EventType.START,
+                    record_status=RecordStatus.TO_BE_BUILT,
+                    user="test",
+                )
+            )
+            db_session.add(
+                SessionLog(
+                    session_identifier=session_id,
+                    instrument="TEST-TOOL",
+                    timestamp=first_end_dt,
+                    event_type=EventType.END,
+                    record_status=RecordStatus.TO_BE_BUILT,
+                    user="test",
+                )
+            )
+            db_session.add(
+                SessionLog(
+                    session_identifier=session_id,
+                    instrument="TEST-TOOL",
+                    timestamp=revised_end_dt,
+                    event_type=EventType.END,
+                    record_status=RecordStatus.TO_BE_BUILT,
+                    user="test",
+                )
+            )
+            db_session.commit()
+
+        sessions = session_handler.get_sessions_to_build()
+        matching_sessions = [
+            session for session in sessions if session.session_identifier == session_id
+        ]
+
+        assert len(matching_sessions) == 1
+        assert matching_sessions[0].dt_to == revised_end_dt
+
 
 @pytest.mark.needs_db(instruments=["TEST-TOOL"])
 class TestSessionLog:
@@ -175,6 +223,40 @@ class TestSessionLog:
         assert "WARNING" in caplog.text
         assert "SessionLog already exists:" in caplog.text
         assert result
+
+    @pytest.mark.usefixtures("_record_cleanup_session_log")
+    def test_insert_log_updates_matching_event_timestamp(self, caplog):
+        sl = SessionLog(
+            session_identifier="testing-session-log",
+            instrument="TEST-TOOL",
+            timestamp=dt.fromisoformat("2020-02-04T09:00:00"),
+            event_type=EventType.END,
+            user="ear1",
+            record_status=RecordStatus.TO_BE_BUILT,
+        )
+        sl.insert_log()
+
+        revised_log = SessionLog(
+            session_identifier="testing-session-log",
+            instrument="TEST-TOOL",
+            timestamp=dt.fromisoformat("2020-02-04T09:02:00"),
+            event_type=EventType.END,
+            user="ear1",
+            record_status=RecordStatus.TO_BE_BUILT,
+        )
+        result = revised_log.insert_log()
+
+        with DBSession(get_engine()) as db_session:
+            statement = select(SessionLog).where(
+                SessionLog.session_identifier == "testing-session-log",
+                SessionLog.event_type == EventType.END,
+            )
+            logs = db_session.exec(statement).all()
+
+        assert result
+        assert len(logs) == 1
+        assert logs[0].timestamp == dt.fromisoformat("2020-02-04T09:02:00")
+        assert "Updating existing SessionLog timestamp" in caplog.text
 
     @pytest.mark.usefixtures("_record_cleanup_session_log")
     def test_get_all_session_logs(self, sl):

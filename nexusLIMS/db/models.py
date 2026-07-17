@@ -322,16 +322,34 @@ class SessionLog(SQLModel, table=True):
             Whether or not the session log row was inserted successfully
         """
         with DBSession(get_engine()) as session:
-            # Check for existing log
+            # Check for an existing log for this same session event. Users or
+            # admins can adjust scheduling-tool timestamps after the fact, so
+            # the event time may change between harvests, and should not be included
+            # in the duplicate check
             statement = select(SessionLog).where(
                 SessionLog.session_identifier == self.session_identifier,
                 SessionLog.instrument == self.instrument,
-                SessionLog.timestamp == self.timestamp,
                 SessionLog.event_type == self.event_type,
             )
             existing = session.exec(statement).first()
 
             if existing:
+                if existing.timestamp != self.timestamp and existing.record_status in {
+                    RecordStatus.WAITING_FOR_END,
+                    RecordStatus.TO_BE_BUILT,
+                }:
+                    _logger.warning(
+                        "Updating existing SessionLog timestamp: %s; new timestamp "
+                        "is %s",
+                        existing,
+                        self.timestamp,
+                    )
+                    existing.timestamp = self.timestamp
+                    existing.user = self.user
+                    session.add(existing)
+                    session.commit()
+                    return True
+
                 _logger.warning("SessionLog already exists: %s", self)
                 return True
 
