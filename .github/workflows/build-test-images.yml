@@ -8,6 +8,7 @@ on:
       - ".github/workflows/build-test-images.yml"
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
     paths:
       - "tests/integration/docker/**"
       - ".github/workflows/build-test-images.yml"
@@ -21,8 +22,28 @@ env:
   IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}/nexuslims-test
 
 jobs:
+  changelog:
+    name: Changelog Fragment Gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Check changelog fragment
+        if: >
+          github.event_name == 'pull_request' &&
+          !contains(github.event.pull_request.labels.*.name, 'no-changelog-required')
+        run: uvx towncrier check --compare-with origin/${{ github.base_ref }}
+
   build-nemo:
     name: Build NEMO Integration Test Image
+    needs: changelog
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -67,6 +88,7 @@ jobs:
 
   build-elabftw:
     name: Build eLabFTW Integration Test Image
+    needs: changelog
     runs-on: ubuntu-latest
     permissions:
       contents: read
