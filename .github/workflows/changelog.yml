@@ -9,19 +9,7 @@ on:
 jobs:
   changelog:
     name: Changelog Fragment Check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v4
-        with:
-          enable-cache: true
-
-      - name: Check changelog fragment
-        if: >
-          github.event_name != 'pull_request' ||
-          !contains(github.event.pull_request.labels.*.name, 'no-changelog-required')
-        run: uvx towncrier check --compare-with origin/${{ github.base_ref || 'main' }}
+    uses: ./.github/workflows/changelog-gate.yml
+    with:
+      base_ref: ${{ github.base_ref || 'main' }}
+      should_check: ${{ github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'no-changelog-required') }}
