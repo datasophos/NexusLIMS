@@ -217,6 +217,9 @@ Each instrument in `instruments` must specify:
 - Prefer `uv run towncrier create <issue>.<type>.md --content "<summary>"` to
   create fragments. Use the issue number when one exists; use a leading `+`
   fragment name for work without an issue number.
+- Pull requests can use the `no-changelog-required` label only when the change
+  has no release-note value. Do not add that label just to bypass a missing
+  fragment for issue, feature, bug fix, behavior, or packaging work.
 - Before opening or updating a PR, verify the branch has a valid fragment with
   `uv run towncrier check --compare-with origin/main`
 - When preparing or cutting a release in Codex, use the `nexuslims-release` skill

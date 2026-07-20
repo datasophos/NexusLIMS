@@ -3,6 +3,7 @@ name: Changelog
 on:
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   workflow_dispatch:
 
 jobs:
@@ -20,4 +21,7 @@ jobs:
           enable-cache: true
 
       - name: Check changelog fragment
+        if: >
+          github.event_name != 'pull_request' ||
+          !contains(github.event.pull_request.labels.*.name, 'no-changelog-required')
         run: uvx towncrier check --compare-with origin/${{ github.base_ref || 'main' }}

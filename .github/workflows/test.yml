@@ -5,11 +5,32 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   workflow_dispatch:
 
 jobs:
+  changelog:
+    name: Changelog Fragment Gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Check changelog fragment
+        if: >
+          github.event_name == 'pull_request' &&
+          !contains(github.event.pull_request.labels.*.name, 'no-changelog-required')
+        run: uvx towncrier check --compare-with origin/${{ github.base_ref }}
+
   test:
     name: Test Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    needs: changelog
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -115,6 +136,7 @@ jobs:
     # Smoke test for package installation
     # Verifies that the built wheel can be installed and all functionality works
     name: Package Installation Smoke Test (Python ${{ matrix.python-version }})
+    needs: changelog
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
