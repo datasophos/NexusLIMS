@@ -1,0 +1,38 @@
+name: Changelog Fragment Gate
+
+on:
+  workflow_call:
+    inputs:
+      base_ref:
+        description: Git ref to compare the pull request branch against.
+        required: false
+        type: string
+        default: main
+      should_check:
+        description: Whether to require a Towncrier changelog fragment.
+        required: true
+        type: boolean
+
+jobs:
+  changelog:
+    name: Changelog Fragment Gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip changelog fragment check
+        if: ${{ !inputs.should_check }}
+        run: echo "Skipping changelog fragment check for this event or label."
+
+      - uses: actions/checkout@v4
+        if: ${{ inputs.should_check }}
+        with:
+          fetch-depth: 0
+
+      - name: Set up uv
+        if: ${{ inputs.should_check }}
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Check changelog fragment
+        if: ${{ inputs.should_check }}
+        run: uvx towncrier check --compare-with origin/${{ inputs.base_ref }}
