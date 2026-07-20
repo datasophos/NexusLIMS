@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jul, 17, 2026"/>
+    <meta name="docbuild:last-update" content="Jul, 20, 2026"/>
   </head>
   
   
@@ -484,8 +484,8 @@
 <p>This changelog documents development history including the original NIST project
 up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 </div>
-<section id="unreleased-2026-07-17">
-<h2>[Unreleased] (2026-07-17)<a class="headerlink" href="#unreleased-2026-07-17" title="Link to this heading">#</a></h2>
+<section id="unreleased-2026-07-20">
+<h2>[Unreleased] (2026-07-20)<a class="headerlink" href="#unreleased-2026-07-20" title="Link to this heading">#</a></h2>
 <section id="bug-fixes">
 <h3>Bug fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
@@ -497,6 +497,9 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 <ul class="simple">
 <li><p>Added a pull request check requiring a Towncrier changelog fragment and documented
 the fragment expectations for future agent work.</p></li>
+<li><p>Gated expensive pull request test jobs behind the Towncrier changelog fragment
+check, with a <code class="docutils literal notranslate"><span class="pre">no-changelog-required</span></code> label override for changes that do not need
+a release note. Adding or removing that label reruns the gate.</p></li>
 </ul>
 </section>
 </section>
@@ -1462,7 +1465,7 @@ delineate functionality of the various parts of NexusLIMS</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-2026-07-17">[Unreleased] (2026-07-17)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unreleased-2026-07-20">[Unreleased] (2026-07-20)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">2.7.3 (2026-06-08)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">2.7.2 (2026-06-03)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">2.7.1 (2026-05-25)</a></li>
