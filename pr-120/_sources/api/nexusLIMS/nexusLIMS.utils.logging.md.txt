@@ -1,0 +1,34 @@
+# {py:mod}`nexusLIMS.utils.logging`
+
+```{py:module} nexusLIMS.utils.logging
+```
+
+```{autodoc2-docstring} nexusLIMS.utils.logging
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`setup_loggers <nexusLIMS.utils.logging.setup_loggers>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.logging.setup_loggers
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} setup_loggers(log_level)
+:canonical: nexusLIMS.utils.logging.setup_loggers
+
+```{autodoc2-docstring} nexusLIMS.utils.logging.setup_loggers
+:parser: autodoc2_docstrings_parser
+```
+````

@@ -1,0 +1,20 @@
+# {py:mod}`nexusLIMS.tui.apps.config`
+
+```{py:module} nexusLIMS.tui.apps.config
+```
+
+```{autodoc2-docstring} nexusLIMS.tui.apps.config
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Submodules
+
+```{toctree}
+:titlesonly:
+:maxdepth: 1
+
+nexusLIMS.tui.apps.config.validators
+nexusLIMS.tui.apps.config.screens
+nexusLIMS.tui.apps.config.app
+```
