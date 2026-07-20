@@ -1,0 +1,35 @@
+# {py:mod}`nexusLIMS.schemas.pint_types`
+
+```{py:module} nexusLIMS.schemas.pint_types
+```
+
+```{autodoc2-docstring} nexusLIMS.schemas.pint_types
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`PintQuantity <nexusLIMS.schemas.pint_types.PintQuantity>`
+  - ```{autodoc2-docstring} nexusLIMS.schemas.pint_types.PintQuantity
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} PintQuantity
+:canonical: nexusLIMS.schemas.pint_types.PintQuantity
+
+```{autodoc2-docstring} nexusLIMS.schemas.pint_types.PintQuantity
+:parser: autodoc2_docstrings_parser
+```
+
+````
