@@ -14,8 +14,8 @@
 :titlesonly:
 :maxdepth: 3
 
-nexusLIMS.tui.apps
 nexusLIMS.tui.common
+nexusLIMS.tui.apps
 ```
 
 ## Submodules

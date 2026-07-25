@@ -14,6 +14,21 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.7.4 (2026-07-19)
+
+### Bug fixes
+
+- Fixed record builder failures caused by duplicate session ``END`` rows after scheduler usage events are revised. ([#117](https://github.com/datasophos/NexusLIMS/issues/117))
+
+### Miscellaneous/Development changes
+
+- Added a pull request check requiring a Towncrier changelog fragment and documented
+  the fragment expectations for future agent work.
+- Gated expensive pull request test jobs behind the Towncrier changelog fragment
+  check, with a `no-changelog-required` label override for changes that do not need
+  a release note. Adding or removing that label reruns the gate.
+
+
 ## 2.7.3 (2026-06-08)
 
 ### New features
