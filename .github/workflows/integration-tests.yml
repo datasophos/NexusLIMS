@@ -48,9 +48,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Log in to Container Registry
         uses: docker/login-action@v3
         with:
@@ -103,11 +100,25 @@ jobs:
              docker image inspect nexuslims-test-cdcs:latest >/dev/null 2>&1 && \
              docker image inspect nexuslims-test-elabftw:latest >/dev/null 2>&1; then
             echo "Using pre-built images from registry (tag: ${{ steps.image-tag.outputs.tag }})"
-            docker compose -f docker-compose.ci.yml up -d
+            COMPOSE_ARGS=(-f docker-compose.ci.yml)
           else
             echo "Pre-built images not available - building locally"
-            docker compose up -d
+            COMPOSE_ARGS=()
           fi
+
+          for attempt in 1 2 3; do
+            echo "Starting Docker services (attempt ${attempt}/3)..."
+            if docker compose "${COMPOSE_ARGS[@]}" up -d; then
+              exit 0
+            fi
+
+            if [[ "$attempt" == "3" ]]; then
+              exit 1
+            fi
+
+            docker compose "${COMPOSE_ARGS[@]}" down -v --remove-orphans || true
+            sleep $((attempt * 15))
+          done
 
       - name: Wait for services to be healthy
         run: |
