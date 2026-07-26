@@ -646,8 +646,8 @@ system. NexusLIMS supports exporting session records to LabArchives with:</p>
 <li><p><strong>Track results:</strong> Export outcomes are logged to the <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.UploadLog" title="nexusLIMS.db.models.UploadLog"><code class="xref py py-class docutils literal notranslate"><span class="pre">UploadLog</span></code></a> table</p></li>
 <li><p><strong>Update session status:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code> if exports succeed</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">BUILT_NOT_EXPORTED</span></code> if exporting fails</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code> if exports satisfy the configured <code class="docutils literal notranslate"><span class="pre">NX_EXPORT_STRATEGY</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BUILT_NOT_EXPORTED</span></code> if exports do not satisfy the configured strategy</p></li>
 </ul>
 </li>
 <li><p><strong>Archive successfully exported files:</strong> Move to <code class="docutils literal notranslate"><span class="pre">uploaded/</span></code> directory</p></li>
@@ -674,6 +674,15 @@ system. NexusLIMS supports exporting session records to LabArchives with:</p>
 </tbody>
 </table>
 </div>
+<p>Before a normal, non-dry-run build, NexusLIMS validates enabled export
+destinations according to this strategy:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">all</span></code>: every enabled destination must validate successfully.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">first_success</span></code> and <code class="docutils literal notranslate"><span class="pre">best_effort</span></code>: at least one enabled destination must validate successfully.</p></li>
+<li><p>Any strategy fails preflight when enabled destinations exist but none validate.</p></li>
+</ul>
+<p>Dry runs skip export destination validation so local file discovery can still be
+checked when external repositories are unavailable.</p>
 <p><strong>Example configuration:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_EXPORT_STRATEGY</span><span class="o">=</span>best_effort<span class="w">  </span><span class="c1"># Continue even if some destinations fail</span>
 </pre></div>
@@ -729,10 +738,10 @@ system. NexusLIMS supports exporting session records to LabArchives with:</p>
 <td><p>Session needs record generation</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code></p></td>
-<td><p>Record built and exported successfully</p></td>
+<td><p>Record built and export results satisfied <code class="docutils literal notranslate"><span class="pre">NX_EXPORT_STRATEGY</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BUILT_NOT_EXPORTED</span></code></p></td>
-<td><p>Record built but all exports failed</p></td>
+<td><p>Record built but export results did not satisfy <code class="docutils literal notranslate"><span class="pre">NX_EXPORT_STRATEGY</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ERROR</span></code></p></td>
 <td><p>Record building failed</p></td>

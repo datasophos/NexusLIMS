@@ -1576,8 +1576,10 @@ window.addEventListener("load", load);
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">session</span><span class="o">.</span><span class="n">update_session_status</span><span class="p">(</span><span class="n">RecordStatus</span><span class="o">.</span><span class="n">BUILT_NOT_EXPORTED</span><span class="p">)</span>
                     <span class="n">_logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
-                        <span class="s1">&#39;All exports failed for </span><span class="si">%s</span><span class="s1">, marking as &quot;BUILT_NOT_EXPORTED&quot;&#39;</span><span class="p">,</span>
+                        <span class="s2">&quot;Exports for </span><span class="si">%s</span><span class="s2"> did not satisfy NX_EXPORT_STRATEGY=</span><span class="si">%s</span><span class="s2">, &quot;</span>
+                        <span class="s1">&#39;marking as &quot;BUILT_NOT_EXPORTED&quot;&#39;</span><span class="p">,</span>
                         <span class="n">session</span><span class="o">.</span><span class="n">session_identifier</span><span class="p">,</span>
+                        <span class="n">settings</span><span class="o">.</span><span class="n">NX_EXPORT_STRATEGY</span><span class="p">,</span>
                     <span class="p">)</span>
 
             <span class="c1"># Move successfully exported files to uploaded directory</span>

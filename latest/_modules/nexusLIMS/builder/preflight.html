@@ -1395,6 +1395,7 @@ window.addEventListener("load", load);
         <span class="p">)</span>
 
     <span class="n">failures</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">valid_destinations</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">dest</span> <span class="ow">in</span> <span class="n">enabled</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">valid</span><span class="p">,</span> <span class="n">err_msg</span> <span class="o">=</span> <span class="n">dest</span><span class="o">.</span><span class="n">validate_config</span><span class="p">()</span>
@@ -1403,15 +1404,29 @@ window.addEventListener("load", load);
             <span class="k">continue</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">valid</span><span class="p">:</span>
             <span class="n">failures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">dest</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">err_msg</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">valid_destinations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">failures</span><span class="p">:</span>
+        <span class="n">strategy</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_EXPORT_STRATEGY</span>
+        <span class="n">valid_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_destinations</span><span class="p">)</span>
+        <span class="n">total_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">enabled</span><span class="p">)</span>
+        <span class="n">failure_details</span> <span class="o">=</span> <span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">failures</span><span class="p">)</span>
+        <span class="n">summary</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">valid_count</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">total_count</span><span class="si">}</span><span class="s2"> enabled export destination(s) validated &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;under NX_EXPORT_STRATEGY=</span><span class="si">{</span><span class="n">strategy</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">severity</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="s2">&quot;warning&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;warning&quot;</span>
+        <span class="k">if</span> <span class="n">valid_count</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="n">severity</span> <span class="o">=</span> <span class="s2">&quot;error&quot;</span>
+
         <span class="k">return</span> <span class="n">CheckResult</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">passed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">severity</span><span class="o">=</span><span class="s2">&quot;warning&quot;</span><span class="p">,</span>
+            <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">,</span>
             <span class="n">message</span><span class="o">=</span><span class="p">(</span>
-                <span class="s2">&quot;Some export destinations have configuration issues &quot;</span>
-                <span class="s2">&quot;(transient network errors may be ignored): &quot;</span> <span class="o">+</span> <span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">failures</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">summary</span><span class="si">}</span><span class="s2">. Some export destinations have configuration issues &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(transient network errors may be ignored): </span><span class="si">{</span><span class="n">failure_details</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">),</span>
         <span class="p">)</span>
 

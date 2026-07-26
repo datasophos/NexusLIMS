@@ -490,6 +490,7 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.</p>
 <h3>Bug fixes<a class="headerlink" href="#bug-fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Improved CDCS preflight error reporting so transient workspace API failures report the HTTP status and endpoint instead of a misleading JSON parsing configuration error. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/123">#123</a>)</p></li>
+<li><p>Aligned export destination preflight and final session status handling with NX_EXPORT_STRATEGY so unavailable destinations now stop builds when the configured strategy cannot succeed, and partial exports under the default all strategy are no longer marked completed. (<a class="reference external" href="https://github.com/datasophos/NexusLIMS/issues/124">#124</a>)</p></li>
 </ul>
 </section>
 <section id="miscellaneous-development-changes">

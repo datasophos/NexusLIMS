@@ -58,7 +58,7 @@ nexusLIMS.exporters.base
 ```
 ````
 
-````{py:function} was_successfully_exported(xml_file: pathlib.Path, results: dict[pathlib.Path, list[nexusLIMS.exporters.base.ExportResult]]) -> bool
+````{py:function} was_successfully_exported(xml_file: pathlib.Path, results: dict[pathlib.Path, list[nexusLIMS.exporters.base.ExportResult]], *, strategy: nexusLIMS.exporters.registry.ExportStrategy | None = None) -> bool
 :canonical: nexusLIMS.exporters.was_successfully_exported
 
 ```{autodoc2-docstring} nexusLIMS.exporters.was_successfully_exported

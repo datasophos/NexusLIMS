@@ -1418,8 +1418,8 @@ window.addEventListener("load", load);
                 <span class="s2">&quot;Controls behavior when exporting records to multiple destinations &quot;</span>
                 <span class="s2">&quot;(e.g., both CDCS and eLabFTW are configured):</span><span class="se">\n\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;`all` (default, recommended): Every configured destination must &quot;</span>
-                <span class="s2">&quot;accept the record. If any destination fails, the session is marked &quot;</span>
-                <span class="s2">&quot;`ERROR` and retried on the next run.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+                <span class="s2">&quot;accept the record. If any destination fails after the record is &quot;</span>
+                <span class="s2">&quot;built, the session is marked `BUILT_NOT_EXPORTED`.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;`first_success`: Stop after the first destination that accepts the &quot;</span>
                 <span class="s2">&quot;record. Useful if destinations are fallbacks for each other.</span><span class="se">\n\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;`best_effort`: Attempt all destinations; mark `COMPLETED` if at least &quot;</span>
