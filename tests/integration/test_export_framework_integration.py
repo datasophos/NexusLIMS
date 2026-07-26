@@ -429,8 +429,8 @@ class TestWasSuccessfullyExported:
 
         assert was_successfully_exported(sample_xml_file, results) is True
 
-    def test_successfully_exported_partial_success(self, sample_xml_file):
-        """Test was_successfully_exported when only some destinations succeed."""
+    def test_successfully_exported_partial_success_best_effort(self, sample_xml_file):
+        """Test best_effort succeeds when only some destinations succeed."""
         results = {
             sample_xml_file: [
                 ExportResult(success=True, destination_name="cdcs", record_id="123"),
@@ -442,8 +442,14 @@ class TestWasSuccessfullyExported:
             ]
         }
 
-        # Should still return True (at least one succeeded)
-        assert was_successfully_exported(sample_xml_file, results) is True
+        assert (
+            was_successfully_exported(
+                sample_xml_file,
+                results,
+                strategy="best_effort",
+            )
+            is True
+        )
 
     def test_successfully_exported_all_failed(self, sample_xml_file):
         """Test was_successfully_exported when all exports fail."""

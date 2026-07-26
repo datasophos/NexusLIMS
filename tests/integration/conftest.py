@@ -1152,6 +1152,15 @@ def _get_uploaded_cdcs_record_ids() -> list[str]:
     return [log.record_id for log in upload_logs if log.record_id is not None]
 
 
+def _disable_labarchives_export(monkeypatch):
+    """Disable LabArchives in Docker-backed integration tests."""
+    monkeypatch.setenv("NX_LABARCHIVES_ACCESS_KEY_ID", "")
+    monkeypatch.setenv("NX_LABARCHIVES_ACCESS_PASSWORD", "")
+    monkeypatch.setenv("NX_LABARCHIVES_USER_ID", "")
+    monkeypatch.setenv("NX_LABARCHIVES_URL", "")
+    monkeypatch.setenv("NX_LABARCHIVES_NOTEBOOK_ID", "")
+
+
 @pytest.fixture
 def cdcs_client(cdcs_url, cdcs_credentials, monkeypatch):
     """
@@ -1179,6 +1188,7 @@ def cdcs_client(cdcs_url, cdcs_credentials, monkeypatch):
     # Use monkeypatch for function-scoped environment setup
     monkeypatch.setenv("NX_CDCS_URL", cdcs_url)
     monkeypatch.setenv("NX_CDCS_TOKEN", cdcs_credentials["token"])
+    _disable_labarchives_export(monkeypatch)
 
     # Ensure the database file exists (Settings validation requires it)
     # Get the current NX_DB_PATH from environment
