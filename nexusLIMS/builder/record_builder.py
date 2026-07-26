@@ -727,8 +727,10 @@ def process_new_records(  # noqa: PLR0912, PLR0915
                 else:
                     session.update_session_status(RecordStatus.BUILT_NOT_EXPORTED)
                     _logger.error(
-                        'All exports failed for %s, marking as "BUILT_NOT_EXPORTED"',
+                        "Exports for %s did not satisfy NX_EXPORT_STRATEGY=%s, "
+                        'marking as "BUILT_NOT_EXPORTED"',
                         session.session_identifier,
+                        settings.NX_EXPORT_STRATEGY,
                     )
 
             # Move successfully exported files to uploaded directory

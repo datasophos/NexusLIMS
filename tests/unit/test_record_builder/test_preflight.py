@@ -704,6 +704,30 @@ class TestCheckDataPathWritable:
 class TestCheckExportDestinations:
     """Tests for _check_export_destinations."""
 
+    @staticmethod
+    def _destination(name, valid, message=None):
+        dest = MagicMock()
+        dest.name = name
+        dest.validate_config.return_value = (valid, message)
+        return dest
+
+    @staticmethod
+    def _run_with_destinations(destinations, strategy):
+        mock_registry = MagicMock()
+        mock_registry.get_enabled_destinations.return_value = destinations
+
+        with (
+            patch(
+                "nexusLIMS.builder.preflight.get_registry",
+                return_value=mock_registry,
+            ),
+            patch(
+                "nexusLIMS.builder.preflight.settings.NX_EXPORT_STRATEGY",
+                strategy,
+            ),
+        ):
+            return _check_export_destinations()
+
     def test_pass_when_all_destinations_valid(self):
         dest = MagicMock()
         dest.name = "cdcs"
@@ -720,7 +744,7 @@ class TestCheckExportDestinations:
         assert result.passed is True
         assert "cdcs" in result.message
 
-    def test_warn_when_destination_config_invalid(self):
+    def test_error_when_only_destination_config_invalid(self):
         dest = MagicMock()
         dest.name = "cdcs"
         dest.validate_config.return_value = (False, "API key missing")
@@ -734,7 +758,7 @@ class TestCheckExportDestinations:
             result = _check_export_destinations()
 
         assert result.passed is False
-        assert result.severity == "warning"
+        assert result.severity == "error"
 
     def test_warn_when_no_destinations_enabled(self):
         mock_registry = MagicMock()
@@ -760,7 +784,7 @@ class TestCheckExportDestinations:
         assert result.severity == "warning"
         assert "could not discover" in result.message.lower()
 
-    def test_warn_when_validate_config_raises(self):
+    def test_error_when_only_destination_validate_config_raises(self):
         dest = MagicMock()
         dest.name = "cdcs"
         dest.validate_config.side_effect = RuntimeError("unexpected crash")
@@ -774,8 +798,51 @@ class TestCheckExportDestinations:
             result = _check_export_destinations()
 
         assert result.passed is False
-        assert result.severity == "warning"
+        assert result.severity == "error"
         assert "unexpected error" in result.message.lower()
+
+    @pytest.mark.parametrize("strategy", ["all", "first_success", "best_effort"])
+    def test_error_when_all_enabled_destinations_invalid(self, strategy):
+        destinations = [
+            self._destination("cdcs", False, "HTTP 502"),
+            self._destination("elabftw", False, "HTTP 502"),
+        ]
+
+        result = self._run_with_destinations(destinations, strategy)
+
+        assert result.passed is False
+        assert result.severity == "error"
+        assert "0/2" in result.message
+        assert strategy in result.message
+
+    def test_error_when_strategy_all_has_partial_destination_failure(self):
+        destinations = [
+            self._destination("cdcs", True),
+            self._destination("elabftw", False, "HTTP 502"),
+        ]
+
+        result = self._run_with_destinations(destinations, "all")
+
+        assert result.passed is False
+        assert result.severity == "error"
+        assert "1/2" in result.message
+        assert "all" in result.message
+
+    @pytest.mark.parametrize("strategy", ["first_success", "best_effort"])
+    def test_warn_when_fallback_strategy_has_partial_destination_failure(
+        self, strategy
+    ):
+        destinations = [
+            self._destination("cdcs", True),
+            self._destination("elabftw", False, "HTTP 502"),
+        ]
+
+        result = self._run_with_destinations(destinations, strategy)
+
+        assert result.passed is False
+        assert result.severity == "warning"
+        assert "1/2" in result.message
+        assert strategy in result.message
 
 
 # ---------------------------------------------------------------------------

@@ -34,6 +34,7 @@ if TYPE_CHECKING:
     from pathlib import Path
 
     from nexusLIMS.db.session_handler import Session
+    from nexusLIMS.exporters.registry import ExportStrategy
     from nexusLIMS.harvesters.reservation_event import ReservationEvent
     from nexusLIMS.schemas.activity import AcquisitionActivity
 
@@ -168,8 +169,10 @@ def _log_to_database(
 def was_successfully_exported(
     xml_file: Path,
     results: dict[Path, list[ExportResult]],
+    *,
+    strategy: ExportStrategy | None = None,
 ) -> bool:
-    """Check if a file was successfully exported to at least one destination.
+    """Check if a file was successfully exported for the configured strategy.
 
     Parameters
     ----------
@@ -177,15 +180,30 @@ def was_successfully_exported(
         XML file path to check
     results
         Export results from export_records()
+    strategy
+        Export strategy to evaluate. If ``None``, use
+        :attr:`nexusLIMS.config.settings.NX_EXPORT_STRATEGY`.
 
     Returns
     -------
     bool
-        True if at least one destination succeeded, False otherwise
+        True if the export results satisfy the configured strategy, False otherwise
     """
     if xml_file not in results:
         return False
-    return any(r.success for r in results[xml_file])
+
+    file_results = results[xml_file]
+    if not file_results:
+        return False
+
+    strategy = strategy or settings.NX_EXPORT_STRATEGY
+    if strategy == "all":
+        return all(r.success for r in file_results)
+    if strategy in {"first_success", "best_effort"}:
+        return any(r.success for r in file_results)
+
+    msg = f"Unknown export strategy: {strategy}"
+    raise ValueError(msg)
 
 
 # Public API

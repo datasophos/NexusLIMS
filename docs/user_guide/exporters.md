@@ -170,8 +170,8 @@ The export process runs automatically as part of {py:func}`~nexusLIMS.builder.re
 3. **Execute by priority:** Individual destination export routines are run in priority order (highest first)
 4. **Track results:** Export outcomes are logged to the {py:class}`~nexusLIMS.db.models.UploadLog` table
 5. **Update session status:**
-   - `COMPLETED` if exports succeed
-   - `BUILT_NOT_EXPORTED` if exporting fails
+   - `COMPLETED` if exports satisfy the configured `NX_EXPORT_STRATEGY`
+   - `BUILT_NOT_EXPORTED` if exports do not satisfy the configured strategy
 6. **Archive successfully exported files:** Move to `uploaded/` directory
 
 ### Export Strategies
@@ -183,6 +183,16 @@ Multi-destination behavior can be configured with the `NX_EXPORT_STRATEGY` setti
 | **`all`** (default) | Export to all enabled destinations. Fails if any destination fails. |
 | **`first_success`** | Stop after first successful export. Remaining destinations skipped. |
 | **`best_effort`** | Attempt all destinations. Succeeds if at least one succeeds. |
+
+Before a normal, non-dry-run build, NexusLIMS validates enabled export
+destinations according to this strategy:
+
+- `all`: every enabled destination must validate successfully.
+- `first_success` and `best_effort`: at least one enabled destination must validate successfully.
+- Any strategy fails preflight when enabled destinations exist but none validate.
+
+Dry runs skip export destination validation so local file discovery can still be
+checked when external repositories are unavailable.
 
 **Example configuration:**
 ```bash
@@ -234,8 +244,8 @@ Session records track overall export status in `session_log.record_status`:
 | Status | Meaning |
 |--------|---------|
 | `TO_BE_BUILT` | Session needs record generation |
-| `COMPLETED` | Record built and exported successfully |
-| `BUILT_NOT_EXPORTED` | Record built but all exports failed |
+| `COMPLETED` | Record built and export results satisfied `NX_EXPORT_STRATEGY` |
+| `BUILT_NOT_EXPORTED` | Record built but export results did not satisfy `NX_EXPORT_STRATEGY` |
 | `ERROR` | Record building failed |
 | `NO_FILES_FOUND` | No files found for session |
 

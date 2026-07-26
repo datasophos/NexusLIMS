@@ -155,8 +155,8 @@ class TestWasSuccessfullyExported:
 
         assert was_successfully_exported(xml_file, results) is True
 
-    def test_successfully_exported_partial_success(self):
-        """Test was_successfully_exported when only some destinations succeed."""
+    def test_successfully_exported_partial_success_best_effort(self):
+        """Test best_effort succeeds when only some destinations succeed."""
         xml_file = Path("/tmp/test.xml")
         results = {
             xml_file: [
@@ -169,8 +169,54 @@ class TestWasSuccessfullyExported:
             ]
         }
 
-        # Should still return True (at least one succeeded)
-        assert was_successfully_exported(xml_file, results) is True
+        assert (
+            was_successfully_exported(xml_file, results, strategy="best_effort") is True
+        )
+
+    def test_strategy_all_requires_every_export_to_succeed(self):
+        """Test all strategy treats partial success as not successfully exported."""
+        xml_file = Path("/tmp/test.xml")
+        results = {
+            xml_file: [
+                ExportResult(success=True, destination_name="cdcs", record_id="123"),
+                ExportResult(
+                    success=False,
+                    destination_name="elabftw",
+                    error_message="Failed",
+                ),
+            ]
+        }
+
+        assert was_successfully_exported(xml_file, results, strategy="all") is False
+
+    def test_strategy_all_succeeds_when_every_export_succeeds(self):
+        """Test all strategy succeeds only when every export succeeds."""
+        xml_file = Path("/tmp/test.xml")
+        results = {
+            xml_file: [
+                ExportResult(success=True, destination_name="cdcs", record_id="123"),
+                ExportResult(success=True, destination_name="elabftw", record_id="456"),
+            ]
+        }
+
+        assert was_successfully_exported(xml_file, results, strategy="all") is True
+
+    @pytest.mark.parametrize("strategy", ["first_success", "best_effort"])
+    def test_fallback_strategies_succeed_when_any_export_succeeds(self, strategy):
+        """Test fallback strategies treat any successful export as success."""
+        xml_file = Path("/tmp/test.xml")
+        results = {
+            xml_file: [
+                ExportResult(
+                    success=False,
+                    destination_name="cdcs",
+                    error_message="Failed",
+                ),
+                ExportResult(success=True, destination_name="elabftw", record_id="456"),
+            ]
+        }
+
+        assert was_successfully_exported(xml_file, results, strategy=strategy) is True
 
     def test_successfully_exported_all_failed(self):
         """Test was_successfully_exported when all exports fail."""
@@ -196,3 +242,22 @@ class TestWasSuccessfullyExported:
         results = {}
 
         assert was_successfully_exported(xml_file, results) is False
+
+    def test_successfully_exported_empty_results(self):
+        """Test was_successfully_exported when file has no export results."""
+        xml_file = Path("/tmp/test.xml")
+        results = {xml_file: []}
+
+        assert was_successfully_exported(xml_file, results) is False
+
+    def test_successfully_exported_unknown_strategy_raises(self):
+        """Test was_successfully_exported rejects unknown export strategies."""
+        xml_file = Path("/tmp/test.xml")
+        results = {
+            xml_file: [
+                ExportResult(success=True, destination_name="cdcs", record_id="123")
+            ]
+        }
+
+        with pytest.raises(ValueError, match="Unknown export strategy: invalid"):
+            was_successfully_exported(xml_file, results, strategy="invalid")

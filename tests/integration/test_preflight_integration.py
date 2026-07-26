@@ -141,22 +141,28 @@ class TestPreflightExportDestinations:
         assert result.passed is True, f"Expected CDCS to pass; got: {result.message}"
         assert result.severity == "warning"
 
-    def test_cdcs_warns_with_invalid_token(self, cdcs_url, monkeypatch):
-        """CDCS destination warns (not errors) when the token is invalid.
+    def test_cdcs_invalid_token_errors_under_all_strategy(self, cdcs_url, monkeypatch):
+        """CDCS destination errors when the token is invalid under ``all``.
 
-        The check uses severity="warning" for destination config issues because
-        a transient network error should not abort a run.
+        The default export strategy requires every enabled destination to be
+        valid, so an invalid CDCS token should abort the run.
         """
         from nexusLIMS.config import refresh_settings
+        from nexusLIMS.exporters.destinations.elabftw import ELabFTWDestination
+        from nexusLIMS.exporters.destinations.labarchives import LabArchivesDestination
 
         monkeypatch.setenv("NX_CDCS_URL", cdcs_url)
         monkeypatch.setenv("NX_CDCS_TOKEN", "this-token-is-definitely-invalid-xyz")
+        monkeypatch.setattr(ELabFTWDestination, "enabled", property(lambda _: False))
+        monkeypatch.setattr(
+            LabArchivesDestination, "enabled", property(lambda _: False)
+        )
         refresh_settings()
 
         result = _check_export_destinations()
 
         assert result.passed is False
-        assert result.severity == "warning"
+        assert result.severity == "error"
         msg = result.message.lower()
         assert "cdcs" in msg or "authentication" in msg
 
