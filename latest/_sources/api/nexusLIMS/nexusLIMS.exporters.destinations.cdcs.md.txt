@@ -25,6 +25,17 @@
 
 ### API
 
+````{py:exception} CDCSAPIError()
+:canonical: nexusLIMS.exporters.destinations.cdcs.CDCSAPIError
+
+Bases: {py:obj}`RuntimeError`
+
+```{autodoc2-docstring} nexusLIMS.exporters.destinations.cdcs.CDCSAPIError
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 `````{py:class} CDCSDestination
 :canonical: nexusLIMS.exporters.destinations.cdcs.CDCSDestination
 

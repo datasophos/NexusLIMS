@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Jul, 25, 2026"/>
+    <meta name="docbuild:last-update" content="Jul, 26, 2026"/>
   </head>
   
   
@@ -531,6 +531,13 @@ instance using the CDCS REST API.</p>
 </section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
+<dl class="py exception">
+<dt class="sig sig-object py" id="nexusLIMS.exporters.destinations.cdcs.CDCSAPIError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">nexusLIMS.exporters.destinations.cdcs.</span></span><span class="sig-name descname"><span class="pre">CDCSAPIError</span></span><a class="reference internal" href="../../_modules/nexusLIMS/exporters/destinations/cdcs.html#CDCSAPIError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.exporters.destinations.cdcs.CDCSAPIError" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.11/library/exceptions.html#RuntimeError" title="(in Python v3.11)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RuntimeError</span></code></a></p>
+<p>Raised when a CDCS API endpoint returns an unsuccessful status.</p>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="nexusLIMS.exporters.destinations.cdcs.CDCSDestination">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">nexusLIMS.exporters.destinations.cdcs.</span></span><span class="sig-name descname"><span class="pre">CDCSDestination</span></span><a class="reference internal" href="../../_modules/nexusLIMS/exporters/destinations/cdcs.html#CDCSDestination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.exporters.destinations.cdcs.CDCSDestination" title="Link to this definition">#</a></dt>
@@ -668,6 +675,7 @@ ExportResult with success=False.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.destinations.cdcs.CDCSAPIError"><code class="docutils literal notranslate"><span class="pre">CDCSAPIError</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.destinations.cdcs.CDCSDestination"><code class="docutils literal notranslate"><span class="pre">CDCSDestination</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.destinations.cdcs.CDCSDestination.name"><code class="docutils literal notranslate"><span class="pre">CDCSDestination.name</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.exporters.destinations.cdcs.CDCSDestination.priority"><code class="docutils literal notranslate"><span class="pre">CDCSDestination.priority</span></code></a></li>
