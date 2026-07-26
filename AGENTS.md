@@ -25,6 +25,9 @@ uv add <package-name>
 uv add --dev <package-name>
 ```
 
+When changing dependencies or project metadata in `pyproject.toml`, always
+include the corresponding `uv.lock` update in the same change.
+
 ### Testing
 
 Tests should always be run with MPL comparison enabled.
