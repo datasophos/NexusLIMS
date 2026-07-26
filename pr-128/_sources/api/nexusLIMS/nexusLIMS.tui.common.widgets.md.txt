@@ -1,0 +1,191 @@
+# {py:mod}`nexusLIMS.tui.common.widgets`
+
+```{py:module} nexusLIMS.tui.common.widgets
+```
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`NumpadInput <nexusLIMS.tui.common.widgets.NumpadInput>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.common.widgets.NumpadInput
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`ValidatedInput <nexusLIMS.tui.common.widgets.ValidatedInput>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.common.widgets.ValidatedInput
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`AutocompleteInput <nexusLIMS.tui.common.widgets.AutocompleteInput>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.common.widgets.AutocompleteInput
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`FormField <nexusLIMS.tui.common.widgets.FormField>`
+  - ```{autodoc2-docstring} nexusLIMS.tui.common.widgets.FormField
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+`````{py:class} NumpadInput(value: str | None = None, placeholder: str = '', highlighter: rich.highlighter.Highlighter | None = None, password: bool = False, *, restrict: str | None = None, type: textual.widgets._input.InputType = 'text', max_length: int = 0, suggester: textual.suggester.Suggester | None = None, validators: textual.validation.Validator | typing.Iterable[textual.validation.Validator] | None = None, validate_on: typing.Iterable[textual.widgets._input.InputValidationOn] | None = None, valid_empty: bool = False, select_on_focus: bool = True, name: str | None = None, id: str | None = None, classes: str | None = None, disabled: bool = False, tooltip: rich.console.RenderableType | None = None, compact: bool = False)
+:canonical: nexusLIMS.tui.common.widgets.NumpadInput
+
+Bases: {py:obj}`textual.widgets.Input`
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.NumpadInput
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:method} on_key(event: textual.events.Key) -> None
+:canonical: nexusLIMS.tui.common.widgets.NumpadInput.on_key
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.NumpadInput.on_key
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+`````{py:class} ValidatedInput(*args, validator: collections.abc.Callable | None = None, **kwargs)
+:canonical: nexusLIMS.tui.common.widgets.ValidatedInput
+
+Bases: {py:obj}`textual.widgets.Input`
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.ValidatedInput
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:method} validate_value(value: str) -> tuple[bool, str]
+:canonical: nexusLIMS.tui.common.widgets.ValidatedInput.validate_value
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.ValidatedInput.validate_value
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:property} is_valid
+:canonical: nexusLIMS.tui.common.widgets.ValidatedInput.is_valid
+:type: bool
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.ValidatedInput.is_valid
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:property} error_message
+:canonical: nexusLIMS.tui.common.widgets.ValidatedInput.error_message
+:type: str
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.ValidatedInput.error_message
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+`````{py:class} AutocompleteInput(suggestions: list[str] | None = None, *args, **kwargs)
+:canonical: nexusLIMS.tui.common.widgets.AutocompleteInput
+
+Bases: {py:obj}`textual.widgets.Input`
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.AutocompleteInput
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:method} set_suggestions(suggestions: list[str]) -> None
+:canonical: nexusLIMS.tui.common.widgets.AutocompleteInput.set_suggestions
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.AutocompleteInput.set_suggestions
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+`````{py:class} FormField(label_text: str, input_widget: textual.widgets.Input, *, required: bool = False, help_text: str | None = None, **kwargs)
+:canonical: nexusLIMS.tui.common.widgets.FormField
+
+Bases: {py:obj}`textual.containers.Vertical`
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.FormField
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:class} Changed(field: nexusLIMS.tui.common.widgets.FormField, value: str)
+:canonical: nexusLIMS.tui.common.widgets.FormField.Changed
+
+Bases: {py:obj}`textual.message.Message`
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.FormField.Changed
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} compose() -> textual.app.ComposeResult
+:canonical: nexusLIMS.tui.common.widgets.FormField.compose
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.FormField.compose
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} on_input_changed(event: textual.widgets.Input.Changed) -> None
+:canonical: nexusLIMS.tui.common.widgets.FormField.on_input_changed
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.FormField.on_input_changed
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:property} value
+:canonical: nexusLIMS.tui.common.widgets.FormField.value
+:type: str
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.FormField.value
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:property} is_valid
+:canonical: nexusLIMS.tui.common.widgets.FormField.is_valid
+:type: bool
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.FormField.is_valid
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:property} error_message
+:canonical: nexusLIMS.tui.common.widgets.FormField.error_message
+:type: str
+
+```{autodoc2-docstring} nexusLIMS.tui.common.widgets.FormField.error_message
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
