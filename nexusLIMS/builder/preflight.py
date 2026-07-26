@@ -566,6 +566,7 @@ def _check_export_destinations() -> CheckResult:
         )
 
     failures = []
+    valid_destinations = []
     for dest in enabled:
         try:
             valid, err_msg = dest.validate_config()
@@ -574,15 +575,29 @@ def _check_export_destinations() -> CheckResult:
             continue
         if not valid:
             failures.append(f"{dest.name}: {err_msg}")
+        else:
+            valid_destinations.append(dest)
 
     if failures:
+        strategy = settings.NX_EXPORT_STRATEGY
+        valid_count = len(valid_destinations)
+        total_count = len(enabled)
+        failure_details = "; ".join(failures)
+        summary = (
+            f"{valid_count}/{total_count} enabled export destination(s) validated "
+            f"under NX_EXPORT_STRATEGY={strategy}"
+        )
+        severity: Literal["error", "warning"] = "warning"
+        if valid_count == 0 or strategy == "all":
+            severity = "error"
+
         return CheckResult(
             name=name,
             passed=False,
-            severity="warning",
+            severity=severity,
             message=(
-                "Some export destinations have configuration issues "
-                "(transient network errors may be ignored): " + "; ".join(failures)
+                f"{summary}. Some export destinations have configuration issues "
+                f"(transient network errors may be ignored): {failure_details}"
             ),
         )
 

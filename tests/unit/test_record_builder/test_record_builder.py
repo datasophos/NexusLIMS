@@ -9,6 +9,7 @@ from datetime import datetime as dt
 from datetime import timedelta as td
 from functools import partial
 from pathlib import Path
+from unittest.mock import Mock
 
 import pytest
 from lxml import etree
@@ -890,6 +891,51 @@ class TestRecordBuilder:
             dt_to=dt.fromisoformat("2021-09-05T20:00:00-06:00"),
         )
         assert "Some record files were not exported:" in caplog.text
+
+    @pytest.mark.usefixtures("mock_nemo_reservation")
+    def test_process_new_records_marks_partial_all_export_not_exported(
+        self,
+        monkeypatch,
+    ):
+        dummy_file = Path("dummy_file.xml")
+
+        mock_session = Mock(spec=Session)
+        mock_session.session_identifier = "dummy_session"
+
+        export_results = {
+            dummy_file: [
+                ExportResult(
+                    success=True,
+                    destination_name="cdcs",
+                    record_id="test_record_id",
+                ),
+                ExportResult(
+                    success=False,
+                    destination_name="elabftw",
+                    error_message="Test export failure",
+                ),
+            ]
+        }
+
+        monkeypatch.setattr(record_builder.settings, "NX_EXPORT_STRATEGY", "all")
+        monkeypatch.setattr(record_builder, "run_preflight_checks", lambda **_: [])
+        monkeypatch.setattr(
+            record_builder.nemo_utils,
+            "add_all_usage_events_to_db",
+            lambda **_: None,
+        )
+        monkeypatch.setattr(
+            record_builder,
+            "build_new_session_records",
+            lambda: ([dummy_file], [mock_session], [], []),
+        )
+        monkeypatch.setattr(record_builder, "export_records", lambda *_: export_results)
+
+        record_builder.process_new_records()
+
+        mock_session.update_session_status.assert_called_once_with(
+            RecordStatus.BUILT_NOT_EXPORTED
+        )
 
     def test_build_record_error(self, monkeypatch, caplog, skip_preview_generation):
         def mock_get_sessions():
