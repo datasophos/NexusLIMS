@@ -242,3 +242,22 @@ class TestWasSuccessfullyExported:
         results = {}
 
         assert was_successfully_exported(xml_file, results) is False
+
+    def test_successfully_exported_empty_results(self):
+        """Test was_successfully_exported when file has no export results."""
+        xml_file = Path("/tmp/test.xml")
+        results = {xml_file: []}
+
+        assert was_successfully_exported(xml_file, results) is False
+
+    def test_successfully_exported_unknown_strategy_raises(self):
+        """Test was_successfully_exported rejects unknown export strategies."""
+        xml_file = Path("/tmp/test.xml")
+        results = {
+            xml_file: [
+                ExportResult(success=True, destination_name="cdcs", record_id="123")
+            ]
+        }
+
+        with pytest.raises(ValueError, match="Unknown export strategy: invalid"):
+            was_successfully_exported(xml_file, results, strategy="invalid")
