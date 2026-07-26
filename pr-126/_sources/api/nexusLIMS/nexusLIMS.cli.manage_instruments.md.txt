@@ -1,0 +1,58 @@
+# {py:mod}`nexusLIMS.cli.manage_instruments`
+
+```{py:module} nexusLIMS.cli.manage_instruments
+```
+
+```{autodoc2-docstring} nexusLIMS.cli.manage_instruments
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`main <nexusLIMS.cli.manage_instruments.main>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.manage_instruments.main
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`logger <nexusLIMS.cli.manage_instruments.logger>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.manage_instruments.logger
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} logger
+:canonical: nexusLIMS.cli.manage_instruments.logger
+:value: >
+   'getLogger(...)'
+
+```{autodoc2-docstring} nexusLIMS.cli.manage_instruments.logger
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:function} main()
+:canonical: nexusLIMS.cli.manage_instruments.main
+
+```{autodoc2-docstring} nexusLIMS.cli.manage_instruments.main
+:parser: autodoc2_docstrings_parser
+```
+````

@@ -1,0 +1,201 @@
+# {py:mod}`nexusLIMS.utils.labarchives`
+
+```{py:module} nexusLIMS.utils.labarchives
+```
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`LabArchivesClient <nexusLIMS.utils.labarchives.LabArchivesClient>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesClient
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`get_labarchives_client <nexusLIMS.utils.labarchives.get_labarchives_client>`
+  - ```{autodoc2-docstring} nexusLIMS.utils.labarchives.get_labarchives_client
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:exception} LabArchivesError()
+:canonical: nexusLIMS.utils.labarchives.LabArchivesError
+
+Bases: {py:obj}`Exception`
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesError
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:exception} LabArchivesAuthenticationError()
+:canonical: nexusLIMS.utils.labarchives.LabArchivesAuthenticationError
+
+Bases: {py:obj}`nexusLIMS.utils.labarchives.LabArchivesError`
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesAuthenticationError
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:exception} LabArchivesPermissionError()
+:canonical: nexusLIMS.utils.labarchives.LabArchivesPermissionError
+
+Bases: {py:obj}`nexusLIMS.utils.labarchives.LabArchivesError`
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesPermissionError
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:exception} LabArchivesNotFoundError()
+:canonical: nexusLIMS.utils.labarchives.LabArchivesNotFoundError
+
+Bases: {py:obj}`nexusLIMS.utils.labarchives.LabArchivesError`
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesNotFoundError
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:exception} LabArchivesRateLimitError()
+:canonical: nexusLIMS.utils.labarchives.LabArchivesRateLimitError
+
+Bases: {py:obj}`nexusLIMS.utils.labarchives.LabArchivesError`
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesRateLimitError
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````{py:class} LabArchivesClient(base_url: str, akid: str, password: str, uid: str)
+:canonical: nexusLIMS.utils.labarchives.LabArchivesClient
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesClient
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:method} get_tree_level(nbid: str, parent_tree_id: str = '0') -> list[dict[str, typing.Any]]
+:canonical: nexusLIMS.utils.labarchives.LabArchivesClient.get_tree_level
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesClient.get_tree_level
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_page_entries(nbid: str, page_tree_id: str, *, include_content: bool = False) -> list[dict[str, typing.Any]]
+:canonical: nexusLIMS.utils.labarchives.LabArchivesClient.get_page_entries
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesClient.get_page_entries
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} insert_folder(nbid: str, parent_tree_id: str, name: str) -> str
+:canonical: nexusLIMS.utils.labarchives.LabArchivesClient.insert_folder
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesClient.insert_folder
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} insert_page(nbid: str, parent_tree_id: str, name: str) -> str
+:canonical: nexusLIMS.utils.labarchives.LabArchivesClient.insert_page
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesClient.insert_page
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} add_entry(nbid: str, page_tree_id: str, entry_data: str, part_type: str = 'text entry') -> str
+:canonical: nexusLIMS.utils.labarchives.LabArchivesClient.add_entry
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesClient.add_entry
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} add_attachment(nbid: str, page_tree_id: str, filename: str, data: bytes, caption: str = '') -> str
+:canonical: nexusLIMS.utils.labarchives.LabArchivesClient.add_attachment
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesClient.add_attachment
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} attach_file(nbid: str, page_tree_id: str, path: pathlib.Path, caption: str = '') -> str
+:canonical: nexusLIMS.utils.labarchives.LabArchivesClient.attach_file
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesClient.attach_file
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_attachment_content(eid: str) -> bytes
+:canonical: nexusLIMS.utils.labarchives.LabArchivesClient.get_attachment_content
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesClient.get_attachment_content
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_user_info(login: str, password: str) -> dict[str, typing.Any]
+:canonical: nexusLIMS.utils.labarchives.LabArchivesClient.get_user_info
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesClient.get_user_info
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_user_info_by_uid(uid: str | None = None) -> dict[str, typing.Any]
+:canonical: nexusLIMS.utils.labarchives.LabArchivesClient.get_user_info_by_uid
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.LabArchivesClient.get_user_info_by_uid
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+````{py:function} get_labarchives_client() -> nexusLIMS.utils.labarchives.LabArchivesClient
+:canonical: nexusLIMS.utils.labarchives.get_labarchives_client
+
+```{autodoc2-docstring} nexusLIMS.utils.labarchives.get_labarchives_client
+:parser: autodoc2_docstrings_parser
+```
+````
