@@ -404,6 +404,7 @@ class TestPartialFailureRecovery:
         docker_services_running,
         nemo_connector,
         fresh_test_db,
+        cdcs_client,
         monkeypatch,
     ):
         """
@@ -423,6 +424,8 @@ class TestPartialFailureRecovery:
             NEMO connector fixture (handles database patching)
         fresh_test_db : Path
             Test database
+        cdcs_client : dict
+            CDCS client configuration (ensures CDCS environment is set up)
         monkeypatch : pytest.MonkeyPatch
             Pytest monkeypatch fixture
         """
