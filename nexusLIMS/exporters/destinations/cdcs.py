@@ -18,6 +18,10 @@ from nexusLIMS.utils.network import nexus_req
 _logger = logging.getLogger(__name__)
 
 
+class CDCSAPIError(RuntimeError):
+    """Raised when a CDCS API endpoint returns an unsuccessful status."""
+
+
 class CDCSDestination:
     """CDCS export destination plugin.
 
@@ -78,6 +82,8 @@ class CDCSDestination:
             self._get_workspace_id()
         except AuthenticationError as e:
             return False, f"CDCS authentication failed: {e}"
+        except CDCSAPIError as e:
+            return False, str(e)
         except Exception as e:
             return False, f"CDCS configuration error: {e}"
 
@@ -253,6 +259,13 @@ class CDCSDestination:
         if r.status_code in (HTTPStatus.UNAUTHORIZED, HTTPStatus.FORBIDDEN):
             msg = "Could not authenticate to CDCS"
             raise AuthenticationError(msg)
+        if r.status_code != HTTPStatus.OK:
+            reason = f" {r.reason}" if getattr(r, "reason", None) else ""
+            msg = (
+                f"CDCS API request failed with status {r.status_code}{reason} "
+                f"from {endpoint}"
+            )
+            raise CDCSAPIError(msg)
 
         workspaces = r.json()
         return workspaces[0]["id"] if workspaces else None
