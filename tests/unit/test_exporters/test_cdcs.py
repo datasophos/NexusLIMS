@@ -168,6 +168,31 @@ class TestCDCSDestinationConfiguration:
             assert "CDCS configuration error" in error_msg
             assert "Connection timeout" in error_msg
 
+    def test_validate_config_reports_workspace_http_error(self, mock_config_enabled):
+        """Test validate_config reports failed workspace API responses clearly."""
+        dest = CDCSDestination()
+
+        mock_response = Mock()
+        mock_response.status_code = HTTPStatus.BAD_GATEWAY
+        mock_response.reason = "Bad Gateway"
+        mock_response.url = "http://localhost:8000/rest/workspace/read_access/"
+        mock_response.text = ""
+        mock_response.json.side_effect = ValueError(
+            "Expecting value: line 1 column 1 (char 0)"
+        )
+
+        with patch(
+            "nexusLIMS.exporters.destinations.cdcs.nexus_req",
+            return_value=mock_response,
+        ):
+            is_valid, error_msg = dest.validate_config()
+
+        assert is_valid is False
+        assert "CDCS API request failed with status 502 Bad Gateway" in error_msg
+        assert "rest/workspace/read_access/" in error_msg
+        assert "CDCS configuration error" not in error_msg
+        assert "Expecting value" not in error_msg
+
     def test_validate_config_success(self, mock_config_enabled):
         """Test validate_config when everything is configured correctly."""
         dest = CDCSDestination()
@@ -320,6 +345,34 @@ class TestCDCSDestinationHelperMethods:
         ):
             workspace_id = dest._get_workspace_id()
             assert workspace_id == 789
+
+    def test_get_workspace_id_http_error_does_not_parse_json(self, mock_config_enabled):
+        """Test _get_workspace_id reports HTTP failures before parsing JSON."""
+        dest = CDCSDestination()
+
+        mock_response = Mock()
+        mock_response.status_code = HTTPStatus.BAD_GATEWAY
+        mock_response.reason = "Bad Gateway"
+        mock_response.url = "http://localhost:8000/rest/workspace/read_access/"
+        mock_response.text = ""
+        mock_response.json.side_effect = AssertionError("json() should not be called")
+
+        with (
+            patch(
+                "nexusLIMS.exporters.destinations.cdcs.nexus_req",
+                return_value=mock_response,
+            ),
+            pytest.raises(
+                RuntimeError,
+                match=(
+                    r"CDCS API request failed with status 502 Bad Gateway .*"
+                    r"rest/workspace/read_access/"
+                ),
+            ),
+        ):
+            dest._get_workspace_id()
+
+        mock_response.json.assert_not_called()
 
     def test_get_workspace_id_unauthorized(self, mock_config_enabled):
         """Test _get_workspace_id with unauthorized response."""
