@@ -1,0 +1,34 @@
+# {py:mod}`nexusLIMS.cli.extract`
+
+```{py:module} nexusLIMS.cli.extract
+```
+
+```{autodoc2-docstring} nexusLIMS.cli.extract
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`main <nexusLIMS.cli.extract.main>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.extract.main
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} main(file: pathlib.Path, no_preview: bool, no_metadata: bool, preview_path: pathlib.Path | None, write: bool, overwrite: bool, verbose: bool) -> None
+:canonical: nexusLIMS.cli.extract.main
+
+```{autodoc2-docstring} nexusLIMS.cli.extract.main
+:parser: autodoc2_docstrings_parser
+```
+````

@@ -1,0 +1,739 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>NexusLIMS Support Bundle Command Design &#8212; NexusLIMS pr-130 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=acda69ee" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=b6ade8a1"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=30646c52"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'superpowers/specs/2026-07-26-bugreport-command-design';</script>
+    <script>
+        DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'pr-130';
+        DOCUMENTATION_OPTIONS.show_version_warning_banner =
+            true;
+        </script>
+    <script src="../../_static/custom.js?v=ba087cdf"></script>
+    <link rel="canonical" href="https://datasophos.github.io/NexusLIMS/pr-130/superpowers/specs/2026-07-26-bugreport-command-design.html" />
+    <link rel="icon" href="../../_static/nexusLIMS_bare_logo.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="pr-130" />
+    <meta name="docbuild:last-update" content="Jul, 27, 2026"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS pr-130 documentation - Home"/>
+    <img src="../../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS pr-130 documentation - Home"/>
+  
+  
+</a></div>
+    
+      <div class="navbar-item">
+<div class="version-switcher__container dropdown pst-js-only">
+  <button id="pst-version-switcher-button-2"
+    type="button"
+    class="version-switcher__button btn btn-sm dropdown-toggle"
+    data-bs-toggle="dropdown"
+    aria-haspopup="listbox"
+    aria-controls="pst-version-switcher-list-2"
+    aria-label="Version switcher list"
+  >
+    Choose version  <!-- this text may get changed later by javascript -->
+    <span class="caret"></span>
+  </button>
+  <div id="pst-version-switcher-list-2"
+    class="version-switcher__menu dropdown-menu list-group-flush py-0"
+    role="listbox" aria-labelledby="pst-version-switcher-button-2">
+    <!-- dropdown will be populated by javascript on page load -->
+  </div>
+</div></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../user_guide.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../migration_guide.html">
+    Migration Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../dev_guide.html">
+    Dev Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../frontend_guide.html">
+    Frontend Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../reference.html">
+    Reference
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/datasophos/NexusLIMS" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://datasophos.co" title="Datasophos" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-globe fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">Datasophos</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">NexusLIMS Support Bundle Command Design</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="nexuslims-support-bundle-command-design">
+<h1>NexusLIMS Support Bundle Command Design<a class="headerlink" href="#nexuslims-support-bundle-command-design" title="Link to this heading">#</a></h1>
+<section id="purpose">
+<h2>Purpose<a class="headerlink" href="#purpose" title="Link to this heading">#</a></h2>
+<p>Add a <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">support-bundle</span></code> command that creates a single local diagnostic
+archive a site administrator can send to Datasophos support when a NexusLIMS
+deployment is misbehaving. The command does not submit the archive or create a
+public bug report.</p>
+<p>The command should answer the first round of support questions without requiring
+full observability infrastructure: what version is installed, how it is
+configured, whether configured services are reachable, what the database says
+about recent sessions, which logs show failures, and which local paths appear
+healthy.</p>
+</section>
+<section id="command">
+<h2>Command<a class="headerlink" href="#command" title="Link to this heading">#</a></h2>
+<p>The command is a top-level lazy-loaded CLI command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>support-bundle
+nexuslims<span class="w"> </span>support-bundle<span class="w"> </span>--output<span class="w"> </span>report.zip
+nexuslims<span class="w"> </span>support-bundle<span class="w"> </span>--log-days<span class="w"> </span><span class="m">14</span>
+nexuslims<span class="w"> </span>support-bundle<span class="w"> </span>--max-log-files<span class="w"> </span><span class="m">25</span>
+nexuslims<span class="w"> </span>support-bundle<span class="w"> </span>--log<span class="w"> </span>/path/to/specific.log
+nexuslims<span class="w"> </span>support-bundle<span class="w"> </span>--no-default-logs
+nexuslims<span class="w"> </span>support-bundle<span class="w"> </span>--include-all-logs
+</pre></div>
+</div>
+<p>Default output is <code class="docutils literal notranslate"><span class="pre">nexuslims-support-bundle-YYYYMMDD-HHMMSS.zip</span></code> in the current
+directory. <code class="docutils literal notranslate"><span class="pre">--output</span></code> points to the zip file path to create.</p>
+</section>
+<section id="archive-layout">
+<h2>Archive Layout<a class="headerlink" href="#archive-layout" title="Link to this heading">#</a></h2>
+<p>The archive contains predictable, stable filenames:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>manifest.json
+summary.html
+environment.json
+packages.txt
+config.redacted.json
+paths.json
+preflight.json
+preflight.txt
+extractors.json
+exporters.json
+errors.json
+database/
+  schema.json
+  session_log.csv
+  session_log_summary.json
+  instruments.csv
+  upload_log.csv
+  external_user_identifiers.csv
+logs/
+  selected recent logs
+log_summary.json
+recent_sessions.json
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">upload_log.csv</span></code> and <code class="docutils literal notranslate"><span class="pre">external_user_identifiers.csv</span></code> are included when the
+corresponding tables exist. Missing optional tables should be recorded in
+<code class="docutils literal notranslate"><span class="pre">database/schema.json</span></code> or <code class="docutils literal notranslate"><span class="pre">errors.json</span></code> without failing the command.</p>
+</section>
+<section id="collected-data">
+<h2>Collected Data<a class="headerlink" href="#collected-data" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">manifest.json</span></code> is the stable machine-readable entry point for the archive. It
+records the report schema version, generated timestamp, command options,
+NexusLIMS version, and one artifact entry for every file included in the archive.
+Each artifact entry should include the artifact path, media type, artifact schema
+version when applicable, record count when applicable, collection status, and
+any collector error summary.</p>
+<p><code class="docutils literal notranslate"><span class="pre">summary.html</span></code> is a self-contained static HTML entry point for human review. It
+links to the archive artifacts and highlights failed preflight checks, unhealthy
+paths, problematic recent sessions, database row-count summaries, and log warning
+or error counts.</p>
+<p><code class="docutils literal notranslate"><span class="pre">environment.json</span></code> records OS/platform details, Python version, executable path,
+NexusLIMS import path, current working directory, timezone, locale, and whether
+the package appears to be running from a source checkout or installed package.</p>
+<p><code class="docutils literal notranslate"><span class="pre">packages.txt</span></code> records installed package versions using the standard library
+where possible. The implementation should prefer <code class="docutils literal notranslate"><span class="pre">importlib.metadata</span></code> over
+shelling out to package-manager-specific commands so it works in pip, uv, and
+source-checkout environments.</p>
+<p><code class="docutils literal notranslate"><span class="pre">config.redacted.json</span></code> contains the effective NexusLIMS configuration using the
+existing <code class="docutils literal notranslate"><span class="pre">nexusLIMS.cli.config._build_config_dict()</span></code> and
+<code class="docutils literal notranslate"><span class="pre">nexusLIMS.cli.config._sanitize_config()</span></code> helpers.</p>
+<p><code class="docutils literal notranslate"><span class="pre">paths.json</span></code> reports each configured NexusLIMS path, the resolved absolute path,
+whether it exists, whether it is a file or directory, readability, writability
+where relevant, and filesystem free space when available. It must not recursively
+list raw data directories.</p>
+<p><code class="docutils literal notranslate"><span class="pre">preflight.json</span></code> contains structured results from
+<code class="docutils literal notranslate"><span class="pre">nexusLIMS.builder.preflight.run_preflight_checks(dry_run=False)</span></code>.
+<code class="docutils literal notranslate"><span class="pre">preflight.txt</span></code> is a human-readable rendering of the same results.</p>
+<p><code class="docutils literal notranslate"><span class="pre">database/session_log.csv</span></code> contains a copy of the full <code class="docutils literal notranslate"><span class="pre">session_log</span></code> table.
+Usernames are preserved. Session identifiers, instruments, timestamps, event
+types, and record statuses are preserved because they are central to support
+debugging.</p>
+<p><code class="docutils literal notranslate"><span class="pre">database/session_log_summary.json</span></code> contains counts by <code class="docutils literal notranslate"><span class="pre">record_status</span></code>,
+<code class="docutils literal notranslate"><span class="pre">event_type</span></code>, and instrument, plus basic timestamp ranges.</p>
+<p><code class="docutils literal notranslate"><span class="pre">database/instruments.csv</span></code> contains instrument configuration rows from the
+database. It should not contain API tokens because tokens live in the NexusLIMS
+configuration, not the instrument table.</p>
+<p><code class="docutils literal notranslate"><span class="pre">database/schema.json</span></code> contains the SQLite database path, file size, table
+names, Alembic revision when available, and row counts for key tables.</p>
+<p>The v1 archive should not include a bundled SQLite database copy. A
+<code class="docutils literal notranslate"><span class="pre">bundle.sqlite</span></code> artifact could be useful later for cross-table SQL analysis, but
+it duplicates exported data and adds schema-versioning and privacy concerns.</p>
+<p><code class="docutils literal notranslate"><span class="pre">recent_sessions.json</span></code> contains a compact list of recent or problematic sessions,
+especially <code class="docutils literal notranslate"><span class="pre">ERROR</span></code>, <code class="docutils literal notranslate"><span class="pre">NO_FILES_FOUND</span></code>, <code class="docutils literal notranslate"><span class="pre">NO_RESERVATION</span></code>, and <code class="docutils literal notranslate"><span class="pre">NO_CONSENT</span></code>, grouped
+or sortable by status and instrument.</p>
+<p><code class="docutils literal notranslate"><span class="pre">extractors.json</span></code> records discovered extractor plugins, supported extensions,
+priorities, and local profile search paths. This helps diagnose file discovery
+and extractor-selection problems.</p>
+<p><code class="docutils literal notranslate"><span class="pre">exporters.json</span></code> records configured exporter destinations, enabled or disabled
+state, export strategy, validation results where available, and relevant upload
+counts if they can be gathered locally.</p>
+<p><code class="docutils literal notranslate"><span class="pre">logs/</span></code> contains selected log files. By default the command copies recent logs
+from <code class="docutils literal notranslate"><span class="pre">settings.log_dir_path</span></code>, limited by <code class="docutils literal notranslate"><span class="pre">--log-days</span></code> and <code class="docutils literal notranslate"><span class="pre">--max-log-files</span></code>.
+Administrators can add explicit files with repeated <code class="docutils literal notranslate"><span class="pre">--log</span></code> options. The
+<code class="docutils literal notranslate"><span class="pre">--no-default-logs</span></code> option disables automatic log discovery, and
+<code class="docutils literal notranslate"><span class="pre">--include-all-logs</span></code> removes the default recent-log limit.</p>
+<p><code class="docutils literal notranslate"><span class="pre">log_summary.json</span></code> reports counts of warnings, errors, tracebacks, and common
+failure signatures across included logs.</p>
+<p><code class="docutils literal notranslate"><span class="pre">errors.json</span></code> records collector failures. A failed collector should not prevent
+other collectors from running or the archive from being created.</p>
+</section>
+<section id="redaction-and-privacy">
+<h2>Redaction and Privacy<a class="headerlink" href="#redaction-and-privacy" title="Link to this heading">#</a></h2>
+<p>The command must never include the raw <code class="docutils literal notranslate"><span class="pre">.env</span></code> file, generated XML records, raw
+microscope data, certificate bundle contents, or arbitrary recursive directory
+listings by default.</p>
+<p>Configuration secrets are redacted through the existing config sanitizer. Log
+content copied into the archive should pass through a best-effort line-oriented
+redactor that masks obvious credentials, including tokens, passwords,
+authorization headers, API keys, and configured secret values available from the
+sanitized configuration process.</p>
+<p>Usernames in <code class="docutils literal notranslate"><span class="pre">session_log</span></code> are intentionally preserved by default because they
+are useful when correlating NexusLIMS state with scheduler records during client
+support.</p>
+</section>
+<section id="failure-behavior">
+<h2>Failure Behavior<a class="headerlink" href="#failure-behavior" title="Link to this heading">#</a></h2>
+<p>The command should be resilient. Each collector runs independently and records
+exceptions in <code class="docutils literal notranslate"><span class="pre">errors.json</span></code>. The command exits successfully if it creates the
+archive, even when some diagnostic sections could not be collected. It exits
+nonzero only when the archive cannot be written.</p>
+<p>The terminal output should be short and actionable: print the archive path,
+summarize any collector failures, state that the archive was created locally and
+was not sent anywhere, instruct the administrator to review it and email it to
+<code class="docutils literal notranslate"><span class="pre">support&#64;datasophos.co</span></code>, and remind them that secrets are redacted on a
+best-effort basis.</p>
+</section>
+<section id="implementation-notes">
+<h2>Implementation Notes<a class="headerlink" href="#implementation-notes" title="Link to this heading">#</a></h2>
+<p>Create <code class="docutils literal notranslate"><span class="pre">nexusLIMS/cli/support_bundle.py</span></code> and lazy-load it as the
+<code class="docutils literal notranslate"><span class="pre">support-bundle</span></code> command from
+<code class="docutils literal notranslate"><span class="pre">nexusLIMS/cli/main.py</span></code>.</p>
+<p>Keep the first implementation as simple collector functions rather than a
+general plugin framework. Each collector should write one or more files into a
+temporary report directory. After collection, create the zip archive from that
+directory. This keeps v1 small while leaving a future path to a collector
+registry if site-specific diagnostics become necessary.</p>
+<p>Use standard library modules for archive creation, CSV writing, JSON writing,
+platform information, package metadata, filesystem inspection, and temporary
+directories.</p>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Link to this heading">#</a></h2>
+<p>Add focused unit tests for:</p>
+<ul class="simple">
+<li><p>CLI registration and help output.</p></li>
+<li><p>Archive creation with the expected filenames.</p></li>
+<li><p>Sanitized config output.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">session_log</span></code> and instrument CSV export.</p></li>
+<li><p>Optional table handling when <code class="docutils literal notranslate"><span class="pre">upload_log</span></code> or <code class="docutils literal notranslate"><span class="pre">external_user_identifiers</span></code> is
+absent.</p></li>
+<li><p>Log auto-discovery and explicit <code class="docutils literal notranslate"><span class="pre">--log</span></code> inclusion.</p></li>
+<li><p>Collector failure handling via <code class="docutils literal notranslate"><span class="pre">errors.json</span></code>.</p></li>
+<li><p>Preflight result serialization with mocked <code class="docutils literal notranslate"><span class="pre">run_preflight_checks()</span></code>.</p></li>
+</ul>
+<p>Add documentation for the command in the CLI reference and include a Towncrier
+feature fragment during implementation.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#purpose">Purpose</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#command">Command</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#archive-layout">Archive Layout</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#collected-data">Collected Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#redaction-and-privacy">Redaction and Privacy</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#failure-behavior">Failure Behavior</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-notes">Implementation Notes</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing">Testing</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/superpowers/specs/2026-07-26-bugreport-command-design.md.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 - 2026, datasophos, LLC.
+      <br/>
+    
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
