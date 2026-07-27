@@ -1,9 +1,11 @@
-# NexusLIMS Bug Report Command Design
+# NexusLIMS Support Bundle Command Design
 
 ## Purpose
 
-Add a `nexuslims bugreport` command that creates a single support archive a site
-administrator can send when a local NexusLIMS deployment is misbehaving.
+Add a `nexuslims support-bundle` command that creates a single local diagnostic
+archive a site administrator can send to Datasophos support when a NexusLIMS
+deployment is misbehaving. The command does not submit the archive or create a
+public bug report.
 
 The command should answer the first round of support questions without requiring
 full observability infrastructure: what version is installed, how it is
@@ -16,16 +18,16 @@ healthy.
 The command is a top-level lazy-loaded CLI command:
 
 ```bash
-nexuslims bugreport
-nexuslims bugreport --output report.zip
-nexuslims bugreport --log-days 14
-nexuslims bugreport --max-log-files 25
-nexuslims bugreport --log /path/to/specific.log
-nexuslims bugreport --no-default-logs
-nexuslims bugreport --include-all-logs
+nexuslims support-bundle
+nexuslims support-bundle --output report.zip
+nexuslims support-bundle --log-days 14
+nexuslims support-bundle --max-log-files 25
+nexuslims support-bundle --log /path/to/specific.log
+nexuslims support-bundle --no-default-logs
+nexuslims support-bundle --include-all-logs
 ```
 
-Default output is `nexuslims-bugreport-YYYYMMDD-HHMMSS.zip` in the current
+Default output is `nexuslims-support-bundle-YYYYMMDD-HHMMSS.zip` in the current
 directory. `--output` points to the zip file path to create.
 
 ## Archive Layout
@@ -34,6 +36,7 @@ The archive contains predictable, stable filenames:
 
 ```text
 manifest.json
+summary.html
 environment.json
 packages.txt
 config.redacted.json
@@ -62,8 +65,17 @@ corresponding tables exist. Missing optional tables should be recorded in
 
 ## Collected Data
 
-`manifest.json` records the report schema version, generated timestamp, command
-options, NexusLIMS version, and a list of files included in the archive.
+`manifest.json` is the stable machine-readable entry point for the archive. It
+records the report schema version, generated timestamp, command options,
+NexusLIMS version, and one artifact entry for every file included in the archive.
+Each artifact entry should include the artifact path, media type, artifact schema
+version when applicable, record count when applicable, collection status, and
+any collector error summary.
+
+`summary.html` is a self-contained static HTML entry point for human review. It
+links to the archive artifacts and highlights failed preflight checks, unhealthy
+paths, problematic recent sessions, database row-count summaries, and log warning
+or error counts.
 
 `environment.json` records OS/platform details, Python version, executable path,
 NexusLIMS import path, current working directory, timezone, locale, and whether
@@ -101,6 +113,10 @@ configuration, not the instrument table.
 
 `database/schema.json` contains the SQLite database path, file size, table
 names, Alembic revision when available, and row counts for key tables.
+
+The v1 archive should not include a bundled SQLite database copy. A
+`bundle.sqlite` artifact could be useful later for cross-table SQL analysis, but
+it duplicates exported data and adds schema-versioning and privacy concerns.
 
 `recent_sessions.json` contains a compact list of recent or problematic sessions,
 especially `ERROR`, `NO_FILES_FOUND`, `NO_RESERVATION`, and `NO_CONSENT`, grouped
@@ -150,12 +166,15 @@ archive, even when some diagnostic sections could not be collected. It exits
 nonzero only when the archive cannot be written.
 
 The terminal output should be short and actionable: print the archive path,
-summarize any collector failures, and remind the administrator that secrets are
-redacted on a best-effort basis.
+summarize any collector failures, state that the archive was created locally and
+was not sent anywhere, instruct the administrator to review it and email it to
+`support@datasophos.co`, and remind them that secrets are redacted on a
+best-effort basis.
 
 ## Implementation Notes
 
-Create `nexusLIMS/cli/bugreport.py` and lazy-load it from
+Create `nexusLIMS/cli/support_bundle.py` and lazy-load it as the
+`support-bundle` command from
 `nexusLIMS/cli/main.py`.
 
 Keep the first implementation as simple collector functions rather than a
