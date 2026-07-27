@@ -249,8 +249,8 @@ def test_support_bundle_creates_expected_archive(
 
     recent_sessions = _read_json(output, "recent_sessions.json")
     assert [s["session_identifier"] for s in recent_sessions] == [
-        "session-2",
         "session-1",
+        "session-2",
     ]
 
     with zipfile.ZipFile(output) as bundle:

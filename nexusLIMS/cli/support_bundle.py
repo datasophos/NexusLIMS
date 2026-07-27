@@ -32,7 +32,7 @@ SCHEMA_VERSION = 1
 REDACTED = "***"
 SUPPORT_EMAIL = "support@datasophos.co"
 MIN_SECRET_LENGTH = 4
-PROBLEM_STATUSES = {"ERROR", "NO_FILES_FOUND", "NO_RESERVATION", "NO_CONSENT"}
+PROBLEM_STATUSES = {"ERROR", "NO_RESERVATION", "NO_CONSENT"}
 SECRET_PATTERN = re.compile(
     r"(?i)\b(token|password|api[_-]?key|authorization)\b\s*[:=]\s*([^\s,;]+)"
 )
