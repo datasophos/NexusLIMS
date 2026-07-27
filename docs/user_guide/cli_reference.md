@@ -118,19 +118,35 @@ nexuslims support-bundle --include-all-logs
 By default, the command creates
 `nexuslims-support-bundle-YYYYMMDD-HHMMSS.zip` in the current directory.
 
-The archive includes a machine-readable `manifest.json`, a human-readable
-`summary.html`, redacted effective configuration, path health, preflight
-results, package and environment details, extractor and exporter diagnostics,
-database CSV exports, recent sessions, selected logs, and collector errors.
-Optional database tables such as `upload_log` and
-`external_user_identifiers` are exported when present and recorded as absent
-when missing.
+After the bundle is created, the command prints the archive path, any diagnostic
+sections that could not be included, a reminder to review the archive for
+sensitive content, and the next step for sending it to support.
+
+The archive includes:
+
+- `summary.html`: a styled human-readable overview of failed preflight checks,
+  unhealthy paths, problematic recent sessions, database row counts, log warning
+  and error counts, diagnostic-section errors, and included artifacts.
+- `manifest.json`: a machine-readable artifact index with command options and
+  artifact metadata.
+- `config.redacted.json`: effective NexusLIMS configuration with secrets
+  redacted.
+- `paths.json`: configured and effective path health. If `NX_LOG_PATH` or
+  `NX_RECORDS_PATH` are unset, the bundle records their effective defaults under
+  `NX_DATA_PATH/logs` and `NX_DATA_PATH/records`; missing default directories are
+  not treated as unhealthy when the parent `NX_DATA_PATH` is writable.
+- `preflight.json` and `preflight.txt`: structured and text preflight results.
+- `environment.json` and `packages.txt`: runtime and package details.
+- `extractors.json` and `exporters.json`: plugin and export diagnostics.
+- Database summaries and CSV exports, including `session_log` and optional
+  tables such as `upload_log` and `external_user_identifiers` when present.
+- Selected redacted logs and `log_summary.json`.
 
 The bundle intentionally does not include raw microscope data, generated XML
 records, the raw `.env` file, certificate bundle contents, arbitrary recursive
 directory listings, or a copied SQLite database. Configuration secrets and
-obvious credentials in copied logs are redacted on a best-effort basis, but
-administrators should review the archive before sending it.
+obvious credentials in copied logs are redacted on a best-effort basis, but you
+should review the archive before sending it for any sensitive content.
 
 ## `nexuslims build-records`
 
