@@ -7,7 +7,9 @@ import json
 import os
 import sqlite3
 import zipfile
-from datetime import datetime
+from dataclasses import dataclass
+from datetime import UTC, datetime
+from enum import Enum
 from typing import TYPE_CHECKING
 
 import pytest
@@ -21,6 +23,8 @@ from tests.unit.fixtures.database import INSTRUMENT_CONFIGS
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from nexusLIMS.cli.support_bundle import BundleContext
+
 
 def _read_json(bundle_path: Path, artifact: str) -> dict | list:
     with zipfile.ZipFile(bundle_path) as bundle:
@@ -30,6 +34,24 @@ def _read_json(bundle_path: Path, artifact: str) -> dict | list:
 def _read_text(bundle_path: Path, artifact: str) -> str:
     with zipfile.ZipFile(bundle_path) as bundle:
         return bundle.read(artifact).decode()
+
+
+def _bundle_context(tmp_path: Path) -> BundleContext:
+    from nexusLIMS.cli.support_bundle import BundleContext
+
+    return BundleContext(
+        report_dir=tmp_path,
+        output=tmp_path / "bundle.zip",
+        log_days=14,
+        max_log_files=25,
+        explicit_logs=(),
+        no_default_logs=False,
+        include_all_logs=False,
+        generated_at=datetime(2026, 1, 2, 3, 4, 5, tzinfo=UTC),
+        errors=[],
+        included_logs=[],
+        artifact_metadata={},
+    )
 
 
 @pytest.fixture
@@ -161,7 +183,17 @@ def test_support_bundle_creates_expected_archive(
 
     assert result.exit_code == 0, result.output
     assert output.exists()
-    assert "created locally" in result.output
+    assert "NexusLIMS support bundle created" in result.output
+    assert f"Archive: {output}" in result.output
+    assert "Status:" not in result.output
+    assert "Issues:" not in result.output
+    assert (
+        "Secrets have been automatically redacted, but please review before "
+        "sending for any sensitive content."
+    ) in result.output
+    assert result.output.rstrip().endswith(
+        "Next step: Review the archive and email it to support@datasophos.co."
+    )
     assert "support@datasophos.co" in result.output
 
     with zipfile.ZipFile(output) as bundle:
@@ -364,7 +396,10 @@ def test_collector_failures_are_captured(tmp_path, support_bundle_db, monkeypatc
     errors = _read_json(output, "errors.json")
     assert errors[0]["collector"] == "environment"
     assert "collector exploded" in errors[0]["error"]
-    assert "collector failure" in result.output.lower()
+    assert (
+        "Issues:  1 diagnostic section could not be included. See errors.json "
+        "in the archive."
+    ) in result.output
 
     manifest = _read_json(output, "manifest.json")
     errors_artifact = next(
@@ -391,6 +426,11 @@ def test_summary_html_highlights_required_sections(
 
     assert result.exit_code == 0, result.output
     summary = _read_text(output, "summary.html")
+    assert "<style>" in summary
+    assert "font-family:ui-monospace" in summary
+    assert "<main>" in summary
+    assert "<section>" in summary
+    assert "<ul class='mono'>" in summary
     assert "Unhealthy Paths" in summary
     assert "Problematic Recent Sessions" in summary
     assert "Database Row Counts" in summary
@@ -406,3 +446,245 @@ def test_can_write_does_not_destroy_existing_probe_file(tmp_path):
 
     assert _can_write(tmp_path) is True
     assert existing_probe.read_text() == "keep me"
+
+
+def test_json_helpers_handle_fallback_types(tmp_path):
+    """JSON helper fallback branches should keep support artifacts serializable."""
+    from nexusLIMS.cli.support_bundle import _json_default, _write_json
+
+    class Choice(Enum):
+        VALUE = "enum-value"
+
+    metadata = {}
+    _write_json(
+        tmp_path,
+        "nested/value.json",
+        {
+            "path": tmp_path,
+            "date": datetime(2026, 1, 2, 3, 4, 5),
+            "enum": Choice.VALUE,
+            "fallback": object(),
+        },
+        artifact_metadata=metadata,
+    )
+
+    data = json.loads((tmp_path / "nested/value.json").read_text())
+    assert data["path"] == str(tmp_path)
+    assert data["date"] == "2026-01-02T03:04:05"
+    assert data["enum"] == "enum-value"
+    assert data["fallback"].startswith("<object object at ")
+    assert _json_default(Choice.VALUE) == "enum-value"
+    assert metadata == {"media_type": "application/json"}
+
+
+def test_path_helpers_report_io_failures(tmp_path, monkeypatch):
+    """Path diagnostics should report read/write/free-space failures."""
+    from nexusLIMS.cli import support_bundle
+
+    monkeypatch.setattr(
+        support_bundle.shutil,
+        "disk_usage",
+        lambda _path: (_ for _ in ()).throw(OSError("disk failed")),
+    )
+
+    missing_child = tmp_path / "missing-parent" / "child.txt"
+    info = support_bundle._path_info(tmp_path, check_write=True)
+
+    assert support_bundle._can_read(missing_child) is False
+    assert support_bundle._can_write(missing_child) is False
+    assert info["writable"] is True
+    assert info["free_space_error"] == "disk failed"
+
+
+def test_collect_paths_includes_local_profiles_path(
+    tmp_path, support_bundle_db, monkeypatch
+):
+    """Configured local extractor profiles should appear in path diagnostics."""
+    from nexusLIMS.cli.support_bundle import _collect_paths
+
+    local_profiles = tmp_path / "profiles"
+    local_profiles.mkdir()
+    monkeypatch.setenv("NX_LOCAL_PROFILES_PATH", str(local_profiles))
+    config.refresh_settings()
+
+    ctx = _bundle_context(tmp_path)
+    _collect_paths(ctx)
+
+    paths = json.loads((tmp_path / "paths.json").read_text())
+    assert paths["NX_LOCAL_PROFILES_PATH"]["path"] == str(local_profiles)
+
+
+def test_unset_log_and_records_paths_use_data_path_defaults(
+    tmp_path, support_bundle_db, monkeypatch
+):
+    """Missing default log/records directories should not be unhealthy paths."""
+    from nexusLIMS.cli.support_bundle import _collect_paths, _unhealthy_paths
+
+    monkeypatch.delenv("NX_LOG_PATH", raising=False)
+    monkeypatch.delenv("NX_RECORDS_PATH", raising=False)
+    config.refresh_settings()
+
+    ctx = _bundle_context(tmp_path)
+    _collect_paths(ctx)
+
+    paths = json.loads((tmp_path / "paths.json").read_text())
+    assert paths["NX_LOG_PATH"]["path"] == str(config.settings.NX_DATA_PATH / "logs")
+    assert paths["NX_LOG_PATH"]["source"] == "default"
+    assert paths["NX_LOG_PATH"]["defaulted_from"] == "NX_DATA_PATH"
+    assert paths["NX_RECORDS_PATH"]["path"] == str(
+        config.settings.NX_DATA_PATH / "records"
+    )
+    assert paths["NX_RECORDS_PATH"]["source"] == "default"
+    assert paths["NX_RECORDS_PATH"]["defaulted_from"] == "NX_DATA_PATH"
+    assert ("NX_LOG_PATH", ["missing"]) not in _unhealthy_paths(paths)
+    assert ("NX_RECORDS_PATH", ["missing"]) not in _unhealthy_paths(paths)
+
+
+def test_preflight_serializes_dataclass_results(
+    tmp_path, support_bundle_db, monkeypatch
+):
+    """Dataclass preflight results should serialize via asdict."""
+    from nexusLIMS.cli.support_bundle import _collect_preflight
+
+    @dataclass
+    class Result:
+        name: str
+        passed: bool
+        severity: str
+        message: str
+
+    monkeypatch.setattr(
+        "nexusLIMS.cli.support_bundle.run_preflight_checks",
+        lambda **_kwargs: [
+            Result(
+                name="failed_check",
+                passed=False,
+                severity="error",
+                message="broken",
+            )
+        ],
+    )
+
+    ctx = _bundle_context(tmp_path)
+    _collect_preflight(ctx)
+
+    preflight = json.loads((tmp_path / "preflight.json").read_text())
+    assert preflight["checks"] == [
+        {
+            "name": "failed_check",
+            "passed": False,
+            "severity": "error",
+            "message": "broken",
+        }
+    ]
+    assert (
+        "[FAIL] error failed_check: broken" in (tmp_path / "preflight.txt").read_text()
+    )
+
+
+def test_database_schema_reports_alembic_revision(support_bundle_db):
+    """The schema summary should include an alembic revision when present."""
+    from nexusLIMS.cli.support_bundle import _database_schema
+
+    with sqlite3.connect(support_bundle_db) as conn:
+        conn.execute("CREATE TABLE alembic_version (version_num VARCHAR(32))")
+        conn.execute("INSERT INTO alembic_version VALUES ('rev123')")
+
+    schema = _database_schema()
+
+    assert schema["alembic_revision"] == "rev123"
+
+
+def test_empty_table_csv_uses_table_columns(tmp_path, support_bundle_db):
+    """Empty table exports should still include a header row."""
+    from nexusLIMS.cli.support_bundle import _write_table_csv
+
+    with sqlite3.connect(support_bundle_db) as conn:
+        conn.execute("CREATE TABLE empty_export (first TEXT, second INTEGER)")
+
+    ctx = _bundle_context(tmp_path)
+    row_count = _write_table_csv(ctx, "empty_export", "database/empty_export.csv")
+
+    assert row_count == 0
+    assert (tmp_path / "database/empty_export.csv").read_text() == "first,second\n"
+
+
+def test_log_artifact_path_adds_suffix_for_collisions(tmp_path, support_bundle_db):
+    """Duplicate log artifact paths should be made unique."""
+    from nexusLIMS.cli.support_bundle import _log_artifact_path
+
+    first = tmp_path / "a" / "same.log"
+    second = tmp_path / "b" / "same.log"
+    first.parent.mkdir()
+    second.parent.mkdir()
+    first.write_text("first")
+    second.write_text("second")
+
+    used = set()
+
+    assert _log_artifact_path(first, used) == "logs/same.log"
+    assert _log_artifact_path(second, used) == "logs/same-1.log"
+
+
+def test_load_artifact_json_returns_default_for_missing_or_invalid(tmp_path):
+    """Summary helpers should tolerate missing or invalid JSON artifacts."""
+    from nexusLIMS.cli.support_bundle import _load_artifact_json
+
+    ctx = _bundle_context(tmp_path)
+    (tmp_path / "invalid.json").write_text("{not-json")
+
+    assert _load_artifact_json(ctx, "missing.json", {"fallback": True}) == {
+        "fallback": True
+    }
+    assert _load_artifact_json(ctx, "invalid.json", []) == []
+
+
+def test_unhealthy_paths_reports_readable_and_writable_problems():
+    """Path summary should report unreadable and unwritable existing paths."""
+    from nexusLIMS.cli.support_bundle import _unhealthy_paths
+
+    paths = {
+        "missing": {"exists": False, "readable": False, "writable": None},
+        "unreadable": {"exists": True, "readable": False, "writable": None},
+        "unwritable": {"exists": True, "readable": True, "writable": False},
+    }
+
+    assert _unhealthy_paths(paths) == [
+        ("missing", ["missing"]),
+        ("unreadable", ["not readable"]),
+        ("unwritable", ["not writable"]),
+    ]
+
+
+def test_default_output_path_uses_timestamped_zip_name(tmp_path, monkeypatch):
+    """Default output path should be created under the current working directory."""
+    from nexusLIMS.cli.support_bundle import _default_output_path
+
+    monkeypatch.chdir(tmp_path)
+
+    output = _default_output_path()
+
+    assert output.parent == tmp_path
+    assert output.name.startswith("nexuslims-support-bundle-")
+    assert output.suffix == ".zip"
+
+
+def test_zip_write_error_is_reported_as_click_exception(
+    tmp_path, support_bundle_db, monkeypatch
+):
+    """Zip creation errors should become user-facing Click exceptions."""
+    output = tmp_path / "bundle.zip"
+
+    monkeypatch.setattr(
+        "nexusLIMS.cli.support_bundle.run_preflight_checks",
+        lambda **_kwargs: [],
+    )
+    monkeypatch.setattr(
+        "nexusLIMS.cli.support_bundle._create_zip",
+        lambda *_args: (_ for _ in ()).throw(OSError("read-only output")),
+    )
+
+    result = CliRunner().invoke(main, ["support-bundle", "--output", str(output)])
+
+    assert result.exit_code != 0
+    assert "Could not write support bundle: read-only output" in result.output

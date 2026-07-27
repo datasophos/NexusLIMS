@@ -254,6 +254,20 @@ def _path_info(path: Path, *, check_write: bool) -> dict[str, Any]:
     return info
 
 
+def _configured_path_info(
+    path: Path,
+    *,
+    check_write: bool,
+    configured: bool = True,
+    defaulted_from: str | None = None,
+) -> dict[str, Any]:
+    info = _path_info(path, check_write=check_write)
+    info["source"] = "configured" if configured else "default"
+    if defaulted_from is not None:
+        info["defaulted_from"] = defaulted_from
+    return info
+
+
 def _can_read(path: Path) -> bool:
     try:
         if path.is_dir():
@@ -282,16 +296,27 @@ def _can_write(path: Path) -> bool:
 def _collect_paths(ctx: BundleContext) -> None:
     """Collect health details for configured NexusLIMS paths."""
     paths = {
-        "NX_INSTRUMENT_DATA_PATH": _path_info(
-            settings.NX_INSTRUMENT_DATA_PATH, check_write=False
+        "NX_INSTRUMENT_DATA_PATH": _configured_path_info(
+            settings.NX_INSTRUMENT_DATA_PATH,
+            check_write=False,
         ),
-        "NX_DATA_PATH": _path_info(settings.NX_DATA_PATH, check_write=True),
-        "NX_DB_PATH": _path_info(settings.NX_DB_PATH, check_write=False),
-        "NX_LOG_PATH": _path_info(settings.log_dir_path, check_write=True),
-        "NX_RECORDS_PATH": _path_info(settings.records_dir_path, check_write=True),
+        "NX_DATA_PATH": _configured_path_info(settings.NX_DATA_PATH, check_write=True),
+        "NX_DB_PATH": _configured_path_info(settings.NX_DB_PATH, check_write=False),
+        "NX_LOG_PATH": _configured_path_info(
+            settings.log_dir_path,
+            check_write=True,
+            configured=settings.NX_LOG_PATH is not None,
+            defaulted_from="NX_DATA_PATH" if settings.NX_LOG_PATH is None else None,
+        ),
+        "NX_RECORDS_PATH": _configured_path_info(
+            settings.records_dir_path,
+            check_write=True,
+            configured=settings.NX_RECORDS_PATH is not None,
+            defaulted_from="NX_DATA_PATH" if settings.NX_RECORDS_PATH is None else None,
+        ),
     }
     if settings.NX_LOCAL_PROFILES_PATH is not None:
-        paths["NX_LOCAL_PROFILES_PATH"] = _path_info(
+        paths["NX_LOCAL_PROFILES_PATH"] = _configured_path_info(
             settings.NX_LOCAL_PROFILES_PATH,
             check_write=False,
         )
@@ -634,12 +659,42 @@ def _collect_summary_html(ctx: BundleContext) -> None:
             "<!doctype html>",
             (
                 "<html><head><meta charset='utf-8'>"
-                "<title>NexusLIMS Support Bundle</title></head>"
+                "<title>NexusLIMS Support Bundle</title>"
+                "<style>"
+                ":root{color-scheme:light;--bg:#f6f8fa;--panel:#fff;"
+                "--text:#17202a;--muted:#5f6b7a;--border:#d8dee4;"
+                "--accent:#0b5cad;--warn:#8a4b00;}"
+                "body{margin:0;background:var(--bg);color:var(--text);"
+                "font:15px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',"
+                "sans-serif;}"
+                "main{max-width:980px;margin:0 auto;padding:32px 24px 48px;}"
+                "header{border-bottom:1px solid var(--border);"
+                "margin-bottom:24px;padding-bottom:16px;}"
+                "h1{font-size:28px;margin:0 0 8px;}"
+                "h2{font-size:17px;margin:24px 0 10px;color:var(--accent);}"
+                "p{margin:4px 0;color:var(--muted);}"
+                "section{background:var(--panel);border:1px solid var(--border);"
+                "border-radius:8px;margin:14px 0;padding:16px 18px;}"
+                "ul{margin:0;padding-left:20px;}"
+                "li{margin:4px 0;}"
+                "a{color:var(--accent);text-decoration:none;}"
+                "a:hover{text-decoration:underline;}"
+                ".mono,code,pre{font-family:ui-monospace,SFMono-Regular,"
+                "Menlo,Consolas,'Liberation Mono',monospace;}"
+                ".empty{color:var(--muted);}"
+                ".warn{color:var(--warn);font-weight:600;}"
+                "</style></head>"
             ),
             "<body>",
+            "<main>",
+            "<header>",
             "<h1>NexusLIMS Support Bundle</h1>",
-            f"<p>Generated: {html.escape(ctx.generated_at.isoformat())}</p>",
-            f"<p>NexusLIMS version: {html.escape(__version__)}</p>",
+            f"<p>Generated: <span class='mono'>"
+            f"{html.escape(ctx.generated_at.isoformat())}</span></p>",
+            f"<p>NexusLIMS version: <span class='mono'>"
+            f"{html.escape(__version__)}</span></p>",
+            "</header>",
+            "<section>",
             f"<h2>Failed Preflight Checks ({len(failed_checks)})</h2>",
             "<ul>",
             *[
@@ -649,34 +704,51 @@ def _collect_summary_html(ctx: BundleContext) -> None:
                 )
                 for check in failed_checks
             ],
+            "<li class='empty'>None</li>" if not failed_checks else "",
             "</ul>",
+            "</section>",
+            "<section>",
             f"<h2>Unhealthy Paths ({len(unhealthy_paths)})</h2>",
             "<ul>",
             *[
                 (f"<li>{html.escape(name)}: {html.escape(', '.join(problems))}</li>")
                 for name, problems in unhealthy_paths
             ],
+            "<li class='empty'>None</li>" if not unhealthy_paths else "",
             "</ul>",
+            "</section>",
+            "<section>",
             f"<h2>Problematic Recent Sessions ({len(problematic_sessions)})</h2>",
             "<ul>",
             *[
                 (
-                    f"<li>{html.escape(str(session.get('session_identifier')))}: "
+                    f"<li><span class='mono'>"
+                    f"{html.escape(str(session.get('session_identifier')))}</span>: "
                     f"{html.escape(str(session.get('record_status')))} "
                     f"on {html.escape(str(session.get('instrument')))}</li>"
                 )
                 for session in problematic_sessions[:20]
             ],
+            "<li class='empty'>None</li>" if not problematic_sessions else "",
             "</ul>",
+            "</section>",
+            "<section>",
             "<h2>Database Row Counts</h2>",
             "<ul>",
             *[
-                f"<li>{html.escape(table)}: {count}</li>"
+                f"<li><span class='mono'>{html.escape(table)}</span>: {count}</li>"
                 for table, count in schema.get("row_counts", {}).items()
             ],
+            (
+                "<li class='empty'>No database row counts collected</li>"
+                if not schema.get("row_counts")
+                else ""
+            ),
             "</ul>",
+            "</section>",
+            "<section>",
             "<h2>Log Warnings And Errors</h2>",
-            "<ul>",
+            "<ul class='mono'>",
             f"<li>Warnings: {log_summary.get('totals', {}).get('warnings', 0)}</li>",
             f"<li>Errors: {log_summary.get('totals', {}).get('errors', 0)}</li>",
             (
@@ -684,23 +756,30 @@ def _collect_summary_html(ctx: BundleContext) -> None:
                 f"{log_summary.get('totals', {}).get('tracebacks', 0)}</li>"
             ),
             "</ul>",
+            "</section>",
+            "<section>",
             f"<h2>Collector Errors ({len(errors)})</h2>",
             "<ul>",
             *[
                 (
-                    f"<li>{html.escape(error['collector'])}: "
+                    f"<li class='warn'>{html.escape(error['collector'])}: "
                     f"{html.escape(error['error'])}</li>"
                 )
                 for error in errors
             ],
+            "<li class='empty'>None</li>" if not errors else "",
             "</ul>",
+            "</section>",
+            "<section>",
             "<h2>Artifacts</h2>",
-            "<ul>",
+            "<ul class='mono'>",
             *[
                 f"<li><a href='{html.escape(path)}'>{html.escape(path)}</a></li>"
                 for path in artifacts
             ],
             "</ul>",
+            "</section>",
+            "</main>",
             "</body></html>",
         ]
     )
@@ -721,7 +800,9 @@ def _unhealthy_paths(paths: dict[str, dict[str, Any]]) -> list[tuple[str, list[s
     unhealthy = []
     for name, info in paths.items():
         problems = []
-        if not info.get("exists"):
+        if not info.get("exists") and not (
+            info.get("source") == "default" and info.get("writable") is True
+        ):
             problems.append("missing")
         if info.get("exists") and not info.get("readable"):
             problems.append("not readable")
@@ -854,9 +935,19 @@ def main(**kwargs: Any) -> None:
             msg = f"Could not write support bundle: {exc}"
             raise click.ClickException(msg) from exc
 
-    click.echo(f"Support bundle written to: {output_path}")
-    click.echo("The archive was created locally and was not sent anywhere.")
+    click.echo()
+    click.secho("NexusLIMS support bundle created", bold=True)
+    click.echo(f"  Archive: {output_path}")
     if ctx.errors:
-        click.echo(f"Collector failures: {len(ctx.errors)}. See errors.json.")
-    click.echo(f"Review the archive and email it to {SUPPORT_EMAIL}.")
-    click.echo("Secrets are redacted on a best-effort basis; review before sending.")
+        issue_count = len(ctx.errors)
+        section_word = "section" if issue_count == 1 else "sections"
+        click.secho(
+            f"  Issues:  {issue_count} diagnostic {section_word} could not be "
+            "included. See errors.json in the archive.",
+            fg="yellow",
+        )
+    click.echo(
+        "  Note:    Secrets have been automatically redacted, but please review "
+        "before sending for any sensitive content."
+    )
+    click.echo(f"  Next step: Review the archive and email it to {SUPPORT_EMAIL}.")
