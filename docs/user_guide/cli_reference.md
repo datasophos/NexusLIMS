@@ -94,7 +94,43 @@ Commands:
   db             Manage NexusLIMS database.
   extract        Extract metadata and/or generate a preview for a single file.
   instruments    Manage NexusLIMS instruments.
+  support-bundle Create a local diagnostic archive for Datasophos support.
 ```
+
+## `nexuslims support-bundle`
+
+Create a local diagnostic zip archive that can be reviewed and sent to
+Datasophos support when a NexusLIMS deployment is misbehaving. The command does
+not upload or submit the archive.
+
+### Basic Usage
+
+```bash
+nexuslims support-bundle
+nexuslims support-bundle --output report.zip
+nexuslims support-bundle --log-days 14
+nexuslims support-bundle --max-log-files 25
+nexuslims support-bundle --log /path/to/specific.log
+nexuslims support-bundle --no-default-logs
+nexuslims support-bundle --include-all-logs
+```
+
+By default, the command creates
+`nexuslims-support-bundle-YYYYMMDD-HHMMSS.zip` in the current directory.
+
+The archive includes a machine-readable `manifest.json`, a human-readable
+`summary.html`, redacted effective configuration, path health, preflight
+results, package and environment details, extractor and exporter diagnostics,
+database CSV exports, recent sessions, selected logs, and collector errors.
+Optional database tables such as `upload_log` and
+`external_user_identifiers` are exported when present and recorded as absent
+when missing.
+
+The bundle intentionally does not include raw microscope data, generated XML
+records, the raw `.env` file, certificate bundle contents, arbitrary recursive
+directory listings, or a copied SQLite database. Configuration secrets and
+obvious credentials in copied logs are redacted on a best-effort basis, but
+administrators should review the archive before sending it.
 
 ## `nexuslims build-records`
 
