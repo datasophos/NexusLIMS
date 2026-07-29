@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Command-Line Interface Reference &#8212; NexusLIMS 2.7.4 documentation</title>
+    <title>Command-Line Interface Reference &#8212; NexusLIMS 2.8.0 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=239d9bda"></script>
+    <script src="../_static/documentation_options.js?v=69ff2ef9"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.7.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -65,8 +65,8 @@
     <link rel="prev" title="Configuration" href="configuration.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.7.4" />
-    <meta name="docbuild:last-update" content="Jul, 20, 2026"/>
+  <meta name="docsearch:version" content="2.8.0" />
+    <meta name="docbuild:last-update" content="Jul, 29, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.7.4 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.7.4 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.8.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.8.0 documentation - Home"/>
   
   
 </a></div>
@@ -562,15 +562,64 @@ Commands:
   db             Manage NexusLIMS database.
   extract        Extract metadata and/or generate a preview for a single file.
   instruments    Manage NexusLIMS instruments.
+  support-bundle Create a local diagnostic archive for Datasophos support.
 </pre></div>
 </div>
+</section>
+<section id="nexuslims-support-bundle">
+<h2><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">support-bundle</span></code><a class="headerlink" href="#nexuslims-support-bundle" title="Link to this heading">#</a></h2>
+<p>Create a local diagnostic zip archive that can be reviewed and sent to
+Datasophos support when a NexusLIMS deployment is misbehaving. The command does
+not upload or submit the archive.</p>
+<section id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>support-bundle
+nexuslims<span class="w"> </span>support-bundle<span class="w"> </span>--output<span class="w"> </span>report.zip
+nexuslims<span class="w"> </span>support-bundle<span class="w"> </span>--log-days<span class="w"> </span><span class="m">14</span>
+nexuslims<span class="w"> </span>support-bundle<span class="w"> </span>--max-log-files<span class="w"> </span><span class="m">25</span>
+nexuslims<span class="w"> </span>support-bundle<span class="w"> </span>--log<span class="w"> </span>/path/to/specific.log
+nexuslims<span class="w"> </span>support-bundle<span class="w"> </span>--no-default-logs
+nexuslims<span class="w"> </span>support-bundle<span class="w"> </span>--include-all-logs
+</pre></div>
+</div>
+<p>By default, the command creates
+<code class="docutils literal notranslate"><span class="pre">nexuslims-support-bundle-YYYYMMDD-HHMMSS.zip</span></code> in the current directory.</p>
+<p>After the bundle is created, the command prints the archive path, any diagnostic
+sections that could not be included, a reminder to review the archive for
+sensitive content, and the next step for sending it to support.</p>
+<p>The archive includes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">summary.html</span></code>: a styled human-readable overview of failed preflight checks,
+unhealthy paths, problematic recent sessions, database row counts, log warning
+and error counts, diagnostic-section errors, and included artifacts.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">manifest.json</span></code>: a machine-readable artifact index with command options and
+artifact metadata.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">config.redacted.json</span></code>: effective NexusLIMS configuration with secrets
+redacted.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">paths.json</span></code>: configured and effective path health. If <code class="docutils literal notranslate"><span class="pre">NX_LOG_PATH</span></code> or
+<code class="docutils literal notranslate"><span class="pre">NX_RECORDS_PATH</span></code> are unset, the bundle records their effective defaults under
+<code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH/logs</span></code> and <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH/records</span></code>; missing default directories are
+not treated as unhealthy when the parent <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code> is writable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">preflight.json</span></code> and <code class="docutils literal notranslate"><span class="pre">preflight.txt</span></code>: structured and text preflight results.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">environment.json</span></code> and <code class="docutils literal notranslate"><span class="pre">packages.txt</span></code>: runtime and package details.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">extractors.json</span></code> and <code class="docutils literal notranslate"><span class="pre">exporters.json</span></code>: plugin and export diagnostics.</p></li>
+<li><p>Database summaries and CSV exports, including <code class="docutils literal notranslate"><span class="pre">session_log</span></code> and optional
+tables such as <code class="docutils literal notranslate"><span class="pre">upload_log</span></code> and <code class="docutils literal notranslate"><span class="pre">external_user_identifiers</span></code> when present.</p></li>
+<li><p>Selected redacted logs and <code class="docutils literal notranslate"><span class="pre">log_summary.json</span></code>.</p></li>
+</ul>
+<p>The bundle intentionally does not include raw microscope data, generated XML
+records, the raw <code class="docutils literal notranslate"><span class="pre">.env</span></code> file, certificate bundle contents, arbitrary recursive
+directory listings, or a copied SQLite database. Configuration secrets and
+obvious credentials in copied logs are redacted on a best-effort basis, but you
+should review the archive before sending it for any sensitive content.</p>
+</section>
 </section>
 <section id="nexuslims-build-records">
 <h2><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code><a class="headerlink" href="#nexuslims-build-records" title="Link to this heading">#</a></h2>
 <p>The main record processing command that searches for completed sessions, builds
 XML records, and uploads them to configured export destinations.</p>
-<section id="basic-usage">
-<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading">#</a></h3>
+<section id="id1">
+<h3>Basic Usage<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>build-records<span class="w"> </span>--help
 </pre></div>
 </div>
@@ -858,8 +907,8 @@ error notifications are sent when:</p>
 <p>Extract metadata and/or generate a preview thumbnail for a single microscopy
 file. Useful for inspecting what NexusLIMS sees in a file without running the
 full record-building pipeline.</p>
-<section id="id1">
-<h3>Basic Usage<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<section id="id2">
+<h3>Basic Usage<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>extract<span class="w"> </span>--help
 </pre></div>
 </div>
@@ -893,8 +942,8 @@ Options:
 </pre></div>
 </div>
 </section>
-<section id="id2">
-<h3>Options<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<section id="id3">
+<h3>Options<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <section id="file-required-argument">
 <h4><code class="docutils literal notranslate"><span class="pre">FILE</span></code> (required argument)<a class="headerlink" href="#file-required-argument" title="Link to this heading">#</a></h4>
 <p>Path to the microscopy file to extract. The file must exist.</p>
@@ -952,8 +1001,8 @@ command skips writing if the output file already exists.</p>
 </pre></div>
 </div>
 </section>
-<section id="id3">
-<h4><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code><a class="headerlink" href="#id3" title="Link to this heading">#</a></h4>
+<section id="id4">
+<h4><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code><a class="headerlink" href="#id4" title="Link to this heading">#</a></h4>
 <p>Enable <code class="docutils literal notranslate"><span class="pre">DEBUG</span></code>-level logging. By default only <code class="docutils literal notranslate"><span class="pre">WARNING</span></code> and above are shown.</p>
 <p><strong>Example:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>extract<span class="w"> </span>-v<span class="w"> </span>/data/image.dm4
@@ -961,16 +1010,16 @@ command skips writing if the output file already exists.</p>
 </div>
 </section>
 </section>
-<section id="id4">
-<h3>Exit Codes<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id5">
+<h3>Exit Codes<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>0</strong>: Success</p></li>
 <li><p><strong>1</strong>: No extractor found for the given file format, or both <code class="docutils literal notranslate"><span class="pre">--no-metadata</span></code>
 and <code class="docutils literal notranslate"><span class="pre">--no-preview</span></code> were specified together</p></li>
 </ul>
 </section>
-<section id="id5">
-<h3>Examples<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>Examples<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <section id="inspect-metadata-for-a-dm4-file">
 <h4>Inspect metadata for a DM4 file<a class="headerlink" href="#inspect-metadata-for-a-dm4-file" title="Link to this heading">#</a></h4>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>extract<span class="w"> </span>/data/sample.dm4
@@ -1020,8 +1069,8 @@ the JSON is instead written to the corresponding path under <code class="docutil
 <p>Provides an interactive interface for adding, editing, and deleting instruments without
 manual SQL manipulation. Features include sortable tables, real-time validation, search/filter,
 theme switching, and automatic database initialization.</p>
-<section id="id6">
-<h3>Basic Usage<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<section id="id7">
+<h3>Basic Usage<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage<span class="w"> </span>--help
 </pre></div>
 </div>
@@ -1065,8 +1114,8 @@ Options:
 <li><p><strong>q</strong>: Quit</p></li>
 </ul>
 </section>
-<section id="id7">
-<h3>Examples<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>Examples<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Launch the instrument manager TUI</span>
 nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage
 
@@ -1079,11 +1128,11 @@ nexuslims<span class="w"> </span>instruments<span class="w"> </span>manage<span 
 </section>
 </section>
 <section id="nexuslims-instruments-list">
-<span id="id8"></span><h2><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">list</span></code><a class="headerlink" href="#nexuslims-instruments-list" title="Link to this heading">#</a></h2>
+<span id="id9"></span><h2><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">list</span></code><a class="headerlink" href="#nexuslims-instruments-list" title="Link to this heading">#</a></h2>
 <p>Print a summary of all instruments in the database without launching the full
 TUI. Useful for quick status checks and scripting.</p>
-<section id="id9">
-<h3>Basic Usage<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>Basic Usage<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>instruments<span class="w"> </span>list<span class="w"> </span>--help
 </pre></div>
 </div>
@@ -1148,8 +1197,8 @@ instrument’s configured timezone; <code class="docutils literal notranslate"><
 to each instrument’s configured timezone, or <code class="docutils literal notranslate"><span class="pre">null</span></code> if no sessions exist.</p>
 </section>
 </section>
-<section id="id10">
-<h3>Examples<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h3>Examples<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print table to terminal</span>
 nexuslims<span class="w"> </span>instruments<span class="w"> </span>list
 
@@ -1176,8 +1225,8 @@ database. To add, edit, or delete instruments, use
 <h2><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span></code><a class="headerlink" href="#nexuslims-config" title="Link to this heading">#</a></h2>
 <p>Configuration management utility for viewing and exporting NexusLIMS configuration.</p>
 <p>See the <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.cli.config.html#module-nexusLIMS.cli.config" title="nexusLIMS.cli.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a> module documentation for details.</p>
-<section id="id11">
-<h3>Basic Usage<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>Basic Usage<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>config<span class="w"> </span>--help
 </pre></div>
 </div>
@@ -1285,8 +1334,8 @@ version upgrade.</p>
 version numbers. For example, revision <code class="docutils literal notranslate"><span class="pre">v2_4_0b</span></code> corresponds to the database
 schema required for NexusLIMS v2.4.0. This makes it easy to identify which
 database version matches your installed NexusLIMS version.</p>
-<section id="id12">
-<h3>Basic Usage<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3>Basic Usage<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>--help
 </pre></div>
 </div>
@@ -1636,8 +1685,8 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
 </section>
 <section id="global-options">
 <h3>Global Options<a class="headerlink" href="#global-options" title="Link to this heading">#</a></h3>
-<section id="id13">
-<h4><code class="docutils literal notranslate"><span class="pre">--version</span></code><a class="headerlink" href="#id13" title="Link to this heading">#</a></h4>
+<section id="id14">
+<h4><code class="docutils literal notranslate"><span class="pre">--version</span></code><a class="headerlink" href="#id14" title="Link to this heading">#</a></h4>
 <p>Display the NexusLIMS version and exit.</p>
 <p><strong>Example:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>--version
@@ -1763,8 +1812,12 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shell-completion">Shell Completion</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#top-level-usage">Top-Level Usage</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-build-records"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-support-bundle"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">support-bundle</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-usage">Basic Usage</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-build-records"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Basic Usage</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#options">Options</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#n-dry-run"><code class="docutils literal notranslate"><span class="pre">-n,</span> <span class="pre">--dry-run</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#from-date"><code class="docutils literal notranslate"><span class="pre">--from</span> <span class="pre">DATE</span></code></a></li>
@@ -1789,19 +1842,19 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-extract"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">extract</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Basic Usage</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Options</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Options</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#file-required-argument"><code class="docutils literal notranslate"><span class="pre">FILE</span></code> (required argument)</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#no-preview"><code class="docutils literal notranslate"><span class="pre">--no-preview</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#no-metadata"><code class="docutils literal notranslate"><span class="pre">--no-metadata</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#p-preview-path-path"><code class="docutils literal notranslate"><span class="pre">-p,</span> <span class="pre">--preview-path</span> <span class="pre">PATH</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#w-write"><code class="docutils literal notranslate"><span class="pre">-w,</span> <span class="pre">--write</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#overwrite"><code class="docutils literal notranslate"><span class="pre">--overwrite</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id3"><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4"><code class="docutils literal notranslate"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Exit Codes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Examples</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Exit Codes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Examples</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#inspect-metadata-for-a-dm4-file">Inspect metadata for a DM4 file</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#inspect-metadata-without-generating-a-preview">Inspect metadata without generating a preview</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#generate-a-preview-thumbnail-at-a-specific-path">Generate a preview thumbnail at a specific path</a></li>
@@ -1813,28 +1866,28 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-instruments-manage"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">manage</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Basic Usage</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#features">Features</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#keybindings">Keybindings</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Examples</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Examples</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-instruments-list"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">instruments</span> <span class="pre">list</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Basic Usage</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#output-formats">Output Formats</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#table-default">Table (default)</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#json-format-json">JSON (<code class="docutils literal notranslate"><span class="pre">--format</span> <span class="pre">json</span></code>)</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Examples</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">Examples</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-config"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Basic Usage</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-db"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">Basic Usage</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#commands">Commands</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#init"><code class="docutils literal notranslate"><span class="pre">init</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#upgrade"><code class="docutils literal notranslate"><span class="pre">upgrade</span></code></a></li>
@@ -1848,7 +1901,7 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#global-options">Global Options</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13"><code class="docutils literal notranslate"><span class="pre">--version</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14"><code class="docutils literal notranslate"><span class="pre">--version</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-workflows">Common Workflows</a><ul class="nav section-nav flex-column">

@@ -1,0 +1,376 @@
+# {py:mod}`nexusLIMS.cli.support_bundle`
+
+```{py:module} nexusLIMS.cli.support_bundle
+```
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`ArtifactMeta <nexusLIMS.cli.support_bundle.ArtifactMeta>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.support_bundle.ArtifactMeta
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`BundleContext <nexusLIMS.cli.support_bundle.BundleContext>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`main <nexusLIMS.cli.support_bundle.main>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.support_bundle.main
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`SCHEMA_VERSION <nexusLIMS.cli.support_bundle.SCHEMA_VERSION>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.support_bundle.SCHEMA_VERSION
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`REDACTED <nexusLIMS.cli.support_bundle.REDACTED>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.support_bundle.REDACTED
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`SUPPORT_EMAIL <nexusLIMS.cli.support_bundle.SUPPORT_EMAIL>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.support_bundle.SUPPORT_EMAIL
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`MIN_SECRET_LENGTH <nexusLIMS.cli.support_bundle.MIN_SECRET_LENGTH>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.support_bundle.MIN_SECRET_LENGTH
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`PROBLEM_STATUSES <nexusLIMS.cli.support_bundle.PROBLEM_STATUSES>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.support_bundle.PROBLEM_STATUSES
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`SECRET_PATTERN <nexusLIMS.cli.support_bundle.SECRET_PATTERN>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.support_bundle.SECRET_PATTERN
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`BEARER_PATTERN <nexusLIMS.cli.support_bundle.BEARER_PATTERN>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BEARER_PATTERN
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} SCHEMA_VERSION
+:canonical: nexusLIMS.cli.support_bundle.SCHEMA_VERSION
+:value: >
+   1
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.SCHEMA_VERSION
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} REDACTED
+:canonical: nexusLIMS.cli.support_bundle.REDACTED
+:value: >
+   '***'
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.REDACTED
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} SUPPORT_EMAIL
+:canonical: nexusLIMS.cli.support_bundle.SUPPORT_EMAIL
+:value: >
+   'support@datasophos.co'
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.SUPPORT_EMAIL
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} MIN_SECRET_LENGTH
+:canonical: nexusLIMS.cli.support_bundle.MIN_SECRET_LENGTH
+:value: >
+   4
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.MIN_SECRET_LENGTH
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} PROBLEM_STATUSES
+:canonical: nexusLIMS.cli.support_bundle.PROBLEM_STATUSES
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.PROBLEM_STATUSES
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} SECRET_PATTERN
+:canonical: nexusLIMS.cli.support_bundle.SECRET_PATTERN
+:value: >
+   'compile(...)'
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.SECRET_PATTERN
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} BEARER_PATTERN
+:canonical: nexusLIMS.cli.support_bundle.BEARER_PATTERN
+:value: >
+   'compile(...)'
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BEARER_PATTERN
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````{py:class} ArtifactMeta
+:canonical: nexusLIMS.cli.support_bundle.ArtifactMeta
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.ArtifactMeta
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} media_type
+:canonical: nexusLIMS.cli.support_bundle.ArtifactMeta.media_type
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.ArtifactMeta.media_type
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} schema_version
+:canonical: nexusLIMS.cli.support_bundle.ArtifactMeta.schema_version
+
+**Type:** int | None
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.ArtifactMeta.schema_version
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} record_count
+:canonical: nexusLIMS.cli.support_bundle.ArtifactMeta.record_count
+
+**Type:** int | None
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.ArtifactMeta.record_count
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} status
+:canonical: nexusLIMS.cli.support_bundle.ArtifactMeta.status
+:value: >
+   'collected'
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.ArtifactMeta.status
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} error
+:canonical: nexusLIMS.cli.support_bundle.ArtifactMeta.error
+
+**Type:** str | None
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.ArtifactMeta.error
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+`````{py:class} BundleContext
+:canonical: nexusLIMS.cli.support_bundle.BundleContext
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} report_dir
+:canonical: nexusLIMS.cli.support_bundle.BundleContext.report_dir
+
+**Type:** pathlib.Path
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext.report_dir
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} output
+:canonical: nexusLIMS.cli.support_bundle.BundleContext.output
+
+**Type:** pathlib.Path
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext.output
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} log_days
+:canonical: nexusLIMS.cli.support_bundle.BundleContext.log_days
+
+**Type:** int
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext.log_days
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} max_log_files
+:canonical: nexusLIMS.cli.support_bundle.BundleContext.max_log_files
+
+**Type:** int
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext.max_log_files
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} explicit_logs
+:canonical: nexusLIMS.cli.support_bundle.BundleContext.explicit_logs
+
+**Type:** tuple[pathlib.Path, ...]
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext.explicit_logs
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} no_default_logs
+:canonical: nexusLIMS.cli.support_bundle.BundleContext.no_default_logs
+
+**Type:** bool
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext.no_default_logs
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} include_all_logs
+:canonical: nexusLIMS.cli.support_bundle.BundleContext.include_all_logs
+
+**Type:** bool
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext.include_all_logs
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} generated_at
+:canonical: nexusLIMS.cli.support_bundle.BundleContext.generated_at
+
+**Type:** datetime.datetime
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext.generated_at
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} errors
+:canonical: nexusLIMS.cli.support_bundle.BundleContext.errors
+
+**Type:** list[dict[str, str]]
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext.errors
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} included_logs
+:canonical: nexusLIMS.cli.support_bundle.BundleContext.included_logs
+
+**Type:** list[pathlib.Path]
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext.included_logs
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} artifact_metadata
+:canonical: nexusLIMS.cli.support_bundle.BundleContext.artifact_metadata
+
+**Type:** dict[str, nexusLIMS.cli.support_bundle.ArtifactMeta]
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext.artifact_metadata
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:property} options
+:canonical: nexusLIMS.cli.support_bundle.BundleContext.options
+:type: dict[str, typing.Any]
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.BundleContext.options
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+````{py:function} main(**kwargs: typing.Any) -> None
+:canonical: nexusLIMS.cli.support_bundle.main
+
+```{autodoc2-docstring} nexusLIMS.cli.support_bundle.main
+:parser: autodoc2_docstrings_parser
+```
+````

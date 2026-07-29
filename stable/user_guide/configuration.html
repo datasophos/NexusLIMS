@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Configuration &#8212; NexusLIMS 2.7.4 documentation</title>
+    <title>Configuration &#8212; NexusLIMS 2.8.0 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=239d9bda"></script>
+    <script src="../_static/documentation_options.js?v=69ff2ef9"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.7.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -65,8 +65,8 @@
     <link rel="prev" title="Getting Started" href="getting_started.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.7.4" />
-    <meta name="docbuild:last-update" content="Jul, 20, 2026"/>
+  <meta name="docsearch:version" content="2.8.0" />
+    <meta name="docbuild:last-update" content="Jul, 29, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.7.4 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.7.4 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.8.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.8.0 documentation - Home"/>
   
   
 </a></div>
@@ -969,7 +969,7 @@ returned <code class="docutils literal notranslate"><span class="pre">uid</span>
 <p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> (one of <code class="docutils literal notranslate"><span class="pre">'all'</span></code>, <code class="docutils literal notranslate"><span class="pre">'first_success'</span></code>, <code class="docutils literal notranslate"><span class="pre">'best_effort'</span></code>)</p>
 <p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">'all'</span></code></p>
 <p>Controls behavior when exporting records to multiple destinations (e.g., both CDCS and eLabFTW are configured):</p>
-<p><code class="docutils literal notranslate"><span class="pre">all</span></code> (default, recommended): Every configured destination must accept the record. If any destination fails, the session is marked <code class="docutils literal notranslate"><span class="pre">ERROR</span></code> and retried on the next run.</p>
+<p><code class="docutils literal notranslate"><span class="pre">all</span></code> (default, recommended): Every configured destination must accept the record. If any destination fails after the record is built, the session is marked <code class="docutils literal notranslate"><span class="pre">BUILT_NOT_EXPORTED</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">first_success</span></code>: Stop after the first destination that accepts the record. Useful if destinations are fallbacks for each other.</p>
 <p><code class="docutils literal notranslate"><span class="pre">best_effort</span></code>: Attempt all destinations; mark <code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code> if at least one succeeds. Failed destinations are logged but do not trigger a retry.</p>
 <p><strong>Example:</strong></p>
