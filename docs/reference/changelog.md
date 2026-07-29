@@ -14,6 +14,22 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.8.0 (2026-07-28)
+
+### New features
+
+- Added a `nexuslims support-bundle` command that creates a local diagnostic archive for Datasophos support, including a styled HTML summary, redacted effective configuration, path health, preflight results, database summaries, selected logs, package and environment details, and extractor/exporter diagnostics. ([#129](https://github.com/datasophos/NexusLIMS/issues/129))
+
+### Bug fixes
+
+- Improved CDCS preflight error reporting so transient workspace API failures report the HTTP status and endpoint instead of a misleading JSON parsing configuration error. ([#123](https://github.com/datasophos/NexusLIMS/issues/123))
+- Aligned export destination preflight and final session status handling with NX_EXPORT_STRATEGY so unavailable destinations now stop builds when the configured strategy cannot succeed, and partial exports under the default all strategy are no longer marked completed. ([#124](https://github.com/datasophos/NexusLIMS/issues/124))
+
+### Miscellaneous/Development changes
+
+- Updated contributor guidance to require including `uv.lock` changes whenever dependencies or project metadata are updated.
+
+
 ## 2.7.4 (2026-07-19)
 
 ### Bug fixes
