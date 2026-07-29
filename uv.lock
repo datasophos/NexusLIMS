@@ -2264,7 +2264,7 @@ wheels = [
 
 [[package]]
 name = "nexuslims"
-version = "2.8.0"
+version = "2.8.1.dev0"
 source = { editable = "." }
 dependencies = [
     { name = "alembic" },
