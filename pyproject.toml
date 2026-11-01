@@ -47,6 +47,7 @@ dependencies = [
     "alembic>=1.17.2",
     "textual>=8.0.0",
     "squall-sql>=0.1.8",
+    "igor2>=0.5.12",
 ]
 
 [dependency-groups]

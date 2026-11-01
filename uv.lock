@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.11, <3.15"
 resolution-markers = [
     "python_full_version >= '3.12'",
@@ -1274,6 +1274,18 @@ wheels = [
 ]
 
 [[package]]
+name = "igor2"
+version = "0.5.14"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/21/1b/e6f3682b8d6d22b78b191ecb1358a1e98a21d4d40a57d1d643765cf85284/igor2-0.5.14.tar.gz", hash = "sha256:f66bb31d0805029c8b1dcd5eb6971b9fcabbbe773836dd3134302929e3f8303a", size = 62611, upload-time = "2026-10-14T14:23:58.897Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/66/88/c806b8b387b4b297f24950d6715146f71e1d3de89e1e97705dc18ab372c5/igor2-0.5.14-py3-none-any.whl", hash = "sha256:1aa06bd5553b8528d90ca094aa59e82bc7d7693e0928a94fc230e5d81dfe9ade", size = 33203, upload-time = "2026-10-14T14:23:57.866Z" },
+]
+
+[[package]]
 name = "imagecodecs"
 version = "2025.11.11"
 source = { registry = "https://pypi.org/simple" }
@@ -2273,6 +2285,7 @@ dependencies = [
     { name = "exspy" },
     { name = "filelock" },
     { name = "hyperspy", extra = ["speed"] },
+    { name = "igor2" },
     { name = "lxml" },
     { name = "pint" },
     { name = "pixstem" },
@@ -2335,6 +2348,7 @@ requires-dist = [
     { name = "exspy", specifier = ">=0.3.2" },
     { name = "filelock", specifier = ">=3.0.0" },
     { name = "hyperspy", extras = ["speed"], specifier = ">=2.1.0,<3.0.0" },
+    { name = "igor2", specifier = ">=0.5.12" },
     { name = "lxml", specifier = ">=6.0,<7.0.0" },
     { name = "pint", specifier = ">=0.24.0,<1.0.0" },
     { name = "pixstem", specifier = ">=0.4.0" },
