@@ -18,29 +18,9 @@ The files are not merged. Files ending in `.toml` are read as TOML; other filena
 
 Run `nexuslims config edit` to create the file; the command displays the path to the config file in the top line of the TUI. `nexuslims config load` will use the same path. Both commands accept `--config-path` to select a different destination. The TOML file contains `[core]`, `[integrations]`, `[email_config]`, and `[nemo_harvesters.N]` sections as needed. The config editor creates new files with owner-only permissions by default. Since configuration files and JSON exports contain credentials, you should restrict access to their owner (for example, `chmod 600 /path/to/config.toml`) and protect backups.
 
-As an example, the following is a basic [TOML](https://toml.io/en/) file that can be used to configure NexusLIMS:
+See the {ref}`complete TOML reference example <configuration-example>` for a copyable configuration showing all supported settings.
 
-```toml
-[core]
-NX_DATA_PATH = "/var/lib/nexuslims"
-NX_DB_PATH = "/var/lib/nexuslims/nexuslims.db"
-NX_INSTRUMENT_DATA_PATH = "/mnt/instruments"
-
-[integrations]
-NX_CDCS_URL = "https://nexuslims.example.com"
-NX_CDCS_TOKEN = "your-cdcs-token"
-
-[nemo_harvesters.1]
-address = "https://nemo.example.org/api/"
-token = "your-token"
-
-[email_config]
-smtp_host = "smtp.example.com"
-sender = "nexuslims@example.com"
-recipients = ["admin@example.com"]
-```
-
-Replace these example values with your deployment settings. The data directories and database file must exist before settings are validated. You should use absolute paths for all path settings so they resolve consistently. For a service or scheduled job (which often run from cron as a different user), you should explicitly set `NX_CONFIG_FILE` to the absolute path of the config file and ensure the service account can read it.
+The data directories and database file must exist before settings are validated. You should use absolute paths for all path settings so they resolve consistently. For a service or scheduled job (which often run from cron as a different user), you should explicitly set `NX_CONFIG_FILE` to the absolute path of the config file and ensure the service account can read it.
 
 To migrate an existing working-directory `.env` (from versions of NexusLIMS prior to 2.9.0), export it using the `NX_CONFIG_FILE` environment variable, then import the resulting JSON into the default TOML location:
 
@@ -271,7 +251,7 @@ This is particularly useful when:
 
 ## Required Configuration
 
-These settings are required for configured operations such as record building and `config dump`; some standalone commands can run without them. The assignment examples below show environment variable names and dotenv syntax; they are not TOML syntax. Set them in the selected file or export them in the process environment. See the TOML example above for section and quoting conventions.
+These settings are required for configured operations such as record building and `config dump`; some standalone commands can run without them. The assignment examples below show environment variable names and dotenv syntax; they are not TOML syntax. Set them in the selected file or export them in the process environment. See the {ref}`TOML reference example <configuration-example>` for section and quoting conventions.
 
 ### File System Paths
 
