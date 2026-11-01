@@ -9,6 +9,7 @@ def test_selected_config_path_is_independent_of_working_directory(
     """The default path is rooted in the user home."""
     monkeypatch.delenv("NX_CONFIG_FILE", raising=False)
     monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setattr(config, "SYSTEM_CONFIG_PATH", tmp_path / "missing-system.toml")
     monkeypatch.chdir(tmp_path)
     assert config.get_config_path() == tmp_path / ".config/nexuslims/config.toml"
 
@@ -198,3 +199,59 @@ def test_config_load_without_path_uses_test_isolation(monkeypatch, tmp_path):
     assert result.exit_code == 0, result.output
     assert (tmp_path / "nexuslims-test-config.toml").is_file()
     assert not (fake_home / ".config/nexuslims/config.toml").exists()
+
+
+def test_system_configuration_fallback_and_precedence(monkeypatch, tmp_path):
+    """Select explicit, user, then system config, with user path for first run."""
+    system_path = tmp_path / "etc" / "nexuslims" / "config.toml"
+    user_path = tmp_path / "home" / ".config" / "nexuslims" / "config.toml"
+    selected = tmp_path / "explicit.toml"
+    monkeypatch.setattr(config, "SYSTEM_CONFIG_PATH", system_path, raising=False)
+    monkeypatch.setenv("HOME", str(tmp_path / "home"))
+    monkeypatch.delenv("NX_CONFIG_FILE", raising=False)
+    assert config.get_config_path() == user_path
+    system_path.parent.mkdir(parents=True)
+    system_path.write_text("")
+    assert config.get_config_path() == system_path
+    user_path.parent.mkdir(parents=True)
+    user_path.write_text("")
+    assert config.get_config_path() == user_path
+    monkeypatch.setenv("NX_CONFIG_FILE", str(selected))
+    assert config.get_config_path() == selected
+
+
+def test_commands_and_settings_share_system_configuration(monkeypatch, tmp_path):
+    """Commands and settings use the system file when no user file exists."""
+    from unittest.mock import patch
+
+    from click.testing import CliRunner
+
+    from nexusLIMS.cli.config import main
+
+    system_path = tmp_path / "etc" / "config.toml"
+    system_path.parent.mkdir()
+    system_path.write_text('[core]\nNX_FILE_STRATEGY = "inclusive"\n')
+    monkeypatch.setattr(config, "SYSTEM_CONFIG_PATH", system_path)
+    monkeypatch.setattr(config, "TEST_MODE", False)
+    monkeypatch.setenv("HOME", str(tmp_path / "home"))
+    monkeypatch.delenv("NX_CONFIG_FILE", raising=False)
+    monkeypatch.delenv("NX_FILE_STRATEGY", raising=False)
+    assert config.Settings().NX_FILE_STRATEGY == "inclusive"
+    with patch("nexusLIMS.tui.apps.config.app.ConfiguratorApp") as app:
+        result = CliRunner().invoke(main, ["edit"])
+    assert result.exit_code == 0, result.output
+    assert str(system_path) in result.output
+    app.assert_called_once_with(env_path=system_path)
+
+
+def test_test_mode_ignores_system_configuration(monkeypatch, tmp_path):
+    """A system file cannot contaminate ordinary test-mode settings."""
+    system_path = tmp_path / "system.toml"
+    system_path.write_text('[core]\nNX_FILE_STRATEGY = "inclusive"\n')
+    monkeypatch.setattr(config, "SYSTEM_CONFIG_PATH", system_path)
+    monkeypatch.setattr(config, "TEST_MODE", True)
+    monkeypatch.setenv("HOME", str(tmp_path / "home"))
+    monkeypatch.delenv("NX_CONFIG_FILE", raising=False)
+    monkeypatch.delenv("NX_FILE_STRATEGY", raising=False)
+    assert config.get_config_path() == system_path
+    assert config.Settings().NX_FILE_STRATEGY == "exclusive"

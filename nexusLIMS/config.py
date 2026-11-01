@@ -35,6 +35,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from nexusLIMS.version import __version__
 
 _logger = logging.getLogger(__name__)
+SYSTEM_CONFIG_PATH = Path("/etc/nexuslims/config.toml")
 
 
 def get_config_path() -> Path:
@@ -46,7 +47,10 @@ def get_config_path() -> Path:
             msg = "NX_CONFIG_FILE must be an absolute path"
             raise ValueError(msg)
         return path
-    return Path.home() / ".config" / "nexuslims" / "config.toml"
+    user_path = Path.home() / ".config" / "nexuslims" / "config.toml"
+    if user_path.exists() or not SYSTEM_CONFIG_PATH.exists():
+        return user_path
+    return SYSTEM_CONFIG_PATH
 
 
 def read_config_file(path: str | Path) -> dict[str, str]:

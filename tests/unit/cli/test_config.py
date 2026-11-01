@@ -602,6 +602,9 @@ class TestEditCommand:
         """Edit selects the default config path when no override is set."""
         monkeypatch.delenv("NX_CONFIG_FILE", raising=False)
         monkeypatch.setenv("HOME", str(tmp_path))
+        monkeypatch.setattr(
+            "nexusLIMS.config.SYSTEM_CONFIG_PATH", tmp_path / "missing-system.toml"
+        )
         mock_app = MagicMock()
 
         with patch(
