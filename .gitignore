@@ -47,6 +47,7 @@ tests/test_report.xml
 .env*
 .env.bak.*-*
 demo.env
+demo.config.toml
 nexuslims_config.json
 config.json
 tests/.env.test
