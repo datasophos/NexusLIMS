@@ -5,7 +5,7 @@ This guide provides comprehensive information about configuring NexusLIMS throug
 
 ## Configuration Files
 
-NexusLIMS looks for configuration at `~/.config/nexuslims/config.toml` and `/etc/nexuslims/config.toml` by default (where `~` represents the home directory of the user account used to run NexusLIMS). You can set the `NX_CONFIG_FILE` environment variable to an absolute path to select another TOML file or an existing dotenv file. Environment variables set for the process will override values provided in the config file. If the selected file does not exist, NexusLIMS will use environment variables and built-in defaults where possible; required settings still need to be supplied.
+NexusLIMS looks for its configuration file at `~/.config/nexuslims/config.toml`, followed by `/etc/nexuslims/config.toml` by default (where `~` represents the home directory of the user account used to run NexusLIMS). You can set the `NX_CONFIG_FILE` environment variable to an absolute path to select another TOML file or an older dotenv file (if you had a configuration from a version before 2.9.0). Environment variables set for the process will override values provided in the config file. If the selected file does not exist, NexusLIMS will use environment variables and built-in defaults where possible; required settings still need to be supplied.
 
 NexusLIMS selects one configuration file in this order:
 
@@ -14,7 +14,7 @@ NexusLIMS selects one configuration file in this order:
 3. `/etc/nexuslims/config.toml`, if it exists.
 4. The user path `~/.config/nexuslims/config.toml`, when neither file exists.
 
-The files are not merged. Process environment variables override values from the selected file. The editor and `config load` use that same path, so changing a system-wide file requires write permission; use `--config-path` to choose another destination. A user file takes precedence over the system file, including for services running under that user account.
+The files are not merged. Files ending in `.toml` are read as TOML; other filenames are read as dotenv. Process environment variables override values from the selected file. The editor and `config load` use that same path, so changing a system-wide file requires write permission; use `--config-path` to choose another destination. A user file takes precedence over the system file, including for services running under that user account.
 
 Run `nexuslims config edit` to create the file; the command displays the path to the config file in the top line of the TUI. `nexuslims config load` will use the same path. Both commands accept `--config-path` to select a different destination. The TOML file contains `[core]`, `[integrations]`, `[email_config]`, and `[nemo_harvesters.N]` sections as needed. The config editor creates new files with owner-only permissions by default. Since configuration files and JSON exports contain credentials, you should restrict access to their owner (for example, `chmod 600 /path/to/config.toml`) and protect backups.
 
@@ -26,19 +26,32 @@ NX_DATA_PATH = "/var/lib/nexuslims"
 NX_DB_PATH = "/var/lib/nexuslims/nexuslims.db"
 NX_INSTRUMENT_DATA_PATH = "/mnt/instruments"
 
+[integrations]
+NX_CDCS_URL = "https://nexuslims.example.com"
+NX_CDCS_TOKEN = "your-cdcs-token"
+
 [nemo_harvesters.1]
 address = "https://nemo.example.org/api/"
 token = "your-token"
+
+[email_config]
+smtp_host = "smtp.example.com"
+sender = "nexuslims@example.com"
+recipients = ["admin@example.com"]
 ```
 
-You should use absolute paths for all path settings so they resolve consistently. For a service or scheduled job (which often run from cron as a different user), you should explicitly set `NX_CONFIG_FILE` to the absolute path of the config file and ensure the service account can read it.
+Replace these example values with your deployment settings. The data directories and database file must exist before settings are validated. You should use absolute paths for all path settings so they resolve consistently. For a service or scheduled job (which often run from cron as a different user), you should explicitly set `NX_CONFIG_FILE` to the absolute path of the config file and ensure the service account can read it.
 
-To migrate an existing working-directory `.env` (from versions of NexusLIMS prior to 2.9.0), export it and import the resulting JSON into the default TOML location:
+To migrate an existing working-directory `.env` (from versions of NexusLIMS prior to 2.9.0), export it using the `NX_CONFIG_FILE` environment variable, then import the resulting JSON into the default TOML location:
 
 ```bash
-NX_CONFIG_FILE="$PWD/.env" nexuslims config dump --output /secure/path/config-backup.json
-nexuslims config load /secure/path/config-backup.json
+backup=$(mktemp "${TMPDIR:-/tmp}/nexuslims-config.XXXXXX")
+NX_CONFIG_FILE="$PWD/.env" nexuslims config dump --output "$backup" &&
+env -u NX_CONFIG_FILE nexuslims config load "$backup" \
+  --config-path "$HOME/.config/nexuslims/config.toml"
 ```
+
+Run the commands from the directory containing `.env`, after upgrading. This writes to the user configuration path even if a system configuration exists; to replace the system file instead, choose it with `--config-path` and ensure you have write permission. The dump validates the effective configuration and includes process environment overrides; incomplete NEMO or email configurations may be omitted. Check the resulting TOML and preserve the original `.env` until you have verified the migration. The temporary JSON contains credentials: keep it private and remove it when no longer needed.
 
 Alternatively, you can keep using the old `.env` file by setting `NX_CONFIG_FILE` to its absolute path for every process, but it is recommended to upgrade to the new config format going forward. As of version 2.9.0, NexusLIMS will no longer automatically read the working directory for `.env`.
 
@@ -139,10 +152,10 @@ and fill out each harvester's configuration in a logical grouping:
 
 ### Dumping Configuration
 
-Use `nexuslims config dump` to export your current configuration to a JSON file:
+Use `nexuslims config dump` to export your current configuration as JSON:
 
 ```bash
-# Dump to default file (nexuslims_config.json)
+# Print JSON to stdout
 nexuslims config dump
 
 # Dump to specific file
@@ -157,7 +170,7 @@ The dumped configuration includes:
 - Computed defaults for optional settings
 
 ```{danger}
-**Security Warning**: The dumped JSON file contains **live credentials** (API tokens, passwords, certificates). Handle it with the same care as your configuration file. Never commit it to version control or share it publicly.
+**Security Warning**: The dumped JSON contains **live credentials** (API tokens, passwords, certificates). Handle it with the same care as your configuration file. Never commit it to version control or share it publicly. `--output` overwrites an existing file without prompting; restrict the destination's permissions before use.
 ```
 
 Example output:
@@ -211,7 +224,7 @@ nexuslims config load nexuslims_config.json --force
 
 - **Backup**: If the selected file exists, a timestamped backup is created before overwriting
 - **Confirmation**: Prompts for confirmation before overwriting (unless `--force` is used)
-- **Flattening**: Structured config (nested harvesters, email config) is converted back to flat environment variables
+- **Format**: TOML destinations use sections for NEMO and email; other destinations are written in dotenv format
 
 **Migration workflow example:**
 
@@ -222,7 +235,7 @@ nexuslims config dump --output production-config.json
 # Securely transfer the file to new server (contains live credentials!)
 scp production-config.json user@newserver:/path/to/
 
-# On destination server
+# On destination server (adjust paths and credentials for that deployment)
 nexuslims config load production-config.json
 
 # Clean up the dump file (it contains secrets)
@@ -233,12 +246,13 @@ rm production-config.json
 
 When `nexuslims build-records` starts with a verbosity of `-v` or higher,
 it logs a sanitized view of the loaded configuration to help with debugging.
-The log output is sanitized, ensuring no sensitive environment variables
-are exposed in logs.
+Known secrets such as tokens, passwords, and certificate contents are redacted.
+Other settings, including identifiers and paths, can still be present; handle logs
+accordingly.
 
 Example log output:
 ```
-INFO - Loaded configuration:
+INFO - Effective configuration:
 INFO - {
 INFO -   "NX_DATA_PATH": "/var/nexuslims/data",
 INFO -   "NX_CDCS_TOKEN": "***",
@@ -257,7 +271,7 @@ This is particularly useful when:
 
 ## Required Configuration
 
-These variables **must** be configured for NexusLIMS to function.
+These settings are required for configured operations such as record building and `config dump`; some standalone commands can run without them. The assignment examples below show environment variable names and dotenv syntax; they are not TOML syntax. Set them in the selected file or export them in the process environment. See the TOML example above for section and quoting conventions.
 
 ### File System Paths
 
@@ -346,7 +360,7 @@ Store API tokens securely. Use environment variables or a secure secrets managem
 
 ### NEMO Integration
 
-NexusLIMS supports multiple NEMO instances by using numbered environment variable pairs. Each NEMO instance requires an address and token.
+For NEMO-backed instruments, configure the corresponding NEMO instance. NexusLIMS supports multiple instances using numbered environment variable pairs; each instance requires an address and token. In TOML, configure each instance under `[nemo_harvesters.N]` using keys such as `address` and `token`.
 
 (config-nemo-address)=
 #### `NX_NEMO_ADDRESS_N`
@@ -431,7 +445,7 @@ NX_ELABFTW_EXPERIMENT_STATUS=2
 
 ```{tip}
 When eLabFTW export is enabled, experiments are created with:
-- **Title:** "NexusLIMS Experiment - {session_id}"
+- **Title:** `NexusLIMS Experiment - {XML filename without extension}`
 - **Body:** HTML summary with session details and link to CDCS record (if available)
 - **Tags:** NexusLIMS, instrument name, username
 - **Metadata:** Structured extra_fields including session times, instrument, user, and CDCS cross-link
@@ -443,12 +457,9 @@ When eLabFTW export is enabled, experiments are created with:
 
 NexusLIMS can optionally export records to [LabArchives](https://www.labarchives.com/), a
 commercial electronic lab notebook system. Each NexusLIMS session creates one notebook page
-with an HTML session summary and the full XML record attached as a file.
+with an HTML session summary and the full XML record attached as a file when a notebook ID is configured. Without a notebook ID, entries are added to the user’s Inbox.
 
-LabArchives authentication uses HMAC-SHA-512 signed requests. You need four credentials:
-an Access Key ID (provided by LabArchives), an Access Password (provided by LabArchives),
-a User ID (uid), and the instance URL (most likely can stay as the default unless you are
-in a different region).
+LabArchives authentication uses HMAC-SHA-512 signed requests. Configure an Access Key ID and Access Password (provided by LabArchives), a User ID (uid), and the instance URL (which can usually use its default unless you are in a different region).
 
 (config-labarchives-url)=
 #### `NX_LABARCHIVES_URL`
@@ -517,8 +528,8 @@ NX_LABARCHIVES_NOTEBOOK_ID=12345  # optional
 ```{tip}
 When LabArchives export is enabled, the following structure is created automatically:
 - **Notebook:** The notebook specified by `NX_LABARCHIVES_NOTEBOOK_ID` (or Inbox if unset)
-- **Folder hierarchy:** `NexusLIMS Records/{instrument_pid}/` (created automatically if missing)
-- **Page:** `{YYYY-MM-DD} — {session_id}` (one page per session)
+- **With a notebook ID:** Folder hierarchy `NexusLIMS Records/{instrument_pid}/` and a new `{YYYY-MM-DD} — {session_id}` page
+- **Without a notebook ID:** Entries are added to the user’s Inbox
 - **Entry:** HTML session summary with optional CDCS cross-link
 - **Attachment:** Full XML record file
 ```
@@ -640,7 +651,7 @@ NX_LOCAL_PROFILES_PATH=/etc/nexuslims/profiles
 
 **Example:**
 ```bash
-NX_NEMO_STRFTIME_FMT_1=%Y-%m-%d %H:%M:%S
+NX_NEMO_STRFTIME_FMT_1="%Y-%m-%d %H:%M:%S"
 ```
 
 (config-nemo-strptime-fmt)=
@@ -651,7 +662,7 @@ NX_NEMO_STRFTIME_FMT_1=%Y-%m-%d %H:%M:%S
 
 **Example:**
 ```bash
-NX_NEMO_STRPTIME_FMT_1=%Y-%m-%d %H:%M:%S
+NX_NEMO_STRPTIME_FMT_1="%Y-%m-%d %H:%M:%S"
 ```
 
 (config-nemo-tz)=
@@ -821,15 +832,16 @@ Always access configuration through the `settings` object from `nexusLIMS.config
 
 ### Testing with Configuration
 
+The pytest suite enables `NX_TEST_MODE`, which prevents automatic reads from user and system configuration files. Tests use environment variables and fixtures instead. The suite selects a temporary configuration path per test; commands that explicitly read or write a file still use the path given to them.
+
 In tests, use `refresh_settings()` after modifying environment variables:
 
 ```python
-import os
 from nexusLIMS.config import settings, refresh_settings
 
-def test_with_custom_config():
-    # Modify environment
-    os.environ["NX_FILE_STRATEGY"] = "inclusive"
+def test_with_custom_config(monkeypatch):
+    # Set the value for this test; pytest restores it afterward
+    monkeypatch.setenv("NX_FILE_STRATEGY", "inclusive")
 
     # Refresh to pick up changes
     refresh_settings()
@@ -840,7 +852,7 @@ def test_with_custom_config():
 
 ## Configuration Validation
 
-Pydantic validates all configuration on startup. If validation fails, NexusLIMS will raise a `ValidationError` with details about what's wrong.
+Core settings are loaded and validated when first accessed. Invalid core settings raise a `ValidationError`; NEMO and email settings are assembled and validated separately when requested.
 
 Common validation errors:
 - **Missing required fields**: Set all required environment variables
@@ -849,6 +861,8 @@ Common validation errors:
 - **Invalid types**: Check value types (numbers, booleans, etc.)
 
 ## Example Configurations
+
+These examples use dotenv syntax, not shell commands or TOML. To use them as a file, save them to a dotenv file and select it with an absolute `NX_CONFIG_FILE` path; NexusLIMS does not automatically read a working-directory `.env`.
 
 ### Minimal Production Configuration
 
@@ -946,7 +960,7 @@ NX_CERT_BUNDLE_FILE=/etc/ssl/certs/custom-ca.crt
 # NX_CERT_BUNDLE="-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----"
 
 # Option 3: Disable SSL verification (NEVER use in production!)
-# NX_DISABLE_SSL_VERIFY=false
+# NX_DISABLE_SSL_VERIFY=true
 ```
 
 ## Troubleshooting
@@ -957,8 +971,8 @@ If configuration changes aren't taking effect:
 
 1. **Check the selected file**: Inspect `NX_CONFIG_FILE` or use the default path shown above
 2. **Check environment variables**: process environment variables take precedence over the selected file
-3. **Restart application**: Configuration is loaded on startup
-4. **Check for typos**: Variable names are case-sensitive
+3. **Restart application**: Settings are cached after first access
+4. **Check for typos**: Use the exact variable names and section keys shown in this guide
 
 ### Path Validation Errors
 
