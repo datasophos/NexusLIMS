@@ -174,3 +174,27 @@ def test_environment_list_override_ignores_invalid_file_value(monkeypatch, tmp_p
     monkeypatch.setenv("NX_IGNORE_PATTERNS", '["*.tmp"]')
     monkeypatch.setattr(config, "TEST_MODE", False)
     assert config.Settings().NX_IGNORE_PATTERNS == ["*.tmp"]
+
+
+def test_pytest_selects_a_temporary_configuration_file(tmp_path):
+    """Commands without path options cannot target a developer's config file."""
+    assert config.get_config_path() == tmp_path / "nexuslims-test-config.toml"
+
+
+def test_config_load_without_path_uses_test_isolation(monkeypatch, tmp_path):
+    """A default config load writes to the isolated path, not the user's home."""
+    import json
+
+    from click.testing import CliRunner
+
+    from nexusLIMS.cli.config import main
+
+    fake_home = tmp_path / "home"
+    monkeypatch.setenv("HOME", str(fake_home))
+    source = tmp_path / "input.json"
+    source.write_text(json.dumps({"NX_FILE_STRATEGY": "inclusive"}))
+
+    result = CliRunner().invoke(main, ["load", str(source)])
+    assert result.exit_code == 0, result.output
+    assert (tmp_path / "nexuslims-test-config.toml").is_file()
+    assert not (fake_home / ".config/nexuslims/config.toml").exists()

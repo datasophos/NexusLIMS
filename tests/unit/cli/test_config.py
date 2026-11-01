@@ -597,8 +597,10 @@ class TestEditCommand:
         mock_cls.assert_called_once_with(env_path=Path(str(env_path)))
         mock_app.run.assert_called_once()
 
-    def test_edit_default_env_path(self, monkeypatch):
-        """Edit defaults to '.env' when --env-path is not specified."""
+    def test_edit_default_env_path(self, monkeypatch, tmp_path):
+        """Edit selects the default config path when no override is set."""
+        monkeypatch.delenv("NX_CONFIG_FILE", raising=False)
+        monkeypatch.setenv("HOME", str(tmp_path))
         mock_app = MagicMock()
 
         with patch(
@@ -610,7 +612,7 @@ class TestEditCommand:
 
         assert result.exit_code == 0, result.output
         mock_cls.assert_called_once_with(
-            env_path=Path.home() / ".config/nexuslims/config.toml"
+            env_path=tmp_path / ".config/nexuslims/config.toml"
         )
         mock_app.run.assert_called_once()
 
