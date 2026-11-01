@@ -450,6 +450,7 @@ class TestDumpCommand:
         data = json.loads(result.stdout)
         assert data["NX_CDCS_TOKEN"] == "secret-cdcs-token"
         assert data["NX_FILE_STRATEGY"] == "exclusive"
+        assert "Configuration file:" in result.stderr
 
     def test_dump_writes_to_file_with_output_flag(self, tmp_path, monkeypatch):
         """When --output is specified, writes to that file instead of stdout."""
@@ -762,3 +763,46 @@ class TestLabArchivesGetUidCommand:
         assert result.exit_code == 0, result.output
         assert "Connecting to" in result.stderr
         assert "labarchives.com" in result.stderr
+
+
+def test_dump_reports_selected_file_before_validation_error(monkeypatch, tmp_path):
+    """A failed dump still identifies the file it checked."""
+    from pydantic import ValidationError
+
+    selected = tmp_path / "selected.toml"
+    monkeypatch.setenv("NX_CONFIG_FILE", str(selected))
+    error = ValidationError.from_exception_data(
+        "Settings", [{"type": "missing", "loc": ("NX_DB_PATH",), "input": {}}]
+    )
+    monkeypatch.setattr(
+        "nexusLIMS.cli.config._build_config_dict", Mock(side_effect=error)
+    )
+    result = CliRunner(mix_stderr=False).invoke(main, ["dump"])
+    assert result.exit_code != 0
+    assert str(selected) in result.stderr
+    assert result.stdout == ""
+
+
+def test_labarchives_reports_explicit_config_file_on_error(tmp_path, monkeypatch):
+    """The UID helper reports its explicit file even if credentials are absent."""
+    selected = tmp_path / "selected.toml"
+    for key in (
+        "NX_LABARCHIVES_ACCESS_KEY_ID",
+        "NX_LABARCHIVES_ACCESS_PASSWORD",
+        "NX_LABARCHIVES_URL",
+    ):
+        monkeypatch.delenv(key, raising=False)
+    result = CliRunner(mix_stderr=False).invoke(
+        main,
+        [
+            "labarchives-get-uid",
+            "--email",
+            "a@example.com",
+            "--la-password",
+            "pw",
+            "--env-path",
+            str(selected),
+        ],
+    )
+    assert result.exit_code != 0
+    assert str(selected) in result.stderr

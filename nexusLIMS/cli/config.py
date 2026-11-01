@@ -345,6 +345,9 @@ def dump(output: str | None) -> None:
     ``.env``.
     """
     from nexusLIMS.cli import handle_config_error  # noqa: PLC0415
+    from nexusLIMS.config import get_config_path  # noqa: PLC0415
+
+    click.echo(f"Configuration file: {get_config_path()}", err=True)
 
     with handle_config_error():
         from nexusLIMS.config import settings  # noqa: PLC0415
@@ -443,7 +446,7 @@ def labarchives_get_uid(
     """  # noqa: D301
     import logging  # noqa: PLC0415
 
-    from nexusLIMS.config import read_labarchives_env  # noqa: PLC0415
+    from nexusLIMS.config import get_config_path, read_labarchives_env  # noqa: PLC0415
     from nexusLIMS.utils.labarchives import (  # noqa: PLC0415
         LabArchivesClient,
         LabArchivesError,
@@ -453,6 +456,8 @@ def labarchives_get_uid(
         logging.basicConfig(level=logging.DEBUG)
         logging.getLogger("nexusLIMS.utils.labarchives").setLevel(logging.DEBUG)
 
+    path = Path(env_path) if env_path else get_config_path()
+    click.echo(f"Configuration file: {path}", err=True)
     la = read_labarchives_env(env_path)
 
     if not la["NX_LABARCHIVES_ACCESS_KEY_ID"]:
