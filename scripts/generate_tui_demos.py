@@ -252,7 +252,7 @@ def generate_db_browser_screenshots(demo_db_path: Path) -> None:
     """
     from argparse import Namespace
 
-    from nexusLIMS.tui.apps.db_browser import NexusLIMSDBApp, NexusLIMSTableViewerPane
+    from nexusLIMS.tui.apps.db_browser import NexusLIMSDBApp
 
     print("Generating database browser SVG screenshots...")
 
@@ -273,9 +273,7 @@ def generate_db_browser_screenshots(demo_db_path: Path) -> None:
 
                 # Select the instruments table explicitly (it may not be first
                 # alphabetically if alembic_version or other tables exist)
-                pane = app.query_one(NexusLIMSTableViewerPane)
                 app.query_one("#table_names_select", Select).value = "instruments"
-                pane._load_table()
                 await pilot.pause(0.3)
 
                 # Sweep the mouse left-to-right across the DataTable so Textual
