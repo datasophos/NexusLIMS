@@ -5,11 +5,11 @@ This guide provides comprehensive information about configuring NexusLIMS throug
 
 ## Configuration Files
 
-NexusLIMS reads `~/.config/nexuslims/config.toml` by default, independently of the working directory. Set `NX_CONFIG_FILE` to an absolute path to select another TOML file or an existing dotenv file. Process environment variables override file values. If the selected file does not exist, NexusLIMS uses environment variables and built-in defaults; required settings still need to be supplied.
+NexusLIMS reads it's configuration from `~/.config/nexuslims/config.toml` by default (where `~` represents the home directory of the user account used to run NexusLIMS). You can set the `NX_CONFIG_FILE` environment variable to an absolute path to select another TOML file or an existing dotenv file. Environment variables set for the process will override values provided in the config file. If the selected file does not exist, NexusLIMS will use environment variables and built-in defaults where possible; required settings still need to be supplied.
 
-Run `nexuslims config edit` to create the file; the command displays its path. `nexuslims config load` uses the same path. Both accept `--config-path` to select a different destination; `--env-path` remains available as an alias. The TOML file contains `[core]`, `[integrations]`, `[email_config]`, and `[nemo_harvesters.N]` sections as needed. The editor creates new files with owner-only permissions. Configuration files and JSON exports contain credentials: restrict access to their owner (for example, `chmod 600 /path/to/config.toml`) and protect backups.
+Run `nexuslims config edit` to create the file; the command displays the path to the config file in the top line of the TUI. `nexuslims config load` will use the same path. Both commands accept `--config-path` to select a different destination. The TOML file contains `[core]`, `[integrations]`, `[email_config]`, and `[nemo_harvesters.N]` sections as needed. The config editor creates new files with owner-only permissions by default. Since configuration files and JSON exports contain credentials, you should restrict access to their owner (for example, `chmod 600 /path/to/config.toml`) and protect backups.
 
-For example, the editor can produce TOML like this (replace the example paths and credentials):
+As an example, the following is a basic [TOML](https://toml.io/en/) file that can be used to configure NexusLIMS:
 
 ```toml
 [core]
@@ -22,16 +22,16 @@ address = "https://nemo.example.org/api/"
 token = "your-token"
 ```
 
-Use absolute paths for filesystem settings so they resolve consistently across working directories. For a service or scheduled job, set `NX_CONFIG_FILE` to the same absolute path in its environment and ensure the service account can read it. Its home directory may differ from your interactive account's.
+You should use absolute paths for all path settings so they resolve consistently. For a service or scheduled job (which often run from cron as a different user), you should explicitly set `NX_CONFIG_FILE` to the absolute path of the config file and ensure the service account can read it.
 
-To migrate an existing working-directory `.env`, export it and import the resulting JSON into the default TOML location:
+To migrate an existing working-directory `.env` (from versions of NexusLIMS prior to 2.9.0), export it and import the resulting JSON into the default TOML location:
 
 ```bash
 NX_CONFIG_FILE="$PWD/.env" nexuslims config dump --output /secure/path/config-backup.json
 nexuslims config load /secure/path/config-backup.json
 ```
 
-Protect or remove the JSON backup after migration. Alternatively, keep using the old file by setting `NX_CONFIG_FILE` to its absolute path for every process. Development checkouts can use the same explicit selector. NexusLIMS no longer automatically searches the working directory for `.env`.
+Alternatively, you can keep using the old `.env` file by setting `NX_CONFIG_FILE` to its absolute path for every process, but it is recommended to upgrade to the new config format going forward. As of version 2.9.0, NexusLIMS will no longer automatically read the working directory for `.env`.
 
 (configuration-management)=
 ## Configuration Management
