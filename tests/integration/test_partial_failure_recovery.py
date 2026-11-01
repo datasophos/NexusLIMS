@@ -21,6 +21,7 @@ from nexusLIMS.db.engine import get_engine
 from nexusLIMS.db.enums import EventType, RecordStatus
 from nexusLIMS.db.models import SessionLog
 from nexusLIMS.db.session_handler import Session
+from tests.integration.conftest import ELABFTW_API_KEY, ELABFTW_URL
 
 
 @pytest.mark.integration
@@ -429,6 +430,13 @@ class TestPartialFailureRecovery:
         monkeypatch : pytest.MonkeyPatch
             Pytest monkeypatch fixture
         """
+        from nexusLIMS.config import refresh_settings
+
+        # Preflight must use the test service, regardless of ambient settings.
+        monkeypatch.setenv("NX_ELABFTW_URL", ELABFTW_URL)
+        monkeypatch.setenv("NX_ELABFTW_API_KEY", ELABFTW_API_KEY)
+        refresh_settings()
+
         # Mock build_record to raise an exception
         with patch("nexusLIMS.builder.record_builder.build_record") as mock_build:
             mock_build.side_effect = ValueError("Simulated record building error")

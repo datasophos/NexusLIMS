@@ -247,7 +247,11 @@ def pytest_sessionfinish(session, exitstatus):
     (or in a non-xdist single-process run) so the subprocess stays alive for
     the entire test session regardless of which workers use it.
     """
-    if not hasattr(session.config, "workerinput"):
+    keep_for_inspection = (
+        os.environ.get("NX_TESTS_KEEP_DOCKER_RUNNING") == "1"
+        and os.environ.get("NX_TESTS_SKIP_CDCS_CLEANUP") == "1"
+    )
+    if not hasattr(session.config, "workerinput") and not keep_for_inspection:
         _stop_fileserver_subprocess()
 
 
@@ -553,7 +557,7 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
     # ------------------------------------------------------------------
     max_wait = 180
     start_time = time.time()
-    nemo_ready = cdcs_ready = mailpit_ready = False
+    nemo_ready = cdcs_ready = mailpit_ready = elabftw_ready = False
 
     print("[*] Waiting for Docker services to be healthy...")
     while time.time() - start_time < max_wait:
@@ -579,7 +583,18 @@ def docker_services(request, host_fileserver):  # noqa: PLR0912, PLR0915
                 )
                 if mailpit_ready:
                     print("[+] Mailpit service is ready")
-            if nemo_ready and cdcs_ready and mailpit_ready:
+            if not elabftw_ready:
+                elabftw_ready = (
+                    requests.get(
+                        f"{ELABFTW_URL}/api/v2/experiments?limit=1",
+                        headers={"Authorization": ELABFTW_API_KEY},
+                        timeout=2,
+                    ).status_code
+                    == HTTPStatus.OK
+                )
+                if elabftw_ready:
+                    print("[+] eLabFTW service is ready")
+            if nemo_ready and cdcs_ready and mailpit_ready and elabftw_ready:
                 print("[+] All services are ready!")
                 break
         except (requests.ConnectionError, requests.Timeout):
@@ -1208,7 +1223,8 @@ def cdcs_client(cdcs_url, cdcs_credentials, monkeypatch):
 
     def register_record(record_id: str):
         """Register a record ID for cleanup after test."""
-        created_records.append(record_id)
+        if record_id not in created_records:
+            created_records.append(record_id)
 
     def register_user(user_id: int):
         """Register a user ID for cleanup after test."""
@@ -1377,10 +1393,8 @@ def cdcs_test_record_xml():
     ]
 
 
-@pytest.fixture(scope="session")
-def cdcs_test_record(
-    docker_services_running, cdcs_url, cdcs_credentials, cdcs_test_record_xml
-):
+@pytest.fixture
+def cdcs_test_record(docker_services_running, cdcs_client, cdcs_test_record_xml):
     """
     Create test records in CDCS for search/download integration tests.
 
@@ -1391,10 +1405,8 @@ def cdcs_test_record(
     ----------
     docker_services_running : dict
         Ensures Docker services are running
-    cdcs_url : str
-        CDCS base URL
-    cdcs_credentials : dict
-        Authentication credentials
+    cdcs_client : dict
+        CDCS configuration and record cleanup registry
     cdcs_test_record_xml : list of tuple
         List of test record (title, XML content) tuples from fixture
 
@@ -1406,9 +1418,6 @@ def cdcs_test_record(
         - record_id: CDCS record ID
         - xml_content: Original XML content
     """
-    # Set up CDCS environment for session scope
-    setup_cdcs_environment(cdcs_url, cdcs_credentials)
-
     from nexusLIMS.utils import cdcs
 
     # Upload all test records
@@ -1419,10 +1428,6 @@ def cdcs_test_record(
         )
 
         if response.status_code != 201:
-            # Cleanup any previously created records before raising
-            for record in created_records:
-                with contextlib.suppress(Exception):
-                    cdcs.delete_record(record["record_id"])
             msg = (
                 f"Failed to create test record '{test_record_title}': "
                 f"{response.status_code} - {response.text}"
@@ -1430,6 +1435,7 @@ def cdcs_test_record(
             raise RuntimeError(msg)
 
         print(f"[+] Created test record: {test_record_title} (ID: {record_id})")
+        cdcs_client["register_record"](record_id)
         created_records.append(
             {
                 "title": test_record_title,
@@ -1438,15 +1444,7 @@ def cdcs_test_record(
             }
         )
 
-    yield created_records
-
-    # Cleanup: Delete all test records
-    for record in created_records:
-        try:
-            cdcs.delete_record(record["record_id"])
-            print(f"[+] Deleted test record: {record['record_id']}")
-        except Exception as e:
-            print(f"[!] Failed to cleanup test record {record['record_id']}: {e}")
+    return created_records
 
 
 # ============================================================================
@@ -1857,6 +1855,8 @@ def extracted_test_files(integration_paths):
         - 'orion_files': dict with 'zeiss' and 'fibics' Paths (if present)
         - 'tescan_files': dict with 'tif' and 'hdr' Paths (if present)
     """
+    import gzip
+    import shutil
     import tarfile
     import zoneinfo
     from datetime import datetime
@@ -1887,6 +1887,15 @@ def extracted_test_files(integration_paths):
         titan_dir = (
             instrument_data_dir / "Titan_TEM/researcher_a/project_alpha/20181113"
         )
+        # Place the AFM samples in the existing session without duplicating them
+        # in the shared archive used by unit tests.
+        sample_time = (titan_dir / "image_008.dm3").stat().st_mtime
+        for filename in ("NS10013.ibw", "Image0037.ibw"):
+            source = Path(__file__).parents[1] / "unit/files" / f"{filename}.gz"
+            destination = titan_dir / filename
+            with gzip.open(source, "rb") as src, destination.open("wb") as dst:
+                shutil.copyfileobj(src, dst)
+            os.utime(destination, (sample_time, sample_time))
         zeiss_file = titan_dir / "orion-zeiss_dataZeroed.tif"
         fibics_file = titan_dir / "orion-fibics_dataZeroed.tif"
         if zeiss_file.exists():
@@ -2012,16 +2021,11 @@ def test_environment_setup(  # noqa: PLR0913
         "cdcs_client": cdcs_client,
     }
 
-    # Cleanup: Delete only CDCS records created during this test
+    # Register records even if the test failed after uploading them.
     import shutil
 
-    from nexusLIMS.utils import cdcs as cdcs_utils
-
     for record_id in _get_uploaded_cdcs_record_ids():
-        try:
-            cdcs_utils.delete_record(record_id)
-        except Exception as e:
-            print(f"[!] Failed to cleanup record {record_id}: {e}")
+        cdcs_client["register_record"](record_id)
 
     # Cleanup: Remove TEST_DATA_DIR subdirectories created during this test.
     # Skip "logs/" — it is shared across xdist workers (CLI tests write logs
@@ -2030,7 +2034,7 @@ def test_environment_setup(  # noqa: PLR0913
     # FileHandler into that directory.  The docker_services teardown removes
     # TEST_DATA_DIR entirely at the end of the session.
     _worker_shared_dirs = {"logs"}
-    if test_data_dir.exists():
+    if test_data_dir.exists() and os.environ.get("NX_TESTS_SKIP_CDCS_CLEANUP") != "1":
         for subdir in test_data_dir.iterdir():
             if subdir.name in _worker_shared_dirs:
                 continue
@@ -2493,8 +2497,6 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
         pytest.fail(f"XML validation failed: {schema.error_log}")
 
     # Get record ID from CDCS (record should already be uploaded)
-    from nexusLIMS.utils import cdcs
-
     record_title = record_path.stem
     uploaded_record_ids = _get_uploaded_cdcs_record_ids()
     if len(uploaded_record_ids) != 1:
@@ -2503,24 +2505,17 @@ def multi_signal_integration_record(  # noqa: PLR0913, PLR0915
         )
 
     record_id = uploaded_record_ids[0]
+    cdcs_client["register_record"](record_id)
     print(f"  Record ID: {record_id}")
     print("[+] Multi-signal record fixture setup complete")
 
-    yield {
+    return {
         "record_id": record_id,
         "record_title": record_title,
         "xml_doc": xml_doc,
         "xml_path": record_path,
         "session_identifier": session.session_identifier,
     }
-
-    # Cleanup: Delete record from CDCS
-    print("\n[*] Cleaning up multi-signal test record...")
-    try:
-        cdcs.delete_record(record_id)
-        print(f"  Deleted record from CDCS: {record_id}")
-    except Exception as e:
-        print(f"[!] Failed to cleanup record {record_id}: {e}")
 
 
 @pytest.fixture
@@ -2703,8 +2698,6 @@ def tofwerk_integration_record(  # noqa: PLR0913, PLR0915
     if not schema.validate(xml_doc):
         pytest.fail(f"XML validation failed: {schema.error_log}")
 
-    from nexusLIMS.utils import cdcs
-
     record_title = record_path.stem
     uploaded_record_ids = _get_uploaded_cdcs_record_ids()
     if len(uploaded_record_ids) != 1:
@@ -2713,23 +2706,17 @@ def tofwerk_integration_record(  # noqa: PLR0913, PLR0915
         )
 
     record_id = uploaded_record_ids[0]
+    cdcs_client["register_record"](record_id)
     print(f"  Record ID in CDCS: {record_id}")
     print("[+] Tofwerk integration record fixture setup complete")
 
-    yield {
+    return {
         "record_id": record_id,
         "record_title": record_title,
         "xml_doc": xml_doc,
         "xml_path": record_path,
         "session_identifier": session.session_identifier,
     }
-
-    print("\n[*] Cleaning up Tofwerk integration record...")
-    try:
-        cdcs.delete_record(record_id)
-        print(f"  Deleted record from CDCS: {record_id}")
-    except Exception as e:
-        print(f"[!] Failed to cleanup record {record_id}: {e}")
 
 
 # ============================================================================

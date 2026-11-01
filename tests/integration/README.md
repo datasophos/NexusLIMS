@@ -2,6 +2,13 @@
 
 This directory contains integration tests for NexusLIMS that use real Docker services (NEMO, CDCS) instead of mocks. These tests validate end-to-end workflows including NEMO harvesting, record building, and CDCS uploads.
 
+To inspect CDCS records and their generated files after a test run, set both
+`NX_TESTS_SKIP_CDCS_CLEANUP=1` and `NX_TESTS_KEEP_DOCKER_RUNNING=1` in
+`tests/.env.test` or in the shell. Registered CDCS records and users are retained,
+and the host fileserver stays running. Tests that explicitly verify record deletion
+still delete those records. A subsequent test session recreates the test data
+directories, so file links from previously retained records may stop working.
+
 ## Quick Start
 
 ### Prerequisites
