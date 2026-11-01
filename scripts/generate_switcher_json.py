@@ -244,18 +244,6 @@ def build_switcher_json(dirs):
             }
         )
 
-    # Cloudflare supplies a unique URL for each preview deployment.
-    preview_url = os.environ.get("CF_PAGES_URL")
-    if preview_url:
-        entries.insert(
-            0,
-            {
-                "name": "Preview (current)",
-                "version": "preview",
-                "url": f"{preview_url.rstrip('/')}/",
-            },
-        )
-
     # Add latest dev build at the top (if it exists)
     if "latest" in dirs:
         dev_version = get_current_dev_version()
@@ -294,7 +282,7 @@ def main():
         print(f"Building in PR context: PR #{current_pr}")
 
     dirs = get_gh_pages_dirs()
-    if not dirs and not current_pr and not os.environ.get("CF_PAGES_URL"):
+    if not dirs and not current_pr:
         # First deployment case: no versions exist yet
         print(
             "No deployed documentation versions found in gh-pages branch.",
