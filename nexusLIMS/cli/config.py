@@ -20,7 +20,7 @@ Usage
 
     # Load a previously dumped config into .env
     nexuslims config load nexuslims_config.json
-    nexuslims config load nexuslims_config.json --env-path /path/to/.env
+    nexuslims config load nexuslims_config.json --config-path /path/to/config.toml
     nexuslims config load nexuslims_config.json --force
 
 Security
@@ -376,7 +376,9 @@ def dump(output: str | None) -> None:
 
 @main.command()
 @click.option(
+    "--config-path",
     "--env-path",
+    "env_path",
     type=click.Path(dir_okay=False, writable=True),
     default=None,
     help="Configuration file to edit (defaults to the selected file).",
@@ -412,7 +414,9 @@ def edit(env_path: str | None) -> None:
     ),
 )
 @click.option(
+    "--config-path",
     "--env-path",
+    "env_path",
     type=click.Path(dir_okay=False),
     default=None,
     help="Configuration file to read LabArchives credentials from.",
@@ -511,7 +515,9 @@ def labarchives_get_uid(
 @main.command()
 @click.argument("input", type=click.Path(exists=True, dir_okay=False, readable=True))
 @click.option(
+    "--config-path",
     "--env-path",
+    "env_path",
     type=click.Path(dir_okay=False, writable=True),
     default=None,
     help="Configuration file to write (defaults to the selected file).",

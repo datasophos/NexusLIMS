@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import ClassVar
 from unittest.mock import MagicMock, Mock, patch
 
+import pytest
 from click.testing import CliRunner
 
 from nexusLIMS.cli.config import (
@@ -481,16 +482,15 @@ class TestLoadCommand:
         config = _build_config_dict(_mock_settings())
         path.write_text(json.dumps(config))
 
-    def test_load_no_preexisting_env(self, tmp_path):
+    @pytest.mark.parametrize("option", ["--config-path", "--env-path"])
+    def test_load_no_preexisting_env(self, tmp_path, option):
         """Load writes .env cleanly when none exists — no prompt."""
         input_file = tmp_path / "nexuslims_config.json"
         self._write_config_json(input_file)
         env_path = tmp_path / ".env"
 
         runner = CliRunner()
-        result = runner.invoke(
-            main, ["load", str(input_file), "--env-path", str(env_path)]
-        )
+        result = runner.invoke(main, ["load", str(input_file), option, str(env_path)])
 
         assert result.exit_code == 0, result.output
         assert env_path.exists()
@@ -581,7 +581,8 @@ class TestLoadCommand:
 class TestEditCommand:
     """Unit tests for ``nexuslims config edit``."""
 
-    def test_edit_launches_configurator_app(self, tmp_path, monkeypatch):
+    @pytest.mark.parametrize("option", ["--config-path", "--env-path"])
+    def test_edit_launches_configurator_app(self, tmp_path, monkeypatch, option):
         """Edit instantiates ConfiguratorApp with the given env path and calls run()."""
         env_path = tmp_path / ".env"
         mock_app = MagicMock()
@@ -591,7 +592,7 @@ class TestEditCommand:
             return_value=mock_app,
         ) as mock_cls:
             runner = CliRunner()
-            result = runner.invoke(main, ["edit", "--env-path", str(env_path)])
+            result = runner.invoke(main, ["edit", option, str(env_path)])
 
         assert result.exit_code == 0, result.output
         mock_cls.assert_called_once_with(env_path=Path(str(env_path)))
@@ -785,7 +786,10 @@ def test_dump_reports_selected_file_before_validation_error(monkeypatch, tmp_pat
     assert result.stdout == ""
 
 
-def test_labarchives_reports_explicit_config_file_on_error(tmp_path, monkeypatch):
+@pytest.mark.parametrize("option", ["--config-path", "--env-path"])
+def test_labarchives_reports_explicit_config_file_on_error(
+    tmp_path, monkeypatch, option
+):
     """The UID helper reports its explicit file even if credentials are absent."""
     selected = tmp_path / "selected.toml"
     for key in (
@@ -802,7 +806,7 @@ def test_labarchives_reports_explicit_config_file_on_error(tmp_path, monkeypatch
             "a@example.com",
             "--la-password",
             "pw",
-            "--env-path",
+            option,
             str(selected),
         ],
     )

@@ -7,7 +7,7 @@ This guide provides comprehensive information about configuring NexusLIMS throug
 
 NexusLIMS reads `~/.config/nexuslims/config.toml` by default, independently of the working directory. Set `NX_CONFIG_FILE` to an absolute path to select another TOML file or an existing dotenv file. Process environment variables override file values. If the selected file does not exist, NexusLIMS uses environment variables and built-in defaults; required settings still need to be supplied.
 
-Run `nexuslims config edit` to create the file; the command displays its path. `nexuslims config load` uses the same path. Both accept `--env-path` to select a different destination. The TOML file contains `[core]`, `[integrations]`, `[email_config]`, and `[nemo_harvesters.N]` sections as needed. The editor creates new files with owner-only permissions. Configuration files and JSON exports contain credentials: restrict access to their owner (for example, `chmod 600 /path/to/config.toml`) and protect backups.
+Run `nexuslims config edit` to create the file; the command displays its path. `nexuslims config load` uses the same path. Both accept `--config-path` to select a different destination; `--env-path` remains available as an alias. The TOML file contains `[core]`, `[integrations]`, `[email_config]`, and `[nemo_harvesters.N]` sections as needed. The editor creates new files with owner-only permissions. Configuration files and JSON exports contain credentials: restrict access to their owner (for example, `chmod 600 /path/to/config.toml`) and protect backups.
 
 For example, the editor can produce TOML like this (replace the example paths and credentials):
 
@@ -46,8 +46,8 @@ The **NexusLIMS Configuration Editor** provides a user-friendly terminal interfa
 # Launch the interactive configurator
 nexuslims config edit
 
-# Edit a specific .env file
-nexuslims config edit --env-path /path/to/.env
+# Edit a specific configuration file
+nexuslims config edit --config-path /path/to/config.toml
 ```
 
 The configurator features:
@@ -191,8 +191,8 @@ Use `nexuslims config load` to convert a dumped JSON config back into the select
 # Load config (creates or overwrites the selected file)
 nexuslims config load nexuslims_config.json
 
-# Load to specific .env file
-nexuslims config load nexuslims_config.json --env-path /path/to/.env
+# Load to a specific configuration file
+nexuslims config load nexuslims_config.json --config-path /path/to/config.toml
 
 # Skip confirmation prompt (useful for automation)
 nexuslims config load nexuslims_config.json --force
