@@ -808,7 +808,7 @@ Options:
 Commands:
   dump  Dump the current effective configuration to JSON.
   edit  Interactively edit the NexusLIMS configuration in a terminal UI.
-  load  Load a previously dumped JSON config into a .env file.
+  load  Load a previously dumped JSON config into the selected file.
 ```
 
 ```bash
@@ -818,7 +818,7 @@ nexuslims config dump
 # Save configuration to a JSON file
 nexuslims config dump --output nexuslims_config.json
 
-# Load configuration from JSON file (if .env already exists,
+# Load configuration from JSON file (if the selected file already exists,
 # this command will detect it and create a backup of the current file)
 nexuslims config load nexuslims_config.json
 ```
@@ -890,7 +890,7 @@ advanced access to [Alembic](https://alembic.sqlalchemy.org/) functionality
 for developers.
 
 The migration command will automatically read the value of `NX_DB_PATH`
-set in your `.env` file and apply any changes required to that database.
+set in your selected configuration file and apply any changes required to that database.
 Backups of your database file will be made automatically during the upgrade
 process.
 
@@ -1151,7 +1151,7 @@ nexuslims db view
 
 **Prerequisites:**
 
-- `NX_DB_PATH` must be set (via `.env` or environment)
+- `NX_DB_PATH` must be set (via configuration file or environment)
 - The database file must already exist (run `nexuslims db init` first)
 
 **Examples:**
@@ -1272,8 +1272,8 @@ nexuslims db --version
 #### Setting Up a New Installation
 
 ```bash
-# 1. Set database path in .env
-echo "NX_DB_PATH=/var/nexuslims/database.db" >> .env
+# 1. Set the database path in the configuration editor
+nexuslims config edit
 
 # 2. Initialize database
 nexuslims db init

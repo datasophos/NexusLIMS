@@ -785,7 +785,7 @@ class TestActionSaveErrorPaths:
 
             with (
                 patch(
-                    "nexusLIMS.tui.apps.config.screens._write_env_file",
+                    "nexusLIMS.tui.apps.config.screens._write_config_file",
                     side_effect=OSError("disk full"),
                 ),
                 patch.object(

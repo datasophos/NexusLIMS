@@ -12,7 +12,6 @@ from pathlib import Path
 from typing import ClassVar
 
 import pytz
-from dotenv import dotenv_values
 from pydantic_core import PydanticUndefined
 from textual import on
 from textual.app import ComposeResult
@@ -35,7 +34,7 @@ from textual.widgets import (
 
 from nexusLIMS.cli.config import (
     _flatten_to_env,
-    _write_env_file,
+    _write_config_file,
 )
 from nexusLIMS.config import EmailConfig, NemoHarvesterConfig, Settings
 from nexusLIMS.tui.apps.config.validators import (
@@ -432,9 +431,9 @@ class ConfigScreen(Screen):
         """Initialize the config screen from an optional existing .env file."""
         super().__init__(**kwargs)
         self._env_path = env_path
-        self._existing: dict[str, str] = (
-            dotenv_values(env_path) if env_path.exists() else {}
-        )
+        from nexusLIMS.config import read_config_file  # noqa: PLC0415
+
+        self._existing: dict[str, str] = read_config_file(env_path)
         self._nemo_harvesters: dict[int, dict] = {}
         self._parse_nemo_harvesters()
         # Snapshot of the env as loaded — used for unsaved-changes detection.
@@ -1290,7 +1289,7 @@ class ConfigScreen(Screen):
         try:
             config_dict = self._build_config_dict()
             env_vars = _flatten_to_env(config_dict)
-            _write_env_file(env_vars, self._env_path)
+            _write_config_file(env_vars, self._env_path)
             self.app.notify(
                 f"Configuration saved to {self._env_path}",
                 severity="information",

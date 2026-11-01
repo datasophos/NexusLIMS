@@ -5,7 +5,33 @@ This guide provides comprehensive information about configuring NexusLIMS throug
 
 ## Configuration Files
 
-NexusLIMS loads configuration from environment variables and optionally from a `.env` file in the same folder from which you run any NexusLIMS commands.
+NexusLIMS reads `~/.config/nexuslims/config.toml` by default, independently of the working directory. Set `NX_CONFIG_FILE` to an absolute path to select another TOML file or an existing dotenv file. Process environment variables override file values. If the selected file does not exist, NexusLIMS uses environment variables and built-in defaults; required settings still need to be supplied.
+
+Run `nexuslims config edit` to create the file; the command displays its path. `nexuslims config load` uses the same path. Both accept `--env-path` to select a different destination. The TOML file contains `[core]`, `[integrations]`, `[email_config]`, and `[nemo_harvesters.N]` sections as needed. The editor creates new files with owner-only permissions. Configuration files and JSON exports contain credentials: restrict access to their owner (for example, `chmod 600 /path/to/config.toml`) and protect backups.
+
+For example, the editor can produce TOML like this (replace the example paths and credentials):
+
+```toml
+[core]
+NX_DATA_PATH = "/var/lib/nexuslims"
+NX_DB_PATH = "/var/lib/nexuslims/nexuslims.db"
+NX_INSTRUMENT_DATA_PATH = "/mnt/instruments"
+
+[nemo_harvesters.1]
+address = "https://nemo.example.org/api/"
+token = "your-token"
+```
+
+Use absolute paths for filesystem settings so they resolve consistently across working directories. For a service or scheduled job, set `NX_CONFIG_FILE` to the same absolute path in its environment and ensure the service account can read it. Its home directory may differ from your interactive account's.
+
+To migrate an existing working-directory `.env`, export it and import the resulting JSON into the default TOML location:
+
+```bash
+NX_CONFIG_FILE="$PWD/.env" nexuslims config dump --output /secure/path/config-backup.json
+nexuslims config load /secure/path/config-backup.json
+```
+
+Protect or remove the JSON backup after migration. Alternatively, keep using the old file by setting `NX_CONFIG_FILE` to its absolute path for every process. Development checkouts can use the same explicit selector. NexusLIMS no longer automatically searches the working directory for `.env`.
 
 (configuration-management)=
 ## Configuration Management
@@ -14,7 +40,7 @@ NexusLIMS provides both CLI tools and an interactive terminal UI to help you man
 
 ### Interactive Configuration Editor (TUI)
 
-The **NexusLIMS Configuration Editor** provides a user-friendly terminal interface for editing your `.env` file:
+The **NexusLIMS Configuration Editor** provides a user-friendly terminal interface for editing your configuration file:
 
 ```bash
 # Launch the interactive configurator
@@ -27,7 +53,7 @@ nexuslims config edit --env-path /path/to/.env
 The configurator features:
 
 - **Tabbed Interface**: Organized into logical sections (Core Paths, CDCS, File Processing, etc.)
-- **Pre-populated Fields**: Loads existing `.env` values automatically
+- **Pre-populated Fields**: Loads existing configuration values automatically
 - **Real-time Validation**: Catches errors before saving
 - **Context-sensitive Help**: Press **F1** on any field for detailed documentation
 - **Dynamic NEMO Management**: Add/remove multiple NEMO harvester instances
@@ -116,13 +142,13 @@ nexuslims config dump --output /path/to/my-config.json
 
 The dumped configuration includes:
 
-- All environment variables (from both environment and `.env` file)
+- All effective settings (from both environment and the selected file)
 - Parsed NEMO harvester configurations
 - Email configuration (if configured)
 - Computed defaults for optional settings
 
 ```{danger}
-**Security Warning**: The dumped JSON file contains **live credentials** (API tokens, passwords, certificates). Handle it with the same care as your `.env` file. Never commit it to version control or share it publicly.
+**Security Warning**: The dumped JSON file contains **live credentials** (API tokens, passwords, certificates). Handle it with the same care as your configuration file. Never commit it to version control or share it publicly.
 ```
 
 Example output:
@@ -159,10 +185,10 @@ Example output:
 
 ### Loading Configuration
 
-Use `nexuslims config load` to convert a dumped JSON config back into a `.env` file:
+Use `nexuslims config load` to convert a dumped JSON config back into the selected configuration file:
 
 ```bash
-# Load config (creates/overwrites .env in current directory)
+# Load config (creates or overwrites the selected file)
 nexuslims config load nexuslims_config.json
 
 # Load to specific .env file
@@ -174,7 +200,7 @@ nexuslims config load nexuslims_config.json --force
 
 **Safety features:**
 
-- **Backup**: If `.env` exists, it's automatically backed up to `.env.bak.YYYYMMDD-HHMMSS` before overwriting
+- **Backup**: If the selected file exists, a timestamped backup is created before overwriting
 - **Confirmation**: Prompts for confirmation before overwriting (unless `--force` is used)
 - **Flattening**: Structured config (nested harvesters, email config) is converted back to flat environment variables
 
@@ -216,7 +242,7 @@ INFO - }
 This is particularly useful when:
 
 - Troubleshooting why a specific setting isn't taking effect
-- Verifying that `.env` changes were picked up
+- Verifying that configuration changes were picked up
 - Confirming which NEMO instances are configured
 - Checking computed defaults for optional settings
 
@@ -920,8 +946,8 @@ NX_CERT_BUNDLE_FILE=/etc/ssl/certs/custom-ca.crt
 
 If configuration changes aren't taking effect:
 
-1. **Check .env file location**: Must be in project root
-2. **Check environment variables**: `os.environ` takes precedence over `.env`
+1. **Check the selected file**: Inspect `NX_CONFIG_FILE` or use the default path shown above
+2. **Check environment variables**: process environment variables take precedence over the selected file
 3. **Restart application**: Configuration is loaded on startup
 4. **Check for typos**: Variable names are case-sensitive
 

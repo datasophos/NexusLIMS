@@ -21,7 +21,6 @@ Note:
     used) to ensure Alembic can detect them for autogenerate operations.
 """
 
-import os
 import re
 from pathlib import Path
 
@@ -33,6 +32,7 @@ from sqlalchemy import engine_from_config, pool
 # Import SQLModel metadata and models
 from sqlmodel import SQLModel
 
+from nexusLIMS.config import get_config_value
 from nexusLIMS.db.models import Instrument, SessionLog, UploadLog  # noqa: F401
 
 # Derive the migrations directory from this file's own location.
@@ -48,7 +48,7 @@ config = context.config
 # (like NX_CDCS_TOKEN, NX_DATA_PATH, etc.) that are irrelevant for database
 # migrations. This allows 'nexuslims db' commands to work with only
 # NX_DB_PATH set.
-_db_path = os.getenv("NX_DB_PATH", "")
+_db_path = get_config_value("NX_DB_PATH") or ""
 config.set_main_option("sqlalchemy.url", f"sqlite:///{_db_path}")
 
 # Set target_metadata to SQLModel metadata for autogenerate support

@@ -27,7 +27,7 @@ class TestEnsureDatabaseInitialized:
             # Should raise click.Abort
             _ensure_database_initialized()
 
-    def test_reads_db_path_from_dotenv_in_cwd(self, tmp_path, monkeypatch):
+    def test_reads_db_path_from_selected_file(self, tmp_path, monkeypatch):
         """Test that .env in the current working directory is found.
 
         When NexusLIMS is installed as a package the calling file lives
@@ -42,8 +42,9 @@ class TestEnsureDatabaseInitialized:
 
         # Clear NX_DB_PATH from the real environment
         monkeypatch.delenv("NX_DB_PATH", raising=False)
-        # Run from the temp directory so find_dotenv(usecwd=True) finds .env
-        monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("NX_CONFIG_FILE", str(env_file))
+        monkeypatch.setattr("nexusLIMS.config.TEST_MODE", False)
+        monkeypatch.chdir(tmp_path.parent)
 
         # Should succeed without raising — .env provides NX_DB_PATH
         _ensure_database_initialized()

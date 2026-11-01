@@ -608,7 +608,9 @@ class TestEditCommand:
             result = runner.invoke(main, ["edit"])
 
         assert result.exit_code == 0, result.output
-        mock_cls.assert_called_once_with(env_path=Path(".env"))
+        mock_cls.assert_called_once_with(
+            env_path=Path.home() / ".config/nexuslims/config.toml"
+        )
         mock_app.run.assert_called_once()
 
 

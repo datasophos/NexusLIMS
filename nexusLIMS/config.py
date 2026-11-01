@@ -11,9 +11,11 @@ In tests, use refresh_settings() to reload settings after modifying
 environment variables.
 """
 
+import json
 import logging
 import os
 import re
+import tomllib
 from pathlib import Path
 from typing import TYPE_CHECKING, Literal
 
@@ -33,6 +35,46 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from nexusLIMS.version import __version__
 
 _logger = logging.getLogger(__name__)
+
+
+def get_config_path() -> Path:
+    """Return the selected persistent configuration file."""
+    selected = os.environ.get("NX_CONFIG_FILE")
+    if selected:
+        path = Path(selected).expanduser()
+        if not path.is_absolute():
+            msg = "NX_CONFIG_FILE must be an absolute path"
+            raise ValueError(msg)
+        return path
+    return Path.home() / ".config" / "nexuslims" / "config.toml"
+
+
+def read_config_file(path: str | Path) -> dict[str, str]:
+    """Read TOML or dotenv configuration as environment-style values."""
+    path = Path(path)
+    if path.suffix.lower() != ".toml":
+        return {k: v for k, v in dotenv_values(path).items() if v is not None}
+    if not path.exists():
+        return {}
+    with path.open("rb") as stream:
+        data = tomllib.load(stream)
+    from nexusLIMS.cli.config import _flatten_to_env  # noqa: PLC0415
+
+    core = data.pop("core", {})
+    integrations = data.pop("integrations", {})
+    return _flatten_to_env({**core, **integrations, **data})
+
+
+def effective_config_values() -> dict[str, str]:
+    """Return selected file values with process environment overrides."""
+    values = {} if TEST_MODE else read_config_file(get_config_path())
+    return {**values, **os.environ}
+
+
+def get_config_value(name: str) -> str | None:
+    """Read one configuration value without validating unrelated settings."""
+    return effective_config_values().get(name)
+
 
 # ============================================================================
 # TEST MODE: Disable Pydantic validation when running tests
@@ -276,12 +318,43 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         # CRITICAL: Disable .env file loading in TEST_MODE to prevent contamination
         # from local environment files during testing
-        env_file=None if TEST_MODE else ".env",
+        env_file=None,
         env_file_encoding="utf-8",
         extra="ignore",  # Ignore extra environment variables not defined here
         # In test mode, disable path validation to allow non-existent paths
         validate_default=not TEST_MODE,
     )
+
+    @classmethod
+    def settings_customise_sources(
+        cls,
+        settings_cls,
+        init_settings,
+        env_settings,
+        dotenv_settings,
+        file_secret_settings,
+    ):
+        """Load the selected file below process environment variables."""
+        del settings_cls, dotenv_settings
+
+        def persistent_settings():
+            if TEST_MODE:
+                return {}
+            values = read_config_file(get_config_path())
+            result = {k: v for k, v in values.items() if k in cls.model_fields}
+            if "NX_IGNORE_PATTERNS" in result:
+                if (
+                    "NX_IGNORE_PATTERNS" in env_settings()
+                    or "NX_IGNORE_PATTERNS" in init_settings()
+                ):
+                    del result["NX_IGNORE_PATTERNS"]
+                else:
+                    result["NX_IGNORE_PATTERNS"] = json.loads(
+                        result["NX_IGNORE_PATTERNS"]
+                    )
+            return result
+
+        return init_settings, env_settings, persistent_settings, file_secret_settings
 
     NX_FILE_STRATEGY: Literal["exclusive", "inclusive"] = Field(
         "exclusive",
@@ -913,18 +986,7 @@ class Settings(BaseSettings):
         """
         harvesters = {}
 
-        # CRITICAL: In TEST_MODE, do NOT load from .env file to prevent
-        # test contamination from local environment configuration
-        env_vars = {}
-        if not TEST_MODE:
-            # Load .env file to get NEMO variables (Pydantic doesn't load
-            # variables that aren't defined as fields)
-            env_file_path = Path(".env")
-            if env_file_path.exists():
-                env_vars = dotenv_values(env_file_path)
-
-        # Merge with os.environ (os.environ takes precedence)
-        all_env = {**env_vars, **os.environ}
+        all_env = effective_config_values()
 
         # Find all NX_NEMO_ADDRESS_N environment variables
         address_pattern = re.compile(r"^NX_NEMO_ADDRESS_(\d+)$")
@@ -1007,17 +1069,7 @@ class Settings(BaseSettings):
         NX_EMAIL_USE_TLS=true
         ```
         """
-        # CRITICAL: In TEST_MODE, do NOT load from .env file to prevent
-        # test contamination from local environment configuration
-        env_vars = {}
-        if not TEST_MODE:
-            # Load .env file to get email variables
-            env_file_path = Path(".env")
-            if env_file_path.exists():
-                env_vars = dotenv_values(env_file_path)
-
-        # Merge with os.environ (os.environ takes precedence)
-        all_env = {**env_vars, **os.environ}
+        all_env = effective_config_values()
 
         # Check if required email vars are present
         smtp_host = all_env.get("NX_EMAIL_SMTP_HOST")
@@ -1221,7 +1273,7 @@ _LA_KEYS = (
 )
 
 
-def read_labarchives_env(env_path: str | Path = ".env") -> dict[str, str | None]:
+def read_labarchives_env(env_path: str | Path | None = None) -> dict[str, str | None]:
     """Read LabArchives settings without triggering full Settings validation.
 
     Merges values from the given ``.env`` file and the process environment
@@ -1244,9 +1296,13 @@ def read_labarchives_env(env_path: str | Path = ".env") -> dict[str, str | None]
         values (or ``None`` if not set).
     """
     # Start with file values, then let process env override.
-    file_values: dict[str, str | None] = dotenv_values(str(env_path))
+    file_values: dict[str, str | None] = (
+        read_config_file(env_path)
+        if env_path is not None
+        else effective_config_values()
+    )
     result: dict[str, str | None] = {}
     for key in _LA_KEYS:
         # os.getenv permitted here — this IS nexusLIMS/config.py
-        result[key] = os.getenv(key) or file_values.get(key) or None
+        result[key] = os.environ.get(key, file_values.get(key))
     return result

@@ -33,6 +33,7 @@ back up any pre-existing ``.env`` file before overwriting.
 
 import json
 import logging
+import re
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
@@ -253,6 +254,50 @@ def _flatten_email_config(email: dict) -> dict[str, str]:
 # ---------------------------------------------------------------------------
 
 
+def _write_config_file(env_vars: dict[str, str], path: Path) -> None:
+    """Write configuration in TOML or dotenv format based on its suffix."""
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    path.touch(mode=0o600, exist_ok=True)
+    if path.suffix.lower() != ".toml":
+        _write_env_file(env_vars, path)
+        return
+    sections: dict[str, dict[str, object]] = {"core": {}}
+    for key, value in env_vars.items():
+        email_field = next(
+            (field for field, name in _EMAIL_KEY_TO_ENV.items() if name == key), None
+        )
+        if email_field:
+            sections.setdefault("email_config", {})[email_field] = (
+                value.split(",") if email_field == "recipients" else value
+            )
+            continue
+        found = False
+        for field, prefix in _NEMO_KEY_TO_SUFFIX.items():
+            match = re.fullmatch(re.escape(prefix) + r"(\d+)", key)
+            if match:
+                sections.setdefault(f"nemo_harvesters.{match.group(1)}", {})[field] = (
+                    value
+                )
+                found = True
+                break
+        if not found:
+            section = (
+                "integrations"
+                if key.startswith(("NX_LABARCHIVES_", "NX_CDCS_", "NX_ELABFTW_"))
+                else "core"
+            )
+            sections.setdefault(section, {})[key] = value
+    lines = []
+    for section, values in sections.items():
+        lines.append(f"[{section}]")
+        lines.extend(
+            f"{key} = {json.dumps(value, ensure_ascii=False)}"
+            for key, value in values.items()
+        )
+        lines.append("")
+    path.write_text("\n".join(lines))
+
+
 def _write_env_file(env_vars: dict[str, str], path: Path) -> None:
     """
     Write *env_vars* to *path* as a ``.env`` file.
@@ -330,20 +375,22 @@ def dump(output: str | None) -> None:
 @click.option(
     "--env-path",
     type=click.Path(dir_okay=False, writable=True),
-    default=".env",
-    show_default=True,
-    help="Path to the .env file to edit (created if absent).",
+    default=None,
+    help="Configuration file to edit (defaults to the selected file).",
 )
-def edit(env_path: str) -> None:
+def edit(env_path: str | None) -> None:
     """Interactively edit the NexusLIMS configuration in a terminal UI.
 
-    Opens a tabbed form pre-populated from the existing .env file (if any).
-    Press Ctrl+S to save and write the .env file, or Escape to cancel without
+    Opens a tabbed form pre-populated from the selected file (if any).
+    Press Ctrl+S to save and write the configuration file, or Escape to cancel without
     saving.
     """
+    from nexusLIMS.config import get_config_path  # noqa: PLC0415
     from nexusLIMS.tui.apps.config.app import ConfiguratorApp  # noqa: PLC0415
 
-    ConfiguratorApp(env_path=Path(env_path)).run()
+    path = Path(env_path) if env_path else get_config_path()
+    click.echo(f"Configuration file: {path}")
+    ConfiguratorApp(env_path=path).run()
 
 
 @main.command("labarchives-get-uid")
@@ -364,9 +411,8 @@ def edit(env_path: str) -> None:
 @click.option(
     "--env-path",
     type=click.Path(dir_okay=False),
-    default=".env",
-    show_default=True,
-    help="Path to the .env file to read LabArchives credentials from.",
+    default=None,
+    help="Configuration file to read LabArchives credentials from.",
 )
 @click.option(
     "--verbose",
@@ -376,7 +422,7 @@ def edit(env_path: str) -> None:
     help="Enable debug logging to see full HTTP request/response details.",
 )
 def labarchives_get_uid(
-    email: str, la_password: str, env_path: str, *, verbose: bool
+    email: str, la_password: str, env_path: str | None, *, verbose: bool
 ) -> None:
     """Look up your LabArchives user ID (UID) using your login credentials.
 
@@ -462,33 +508,35 @@ def labarchives_get_uid(
 @click.option(
     "--env-path",
     type=click.Path(dir_okay=False, writable=True),
-    default=".env",
-    show_default=True,
-    help="Path to write the .env file.",
+    default=None,
+    help="Configuration file to write (defaults to the selected file).",
 )
 @click.option(
     "--force",
     is_flag=True,
     default=False,
-    help="Skip confirmation prompt when overwriting an existing .env file.",
+    help="Skip confirmation prompt when overwriting an existing file.",
 )
-def load(input: str, env_path: str, *, force: bool) -> None:  # noqa: A002
-    """Load a previously dumped JSON config into a .env file.
+def load(input: str, env_path: str | None, *, force: bool) -> None:  # noqa: A002
+    """Load a previously dumped JSON config into the selected file.
 
     INPUT is the path to the JSON file produced by ``dump``.
 
-    If a .env file already exists at ENV_PATH a timestamped backup is created
+    If a file already exists at the destination a timestamped backup is created
     before it is overwritten.
     """
     input_path = Path(input)
-    env_file = Path(env_path)
+    from nexusLIMS.config import get_config_path  # noqa: PLC0415
+
+    env_file = Path(env_path) if env_path else get_config_path()
+    click.echo(f"Configuration file: {env_file}")
 
     config_dict = json.loads(input_path.read_text())
 
     # --- back up existing .env if present ----------------------------------
     if env_file.exists():
         click.echo(
-            f"WARNING: A .env file already exists at {env_file}.  "
+            f"WARNING: A configuration file already exists at {env_file}.  "
             "It will be overwritten.",
             err=True,
         )
@@ -498,9 +546,9 @@ def load(input: str, env_path: str, *, force: bool) -> None:  # noqa: A002
         timestamp = datetime.now().astimezone().strftime("%Y%m%d-%H%M%S")
         backup_path = env_file.with_name(f"{env_file.name}.bak.{timestamp}")
         env_file.rename(backup_path)
-        click.echo(f"Existing .env backed up to {backup_path}")
+        click.echo(f"Existing configuration backed up to {backup_path}")
 
     # --- flatten and write -------------------------------------------------
     env_vars = _flatten_to_env(config_dict)
-    _write_env_file(env_vars, env_file)
+    _write_config_file(env_vars, env_file)
     click.echo(f"Configuration loaded into {env_file}")

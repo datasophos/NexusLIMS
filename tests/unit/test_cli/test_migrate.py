@@ -5,7 +5,7 @@ from pathlib import Path
 from click.testing import CliRunner
 
 
-def test_init_reads_db_path_from_dotenv_in_cwd(tmp_path, monkeypatch):
+def test_init_reads_db_path_from_selected_file(tmp_path, monkeypatch):
     """Test that 'nexuslims db init' finds .env in the user's cwd.
 
     When NexusLIMS is installed as a package the calling file lives
@@ -23,8 +23,9 @@ def test_init_reads_db_path_from_dotenv_in_cwd(tmp_path, monkeypatch):
 
     # Clear NX_DB_PATH from the real environment
     monkeypatch.delenv("NX_DB_PATH", raising=False)
-    # Run from the temp directory so find_dotenv(usecwd=True) finds .env
-    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("NX_CONFIG_FILE", str(env_file))
+    monkeypatch.setattr("nexusLIMS.config.TEST_MODE", False)
+    monkeypatch.chdir(tmp_path.parent)
 
     runner = CliRunner()
     # Mock Alembic so we don't actually run migrations
