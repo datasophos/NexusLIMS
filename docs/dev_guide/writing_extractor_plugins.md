@@ -325,7 +325,7 @@ from nexusLIMS.schemas.units import ureg
 # If you have voltage in volts, create Quantity directly
 voltage_v = 15000  # Volts from file
 nx_meta["acceleration_voltage"] = ureg.Quantity(voltage_v, "volt")
-# Pint will automatically handle unit conversion when needed
+# Convert explicitly to the desired unit when needed
 
 # Alternative: parse from string
 nx_meta["working_distance"] = ureg("5.2 mm")
@@ -381,7 +381,7 @@ for field in FIELD_DEFINITIONS:
 
 **Benefits of Pint Quantities:**
 1. **Type safety**: Invalid units are caught immediately
-2. **Automatic conversion**: Units are normalized during XML generation
+2. **Unit conversion**: Pint converts quantities explicitly to a chosen unit
 3. **Machine-readable**: Units are separate from values in XML output
 4. **EM Glossary alignment**: Field names match community standards
 

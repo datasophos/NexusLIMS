@@ -36,7 +36,7 @@ instrument information.
 - **Extensible Architecture** - Plugin-based extractor system and instrument profiles for easy customization
 - **Structured XML Records** - Standards-compliant records with comprehensive session and technical metadata
 - **Metadata Standardization** - Emerging standardization using [EM Glossary](https://emglossary.helmholtz-metadaten.de/) terms and Pydantic validation (work in progress)
-- **Physical Unit Management** - Automatic normalization of physical quantities (voltages, distances, times) to preferred units via Pint
+- **Physical Unit Management** - Pint quantities support explicit conversion of physical measurements to preferred units
 
 ````{grid} 2
 :gutter: 3
