@@ -5,7 +5,7 @@ This guide provides comprehensive information about configuring NexusLIMS throug
 
 ## Configuration Files
 
-NexusLIMS looks for its configuration file at `~/.config/nexuslims/config.toml`, followed by `/etc/nexuslims/config.toml` by default (where `~` represents the home directory of the user account used to run NexusLIMS). You can set the `NX_CONFIG_FILE` environment variable to an absolute path to select another TOML file or an older dotenv file (if you had a configuration from a version before 2.9.0). Environment variables set for the process will override values provided in the config file. If the selected file does not exist, NexusLIMS will use environment variables and built-in defaults where possible; required settings still need to be supplied.
+NexusLIMS looks for its configuration file at `~/.config/nexuslims/config.toml`, followed by `/etc/nexuslims/config.toml` by default (where `~` represents the home directory of the user account used to run NexusLIMS). You can set the `NX_CONFIG_FILE` environment variable to select another TOML file or an older style `.env` file (if you have a configuration from a version before 2.9.0). Environment variables set for the process will override values provided in the config file. If the selected file does not exist, NexusLIMS will use environment variables and built-in defaults where possible, though the required variables still need to be supplied.
 
 NexusLIMS selects one configuration file in this order:
 
@@ -14,9 +14,9 @@ NexusLIMS selects one configuration file in this order:
 3. `/etc/nexuslims/config.toml`, if it exists.
 4. The user path `~/.config/nexuslims/config.toml`, when neither file exists.
 
-The files are not merged. Files ending in `.toml` are read as TOML; other filenames are read as dotenv. Process environment variables override values from the selected file. The editor and `config load` use that same path, so changing a system-wide file requires write permission; use `--config-path` to choose another destination. A user file takes precedence over the system file, including for services running under that user account.
+The files are not merged. Files ending in `.toml` are read as TOML; other filenames are read as dotenv. Process environment variables override values from a config file. The editor and `nexuslims config load` use that same path, so changing a system-wide file requires write permission; use `--config-path` to choose another destination. A user file takes precedence over the system file, including for services running under that user account.
 
-Run `nexuslims config edit` to create the file; the command displays the path to the config file in the top line of the TUI. `nexuslims config load` will use the same path. Both commands accept `--config-path` to select a different destination. The TOML file contains `[core]`, `[integrations]`, `[email_config]`, and `[nemo_harvesters.N]` sections as needed. The config editor creates new files with owner-only permissions by default. Since configuration files and JSON exports contain credentials, you should restrict access to their owner (for example, `chmod 600 /path/to/config.toml`) and protect backups.
+You can use `nexuslims config edit` to create the config file if one does not exist; the command displays the path to the config file in the top line of the TUI, for reference. `nexuslims config load` will use the same path. Both commands accept a `--config-path` option to explicitly select a different destination. The TOML file contains `[core]`, `[integrations]`, `[email_config]`, and `[nemo_harvesters.N]` sections as needed. The config editor creates new files with owner-only permissions by default. Since configuration files and JSON exports contain credentials, you should restrict access to their owner (for example, `chmod 600 /path/to/config.toml`) and protect backups.
 
 See the {ref}`complete TOML reference example <configuration-example>` for a copyable configuration showing all supported settings.
 
