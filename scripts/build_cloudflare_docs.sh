@@ -14,7 +14,8 @@ export NX_CDCS_URL=https://placeholder.example.com
 mkdir -p "$NX_INSTRUMENT_DATA_PATH" "$NX_DATA_PATH"
 touch "$NX_DB_PATH"
 python scripts/generate_switcher_json.py
-# Reuse published media; the Cloudflare image does not have VHS/ttyd.
+# Reuse published media; the Cloudflare image does not have Graphviz or VHS/ttyd.
+git show origin/gh-pages:latest/_static/db_schema.png > docs/_static/db_schema.png
 for asset in main_screen.svg help_screen.svg db_browser_table_viewer.svg \
   config_main_screen.svg config_help_screen.svg config_field_detail.svg \
   demo_search_filter.mp4 demo_add_instrument.mp4 demo_edit_instrument.mp4 \
