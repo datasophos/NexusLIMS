@@ -1,4 +1,4 @@
-FROM elabftw/elabimg:5.3.11
+FROM elabftw/elabimg:5.6.15
 
 # Install Python for initialization
 RUN apk add --no-cache python3 py3-pip curl
