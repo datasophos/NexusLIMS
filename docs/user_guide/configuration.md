@@ -10,6 +10,7 @@ of the process running the `nexuslims` command. In versions 2.9.0 and later, a p
 so the settings used are consistent regardless of where the command is invoked.
 ```
 
+(configuration-files)=
 ## Configuration Files
 
 NexusLIMS looks for its configuration file first at `~/.config/nexuslims/config.toml` (user-level), followed by `/etc/nexuslims/config.toml` (system-level), where `~` represents the home directory of the user account used to run NexusLIMS. You can set the `NX_CONFIG_FILE` environment variable to select another TOML file or an older style `.env` file (if you have a configuration from a version before 2.9.0). Environment variables set for the process will override values provided in the config file. If the selected file does not exist, NexusLIMS will use environment variables and built-in defaults where possible, though the required variables still need to be supplied.
