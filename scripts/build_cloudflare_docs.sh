@@ -3,6 +3,8 @@
 set -euo pipefail
 
 python -m pip install uv
+# pip may install executables outside PATH (for example, in the user bin dir).
+export PATH="$(dirname "$(python -c 'from uv import find_uv_bin; print(find_uv_bin())')"):$PATH"
 uv sync --frozen
 export NX_INSTRUMENT_DATA_PATH=/tmp/nx_instrument_data
 export NX_DATA_PATH=/tmp/nx_data
