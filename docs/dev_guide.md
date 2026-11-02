@@ -490,7 +490,6 @@ We especially welcome contributions in these areas:
 :maxdepth: 1
 
 dev_guide/development
-dev_guide/cloudflare_previews
 dev_guide/writing_extractor_plugins
 dev_guide/writing_export_destinations
 dev_guide/instrument_profiles
@@ -499,6 +498,7 @@ dev_guide/em_glossary_reference
 dev_guide/examples
 dev_guide/uv_migration
 dev_guide/database
+dev_guide/cloudflare_previews
 dev_guide/schema_documentation
 dev_guide/testing/integration-tests
 reference/textual_testing_reference
