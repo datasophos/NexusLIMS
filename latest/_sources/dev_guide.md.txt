@@ -498,6 +498,7 @@ dev_guide/em_glossary_reference
 dev_guide/examples
 dev_guide/uv_migration
 dev_guide/database
+dev_guide/cloudflare_previews
 dev_guide/schema_documentation
 dev_guide/testing/integration-tests
 reference/textual_testing_reference
