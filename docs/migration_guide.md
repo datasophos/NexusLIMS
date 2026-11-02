@@ -3,6 +3,9 @@
 
 This guide is for system administrators, and will help you migrate your NexusLIMS installation from v1.4.3 to v2.5.0.
 
+For migration to the persistent configuration introduced in 2.9.0, see
+the {ref}`configuration guide <configuration>`.
+
 ## What Changed
 
 The major changes you need to know about:

@@ -186,17 +186,17 @@ NexusLIMS reads configuration from a persistent TOML file and process environmen
    - `NX_CDCS_URL`, `NX_CDCS_TOKEN` - CDCS API credentials
    - `NX_NEMO_ADDRESS_N`, `NX_NEMO_TOKEN_N` - NEMO integration
 
-3. *(Optional)* Verify your configuration was loaded correctly:
+3. *(Optional)* Check which file NexusLIMS selects:
    ```bash
-   # Dump current config to see what NexusLIMS sees
-   # WARNING: Output contains live credentials - don't share publicly
-   nexuslims config dump
+   nexuslims config status
    ```
 
-```{seealso}
-For complete configuration documentation including all available settings, validation rules, and troubleshooting, see the {ref}`configuration` guide.
+   This shows the selected file and its source, but does not validate its settings.
 
-For config management tools (dump/load) and debugging configuration issues, see {ref}`configuration-management`.
+```{seealso}
+See the {ref}`configuration guide <configuration>` for file selection and migration,
+the {ref}`settings reference <configuration-settings>` for individual settings,
+and the {ref}`TOML example <configuration-example>` for a complete file.
 ```
 
 ## Database Setup

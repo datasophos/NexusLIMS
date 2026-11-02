@@ -94,5 +94,5 @@ NX_CDCS_TOKEN = "replace-with-cdcs-api-token"
 
 `NX_CONFIG_FILE` selects the file and must be set in the process environment,
 not inside the TOML file. Process environment variables override values in the
-selected file. See the {ref}`configuration` guide for detailed settings and the
-numbered environment-variable equivalents for NEMO and email.
+selected file. See the {ref}`configuration settings reference <configuration-settings>` for
+detailed settings and the numbered environment-variable equivalents for NEMO and email.

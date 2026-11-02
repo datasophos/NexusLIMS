@@ -176,7 +176,9 @@ To ensure your data is properly captured:
 
 user_guide/getting_started
 user_guide/configuration
+user_guide/configuration_settings
 user_guide/configuration_example
+migration_guide
 user_guide/cli_reference
 user_guide/record_building
 user_guide/instrument_manager
