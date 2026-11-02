@@ -161,3 +161,58 @@ def test_image_preview_plots_each_measured_channel(tmp_path, monkeypatch):
     assert all(
         channel.shape == (256, 256) and np.ptp(channel) > 0 for channel in plotted
     )
+
+
+def test_non_ibw_file_is_not_supported(tmp_path):
+    """A different extension must not be recognized as an Asylum wave."""
+    from nexusLIMS.extractors.plugins.asylum_ibw import is_asylum
+
+    assert not is_asylum(tmp_path / "image.txt")
+
+
+def test_invalid_numeric_note_preserves_other_metadata(tmp_path, monkeypatch, caplog):
+    """A malformed numeric field should be skipped without losing valid fields."""
+    import numpy as np
+
+    from nexusLIMS.extractors.plugins import asylum_ibw
+
+    path = tmp_path / "image.ibw"
+    path.touch()
+    wave = {"wData": np.zeros((2, 2, 1)), "note": b"ScanSize:invalid"}
+    note = {"ScanSize": "invalid", "ScanRate": "2"}
+    monkeypatch.setattr(asylum_ibw, "read_wave", lambda _path: (wave, note, ["Height"]))
+
+    result = asylum_ibw.AsylumIbwExtractor().extract(ExtractionContext(path))[0]
+    extensions = result["nx_meta"]["extensions"]
+    assert "Scan Size" not in extensions
+    assert extensions["Scan Rate"].magnitude == 2
+    assert "Invalid ScanSize value" in caplog.text
+
+
+def test_odd_image_channel_count_hides_unused_axis(tmp_path, monkeypatch):
+    """An image with three channels should leave its fourth panel blank."""
+    import numpy as np
+    from matplotlib.axes import Axes
+
+    from nexusLIMS.extractors.plugins.preview_generators import asylum_ibw_preview
+
+    wave = {"wData": np.ones((2, 2, 3))}
+    monkeypatch.setattr(
+        asylum_ibw_preview,
+        "read_wave",
+        lambda _path: (wave, {}, ["Height", "Phase", "Amplitude"]),
+    )
+    original = Axes.set_axis_off
+    hidden = []
+
+    def capture(ax):
+        hidden.append(ax)
+        return original(ax)
+
+    monkeypatch.setattr(Axes, "set_axis_off", capture)
+    output = tmp_path / "preview.png"
+    assert asylum_ibw_preview.AsylumIbwPreviewGenerator().generate(
+        ExtractionContext(tmp_path / "image.ibw"), output
+    )
+    assert output.is_file()
+    assert len(hidden) == 4
