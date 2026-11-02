@@ -53,6 +53,27 @@ def get_config_path() -> Path:
     return SYSTEM_CONFIG_PATH
 
 
+def config_selection() -> tuple[Path, str, Path, Path]:
+    """Return selected file, source, and user and system candidates."""
+    user = Path.home() / ".config" / "nexuslims" / "config.toml"
+    path = get_config_path()
+    source = (
+        "NX_CONFIG_FILE"
+        if os.environ.get("NX_CONFIG_FILE")
+        else ("user" if path == user else "system")
+    )
+    return path, source, user, SYSTEM_CONFIG_PATH
+
+
+def config_override_names() -> list[str]:
+    """List process configuration variable names without revealing values."""
+    return sorted(
+        name
+        for name in os.environ
+        if name.startswith("NX_") and name != "NX_CONFIG_FILE"
+    )
+
+
 def read_config_file(path: str | Path) -> dict[str, str]:
     """Read TOML or dotenv configuration as environment-style values."""
     path = Path(path)

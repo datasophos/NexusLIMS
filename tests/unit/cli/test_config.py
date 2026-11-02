@@ -586,17 +586,29 @@ class TestEditCommand:
         """Edit instantiates ConfiguratorApp with the given env path and calls run()."""
         env_path = tmp_path / ".env"
         mock_app = MagicMock()
+        monkeypatch.setattr("nexusLIMS.cli.config._interactive_terminal", lambda: True)
 
         with patch(
             "nexusLIMS.tui.apps.config.app.ConfiguratorApp",
             return_value=mock_app,
         ) as mock_cls:
             runner = CliRunner()
-            result = runner.invoke(main, ["edit", option, str(env_path)])
+            result = runner.invoke(main, ["edit", option, str(env_path)], input="\n")
 
         assert result.exit_code == 0, result.output
         mock_cls.assert_called_once_with(env_path=Path(str(env_path)))
         mock_app.run.assert_called_once()
+
+    def test_edit_waits_for_acknowledgement(self, tmp_path, monkeypatch):
+        """The actual path is shown and the editor does not open on EOF."""
+        monkeypatch.setattr("nexusLIMS.cli.config._interactive_terminal", lambda: True)
+        path = tmp_path / "chosen.toml"
+        with patch("nexusLIMS.tui.apps.config.app.ConfiguratorApp") as app:
+            result = CliRunner().invoke(main, ["edit", "--config-path", str(path)])
+        assert result.exit_code != 0
+        assert str(path) in result.output
+        assert "Press Enter" in result.output
+        app.assert_not_called()
 
     def test_edit_default_env_path(self, monkeypatch, tmp_path):
         """Edit selects the default config path when no override is set."""
@@ -606,13 +618,14 @@ class TestEditCommand:
             "nexusLIMS.config.SYSTEM_CONFIG_PATH", tmp_path / "missing-system.toml"
         )
         mock_app = MagicMock()
+        monkeypatch.setattr("nexusLIMS.cli.config._interactive_terminal", lambda: True)
 
         with patch(
             "nexusLIMS.tui.apps.config.app.ConfiguratorApp",
             return_value=mock_app,
         ) as mock_cls:
             runner = CliRunner()
-            result = runner.invoke(main, ["edit"])
+            result = runner.invoke(main, ["edit"], input="\n")
 
         assert result.exit_code == 0, result.output
         mock_cls.assert_called_once_with(

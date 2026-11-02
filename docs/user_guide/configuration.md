@@ -40,6 +40,10 @@ Alternatively, you can keep using the old `.env` file by setting `NX_CONFIG_FILE
 
 NexusLIMS provides both CLI tools and an interactive terminal UI to help you manage, debug, and migrate your configurations between environments.
 
+### Inspecting configuration selection
+
+Commands report the selected configuration file and its source on standard error; help and version output stay quiet. The `nexuslims config status` command instead prints a complete report to standard output, including the selected file, user and system candidates, effective process user, and names of process environment variables that override settings. Values are never shown. This diagnostic works even when the selected file or application settings are invalid. Service accounts may use a different home directory from your login account.
+
 ### Interactive Configuration Editor (TUI)
 
 The **NexusLIMS Configuration Editor** provides a user-friendly terminal interface for editing your configuration file:
@@ -51,6 +55,8 @@ nexuslims config edit
 # Edit a specific configuration file
 nexuslims config edit --config-path /path/to/config.toml
 ```
+
+The editor shows the selected configuration file and waits for Enter before opening. Its title also displays the file path. `--config-path` (or its alias `--env-path`) opens a specific file and warns if it is not active. The editor requires an interactive terminal.
 
 The configurator features:
 

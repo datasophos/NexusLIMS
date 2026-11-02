@@ -1,0 +1,1 @@
+CLI commands now report the selected configuration file, and ``nexuslims config status`` explains file precedence and environment overrides without displaying secrets. The configuration editor displays the file being edited and warns when an explicitly chosen file is inactive.

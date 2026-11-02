@@ -12,6 +12,8 @@ Set Theme "Dracula"
 # Launch the config TUI with demo TOML file
 Type "uv run nexuslims config edit --config-path demo.config.toml"
 Enter
+Sleep 500ms
+Enter
 Sleep 3s
 
 # Navigate to NEMO tab

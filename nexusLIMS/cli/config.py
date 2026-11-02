@@ -328,6 +328,57 @@ def main() -> None:
 
 
 @main.command()
+def status() -> None:
+    """Explain configuration selection without validating settings."""
+    import getpass  # noqa: PLC0415
+    import os  # noqa: PLC0415
+
+    from nexusLIMS.config import (  # noqa: PLC0415
+        SYSTEM_CONFIG_PATH,
+        config_override_names,
+        config_selection,
+    )
+
+    user = Path.home() / ".config" / "nexuslims" / "config.toml"
+    click.echo("Active configuration:")
+    try:
+        selected, source, user, system = config_selection()
+        click.echo(f"  Selected file:   {selected} ({source})")
+        click.echo(f"  File status:     {'exists' if selected.exists() else 'missing'}")
+    except (ValueError, OSError) as exc:
+        selected, system = None, SYSTEM_CONFIG_PATH
+        click.echo(f"  Selected file:   invalid ({exc})")
+        click.echo("  File status:     unavailable (NX_CONFIG_FILE)")
+
+    click.echo("\nCandidate files:")
+    for label, path in (("User", user), ("System", system)):
+        state = "exists" if path.exists() else "missing"
+        if path == selected:
+            state += ", selected"
+        elif os.environ.get("NX_CONFIG_FILE"):
+            state += ", ignored: NX_CONFIG_FILE takes precedence"
+        elif label == "System" and user.exists():
+            state += ", ignored: user file takes precedence"
+        click.echo(f"  {label + ':':<17}{path}  ({state})")
+    try:
+        import pwd  # noqa: PLC0415
+
+        username = pwd.getpwuid(os.geteuid()).pw_name
+    except (ImportError, KeyError):
+        username = getpass.getuser()
+    click.echo(f"\nRunning as user: {username}")
+    names = config_override_names()
+    click.echo("Overrides:       " + (", ".join(names) if names else "none"))
+
+
+def _interactive_terminal() -> bool:
+    """Return whether the editor can interact with a terminal."""
+    import sys  # noqa: PLC0415
+
+    return sys.stdin.isatty() and sys.stdout.isatty()
+
+
+@main.command()
 @click.option(
     "--output",
     "-o",
@@ -345,10 +396,11 @@ def dump(output: str | None) -> None:
     ``.env``.
     """
     from nexusLIMS.cli import handle_config_error  # noqa: PLC0415
-    from nexusLIMS.config import get_config_path  # noqa: PLC0415
 
-    click.echo(f"Configuration file: {get_config_path()}", err=True)
+    if click.get_current_context().find_root().command is main:
+        from nexusLIMS.config import get_config_path  # noqa: PLC0415
 
+        click.echo(f"Configuration file: {get_config_path()}", err=True)
     with handle_config_error():
         from nexusLIMS.config import settings  # noqa: PLC0415
 
@@ -390,11 +442,27 @@ def edit(env_path: str | None) -> None:
     Press Ctrl+S to save and write the configuration file, or Escape to cancel without
     saving.
     """
-    from nexusLIMS.config import get_config_path  # noqa: PLC0415
+    from nexusLIMS.config import config_selection, get_config_path  # noqa: PLC0415
     from nexusLIMS.tui.apps.config.app import ConfiguratorApp  # noqa: PLC0415
 
+    if not _interactive_terminal():
+        message = "Config editor requires an interactive terminal."
+        raise click.ClickException(message)
+    try:
+        active_path, source, _, _ = config_selection()
+    except (ValueError, OSError):
+        if env_path is None:
+            raise
+        active_path, source = None, "command line"
     path = Path(env_path) if env_path else get_config_path()
-    click.echo(f"Configuration file: {path}")
+    if env_path:
+        source = "command line"
+    click.echo(f"Editing configuration: {path} ({source})", err=True)
+    if env_path and (active_path is None or path.absolute() != active_path.absolute()):
+        click.echo("Warning: this file is not the active configuration.", err=True)
+    click.echo("Press Enter to open the editor...", nl=False, err=True)
+    if not click.get_text_stream("stdin").readline():
+        raise click.Abort
     ConfiguratorApp(env_path=path).run()
 
 

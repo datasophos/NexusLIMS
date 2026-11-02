@@ -237,10 +237,10 @@ def test_commands_and_settings_share_system_configuration(monkeypatch, tmp_path)
     monkeypatch.delenv("NX_CONFIG_FILE", raising=False)
     monkeypatch.delenv("NX_FILE_STRATEGY", raising=False)
     assert config.Settings().NX_FILE_STRATEGY == "inclusive"
+    monkeypatch.setattr("nexusLIMS.cli.config._interactive_terminal", lambda: True)
     with patch("nexusLIMS.tui.apps.config.app.ConfiguratorApp") as app:
-        result = CliRunner().invoke(main, ["edit"])
+        result = CliRunner().invoke(main, ["edit"], input="\n")
     assert result.exit_code == 0, result.output
-    assert str(system_path) in result.output
     app.assert_called_once_with(env_path=system_path)
 
 

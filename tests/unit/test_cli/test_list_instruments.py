@@ -51,7 +51,7 @@ class TestListInstrumentsCommand:
         return inst
 
     def test_help_shows_expected_text(self):
-        runner = CliRunner()
+        runner = CliRunner(mix_stderr=False)
         result = runner.invoke(main, ["instruments", "list", "--help"])
         assert result.exit_code == 0
         assert "List all instruments in the database" in result.output
@@ -90,7 +90,7 @@ class TestListInstrumentsCommand:
             patch("nexusLIMS.db.engine.get_engine"),
             patch("sqlmodel.Session", return_value=mock_session),
         ):
-            runner = CliRunner()
+            runner = CliRunner(mix_stderr=False)
             # Use wide terminal so Rich doesn't compress table columns
             result = runner.invoke(
                 main,
@@ -130,7 +130,7 @@ class TestListInstrumentsCommand:
             patch("nexusLIMS.db.engine.get_engine"),
             patch("sqlmodel.Session", return_value=mock_session),
         ):
-            runner = CliRunner()
+            runner = CliRunner(mix_stderr=False)
             result = runner.invoke(
                 main,
                 ["instruments", "list", "--format", "json"],
@@ -138,7 +138,7 @@ class TestListInstrumentsCommand:
             )
 
         assert result.exit_code == 0
-        data = json.loads(result.output)
+        data = json.loads(result.stdout)
         assert isinstance(data, list)
         assert len(data) == 1
         record = data[0]
@@ -172,7 +172,7 @@ class TestListInstrumentsCommand:
             patch("nexusLIMS.db.engine.get_engine"),
             patch("sqlmodel.Session", return_value=mock_session),
         ):
-            runner = CliRunner()
+            runner = CliRunner(mix_stderr=False)
             result = runner.invoke(
                 main,
                 ["instruments", "list", "--format", "json"],
@@ -180,7 +180,7 @@ class TestListInstrumentsCommand:
             )
 
         assert result.exit_code == 0
-        data = json.loads(result.output)
+        data = json.loads(result.stdout)
         assert data[0]["sessions_total"] == 0
         assert data[0]["last_session"] is None
 
@@ -208,7 +208,7 @@ class TestListInstrumentsCommand:
             patch("nexusLIMS.db.engine.get_engine"),
             patch("sqlmodel.Session", return_value=mock_session),
         ):
-            runner = CliRunner()
+            runner = CliRunner(mix_stderr=False)
             result = runner.invoke(
                 main,
                 ["instruments", "list"],
@@ -233,7 +233,7 @@ class TestListInstrumentsCommand:
             patch("nexusLIMS.db.engine.get_engine"),
             patch("sqlmodel.Session", return_value=mock_session),
         ):
-            runner = CliRunner()
+            runner = CliRunner(mix_stderr=False)
             result = runner.invoke(
                 main, ["instruments", "list"], catch_exceptions=False
             )
