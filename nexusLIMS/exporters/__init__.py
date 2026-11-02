@@ -182,7 +182,7 @@ def was_successfully_exported(
         Export results from export_records()
     strategy
         Export strategy to evaluate. If ``None``, use
-        :attr:`nexusLIMS.config.settings.NX_EXPORT_STRATEGY`.
+        :attr:`nexusLIMS.config.Settings.NX_EXPORT_STRATEGY`.
 
     Returns
     -------

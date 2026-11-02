@@ -146,7 +146,7 @@ def get_gh_pages_dirs():
     # Fetch latest gh-pages branch if not present
     try:
         subprocess.run(
-            ["git", "fetch", "origin", "gh-pages"],
+            ["git", "fetch", "origin", "gh-pages:refs/remotes/origin/gh-pages"],
             check=True,
             capture_output=True,
         )
@@ -189,7 +189,7 @@ def get_latest_release_version():
     return None
 
 
-def build_switcher_json(dirs, current_pr_num=None):
+def build_switcher_json(dirs):
     """
     Build the switcher.json structure from a list of version directories.
 
@@ -197,8 +197,6 @@ def build_switcher_json(dirs, current_pr_num=None):
     ----------
     dirs : list
         List of version directory names from gh-pages branch.
-    current_pr_num : str, optional
-        Current PR number if building in PR context.
 
     Returns
     -------
@@ -244,30 +242,6 @@ def build_switcher_json(dirs, current_pr_num=None):
                 "version": v,
                 "url": f"{BASE_URL}/{v}/",
             }
-        )
-
-    # Add current PR first (if in PR context)
-    if current_pr_num:
-        current_pr_name = f"pr-{current_pr_num}"
-        entries.insert(
-            0,
-            {
-                "name": f"PR #{current_pr_num} (current)",
-                "version": current_pr_name,
-                "url": f"{BASE_URL}/{current_pr_name}/",
-                "preferred": True,
-            },
-        )
-
-    # Add other PR previews from gh-pages
-    pr_dirs = [d for d in dirs if d.startswith("pr-")]
-    for d in sorted(pr_dirs, reverse=True):  # Most recent PRs first
-        pr_num = d.split("-")[1]
-        # Skip current PR if already added
-        if current_pr_num and pr_num == current_pr_num:
-            continue
-        entries.append(
-            {"name": f"PR #{pr_num}", "version": d, "url": f"{BASE_URL}/{d}/"}
         )
 
     # Add latest dev build at the top (if it exists)
@@ -337,7 +311,7 @@ def main():
             print(
                 "No deployed versions found, generating switcher for current PR only."
             )
-        switcher = build_switcher_json(dirs, current_pr_num=current_pr)
+        switcher = build_switcher_json(dirs)
 
     static_path = Path("docs/_static")
     static_path.mkdir(exist_ok=True, parents=True)

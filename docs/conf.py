@@ -79,7 +79,9 @@ pr_number = os.environ.get("PR_NUMBER")
 # version/release must be semver for PyData theme banner comparison
 # version_match is used for dropdown highlighting only
 deploy_target = os.environ.get("DEPLOY_TARGET")
-if pr_number:
+if os.environ.get("CF_PAGES_URL"):
+    version = release = version_match = "preview"
+elif pr_number:
     # PR builds use "pr-<number>" as version
     version = f"pr-{pr_number}"
     release = f"pr-{pr_number}"
@@ -121,7 +123,9 @@ html_context = {
 # Set html_baseurl for proper asset loading in subdirectories
 # This is critical for GitHub Pages deployment to subdirectories like /pr-2/
 base_url = "https://datasophos.github.io/NexusLIMS"
-if pr_number:
+if os.environ.get("CF_PAGES_URL"):
+    html_baseurl = os.environ["CF_PAGES_URL"].rstrip("/") + "/"
+elif pr_number:
     html_baseurl = f"{base_url}/pr-{pr_number}/"
 elif os.environ.get("GITHUB_REF") == "refs/heads/main":
     html_baseurl = f"{base_url}/latest/"

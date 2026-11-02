@@ -1,6 +1,8 @@
 #!/bin/bash
 # Build Sphinx documentation
 
+set -e
+
 # Parse arguments
 STRICT_MODE=""
 WATCH_MODE=""
