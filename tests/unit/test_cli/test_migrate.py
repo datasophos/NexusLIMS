@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+import pytest
 from click.testing import CliRunner
 
 
@@ -218,3 +219,20 @@ def test_alembic_passthrough_help():
 
     # Should show Alembic's help, not an error
     assert "Run Alembic commands directly" in result.output or "usage:" in result.output
+
+
+@pytest.mark.parametrize("command", ["upgrade", "downgrade", "current", "check"])
+def test_db_commands_read_missing_database_path_from_selected_file(
+    command, tmp_path, monkeypatch
+):
+    """Database commands check the path from the selected configuration file."""
+    from nexusLIMS.cli.migrate import _cli
+
+    config_file = tmp_path / "config.toml"
+    config_file.write_text(f'[core]\nNX_DB_PATH = "{tmp_path / "missing.db"}"\n')
+    monkeypatch.setenv("NX_CONFIG_FILE", str(config_file))
+    monkeypatch.delenv("NX_DB_PATH", raising=False)
+    monkeypatch.setattr("nexusLIMS.config.TEST_MODE", False)
+    result = CliRunner().invoke(_cli(), [command])
+    assert result.exit_code != 0
+    assert "Database does not exist" in result.output

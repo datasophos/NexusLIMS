@@ -106,3 +106,70 @@ def test_edit_displays_active_path_once_before_acknowledgement(monkeypatch, tmp_
     assert f"Editing configuration: {selected} (NX_CONFIG_FILE)" in result.stderr
     assert "Using configuration" not in result.stderr
     assert "Press Enter" in result.stderr
+
+
+def test_status_explains_user_file_overrides_system(monkeypatch, tmp_path):
+    monkeypatch.delenv("NX_CONFIG_FILE", raising=False)
+    monkeypatch.setenv("HOME", str(tmp_path))
+    user = tmp_path / ".config/nexuslims/config.toml"
+    user.parent.mkdir(parents=True)
+    user.write_text("")
+    system = tmp_path / "system.toml"
+    system.write_text("")
+    monkeypatch.setattr(config, "SYSTEM_CONFIG_PATH", system)
+    result = CliRunner(mix_stderr=False).invoke(main, ["config", "status"])
+    assert result.exit_code == 0
+    assert f"{user} (user)" in result.stdout
+    assert "ignored: user file takes precedence" in result.stdout
+
+
+def test_status_falls_back_when_effective_user_has_no_passwd_entry(monkeypatch):
+    import getpass
+    import pwd
+
+    def missing_user(_uid):
+        raise KeyError("unknown uid")
+
+    monkeypatch.setattr(pwd, "getpwuid", missing_user)
+    monkeypatch.setattr(getpass, "getuser", lambda: "fallback-user")
+    result = CliRunner(mix_stderr=False).invoke(main, ["config", "status"])
+    assert result.exit_code == 0
+    assert "Running as user: fallback-user" in result.stdout
+
+
+def test_ordinary_command_reports_invalid_selector_without_exposing_values(monkeypatch):
+    monkeypatch.setenv("NX_CONFIG_FILE", "relative.toml")
+    result = CliRunner(mix_stderr=False).invoke(main, ["completion", "--shell", "bash"])
+    assert result.exit_code == 0
+    assert "NX_CONFIG_FILE must be an absolute path" in result.stderr
+    assert "Configuration:" not in result.stdout
+
+
+def test_editor_allows_explicit_path_with_invalid_selector(monkeypatch, tmp_path):
+    from unittest.mock import patch
+
+    monkeypatch.setenv("NX_CONFIG_FILE", "relative.toml")
+    monkeypatch.setattr("nexusLIMS.cli.config._interactive_terminal", lambda: True)
+    path = tmp_path / "chosen.toml"
+    with patch("nexusLIMS.tui.apps.config.app.ConfiguratorApp") as app:
+        result = CliRunner(mix_stderr=False).invoke(
+            main, ["config", "edit", "--config-path", str(path)], input="\n"
+        )
+    assert result.exit_code == 0
+    assert f"Editing configuration: {path} (command line)" in result.stderr
+    assert "not the active configuration" in result.stderr
+    app.assert_called_once_with(env_path=path)
+
+
+def test_editor_rejects_invalid_selector_without_explicit_path(monkeypatch):
+    from unittest.mock import patch
+
+    monkeypatch.setenv("NX_CONFIG_FILE", "relative.toml")
+    monkeypatch.setattr("nexusLIMS.cli.config._interactive_terminal", lambda: True)
+    with patch("nexusLIMS.tui.apps.config.app.ConfiguratorApp") as app:
+        result = CliRunner(mix_stderr=False).invoke(
+            main, ["config", "edit"], input="\n"
+        )
+    assert isinstance(result.exception, ValueError)
+    assert "absolute path" in str(result.exception)
+    app.assert_not_called()

@@ -255,3 +255,13 @@ def test_test_mode_ignores_system_configuration(monkeypatch, tmp_path):
     monkeypatch.delenv("NX_FILE_STRATEGY", raising=False)
     assert config.get_config_path() == system_path
     assert config.Settings().NX_FILE_STRATEGY == "exclusive"
+
+
+def test_list_setting_is_loaded_from_persistent_configuration(monkeypatch, tmp_path):
+    """A TOML list is decoded into the effective Settings list."""
+    path = tmp_path / "config.toml"
+    path.write_text('[core]\nNX_IGNORE_PATTERNS = ["*.tmp", "*.bak"]\n')
+    monkeypatch.setenv("NX_CONFIG_FILE", str(path))
+    monkeypatch.delenv("NX_IGNORE_PATTERNS", raising=False)
+    monkeypatch.setattr(config, "TEST_MODE", False)
+    assert config.Settings().NX_IGNORE_PATTERNS == ["*.tmp", "*.bak"]
