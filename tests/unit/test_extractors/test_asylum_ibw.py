@@ -163,6 +163,35 @@ def test_image_preview_plots_each_measured_channel(tmp_path, monkeypatch):
     )
 
 
+def test_image_preview_flattens_each_horizontal_scan_line(tmp_path, monkeypatch):
+    """Remove each line's slope and offset while retaining nonlinear features."""
+    import numpy as np
+    from matplotlib.axes import Axes
+
+    from nexusLIMS.extractors.plugins.preview_generators import asylum_ibw_preview
+
+    displayed = np.array([[3, 3, 5, 9], [12, 12, 14, 18]], dtype=float)
+    data = displayed.T[:, :, np.newaxis].copy()
+    monkeypatch.setattr(
+        asylum_ibw_preview,
+        "read_wave",
+        lambda _path: ({"wData": data}, {}, ["Height"]),
+    )
+    plotted = []
+    original = Axes.imshow
+
+    def capture(ax, image, *args, **kwargs):
+        plotted.append(np.array(image))
+        return original(ax, image, *args, **kwargs)
+
+    monkeypatch.setattr(Axes, "imshow", capture)
+    assert asylum_ibw_preview.AsylumIbwPreviewGenerator().generate(
+        ExtractionContext(tmp_path / "image.ibw"), tmp_path / "preview.png"
+    )
+    np.testing.assert_allclose(plotted[0], [[1, -1, -1, 1]] * 2, atol=1e-12)
+    np.testing.assert_array_equal(data[:, :, 0], displayed.T)
+
+
 def test_non_ibw_file_is_not_supported(tmp_path):
     """A different extension must not be recognized as an Asylum wave."""
     from nexusLIMS.extractors.plugins.asylum_ibw import is_asylum

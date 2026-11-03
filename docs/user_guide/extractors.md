@@ -57,11 +57,12 @@ These formats have dedicated extractors that parse comprehensive metadata specif
 Asylum Research image and force-curve Igor binary waves (`.ibw`) are recognized
 by their wave dimensions, channel labels, and instrument metadata. The extractor
 preserves the instrument note and exposes selected acquisition settings in the
-record, with physical units for supported scan and probe parameters. The preview
-displays the image channels or the recorded curve channels
-against time without flattening or other corrections. File modification time is
-used for the NexusLIMS creation time; the acquisition date and time remain in
-the instrument metadata. Scan dimensions are expressed in micrometers.
+record, with physical units for supported scan and probe parameters. Image
+previews subtract a first-order fit from each horizontal scan line to make
+smaller features easier to see; force-curve previews show the recorded channels
+against time. This processing does not modify the source file. File modification
+time is used for the NexusLIMS creation time; the acquisition date and time
+remain in the instrument metadata. Scan dimensions are expressed in micrometers.
 
 Support is currently limited to labeled height images and amplitude/Z-sensor
 force curves. Other Igor waves fall back to basic file metadata. Preview plots

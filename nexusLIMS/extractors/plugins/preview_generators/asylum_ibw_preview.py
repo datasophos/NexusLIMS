@@ -20,7 +20,7 @@ _logger = logging.getLogger(__name__)
 
 
 class AsylumIbwPreviewGenerator:
-    """Render the available channels without flattening or other processing."""
+    """Render image channels with line flattening and unmodified force curves."""
 
     name = "asylum_ibw_preview"
     priority = 150
@@ -47,7 +47,15 @@ class AsylumIbwPreviewGenerator:
                 for ax, label, channel in zip(
                     axes.flat, labels, np.moveaxis(data, -1, 0), strict=False
                 ):
-                    ax.imshow(channel.T, origin="lower", cmap="gray")
+                    # Axis 0 becomes the horizontal scan direction after transpose.
+                    x = np.arange(channel.shape[0], dtype=float)
+                    x -= x.mean()
+                    centered = channel - channel.mean(axis=0)
+                    denominator = np.sum(x * x)
+                    if denominator:
+                        slope = np.sum(x[:, None] * centered, axis=0) / denominator
+                        centered = centered - x[:, None] * slope
+                    ax.imshow(centered.T, origin="lower", cmap="gray")
                     ax.set_title(label)
                     ax.set_axis_off()
                 for ax in list(axes.flat)[len(labels) :]:
