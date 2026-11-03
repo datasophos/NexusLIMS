@@ -1,5 +1,5 @@
 (frontend_guide)=
-# NexusLIMS-CDCS frontend documentation
+# Frontend guide
 
 The frontend guide is maintained with NexusLIMS-CDCS. Visit the
 [CDCS documentation](https://datasophos.github.io/NexusLIMS-CDCS/stable/) for
