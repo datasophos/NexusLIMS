@@ -49,6 +49,16 @@ def test_status_line_does_not_contaminate_stdout_and_help_is_quiet(
         assert runner.invoke(main, args).stderr == ""
 
 
+def test_ordinary_command_reports_existing_selected_file(monkeypatch, tmp_path):
+    selected = tmp_path / "config.toml"
+    selected.write_text("")
+    monkeypatch.setenv("NX_CONFIG_FILE", str(selected))
+    result = CliRunner(mix_stderr=False).invoke(main, ["completion", "--shell", "bash"])
+    assert result.exit_code == 0
+    assert f"Using configuration: {selected} (NX_CONFIG_FILE)" in result.stderr
+    assert str(selected) not in result.stdout
+
+
 def test_edit_without_terminal_fails_cleanly():
     result = CliRunner(mix_stderr=False).invoke(main, ["config", "edit"])
     assert result.exit_code != 0

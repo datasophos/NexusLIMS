@@ -6,6 +6,26 @@ import pytest
 from click.testing import CliRunner
 
 
+def test_view_uses_database_path_from_selected_file(tmp_path, monkeypatch):
+    """The database browser uses the selected persistent configuration."""
+    from unittest.mock import patch
+
+    from nexusLIMS.cli.migrate import _cli
+
+    db_path = tmp_path / "test.db"
+    db_path.touch()
+    selected = tmp_path / "config.toml"
+    selected.write_text(f'[core]\nNX_DB_PATH = "{db_path}"\n')
+    monkeypatch.setenv("NX_CONFIG_FILE", str(selected))
+    monkeypatch.delenv("NX_DB_PATH", raising=False)
+    monkeypatch.setattr("nexusLIMS.config.TEST_MODE", False)
+    with patch("nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp") as app:
+        result = CliRunner().invoke(_cli(), ["view"])
+    assert result.exit_code == 0, result.output
+    assert app.call_args.args[0].filepath == str(db_path)
+    app.return_value.run.assert_called_once_with()
+
+
 def test_init_reads_db_path_from_selected_file(tmp_path, monkeypatch):
     """Test that 'nexuslims db init' finds .env in the user's cwd.
 
