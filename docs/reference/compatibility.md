@@ -7,7 +7,8 @@ This page documents the compatibility between NexusLIMS (backend) and
 ```{important}
 Using mismatched versions may cause upload failures or API errors. Always check this
 table when upgrading either component.
-If there is not an exact match shown, please use the latest version with that series.
+Use the row matching your NexusLIMS version; versions outside the ranges listed
+here have not yet been assigned a CDCS version in this table.
 ```
 
 ## NexusLIMS-CDCS Version Tags
@@ -20,8 +21,9 @@ For example, `3.20.0-nx0` is the first NexusLIMS release based on CDCS 3.20.0.
 
 | NexusLIMS Version | NexusLIMS-CDCS Version | Notes |
 |-------------------|------------------------|-------|
-| 2.7.3+            | `3.21.0-nx1`           | Gallery view page and ability to rate/feature individual datasets |
+| 2.9.0             | `3.23.0-nx0`           | Gallery administration and selection controls |
+| 2.7.3 -- 2.8.x   | `3.21.0-nx1`           | Gallery view page and ability to rate/feature individual datasets |
 | 2.7.0 -- 2.7.2    | `3.21.0-nx0`           | Full sample/activity management in annotator; multi-sample cards on detail view |
-| 2.6.1 -- 2.7.0    | `3.20.x-nx0`           | CDCS REST API now requires trailing slashes on all endpoints; not backwards compatible with 3.18.x |
+| 2.6.1 -- 2.6.x    | `3.20.x-nx0`           | CDCS REST API now requires trailing slashes on all endpoints; not backwards compatible with 3.18.x |
 | 2.0 -- 2.6.0      | `3.18.0-nx0`           | |
 | 1.x               | 2.x                    | Original NIST-era releases |
