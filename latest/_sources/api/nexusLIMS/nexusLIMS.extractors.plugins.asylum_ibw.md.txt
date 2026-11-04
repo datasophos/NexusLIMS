@@ -1,0 +1,160 @@
+# {py:mod}`nexusLIMS.extractors.plugins.asylum_ibw`
+
+```{py:module} nexusLIMS.extractors.plugins.asylum_ibw
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`AsylumIbwExtractor <nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`read_wave <nexusLIMS.extractors.plugins.asylum_ibw.read_wave>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.read_wave
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`is_asylum <nexusLIMS.extractors.plugins.asylum_ibw.is_asylum>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.is_asylum
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`IMAGE_DIMS <nexusLIMS.extractors.plugins.asylum_ibw.IMAGE_DIMS>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.IMAGE_DIMS
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`CURVE_DIMS <nexusLIMS.extractors.plugins.asylum_ibw.CURVE_DIMS>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.CURVE_DIMS
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} IMAGE_DIMS
+:canonical: nexusLIMS.extractors.plugins.asylum_ibw.IMAGE_DIMS
+:value: >
+   3
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.IMAGE_DIMS
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} CURVE_DIMS
+:canonical: nexusLIMS.extractors.plugins.asylum_ibw.CURVE_DIMS
+:value: >
+   2
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.CURVE_DIMS
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:function} read_wave(path: pathlib.Path) -> tuple[dict, dict[str, str], list[str]]
+:canonical: nexusLIMS.extractors.plugins.asylum_ibw.read_wave
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.read_wave
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} is_asylum(path: pathlib.Path) -> bool
+:canonical: nexusLIMS.extractors.plugins.asylum_ibw.is_asylum
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.is_asylum
+:parser: autodoc2_docstrings_parser
+```
+````
+
+`````{py:class} AsylumIbwExtractor
+:canonical: nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor.name
+:value: >
+   'asylum_ibw_extractor'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor.name
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor.priority
+:value: >
+   150
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor.priority
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor.supported_extensions
+
+**Type:** typing.ClassVar
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor.supported_extensions
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor.supports
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} extract(context: nexusLIMS.extractors.base.ExtractionContext) -> list[dict[str, typing.Any]]
+:canonical: nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor.extract
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.asylum_ibw.AsylumIbwExtractor.extract
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````

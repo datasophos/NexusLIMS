@@ -428,11 +428,11 @@ window.addEventListener("load", load);
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Development introduction" href="dev_guide/development.html" />
-    <link rel="prev" title="Migration Guide" href="migration_guide.html" />
+    <link rel="prev" title="NexusLIMS Taxonomy" href="user_guide/taxonomy.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Nov, 02, 2026"/>
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -548,13 +548,6 @@ window.addEventListener("load", load);
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
     Dev Guide
@@ -568,23 +561,13 @@ window.addEventListener("load", load);
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -683,13 +666,6 @@ window.addEventListener("load", load);
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="migration_guide.html">
-    Migration Guide
   </a>
 </li>
 
@@ -887,7 +863,7 @@ window.addEventListener("load", load);
 <li><p><strong>Formal Unit Integration</strong></p>
 <ul class="simple">
 <li><p>All physical quantities use Pint with QUDT ontology</p></li>
-<li><p>Automatic unit conversion and validation</p></li>
+<li><p>Explicit unit conversion and unit validation</p></li>
 <li><p>Machine-readable unit information in XML output</p></li>
 <li><p>Type-safe quantity handling</p></li>
 </ul>
@@ -1012,9 +988,59 @@ flowchart TD
     class Start,Experiment userAction
     class StartEvent,EndEvent,ToBuild,Complete dbAction
     class FindSession,FindFiles,Cluster,SelectExtractor,ExtractMeta,ValidateSchema,BuildXML,Upload processing
-    </pre></section>
+    </pre><hr class="docutils" />
 </section>
-<hr class="docutils" />
+</section>
+<section id="configuration-in-code">
+<span id="developer-configuration"></span><h2>Configuration in Code<a class="headerlink" href="#configuration-in-code" title="Link to this heading">#</a></h2>
+<section id="accessing-configuration">
+<h3>Accessing Configuration<a class="headerlink" href="#accessing-configuration" title="Link to this heading">#</a></h3>
+<p>Always access configuration through the <code class="docutils literal notranslate"><span class="pre">settings</span></code> object from the <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code> module:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
+
+<span class="c1"># Access configuration values</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_DATA_PATH</span>
+<span class="n">file_strategy</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_FILE_STRATEGY</span>
+<span class="n">db_path</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_DB_PATH</span>
+
+<span class="c1"># Access NEMO harvesters (returns dict of configurations)</span>
+<span class="n">nemo_harvesters</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">nemo_harvesters</span><span class="p">()</span>
+
+<span class="c1"># Access email configuration (returns EmailConfig or None)</span>
+<span class="n">email_config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">email_config</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p><strong>Do not use <code class="docutils literal notranslate"><span class="pre">os.getenv()</span></code> or <code class="docutils literal notranslate"><span class="pre">os.environ</span></code> directly for application configuration outside <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code>.</strong></p>
+<p>Always access configuration through the <code class="docutils literal notranslate"><span class="pre">settings</span></code> object from <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code>. This ensures:</p>
+<ul class="simple">
+<li><p>Type safety and validation</p></li>
+<li><p>Consistent behavior across the codebase</p></li>
+<li><p>Proper defaults and error handling</p></li>
+<li><p>Easier testing (can mock the settings object)</p></li>
+</ul>
+</div>
+</section>
+<section id="testing-with-configuration">
+<h3>Testing with Configuration<a class="headerlink" href="#testing-with-configuration" title="Link to this heading">#</a></h3>
+<p>The pytest suite enables <code class="docutils literal notranslate"><span class="pre">NX_TEST_MODE</span></code>, which prevents <code class="docutils literal notranslate"><span class="pre">Settings</span></code> from automatically reading the selected configuration file, supplies test defaults, and relaxes some validation. A fixture selects a temporary configuration path for each test. Functions that explicitly read or write a file still use the path provided. To test loading a file through <code class="docutils literal notranslate"><span class="pre">Settings</span></code>, disable <code class="docutils literal notranslate"><span class="pre">config.TEST_MODE</span></code> for that test.</p>
+<p>In tests, use <code class="docutils literal notranslate"><span class="pre">refresh_settings()</span></code> after modifying environment variables:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span><span class="p">,</span> <span class="n">refresh_settings</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_with_custom_config</span><span class="p">(</span><span class="n">monkeypatch</span><span class="p">):</span>
+    <span class="c1"># Set the value for this test; pytest restores it afterward</span>
+    <span class="n">monkeypatch</span><span class="o">.</span><span class="n">setenv</span><span class="p">(</span><span class="s2">&quot;NX_FILE_STRATEGY&quot;</span><span class="p">,</span> <span class="s2">&quot;inclusive&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Refresh to pick up changes</span>
+    <span class="n">refresh_settings</span><span class="p">()</span>
+
+    <span class="c1"># Now settings reflects the new value</span>
+    <span class="k">assert</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_FILE_STRATEGY</span> <span class="o">==</span> <span class="s2">&quot;inclusive&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
 <section id="common-development-tasks">
 <h2>Common Development Tasks<a class="headerlink" href="#common-development-tasks" title="Link to this heading">#</a></h2>
 <p>Quick links to guides for common tasks:</p>
@@ -1289,11 +1315,12 @@ tar<span class="w"> </span>-tzf<span class="w"> </span>my_format_dataZeroed.tar.
 </pre></div>
 </div>
 </li>
-<li><p><strong>Configure environment:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>.env.example<span class="w"> </span>.env
-<span class="c1"># Edit .env with your configuration</span>
+<li><p><strong>Configure NexusLIMS:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>nexuslims<span class="w"> </span>config<span class="w"> </span>edit
 </pre></div>
 </div>
+<p>The editor writes the selected configuration file. For file selection and
+other options, see the <a class="reference internal" href="user_guide/configuration.html#configuration"><span class="std std-ref">configuration guide</span></a>.</p>
 </li>
 <li><p><strong>Run tests:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./scripts/run_tests.sh
@@ -1420,12 +1447,12 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="migration_guide.html"
+       href="user_guide/taxonomy.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Migration Guide</p>
+        <p class="prev-next-title">NexusLIMS Taxonomy</p>
       </div>
     </a>
     <a class="right-next"
@@ -1465,6 +1492,11 @@ git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </sp
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture-overview">Architecture Overview</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#component-descriptions">Component Descriptions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-flow">Data Flow</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-in-code">Configuration in Code</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-configuration">Accessing Configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-with-configuration">Testing with Configuration</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#common-development-tasks">Common Development Tasks</a><ul class="nav section-nav flex-column">

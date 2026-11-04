@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Nov, 02, 2026"/>
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -184,13 +184,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
     Dev Guide
   </a>
@@ -203,23 +196,13 @@
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -318,13 +301,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration_guide.html">
-    Migration Guide
   </a>
 </li>
 
@@ -562,6 +538,12 @@ nexuslims instruments list
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">click.Group</span></code></p>
 <p>Click group that lazily loads subcommands on first use.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.cli.main.LazyGroup.parse_args">
+<span class="sig-name descname"><span class="pre">parse_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.Context</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli/main.html#LazyGroup.parse_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.main.LazyGroup.parse_args" title="Link to this definition">#</a></dt>
+<dd><p>Suppress diagnostics for help and version at any command level.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="nexusLIMS.cli.main.LazyGroup.list_commands">
 <span class="sig-name descname"><span class="pre">list_commands</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">click.Context</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/cli/main.html#LazyGroup.list_commands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.cli.main.LazyGroup.list_commands" title="Link to this definition">#</a></dt>
 <dd><p>List all commands, including lazy ones.</p>
@@ -639,6 +621,7 @@ nexuslims instruments list
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.main.LazyGroup"><code class="docutils literal notranslate"><span class="pre">LazyGroup</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.main.LazyGroup.parse_args"><code class="docutils literal notranslate"><span class="pre">LazyGroup.parse_args()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.main.LazyGroup.list_commands"><code class="docutils literal notranslate"><span class="pre">LazyGroup.list_commands()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.main.LazyGroup.get_command"><code class="docutils literal notranslate"><span class="pre">LazyGroup.get_command()</span></code></a></li>
 </ul>

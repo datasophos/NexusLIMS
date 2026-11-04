@@ -1,0 +1,86 @@
+# {py:mod}`nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview`
+
+```{py:module} nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`AsylumIbwPreviewGenerator <nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+`````{py:class} AsylumIbwPreviewGenerator
+:canonical: nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator.name
+:value: >
+   'asylum_ibw_preview'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator.name
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator.priority
+:value: >
+   150
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator.priority
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator.supported_extensions
+
+**Type:** typing.ClassVar
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator.supported_extensions
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator.supports
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} generate(context: nexusLIMS.extractors.base.ExtractionContext, output_path: pathlib.Path) -> bool
+:canonical: nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator.generate
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.asylum_ibw_preview.AsylumIbwPreviewGenerator.generate
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````

@@ -4,7 +4,6 @@
 
 Home <self>
 user_guide
-migration_guide
 dev_guide
 frontend_guide
 reference
@@ -32,12 +31,12 @@ with the
 system for harvesting of experimental sessions and
 instrument information.
 - **Multi-Destination Export Framework** - Configurable plugin-based export system supporting multiple data repositories, including {ref}`NexusLIMS CDCS <frontend_guide>` as the primary destination and the {ref}`eLabFTW electronic lab notebook <elabftw-exporter>`. NexusLIMS can easily be extended for support of custom destinations.
-- **Comprehensive support for common Electron Microscopy file formats** - NexusLIMS extracts detailed metadata from DigitalMicrograph DM3/DM4 files, FEI/Thermo TIF images, Tescan TIF images, Zeiss TIF images, FEI TIA (.ser/.emi), EDAX (.spc/.msa) EDS spectra, and more
+- **Comprehensive support for common microscopy file formats** - NexusLIMS extracts detailed metadata from DigitalMicrograph DM3/DM4 files, FEI/Thermo TIF images, Tescan TIF images, Zeiss TIF images, FEI TIA (.ser/.emi), EDAX (.spc/.msa) EDS spectra, Asylum Research AFM (.ibw) files, and more
 - **Temporal File Clustering** - Intelligent grouping of files into Acquisition Activities based on temporal analysis (with customizable sensitivity)
 - **Extensible Architecture** - Plugin-based extractor system and instrument profiles for easy customization
 - **Structured XML Records** - Standards-compliant records with comprehensive session and technical metadata
 - **Metadata Standardization** - Emerging standardization using [EM Glossary](https://emglossary.helmholtz-metadaten.de/) terms and Pydantic validation (work in progress)
-- **Physical Unit Management** - Automatic normalization of physical quantities (voltages, distances, times) to preferred units via Pint
+- **Physical Unit Management** - Pint quantities support explicit conversion of physical measurements to preferred units
 
 ````{grid} 2
 :gutter: 3

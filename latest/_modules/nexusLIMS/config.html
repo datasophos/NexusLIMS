@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Nov, 02, 2026"/>
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -546,13 +546,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
     Dev Guide
   </a>
@@ -565,23 +558,13 @@ window.addEventListener("load", load);
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -678,13 +661,6 @@ window.addEventListener("load", load);
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration_guide.html">
-    Migration Guide
   </a>
 </li>
 
@@ -834,9 +810,11 @@ window.addEventListener("load", load);
 <span class="sd">environment variables.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tomllib</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Literal</span>
 
@@ -856,6 +834,89 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
 
 <span class="n">_logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">SYSTEM_CONFIG_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/etc/nexuslims/config.toml&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_config_path">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.get_config_path">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_config_path</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the selected persistent configuration file.&quot;&quot;&quot;</span>
+    <span class="n">selected</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;NX_CONFIG_FILE&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">selected</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">():</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;NX_CONFIG_FILE must be an absolute path&quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">path</span>
+    <span class="n">user_path</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;.config&quot;</span> <span class="o">/</span> <span class="s2">&quot;nexuslims&quot;</span> <span class="o">/</span> <span class="s2">&quot;config.toml&quot;</span>
+    <span class="k">if</span> <span class="n">user_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">SYSTEM_CONFIG_PATH</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="n">user_path</span>
+    <span class="k">return</span> <span class="n">SYSTEM_CONFIG_PATH</span></div>
+
+
+
+<div class="viewcode-block" id="config_selection">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.config_selection">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">config_selection</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="n">Path</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return selected file, source, and user and system candidates.&quot;&quot;&quot;</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;.config&quot;</span> <span class="o">/</span> <span class="s2">&quot;nexuslims&quot;</span> <span class="o">/</span> <span class="s2">&quot;config.toml&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">get_config_path</span><span class="p">()</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;NX_CONFIG_FILE&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;NX_CONFIG_FILE&quot;</span><span class="p">)</span>
+        <span class="k">else</span> <span class="p">(</span><span class="s2">&quot;user&quot;</span> <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="n">user</span> <span class="k">else</span> <span class="s2">&quot;system&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">path</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">SYSTEM_CONFIG_PATH</span></div>
+
+
+
+<div class="viewcode-block" id="config_override_names">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.config_override_names">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">config_override_names</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List process configuration variable names without revealing values.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="n">name</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span>
+        <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;NX_&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;NX_CONFIG_FILE&quot;</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="read_config_file">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.read_config_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_config_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read TOML or dotenv configuration as environment-style values.&quot;&quot;&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;.toml&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dotenv_values</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">}</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">tomllib</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.cli.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">_flatten_to_env</span>  <span class="c1"># noqa: PLC0415</span>
+
+    <span class="n">core</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;core&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">integrations</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;integrations&quot;</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="k">return</span> <span class="n">_flatten_to_env</span><span class="p">({</span><span class="o">**</span><span class="n">core</span><span class="p">,</span> <span class="o">**</span><span class="n">integrations</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">})</span></div>
+
+
+
+<div class="viewcode-block" id="effective_config_values">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.effective_config_values">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">effective_config_values</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return selected file values with process environment overrides.&quot;&quot;&quot;</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="n">read_config_file</span><span class="p">(</span><span class="n">get_config_path</span><span class="p">())</span>
+    <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="get_config_value">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.get_config_value">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_config_value</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read one configuration value without validating unrelated settings.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">effective_config_values</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
+
+
 
 <span class="c1"># ============================================================================</span>
 <span class="c1"># TEST MODE: Disable Pydantic validation when running tests</span>
@@ -1110,12 +1171,46 @@ window.addEventListener("load", load);
     <span class="n">model_config</span> <span class="o">=</span> <span class="n">SettingsConfigDict</span><span class="p">(</span>
         <span class="c1"># CRITICAL: Disable .env file loading in TEST_MODE to prevent contamination</span>
         <span class="c1"># from local environment files during testing</span>
-        <span class="n">env_file</span><span class="o">=</span><span class="kc">None</span> <span class="k">if</span> <span class="n">TEST_MODE</span> <span class="k">else</span> <span class="s2">&quot;.env&quot;</span><span class="p">,</span>
+        <span class="n">env_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">env_file_encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
         <span class="n">extra</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span>  <span class="c1"># Ignore extra environment variables not defined here</span>
         <span class="c1"># In test mode, disable path validation to allow non-existent paths</span>
         <span class="n">validate_default</span><span class="o">=</span><span class="ow">not</span> <span class="n">TEST_MODE</span><span class="p">,</span>
     <span class="p">)</span>
+
+<div class="viewcode-block" id="Settings.settings_customise_sources">
+<a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.Settings.settings_customise_sources">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">settings_customise_sources</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">settings_cls</span><span class="p">,</span>
+        <span class="n">init_settings</span><span class="p">,</span>
+        <span class="n">env_settings</span><span class="p">,</span>
+        <span class="n">dotenv_settings</span><span class="p">,</span>
+        <span class="n">file_secret_settings</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the selected file below process environment variables.&quot;&quot;&quot;</span>
+        <span class="k">del</span> <span class="n">settings_cls</span><span class="p">,</span> <span class="n">dotenv_settings</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">persistent_settings</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">TEST_MODE</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{}</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">read_config_file</span><span class="p">(</span><span class="n">get_config_path</span><span class="p">())</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">model_fields</span><span class="p">}</span>
+            <span class="k">if</span> <span class="s2">&quot;NX_IGNORE_PATTERNS&quot;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="s2">&quot;NX_IGNORE_PATTERNS&quot;</span> <span class="ow">in</span> <span class="n">env_settings</span><span class="p">()</span>
+                    <span class="ow">or</span> <span class="s2">&quot;NX_IGNORE_PATTERNS&quot;</span> <span class="ow">in</span> <span class="n">init_settings</span><span class="p">()</span>
+                <span class="p">):</span>
+                    <span class="k">del</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;NX_IGNORE_PATTERNS&quot;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">result</span><span class="p">[</span><span class="s2">&quot;NX_IGNORE_PATTERNS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
+                        <span class="n">result</span><span class="p">[</span><span class="s2">&quot;NX_IGNORE_PATTERNS&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">return</span> <span class="n">init_settings</span><span class="p">,</span> <span class="n">env_settings</span><span class="p">,</span> <span class="n">persistent_settings</span><span class="p">,</span> <span class="n">file_secret_settings</span></div>
+
 
     <span class="n">NX_FILE_STRATEGY</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;exclusive&quot;</span><span class="p">,</span> <span class="s2">&quot;inclusive&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="s2">&quot;exclusive&quot;</span><span class="p">,</span>
@@ -1749,18 +1844,7 @@ window.addEventListener("load", load);
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">harvesters</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># CRITICAL: In TEST_MODE, do NOT load from .env file to prevent</span>
-        <span class="c1"># test contamination from local environment configuration</span>
-        <span class="n">env_vars</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">TEST_MODE</span><span class="p">:</span>
-            <span class="c1"># Load .env file to get NEMO variables (Pydantic doesn&#39;t load</span>
-            <span class="c1"># variables that aren&#39;t defined as fields)</span>
-            <span class="n">env_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.env&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">env_file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                <span class="n">env_vars</span> <span class="o">=</span> <span class="n">dotenv_values</span><span class="p">(</span><span class="n">env_file_path</span><span class="p">)</span>
-
-        <span class="c1"># Merge with os.environ (os.environ takes precedence)</span>
-        <span class="n">all_env</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">env_vars</span><span class="p">,</span> <span class="o">**</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">}</span>
+        <span class="n">all_env</span> <span class="o">=</span> <span class="n">effective_config_values</span><span class="p">()</span>
 
         <span class="c1"># Find all NX_NEMO_ADDRESS_N environment variables</span>
         <span class="n">address_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^NX_NEMO_ADDRESS_(\d+)$&quot;</span><span class="p">)</span>
@@ -1846,17 +1930,7 @@ window.addEventListener("load", load);
 <span class="sd">        NX_EMAIL_USE_TLS=true</span>
 <span class="sd">        ```</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># CRITICAL: In TEST_MODE, do NOT load from .env file to prevent</span>
-        <span class="c1"># test contamination from local environment configuration</span>
-        <span class="n">env_vars</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">TEST_MODE</span><span class="p">:</span>
-            <span class="c1"># Load .env file to get email variables</span>
-            <span class="n">env_file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.env&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">env_file_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-                <span class="n">env_vars</span> <span class="o">=</span> <span class="n">dotenv_values</span><span class="p">(</span><span class="n">env_file_path</span><span class="p">)</span>
-
-        <span class="c1"># Merge with os.environ (os.environ takes precedence)</span>
-        <span class="n">all_env</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">env_vars</span><span class="p">,</span> <span class="o">**</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">}</span>
+        <span class="n">all_env</span> <span class="o">=</span> <span class="n">effective_config_values</span><span class="p">()</span>
 
         <span class="c1"># Check if required email vars are present</span>
         <span class="n">smtp_host</span> <span class="o">=</span> <span class="n">all_env</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;NX_EMAIL_SMTP_HOST&quot;</span><span class="p">)</span>
@@ -2070,7 +2144,7 @@ window.addEventListener("load", load);
 
 <div class="viewcode-block" id="read_labarchives_env">
 <a class="viewcode-back" href="../../api/nexusLIMS/nexusLIMS.config.html#nexusLIMS.config.read_labarchives_env">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">read_labarchives_env</span><span class="p">(</span><span class="n">env_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">=</span> <span class="s2">&quot;.env&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_labarchives_env</span><span class="p">(</span><span class="n">env_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read LabArchives settings without triggering full Settings validation.</span>
 
 <span class="sd">    Merges values from the given ``.env`` file and the process environment</span>
@@ -2093,11 +2167,15 @@ window.addEventListener("load", load);
 <span class="sd">        values (or ``None`` if not set).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Start with file values, then let process env override.</span>
-    <span class="n">file_values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="n">dotenv_values</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">env_path</span><span class="p">))</span>
+    <span class="n">file_values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">read_config_file</span><span class="p">(</span><span class="n">env_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">env_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">else</span> <span class="n">effective_config_values</span><span class="p">()</span>
+    <span class="p">)</span>
     <span class="n">result</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_LA_KEYS</span><span class="p">:</span>
         <span class="c1"># os.getenv permitted here — this IS nexusLIMS/config.py</span>
-        <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">or</span> <span class="n">file_values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">None</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">file_values</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">result</span></div>
 
 </pre></div>

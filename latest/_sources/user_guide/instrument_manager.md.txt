@@ -165,7 +165,7 @@ nexuslims instruments manage --version
 nexuslims instruments manage --help
 ```
 
-The application will use the database configured in your `.env` file.
+The application will use the database configured in your selected configuration file.
 To run with a different database, you can override `NX_DB_PATH` when starting
 the application:
 

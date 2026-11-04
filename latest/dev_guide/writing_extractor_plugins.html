@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Nov, 02, 2026"/>
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -183,13 +183,6 @@
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
@@ -203,23 +196,13 @@
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -318,13 +301,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../user_guide.html">
     User Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
   </a>
 </li>
 
@@ -852,7 +828,7 @@
 <span class="c1"># If you have voltage in volts, create Quantity directly</span>
 <span class="n">voltage_v</span> <span class="o">=</span> <span class="mi">15000</span>  <span class="c1"># Volts from file</span>
 <span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">voltage_v</span><span class="p">,</span> <span class="s2">&quot;volt&quot;</span><span class="p">)</span>
-<span class="c1"># Pint will automatically handle unit conversion when needed</span>
+<span class="c1"># Convert explicitly to the desired unit when needed</span>
 
 <span class="c1"># Alternative: parse from string</span>
 <span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;working_distance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="p">(</span><span class="s2">&quot;5.2 mm&quot;</span><span class="p">)</span>
@@ -907,7 +883,7 @@
 <p><strong>Benefits of Pint Quantities:</strong></p>
 <ol class="arabic simple">
 <li><p><strong>Type safety</strong>: Invalid units are caught immediately</p></li>
-<li><p><strong>Automatic conversion</strong>: Units are normalized during XML generation</p></li>
+<li><p><strong>Unit conversion</strong>: Pint converts quantities explicitly to a chosen unit</p></li>
 <li><p><strong>Machine-readable</strong>: Units are separate from values in XML output</p></li>
 <li><p><strong>EM Glossary alignment</strong>: Field names match community standards</p></li>
 </ol>

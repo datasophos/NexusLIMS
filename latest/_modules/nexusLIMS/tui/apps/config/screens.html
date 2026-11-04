@@ -429,7 +429,7 @@ window.addEventListener("load", load);
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Nov, 02, 2026"/>
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -546,13 +546,6 @@ window.addEventListener("load", load);
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../../dev_guide.html">
     Dev Guide
   </a>
@@ -565,23 +558,13 @@ window.addEventListener("load", load);
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../../../../../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -678,13 +661,6 @@ window.addEventListener("load", load);
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../../../user_guide.html">
     User Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../../migration_guide.html">
-    Migration Guide
   </a>
 </li>
 
@@ -835,7 +811,6 @@ window.addEventListener("load", load);
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClassVar</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pytz</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">dotenv_values</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">PydanticUndefined</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">textual</span><span class="w"> </span><span class="kn">import</span> <span class="n">on</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">textual.app</span><span class="w"> </span><span class="kn">import</span> <span class="n">ComposeResult</span>
@@ -858,7 +833,7 @@ window.addEventListener("load", load);
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.cli.config</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">_flatten_to_env</span><span class="p">,</span>
-    <span class="n">_write_env_file</span><span class="p">,</span>
+    <span class="n">_write_config_file</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">EmailConfig</span><span class="p">,</span> <span class="n">NemoHarvesterConfig</span><span class="p">,</span> <span class="n">Settings</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.tui.apps.config.validators</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
@@ -1275,9 +1250,9 @@ window.addEventListener("load", load);
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the config screen from an optional existing .env file.&quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_env_path</span> <span class="o">=</span> <span class="n">env_path</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_existing</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">dotenv_values</span><span class="p">(</span><span class="n">env_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">env_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">else</span> <span class="p">{}</span>
-        <span class="p">)</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">read_config_file</span>  <span class="c1"># noqa: PLC0415</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_existing</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">read_config_file</span><span class="p">(</span><span class="n">env_path</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nemo_harvesters</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parse_nemo_harvesters</span><span class="p">()</span>
         <span class="c1"># Snapshot of the env as loaded — used for unsaved-changes detection.</span>
@@ -2144,7 +2119,7 @@ window.addEventListener("load", load);
         <span class="k">try</span><span class="p">:</span>
             <span class="n">config_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_config_dict</span><span class="p">()</span>
             <span class="n">env_vars</span> <span class="o">=</span> <span class="n">_flatten_to_env</span><span class="p">(</span><span class="n">config_dict</span><span class="p">)</span>
-            <span class="n">_write_env_file</span><span class="p">(</span><span class="n">env_vars</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env_path</span><span class="p">)</span>
+            <span class="n">_write_config_file</span><span class="p">(</span><span class="n">env_vars</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_env_path</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Configuration saved to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_env_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
                 <span class="n">severity</span><span class="o">=</span><span class="s2">&quot;information&quot;</span><span class="p">,</span>

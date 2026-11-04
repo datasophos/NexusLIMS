@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Nov, 02, 2026"/>
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -184,13 +184,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
   </a>
@@ -203,23 +196,13 @@
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -323,13 +306,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
   </a>
@@ -413,6 +389,9 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_settings.html">Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_example.html">Configuration TOML Reference Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration_guide.html">Migration Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli_reference.html">Command-Line Interface Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument_manager.html">Instrument Management</a></li>
@@ -548,19 +527,25 @@ each format.</p>
 <td><p>pFIB-ToF-SIMS Spectrum Image</p></td>
 <td><p>FIB parameters, mass range, TIC map, ion depth profiles, composite preview</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#image-formats">Various (exported images)</a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#asylum-research-afm-ibw-files">Asylum Research AFM</a></p></td>
+<td><p>.ibw</p></td>
+<td><p>✅ Full</p></td>
+<td><p>AFM images and force curves</p></td>
+<td><p>Acquisition settings, channel metadata, image and curve previews</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#image-formats">Various (exported images)</a></p></td>
 <td><p>.png, .jpg, .tiff, .bmp, .gif</p></td>
 <td><p>⚠️ Preview</p></td>
 <td><p>Unknown</p></td>
 <td><p>Basic metadata, square thumbnail generation</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#text-files-txt">Various (logs, notes)</a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#text-files-txt">Various (logs, notes)</a></p></td>
 <td><p>.txt</p></td>
 <td><p>⚠️ Preview</p></td>
 <td><p>Unknown</p></td>
 <td><p>Basic metadata, text-to-image preview</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#unknown-files">Unknown Files</a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#unknown-files">Unknown Files</a></p></td>
 <td><p><em>others</em></p></td>
 <td><p>❌ Minimal</p></td>
 <td><p>Unknown</p></td>
@@ -595,8 +580,24 @@ each format.</p>
 <section id="fully-supported-formats">
 <h2>Fully Supported Formats<a class="headerlink" href="#fully-supported-formats" title="Link to this heading">#</a></h2>
 <p>These formats have dedicated extractors that parse comprehensive metadata specific to their structure.</p>
+<section id="asylum-research-afm-ibw-files">
+<span id="id2"></span><h3>Asylum Research AFM IBW files<a class="headerlink" href="#asylum-research-afm-ibw-files" title="Link to this heading">#</a></h3>
+<p><strong>Extractor Module</strong>: <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.asylum_ibw.html#module-nexusLIMS.extractors.plugins.asylum_ibw" title="nexusLIMS.extractors.plugins.asylum_ibw"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.asylum_ibw</span></code></a></p>
+<p>Asylum Research image and force-curve Igor binary waves (<code class="docutils literal notranslate"><span class="pre">.ibw</span></code>) are recognized
+by their wave dimensions, channel labels, and instrument metadata. The extractor
+preserves the instrument note and exposes selected acquisition settings in the
+record, with physical units for supported scan and probe parameters. Image
+previews subtract a first-order fit from each horizontal scan line to make
+smaller features easier to see; force-curve previews show the recorded channels
+against time. This processing does not modify the source file. File modification
+time is used for the NexusLIMS creation time; the acquisition date and time
+remain in the instrument metadata. Scan dimensions are expressed in micrometers.</p>
+<p>Support is currently limited to labeled height images and amplitude/Z-sensor
+force curves. Other Igor waves fall back to basic file metadata. Preview plots
+are intended for identification, not calibrated quantitative analysis.</p>
+</section>
 <section id="digital-micrograph-files-dm3-dm4">
-<span id="id2"></span><h3>Digital Micrograph Files (.dm3, .dm4)<a class="headerlink" href="#digital-micrograph-files-dm3-dm4" title="Link to this heading">#</a></h3>
+<span id="id3"></span><h3>Digital Micrograph Files (.dm3, .dm4)<a class="headerlink" href="#digital-micrograph-files-dm3-dm4" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ✅ Full</p>
 <p><strong>Description</strong>: Files saved by Gatan’s DigitalMicrograph (GMS) software, commonly used for TEM/STEM imaging, EELS, and EDS data.</p>
 <p><strong>Extractor Module</strong>: <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.digital_micrograph.html#module-nexusLIMS.extractors.plugins.digital_micrograph" title="nexusLIMS.extractors.plugins.digital_micrograph"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.digital_micrograph</span></code></a></p>
@@ -693,7 +694,7 @@ each format.</p>
 </ul>
 </section>
 <section id="zeiss-orion-fibics-him-tif-files-tif">
-<span id="id3"></span><h3>Zeiss Orion / Fibics HIM TIF Files (.tif)<a class="headerlink" href="#zeiss-orion-fibics-him-tif-files-tif" title="Link to this heading">#</a></h3>
+<span id="id4"></span><h3>Zeiss Orion / Fibics HIM TIF Files (.tif)<a class="headerlink" href="#zeiss-orion-fibics-him-tif-files-tif" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ✅ Full</p>
 <p><strong>Description</strong>: TIFF images saved by Zeiss Orion and Fibics helium ion microscope (HIM) systems with embedded XML metadata in custom TIFF tags.</p>
 <p><strong>Extractor Module</strong>: <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.orion_HIM_tif.html#module-nexusLIMS.extractors.plugins.orion_HIM_tif" title="nexusLIMS.extractors.plugins.orion_HIM_tif"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.orion_HIM_tif</span></code></a></p>
@@ -831,7 +832,7 @@ each format.</p>
 </ul>
 </section>
 <section id="fei-tia-files-ser-emi">
-<span id="id4"></span><h3>FEI TIA Files (.ser, .emi)<a class="headerlink" href="#fei-tia-files-ser-emi" title="Link to this heading">#</a></h3>
+<span id="id5"></span><h3>FEI TIA Files (.ser, .emi)<a class="headerlink" href="#fei-tia-files-ser-emi" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ✅ Full</p>
 <p><strong>Description</strong>: Files saved by FEI’s TIA (Tecnai Imaging and Analysis) software. Data is stored in <code class="docutils literal notranslate"><span class="pre">.ser</span></code> files with accompanying <code class="docutils literal notranslate"><span class="pre">.emi</span></code> metadata files.</p>
 <p><strong>Extractor Module</strong>: <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.fei_emi.html#module-nexusLIMS.extractors.plugins.fei_emi" title="nexusLIMS.extractors.plugins.fei_emi"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.fei_emi</span></code></a></p>
@@ -872,7 +873,7 @@ each format.</p>
 </ul>
 </section>
 <section id="edax-eds-files-spc-msa">
-<span id="id5"></span><h3>EDAX EDS Files (.spc, .msa)<a class="headerlink" href="#edax-eds-files-spc-msa" title="Link to this heading">#</a></h3>
+<span id="id6"></span><h3>EDAX EDS Files (.spc, .msa)<a class="headerlink" href="#edax-eds-files-spc-msa" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ✅ Full</p>
 <p><strong>Description</strong>: EDS spectrum files saved by EDAX software (Genesis, TEAM, etc.) in proprietary (<code class="docutils literal notranslate"><span class="pre">.spc</span></code>) or standard EMSA (<code class="docutils literal notranslate"><span class="pre">.msa</span></code>) format.</p>
 <p><strong>Extractor Module</strong>: <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.edax.html#module-nexusLIMS.extractors.plugins.edax" title="nexusLIMS.extractors.plugins.edax"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.edax</span></code></a></p>
@@ -921,7 +922,7 @@ each format.</p>
 </section>
 </section>
 <section id="tofwerk-fibtof-pfib-tof-sims-files-h5">
-<span id="id6"></span><h3>Tofwerk fibTOF pFIB-ToF-SIMS Files (.h5)<a class="headerlink" href="#tofwerk-fibtof-pfib-tof-sims-files-h5" title="Link to this heading">#</a></h3>
+<span id="id7"></span><h3>Tofwerk fibTOF pFIB-ToF-SIMS Files (.h5)<a class="headerlink" href="#tofwerk-fibtof-pfib-tof-sims-files-h5" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ✅ Full</p>
 <p><strong>Description</strong>: HDF5 files produced by the Tofwerk fibTOF time-of-flight secondary ion mass
 spectrometry (ToF-SIMS) system integrated with a Tescan plasma focused ion beam (pFIB). Two
@@ -1006,7 +1007,7 @@ percentile clipping</p></li>
 <h2>Partially Supported Formats<a class="headerlink" href="#partially-supported-formats" title="Link to this heading">#</a></h2>
 <p>These formats receive basic metadata extraction and custom preview generation, but do not have dedicated metadata parsers.</p>
 <section id="image-formats">
-<span id="id7"></span><h3>Image Formats<a class="headerlink" href="#image-formats" title="Link to this heading">#</a></h3>
+<span id="id8"></span><h3>Image Formats<a class="headerlink" href="#image-formats" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ⚠️ Preview Only</p>
 <p><strong>Formats</strong>: <code class="docutils literal notranslate"><span class="pre">.png</span></code>, <code class="docutils literal notranslate"><span class="pre">.tiff</span></code>, <code class="docutils literal notranslate"><span class="pre">.bmp</span></code>, <code class="docutils literal notranslate"><span class="pre">.gif</span></code>, <code class="docutils literal notranslate"><span class="pre">.jpg</span></code>, <code class="docutils literal notranslate"><span class="pre">.jpeg</span></code></p>
 <p><strong>Extractor Module</strong>: <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.basic_metadata.html#module-nexusLIMS.extractors.plugins.basic_metadata" title="nexusLIMS.extractors.plugins.basic_metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.basic_metadata</span></code></a></p>
@@ -1028,7 +1029,7 @@ percentile clipping</p></li>
 </ul>
 </section>
 <section id="text-files-txt">
-<span id="id8"></span><h3>Text Files (.txt)<a class="headerlink" href="#text-files-txt" title="Link to this heading">#</a></h3>
+<span id="id9"></span><h3>Text Files (.txt)<a class="headerlink" href="#text-files-txt" title="Link to this heading">#</a></h3>
 <p><strong>Support Level</strong>: ⚠️ Preview Only</p>
 <p><strong>Extractor Module</strong>: <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.basic_metadata.html#module-nexusLIMS.extractors.plugins.basic_metadata" title="nexusLIMS.extractors.plugins.basic_metadata"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.basic_metadata</span></code></a></p>
 <p><strong>Preview Generator</strong>: <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.extractors.plugins.preview_generators.text_preview.html#module-nexusLIMS.extractors.plugins.preview_generators.text_preview" title="nexusLIMS.extractors.plugins.preview_generators.text_preview"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.extractors.plugins.preview_generators.text_preview</span></code></a></p>
@@ -1255,18 +1256,15 @@ percentile clipping</p></li>
 </pre></div>
 </div>
 <p><strong>Unit Handling:</strong></p>
-<p>NexusLIMS automatically normalizes physical quantities to preferred units:</p>
+<p>Extractors can convert physical quantities to preferred units, for example:</p>
 <ul class="simple">
 <li><p>Voltages → kilovolts (kV)</p></li>
 <li><p>Distances → nanometers (nm) or millimeters (mm) depending on scale</p></li>
 <li><p>Times → seconds (s)</p></li>
 <li><p>Energies → electron volts (eV)</p></li>
 </ul>
-<p>You can provide quantities in any compatible unit, and validation will convert them automatically:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># These are all equivalent after validation:</span>
-<span class="p">{</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">:</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="s2">&quot;kV&quot;</span><span class="p">)}</span>
-<span class="p">{</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">:</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">200000</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">)}</span>
-<span class="p">{</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">:</span> <span class="n">Quantity</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="s2">&quot;MV&quot;</span><span class="p">)}</span>
+<p>Pint quantities can be converted explicitly before validation or serialization:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">voltage</span> <span class="o">=</span> <span class="n">Quantity</span><span class="p">(</span><span class="mi">200000</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;kV&quot;</span><span class="p">)</span>  <span class="c1"># 200 kV</span>
 </pre></div>
 </div>
 <p>See <a class="reference internal" href="../dev_guide/nexuslims_internal_schema.html"><span class="doc">Internal Metadata Schema System</span></a> for complete unit handling details.</p>
@@ -1336,8 +1334,8 @@ percentile clipping</p></li>
 <p>The <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">extract</span></code> command lets you extract metadata and generate preview
 thumbnails for individual files directly from the terminal, without writing any
 Python code and without a full NexusLIMS deployment.</p>
-<section id="id9">
-<h3>Quick reference<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id10">
+<h3>Quick reference<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Print extracted metadata as JSON</span>
 nexuslims<span class="w"> </span>extract<span class="w"> </span>/path/to/file.dm4
 
@@ -1609,6 +1607,7 @@ the graceful-degradation behaviour when no config is present.</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fully-supported-formats">Fully Supported Formats</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#asylum-research-afm-ibw-files">Asylum Research AFM IBW files</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#digital-micrograph-files-dm3-dm4">Digital Micrograph Files (.dm3, .dm4)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fei-thermo-fisher-tif-files-tif">FEI/Thermo Fisher TIF Files (.tif)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zeiss-orion-fibics-him-tif-files-tif">Zeiss Orion / Fibics HIM TIF Files (.tif)</a></li>
@@ -1636,7 +1635,7 @@ the graceful-degradation behaviour when no config is present.</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#command-line-extraction">Command-Line Extraction</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Quick reference</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Quick reference</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#standalone-library-usage">Standalone Library Usage</a><ul class="nav section-nav flex-column">

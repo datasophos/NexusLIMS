@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Nov, 02, 2026"/>
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -183,13 +183,6 @@
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
@@ -203,23 +196,13 @@
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -318,13 +301,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../user_guide.html">
     User Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
   </a>
 </li>
 
@@ -494,7 +470,7 @@
 <p>The schema system provides:</p>
 <ol class="arabic simple">
 <li><p><strong>Type-specific validation</strong> - Different schemas for Image, Spectrum, SpectrumImage, and Diffraction datasets</p></li>
-<li><p><strong>Physical units with Pint</strong> - Machine-actionable quantities with automatic unit conversion</p></li>
+<li><p><strong>Physical units with Pint</strong> - Machine-actionable quantities with explicit unit conversion</p></li>
 <li><p><strong>EM Glossary alignment</strong> - Standardized field names from the Electron Microscopy community</p></li>
 <li><p><strong>Clean XML serialization</strong> - Separate value and unit attributes in XML output</p></li>
 <li><p><strong>Flexible extensions</strong> - Support for instrument-specific metadata without polluting core fields</p></li>
@@ -525,7 +501,7 @@
 <p><strong>Benefits:</strong></p>
 <ul class="simple">
 <li><p>Type safety: Invalid units caught at creation time</p></li>
-<li><p>Automatic conversion: Units normalized during serialization</p></li>
+<li><p>Explicit conversion: Pint converts quantities to chosen units in code</p></li>
 <li><p>Machine-readable: Units separated from values in XML</p></li>
 <li><p>Programmatic: Can convert between units in code</p></li>
 </ul>
@@ -1057,7 +1033,7 @@ an emerging standard that is not yet exhaustive).</p>
 <ul class="simple">
 <li><p>Fields with “-” in EMG ID column have display names but no EM Glossary v2.0.0 equivalent</p></li>
 <li><p>See <a class="reference internal" href="em_glossary_reference.html"><span class="std std-doc">EM Glossary Reference</span></a> for complete list of all fields</p></li>
-<li><p>Preferred units and conversion to the human-friendly display alias are automatically applied during XML serialization</p></li>
+<li><p>Extractors must explicitly convert quantities to preferred units; XML serialization preserves the quantity’s unit and formats its symbol</p></li>
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">emg_field()</span></code> helper to automatically populate EMG metadata</p></li>
 </ul>
 </section>
@@ -1076,8 +1052,9 @@ an emerging standard that is not yet exhaustive).</p>
 <span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;Voltage (kV)&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">voltage_v</span><span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span>
 
 <span class="c1"># New approach (v2.2.0)</span>
-<span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">voltage_v</span><span class="p">)),</span> <span class="s2">&quot;volt&quot;</span><span class="p">)</span>
-<span class="c1"># Pint handles the conversion automatically</span>
+<span class="n">nx_meta</span><span class="p">[</span><span class="s2">&quot;acceleration_voltage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ureg</span><span class="o">.</span><span class="n">Quantity</span><span class="p">(</span>
+    <span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">voltage_v</span><span class="p">)),</span> <span class="s2">&quot;volt&quot;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s2">&quot;kilovolt&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>Step 3: Use NexusLIMS field names</strong></p>
@@ -1219,8 +1196,9 @@ an emerging standard that is not yet exhaustive).</p>
 </tbody>
 </table>
 </div>
-<p><strong>Automatic Normalization:</strong></p>
-<p>When you create a Quantity in any unit, it will be automatically converted to the preferred unit during XML serialization:</p>
+<p><strong>Explicit Normalization:</strong></p>
+<p>Convert a quantity explicitly before XML serialization. The serializer preserves
+the quantity’s unit and formats it as a compact symbol:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.schemas.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">ureg</span><span class="p">,</span> <span class="n">normalize_quantity</span>
 
 <span class="c1"># Create voltage in any unit</span>
@@ -1233,7 +1211,9 @@ an emerging standard that is not yet exhaustive).</p>
 <span class="c1"># XML output will be: &lt;meta name=&quot;Voltage&quot; unit=&quot;kV&quot;&gt;15.0&lt;/meta&gt;</span>
 </pre></div>
 </div>
-<p>This ensures all metadata uses consistent units in the final XML records, regardless of the units used in the source file or during extraction.</p>
+<p>This produces consistent units when extractors apply the same preferred unit.
+The preferred-unit table does not automatically normalize metadata, including
+values in <code class="docutils literal notranslate"><span class="pre">extensions</span></code>.</p>
 </section>
 <section id="validation-behavior">
 <h2>Validation Behavior<a class="headerlink" href="#validation-behavior" title="Link to this heading">#</a></h2>
@@ -1359,7 +1339,7 @@ an emerging standard that is not yet exhaustive).</p>
 </section>
 <section id="q-how-do-i-know-what-units-to-use">
 <h3>Q: How do I know what units to use?<a class="headerlink" href="#q-how-do-i-know-what-units-to-use" title="Link to this heading">#</a></h3>
-<p>Use the preferred units defined in <code class="docutils literal notranslate"><span class="pre">nexusLIMS.schemas.units.PREFERRED_UNITS</span></code>. Pint will automatically convert to the preferred unit during XML serialization.</p>
+<p>Use the preferred units defined in <code class="docutils literal notranslate"><span class="pre">nexusLIMS.schemas.units.PREFERRED_UNITS</span></code> where applicable, and convert explicitly with Pint or <code class="docutils literal notranslate"><span class="pre">normalize_quantity()</span></code> before serialization. For extension fields without a preferred unit, choose and document a suitable unit in the extractor.</p>
 </section>
 </section>
 <section id="implementation-details">

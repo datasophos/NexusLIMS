@@ -21,6 +21,11 @@
     :parser: autodoc2_docstrings_parser
     :summary:
     ```
+* - {py:obj}`status <nexusLIMS.cli.config.status>`
+  - ```{autodoc2-docstring} nexusLIMS.cli.config.status
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 * - {py:obj}`dump <nexusLIMS.cli.config.dump>`
   - ```{autodoc2-docstring} nexusLIMS.cli.config.dump
     :parser: autodoc2_docstrings_parser
@@ -77,6 +82,14 @@
 ```
 ````
 
+````{py:function} status() -> None
+:canonical: nexusLIMS.cli.config.status
+
+```{autodoc2-docstring} nexusLIMS.cli.config.status
+:parser: autodoc2_docstrings_parser
+```
+````
+
 ````{py:function} dump(output: str | None) -> None
 :canonical: nexusLIMS.cli.config.dump
 
@@ -85,7 +98,7 @@
 ```
 ````
 
-````{py:function} edit(env_path: str) -> None
+````{py:function} edit(env_path: str | None) -> None
 :canonical: nexusLIMS.cli.config.edit
 
 ```{autodoc2-docstring} nexusLIMS.cli.config.edit
@@ -93,7 +106,7 @@
 ```
 ````
 
-````{py:function} labarchives_get_uid(email: str, la_password: str, env_path: str, *, verbose: bool) -> None
+````{py:function} labarchives_get_uid(email: str, la_password: str, env_path: str | None, *, verbose: bool) -> None
 :canonical: nexusLIMS.cli.config.labarchives_get_uid
 
 ```{autodoc2-docstring} nexusLIMS.cli.config.labarchives_get_uid
@@ -101,7 +114,7 @@
 ```
 ````
 
-````{py:function} load(input: str, env_path: str, *, force: bool) -> None
+````{py:function} load(input: str, env_path: str | None, *, force: bool) -> None
 :canonical: nexusLIMS.cli.config.load
 
 ```{autodoc2-docstring} nexusLIMS.cli.config.load

@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Nov, 02, 2026"/>
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -184,13 +184,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
   </a>
@@ -203,23 +196,13 @@
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -323,13 +306,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
   </a>
@@ -413,6 +389,9 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_settings.html">Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_example.html">Configuration TOML Reference Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration_guide.html">Migration Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli_reference.html">Command-Line Interface Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument_manager.html">Instrument Management</a></li>
@@ -512,7 +491,7 @@
 <li><p>RESTful API for programmatic access</p></li>
 <li><p>Public/private workspace management</p></li>
 </ul>
-<p><strong>Configuration:</strong> See <a class="reference internal" href="configuration.html#config-cdcs-url"><span class="std std-ref">CDCS Integration</span></a> for required settings:</p>
+<p><strong>Configuration:</strong> See <a class="reference internal" href="configuration_settings.html#config-cdcs-url"><span class="std std-ref">CDCS Integration</span></a> for required settings:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code> - CDCS instance URL</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code> - API authentication token (must be a superuser token if <code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS</span></code> is enabled)</p></li>
@@ -570,7 +549,7 @@
 <li><p>Full XML record attached as file</p></li>
 <li><p>Cross-link to CDCS record (if CDCS export enabled)</p></li>
 </ul>
-<p><strong>Configuration:</strong> See <a class="reference internal" href="configuration.html#config-elabftw"><span class="std std-ref">eLabFTW Integration</span></a> for settings:</p>
+<p><strong>Configuration:</strong> See <a class="reference internal" href="configuration_settings.html#config-elabftw"><span class="std std-ref">eLabFTW Integration</span></a> for settings:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_URL</span></code> - eLabFTW instance URL</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_API_KEY</span></code> - API authentication key</p></li>
@@ -618,7 +597,7 @@ system. NexusLIMS supports exporting session records to LabArchives with:</p>
 <li><p>The full XML record attached as a file</p></li>
 <li><p>Cross-link to CDCS record (if CDCS export enabled)</p></li>
 </ul>
-<p><strong>Configuration:</strong> See <a class="reference internal" href="configuration.html#config-labarchives"><span class="std std-ref">LabArchives Integration</span></a> for settings:</p>
+<p><strong>Configuration:</strong> See <a class="reference internal" href="configuration_settings.html#config-labarchives"><span class="std std-ref">LabArchives Integration</span></a> for settings:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_URL</span></code> - LabArchives instance URL</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_KEY_ID</span></code> - API access key ID</p></li>
@@ -870,7 +849,7 @@ checked when external repositories are unavailable.</p>
 <li><p>Complete tracking and logging</p></li>
 <li><p>Plugin-based extensibility</p></li>
 </ul>
-<p>Export destinations are configured via environment variables and automatically activated when credentials are provided. No additional setup required beyond configuration.</p>
+<p>Configure export destinations in the selected configuration file or through environment variables. Destinations are activated when their required credentials are provided.</p>
 </section>
 </section>
 

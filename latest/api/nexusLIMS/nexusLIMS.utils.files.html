@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Nov, 02, 2026"/>
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -184,13 +184,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
     Dev Guide
   </a>
@@ -203,23 +196,13 @@
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -318,13 +301,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration_guide.html">
-    Migration Guide
   </a>
 </li>
 
@@ -607,7 +583,7 @@ pure Python).</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>path</strong> – The root path from which to start the search, relative to
-the <a class="reference internal" href="../../user_guide/configuration.html#config-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a>
+the <a class="reference internal" href="../../user_guide/configuration_settings.html#config-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a>
 environment setting.</p></li>
 <li><p><strong>dt_from</strong> – The “starting” point of the search timeframe</p></li>
 <li><p><strong>dt_to</strong> – The “ending” point of the search timeframe</p></li>
@@ -615,7 +591,7 @@ environment setting.</p></li>
 all files between are found between the two times.</p></li>
 <li><p><strong>followlinks</strong> – Whether to follow symlinks using the <code class="docutils literal notranslate"><span class="pre">find</span></code> command via
 the <code class="docutils literal notranslate"><span class="pre">-H</span></code> command line flag. This is useful when the
-<a class="reference internal" href="../../user_guide/configuration.html#config-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a> is actually a
+<a class="reference internal" href="../../user_guide/configuration_settings.html#config-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a> is actually a
 directory
 of symlinks. If this is the case and <code class="docutils literal notranslate"><span class="pre">followlinks</span></code> is
 <code class="docutils literal notranslate"><span class="pre">False</span></code>, no files will ever be found because the <code class="docutils literal notranslate"><span class="pre">find</span></code>

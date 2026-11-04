@@ -39,6 +39,36 @@
 :class: autosummary longtable
 :align: left
 
+* - {py:obj}`get_config_path <nexusLIMS.config.get_config_path>`
+  - ```{autodoc2-docstring} nexusLIMS.config.get_config_path
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`config_selection <nexusLIMS.config.config_selection>`
+  - ```{autodoc2-docstring} nexusLIMS.config.config_selection
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`config_override_names <nexusLIMS.config.config_override_names>`
+  - ```{autodoc2-docstring} nexusLIMS.config.config_override_names
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`read_config_file <nexusLIMS.config.read_config_file>`
+  - ```{autodoc2-docstring} nexusLIMS.config.read_config_file
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`effective_config_values <nexusLIMS.config.effective_config_values>`
+  - ```{autodoc2-docstring} nexusLIMS.config.effective_config_values
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`get_config_value <nexusLIMS.config.get_config_value>`
+  - ```{autodoc2-docstring} nexusLIMS.config.get_config_value
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 * - {py:obj}`refresh_settings <nexusLIMS.config.refresh_settings>`
   - ```{autodoc2-docstring} nexusLIMS.config.refresh_settings
     :parser: autodoc2_docstrings_parser
@@ -62,6 +92,11 @@
 :class: autosummary longtable
 :align: left
 
+* - {py:obj}`SYSTEM_CONFIG_PATH <nexusLIMS.config.SYSTEM_CONFIG_PATH>`
+  - ```{autodoc2-docstring} nexusLIMS.config.SYSTEM_CONFIG_PATH
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
 * - {py:obj}`TEST_MODE <nexusLIMS.config.TEST_MODE>`
   - ```{autodoc2-docstring} nexusLIMS.config.TEST_MODE
     :parser: autodoc2_docstrings_parser
@@ -75,6 +110,65 @@
 ````
 
 ### API
+
+````{py:data} SYSTEM_CONFIG_PATH
+:canonical: nexusLIMS.config.SYSTEM_CONFIG_PATH
+:value: >
+   'Path(...)'
+
+```{autodoc2-docstring} nexusLIMS.config.SYSTEM_CONFIG_PATH
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:function} get_config_path() -> pathlib.Path
+:canonical: nexusLIMS.config.get_config_path
+
+```{autodoc2-docstring} nexusLIMS.config.get_config_path
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} config_selection() -> tuple[pathlib.Path, str, pathlib.Path, pathlib.Path]
+:canonical: nexusLIMS.config.config_selection
+
+```{autodoc2-docstring} nexusLIMS.config.config_selection
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} config_override_names() -> list[str]
+:canonical: nexusLIMS.config.config_override_names
+
+```{autodoc2-docstring} nexusLIMS.config.config_override_names
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} read_config_file(path: str | pathlib.Path) -> dict[str, str]
+:canonical: nexusLIMS.config.read_config_file
+
+```{autodoc2-docstring} nexusLIMS.config.read_config_file
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} effective_config_values() -> dict[str, str]
+:canonical: nexusLIMS.config.effective_config_values
+
+```{autodoc2-docstring} nexusLIMS.config.effective_config_values
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} get_config_value(name: str) -> str | None
+:canonical: nexusLIMS.config.get_config_value
+
+```{autodoc2-docstring} nexusLIMS.config.get_config_value
+:parser: autodoc2_docstrings_parser
+```
+````
 
 ````{py:data} TEST_MODE
 :canonical: nexusLIMS.config.TEST_MODE
@@ -264,6 +358,16 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
    'SettingsConfigDict(...)'
 
 ```{autodoc2-docstring} nexusLIMS.config.Settings.model_config
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} settings_customise_sources(settings_cls, init_settings, env_settings, dotenv_settings, file_secret_settings)
+:canonical: nexusLIMS.config.Settings.settings_customise_sources
+:classmethod:
+
+```{autodoc2-docstring} nexusLIMS.config.Settings.settings_customise_sources
 :parser: autodoc2_docstrings_parser
 ```
 
@@ -653,7 +757,7 @@ Bases: {py:obj}`pydantic_settings.BaseSettings`
 
 ````
 
-````{py:function} read_labarchives_env(env_path: str | pathlib.Path = '.env') -> dict[str, str | None]
+````{py:function} read_labarchives_env(env_path: str | pathlib.Path | None = None) -> dict[str, str | None]
 :canonical: nexusLIMS.config.read_labarchives_env
 
 ```{autodoc2-docstring} nexusLIMS.config.read_labarchives_env

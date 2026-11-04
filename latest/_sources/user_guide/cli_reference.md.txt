@@ -786,96 +786,27 @@ database. To add, edit, or delete instruments, use
 
 ## `nexuslims config`
 
-Configuration management utility for viewing and exporting NexusLIMS configuration.
-
-See the {py:mod}`nexusLIMS.cli.config` module documentation for details.
-
-### Basic Usage
+Manage the selected configuration file:
 
 ```bash
-nexuslims config --help
-```
+# Show the selected file and where it came from
+nexuslims config status
 
-```text
-Usage: nexuslims config [OPTIONS] COMMAND [ARGS]...
+# Edit the selected file
+nexuslims config edit
 
-  Manage NexusLIMS configuration files.
-
-Options:
-  --version  Show the version and exit.
-  --help     Show this message and exit.
-
-Commands:
-  dump  Dump the current effective configuration to JSON.
-  edit  Interactively edit the NexusLIMS configuration in a terminal UI.
-  load  Load a previously dumped JSON config into a .env file.
-```
-
-```bash
-# View current configuration (prints to stdout)
-nexuslims config dump
-
-# Save configuration to a JSON file
+# Export effective settings or load a previous export
 nexuslims config dump --output nexuslims_config.json
-
-# Load configuration from JSON file (if .env already exists,
-# this command will detect it and create a backup of the current file)
 nexuslims config load nexuslims_config.json
 ```
 
-**Note:** The `dump` command prints to stdout by default. Use `--output` to write to a file instead.
+`config status` does not validate application settings. The editor shows the
+file it will edit and waits for Enter before opening. Use `--config-path` to
+edit or load another file; `--env-path` is an alias.
 
-Example output of the dump command:
-
-```json
-{
-  "NX_FILE_STRATEGY": "exclusive",
-  "NX_IGNORE_PATTERNS": [
-    "*.mib",
-    "*.db",
-    "*.emi"
-  ],
-  "NX_INSTRUMENT_DATA_PATH": "/tmp/nexuslims-test-instrument-data",
-  "NX_DATA_PATH": "/tmp/nexuslims-test-data",
-  "NX_DB_PATH": "/tmp/nexuslims-test-data/integration_test.db",
-  "NX_CDCS_TOKEN": "nexuslims-dev-token-not-for-production",
-  "NX_CDCS_URL": "http://cdcs.localhost:40080/",
-  "NX_EXPORT_STRATEGY": "all",
-  "NX_CERT_BUNDLE_FILE": null,
-  "NX_CERT_BUNDLE": null,
-  "NX_DISABLE_SSL_VERIFY": false,
-  "NX_FILE_DELAY_DAYS": 2.0,
-  "NX_CLUSTERING_SENSITIVITY": 1.0,
-  "NX_LOG_PATH": null,
-  "NX_RECORDS_PATH": null,
-  "NX_LOCAL_PROFILES_PATH": null,
-  "NX_ELABFTW_API_KEY": "1-aaaaaaaaaaaaaaaaaaaa",
-  "NX_ELABFTW_URL": "https://elabftw.example.com/",
-  "NX_ELABFTW_EXPERIMENT_CATEGORY": null,
-  "NX_ELABFTW_EXPERIMENT_STATUS": null,
-  "nemo_harvesters": {
-    "1": {
-      "address": "http://nemo.localhost:40080/api/",
-      "token": "test-api-token_captain",
-      "strftime_fmt": "%Y-%m-%dT%H:%M:%S%z",
-      "strptime_fmt": "%Y-%m-%dT%H:%M:%S%z",
-      "tz": null
-    }
-  },
-  "email_config": {
-    "smtp_host": "smtp.example.com",
-    "smtp_port": 25,
-    "smtp_username": "your-email@gmail.com",
-    "smtp_password": "your-app-password",
-    "use_tls": false,
-    "sender": "nexuslims@yourdomain.com",
-    "recipients": [
-      "admin@yourdomain.com",
-      "team@yourdomain.com"
-    ]
-  }
-}
-```
+A configuration dump contains live credentials. Keep it private. For routine
+backup or transfer, securely copy the TOML file instead. See the
+{ref}`configuration guide <configuration>` for selection and migration details.
 
 ---
 
@@ -890,7 +821,7 @@ advanced access to [Alembic](https://alembic.sqlalchemy.org/) functionality
 for developers.
 
 The migration command will automatically read the value of `NX_DB_PATH`
-set in your `.env` file and apply any changes required to that database.
+set in your selected configuration file and apply any changes required to that database.
 Backups of your database file will be made automatically during the upgrade
 process.
 
@@ -1151,7 +1082,7 @@ nexuslims db view
 
 **Prerequisites:**
 
-- `NX_DB_PATH` must be set (via `.env` or environment)
+- `NX_DB_PATH` must be set (via configuration file or environment)
 - The database file must already exist (run `nexuslims db init` first)
 
 **Examples:**
@@ -1272,8 +1203,8 @@ nexuslims db --version
 #### Setting Up a New Installation
 
 ```bash
-# 1. Set database path in .env
-echo "NX_DB_PATH=/var/nexuslims/database.db" >> .env
+# 1. Set the database path in the configuration editor
+nexuslims config edit
 
 # 2. Initialize database
 nexuslims db init
@@ -1317,7 +1248,7 @@ See the {ref}`migration` guide for complete migration instructions.
 
 The `nexuslims db` command automatically:
 
-- Reads database path from {ref}`NX_DB_PATH <config-db-path>` environment variable
+- Reads {ref}`NX_DB_PATH <config-db-path>` from the selected configuration or environment
 - Locates migrations directory inside the installed package (works with pip/uv installations)
 - Creates temporary Alembic configuration as needed
 

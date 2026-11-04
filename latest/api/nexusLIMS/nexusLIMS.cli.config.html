@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Nov, 02, 2026"/>
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -184,13 +184,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
     Dev Guide
   </a>
@@ -203,23 +196,13 @@
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -318,13 +301,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration_guide.html">
-    Migration Guide
   </a>
 </li>
 
@@ -530,7 +506,7 @@ nexuslims config dump --output /path/to/nexuslims_config.json
 
 # Load a previously dumped config into .env
 nexuslims config load nexuslims_config.json
-nexuslims config load nexuslims_config.json --env-path /path/to/.env
+nexuslims config load nexuslims_config.json --config-path /path/to/config.toml
 nexuslims config load nexuslims_config.json --force
 </pre></div>
 </div>
@@ -551,17 +527,20 @@ back up any pre-existing <code class="docutils literal notranslate"><span class=
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.main" title="nexusLIMS.cli.config.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a></p></td>
 <td><p>Manage NexusLIMS configuration files.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.dump" title="nexusLIMS.cli.config.dump"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.status" title="nexusLIMS.cli.config.status"><code class="xref py py-obj docutils literal notranslate"><span class="pre">status</span></code></a></p></td>
+<td><p>Explain configuration selection without validating settings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.dump" title="nexusLIMS.cli.config.dump"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dump</span></code></a></p></td>
 <td><p>Dump the current effective configuration to JSON.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.edit" title="nexusLIMS.cli.config.edit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edit</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.edit" title="nexusLIMS.cli.config.edit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edit</span></code></a></p></td>
 <td><p>Interactively edit the NexusLIMS configuration in a terminal UI.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.labarchives_get_uid" title="nexusLIMS.cli.config.labarchives_get_uid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">labarchives_get_uid</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.labarchives_get_uid" title="nexusLIMS.cli.config.labarchives_get_uid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">labarchives_get_uid</span></code></a></p></td>
 <td><p>Look up your LabArchives user ID (UID) using your login credentials.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.load" title="nexusLIMS.cli.config.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a></p></td>
-<td><p>Load a previously dumped JSON config into a .env file.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.cli.config.load" title="nexusLIMS.cli.config.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a></p></td>
+<td><p>Load a previously dumped JSON config into the selected file.</p></td>
 </tr>
 </tbody>
 </table>
@@ -593,6 +572,12 @@ back up any pre-existing <code class="docutils literal notranslate"><span class=
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.cli.config.status">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.config.</span></span><span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.config.status" title="Link to this definition">#</a></dt>
+<dd><p>Explain configuration selection without validating settings.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.cli.config.dump">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.config.</span></span><span class="sig-name descname"><span class="pre">dump</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.config.dump" title="Link to this definition">#</a></dt>
 <dd><p>Dump the current effective configuration to JSON.</p>
@@ -604,16 +589,16 @@ secret.  Use <code class="docutils literal notranslate"><span class="pre">load</
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.cli.config.edit">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.config.</span></span><span class="sig-name descname"><span class="pre">edit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.config.edit" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.config.</span></span><span class="sig-name descname"><span class="pre">edit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.config.edit" title="Link to this definition">#</a></dt>
 <dd><p>Interactively edit the NexusLIMS configuration in a terminal UI.</p>
-<p>Opens a tabbed form pre-populated from the existing .env file (if any).
-Press Ctrl+S to save and write the .env file, or Escape to cancel without
+<p>Opens a tabbed form pre-populated from the selected file (if any).
+Press Ctrl+S to save and write the configuration file, or Escape to cancel without
 saving.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.cli.config.labarchives_get_uid">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.config.</span></span><span class="sig-name descname"><span class="pre">labarchives_get_uid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">la_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.config.labarchives_get_uid" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.config.</span></span><span class="sig-name descname"><span class="pre">labarchives_get_uid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">la_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.config.labarchives_get_uid" title="Link to this definition">#</a></dt>
 <dd><p>Look up your LabArchives user ID (UID) using your login credentials.</p>
 <p>Reads NX_LABARCHIVES_ACCESS_KEY_ID, NX_LABARCHIVES_ACCESS_PASSWORD, and
 NX_LABARCHIVES_URL from your .env file (or environment), then calls the
@@ -629,10 +614,10 @@ app token, NOT the NX_LABARCHIVES_ACCESS_PASSWORD signing secret.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.cli.config.load">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.config.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.config.load" title="Link to this definition">#</a></dt>
-<dd><p>Load a previously dumped JSON config into a .env file.</p>
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.cli.config.</span></span><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#nexusLIMS.cli.config.load" title="Link to this definition">#</a></dt>
+<dd><p>Load a previously dumped JSON config into the selected file.</p>
 <p>INPUT is the path to the JSON file produced by <code class="docutils literal notranslate"><span class="pre">dump</span></code>.</p>
-<p>If a .env file already exists at ENV_PATH a timestamped backup is created
+<p>If a file already exists at the destination a timestamped backup is created
 before it is overwritten.</p>
 </dd></dl>
 
@@ -695,6 +680,7 @@ before it is overwritten.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.logger"><code class="docutils literal notranslate"><span class="pre">logger</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.status"><code class="docutils literal notranslate"><span class="pre">status()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.dump"><code class="docutils literal notranslate"><span class="pre">dump()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.edit"><code class="docutils literal notranslate"><span class="pre">edit()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.cli.config.labarchives_get_uid"><code class="docutils literal notranslate"><span class="pre">labarchives_get_uid()</span></code></a></li>

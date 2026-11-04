@@ -67,7 +67,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="dev" />
-    <meta name="docbuild:last-update" content="Nov, 02, 2026"/>
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -184,13 +184,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../dev_guide.html">
     Dev Guide
   </a>
@@ -203,23 +196,13 @@
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" current active">
-  <a class="nav-link dropdown-item nav-internal" href="../../reference.html">
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -318,13 +301,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../user_guide.html">
     User Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../migration_guide.html">
-    Migration Guide
   </a>
 </li>
 
@@ -532,6 +508,24 @@ environment variables.</p>
 <h3>Functions<a class="headerlink" href="#functions" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.get_config_path" title="nexusLIMS.config.get_config_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_config_path</span></code></a></p></td>
+<td><p>Return the selected persistent configuration file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.config.config_selection" title="nexusLIMS.config.config_selection"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config_selection</span></code></a></p></td>
+<td><p>Return selected file, source, and user and system candidates.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.config_override_names" title="nexusLIMS.config.config_override_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">config_override_names</span></code></a></p></td>
+<td><p>List process configuration variable names without revealing values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.config.read_config_file" title="nexusLIMS.config.read_config_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_config_file</span></code></a></p></td>
+<td><p>Read TOML or dotenv configuration as environment-style values.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.effective_config_values" title="nexusLIMS.config.effective_config_values"><code class="xref py py-obj docutils literal notranslate"><span class="pre">effective_config_values</span></code></a></p></td>
+<td><p>Return selected file values with process environment overrides.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.config.get_config_value" title="nexusLIMS.config.get_config_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_config_value</span></code></a></p></td>
+<td><p>Read one configuration value without validating unrelated settings.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.refresh_settings" title="nexusLIMS.config.refresh_settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">refresh_settings</span></code></a></p></td>
 <td><p>Refresh the settings singleton from current environment variables.</p></td>
 </tr>
@@ -549,10 +543,13 @@ environment variables.</p>
 <h3>Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table table-left">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.TEST_MODE" title="nexusLIMS.config.TEST_MODE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TEST_MODE</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.SYSTEM_CONFIG_PATH" title="nexusLIMS.config.SYSTEM_CONFIG_PATH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SYSTEM_CONFIG_PATH</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.config.settings" title="nexusLIMS.config.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#nexusLIMS.config.TEST_MODE" title="nexusLIMS.config.TEST_MODE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TEST_MODE</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#nexusLIMS.config.settings" title="nexusLIMS.config.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">settings</span></code></a></p></td>
 <td><p>The settings “singleton” - accessed like a normal object in the application</p></td>
 </tr>
 </tbody>
@@ -561,6 +558,48 @@ environment variables.</p>
 </section>
 <section id="api">
 <h3>API<a class="headerlink" href="#api" title="Link to this heading">#</a></h3>
+<dl class="py data">
+<dt class="sig sig-object py" id="nexusLIMS.config.SYSTEM_CONFIG_PATH">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">SYSTEM_CONFIG_PATH</span></span><a class="headerlink" href="#nexusLIMS.config.SYSTEM_CONFIG_PATH" title="Link to this definition">#</a></dt>
+<dd><p>‘Path(…)’</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.config.get_config_path">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">get_config_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#get_config_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.get_config_path" title="Link to this definition">#</a></dt>
+<dd><p>Return the selected persistent configuration file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.config.config_selection">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">config_selection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#tuple" title="(in Python v3.11)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#config_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.config_selection" title="Link to this definition">#</a></dt>
+<dd><p>Return selected file, source, and user and system candidates.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.config.config_override_names">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">config_override_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#list" title="(in Python v3.11)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#config_override_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.config_override_names" title="Link to this definition">#</a></dt>
+<dd><p>List process configuration variable names without revealing values.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.config.read_config_file">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">read_config_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#read_config_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.read_config_file" title="Link to this definition">#</a></dt>
+<dd><p>Read TOML or dotenv configuration as environment-style values.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.config.effective_config_values">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">effective_config_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#effective_config_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.effective_config_values" title="Link to this definition">#</a></dt>
+<dd><p>Return selected file values with process environment overrides.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="nexusLIMS.config.get_config_value">
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">get_config_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#get_config_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.get_config_value" title="Link to this definition">#</a></dt>
+<dd><p>Read one configuration value without validating unrelated settings.</p>
+</dd></dl>
+
 <dl class="py data">
 <dt class="sig sig-object py" id="nexusLIMS.config.TEST_MODE">
 <span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">TEST_MODE</span></span><a class="headerlink" href="#nexusLIMS.config.TEST_MODE" title="Link to this definition">#</a></dt>
@@ -670,6 +709,12 @@ that settings are loaded with proper types and provides descriptions for each.</
 <dt class="sig sig-object py" id="nexusLIMS.config.Settings.model_config">
 <span class="sig-name descname"><span class="pre">model_config</span></span><a class="headerlink" href="#nexusLIMS.config.Settings.model_config" title="Link to this definition">#</a></dt>
 <dd><p>‘SettingsConfigDict(…)’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="nexusLIMS.config.Settings.settings_customise_sources">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">settings_customise_sources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">settings_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">env_settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dotenv_settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_secret_settings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#Settings.settings_customise_sources"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.Settings.settings_customise_sources" title="Link to this definition">#</a></dt>
+<dd><p>Load the selected file below process environment variables.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -973,7 +1018,7 @@ Useful in test teardown to ensure clean state.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="nexusLIMS.config.read_labarchives_env">
-<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">read_labarchives_env</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.env'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#read_labarchives_env"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.read_labarchives_env" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">nexusLIMS.config.</span></span><span class="sig-name descname"><span class="pre">read_labarchives_env</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">env_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/pathlib.html#pathlib.Path" title="(in Python v3.11)"><span class="pre">Path</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.11/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/nexusLIMS/config.html#read_labarchives_env"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#nexusLIMS.config.read_labarchives_env" title="Link to this definition">#</a></dt>
 <dd><p>Read LabArchives settings without triggering full Settings validation.</p>
 <p>Merges values from the given <code class="docutils literal notranslate"><span class="pre">.env</span></code> file and the process environment
 (environment variables take precedence), returning only the five
@@ -1051,6 +1096,13 @@ values (or <code class="docutils literal notranslate"><span class="pre">None</sp
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#api">API</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.SYSTEM_CONFIG_PATH"><code class="docutils literal notranslate"><span class="pre">SYSTEM_CONFIG_PATH</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.get_config_path"><code class="docutils literal notranslate"><span class="pre">get_config_path()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.config_selection"><code class="docutils literal notranslate"><span class="pre">config_selection()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.config_override_names"><code class="docutils literal notranslate"><span class="pre">config_override_names()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.read_config_file"><code class="docutils literal notranslate"><span class="pre">read_config_file()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.effective_config_values"><code class="docutils literal notranslate"><span class="pre">effective_config_values()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.get_config_value"><code class="docutils literal notranslate"><span class="pre">get_config_value()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.TEST_MODE"><code class="docutils literal notranslate"><span class="pre">TEST_MODE</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.NemoHarvesterConfig"><code class="docutils literal notranslate"><span class="pre">NemoHarvesterConfig</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.NemoHarvesterConfig.address"><code class="docutils literal notranslate"><span class="pre">NemoHarvesterConfig.address</span></code></a></li>
@@ -1073,6 +1125,7 @@ values (or <code class="docutils literal notranslate"><span class="pre">None</sp
 </li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings"><code class="docutils literal notranslate"><span class="pre">Settings</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.model_config"><code class="docutils literal notranslate"><span class="pre">Settings.model_config</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.settings_customise_sources"><code class="docutils literal notranslate"><span class="pre">Settings.settings_customise_sources()</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_FILE_STRATEGY"><code class="docutils literal notranslate"><span class="pre">Settings.NX_FILE_STRATEGY</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_IGNORE_PATTERNS"><code class="docutils literal notranslate"><span class="pre">Settings.NX_IGNORE_PATTERNS</span></code></a></li>
 <li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#nexusLIMS.config.Settings.NX_INSTRUMENT_DATA_PATH"><code class="docutils literal notranslate"><span class="pre">Settings.NX_INSTRUMENT_DATA_PATH</span></code></a></li>
