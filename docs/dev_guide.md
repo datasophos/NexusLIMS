@@ -36,7 +36,7 @@ NexusLIMS is an **automated Laboratory Information Management System** for elect
 
 3. **Formal Unit Integration**
    - All physical quantities use Pint with QUDT ontology
-   - Automatic unit conversion and validation
+   - Explicit unit conversion and unit validation
    - Machine-readable unit information in XML output
    - Type-safe quantity handling
 

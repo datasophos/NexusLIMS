@@ -6,7 +6,9 @@ This module tests the complete workflow from NEMO usage events through record
 building to CDCS upload, verifying that all components work together correctly.
 """
 
+from collections import Counter
 from datetime import timedelta
+from pathlib import Path
 
 import pytest
 from lxml import etree
@@ -98,9 +100,12 @@ class TestEndToEndWorkflow:
         assert len(activities) == 2, "Expected to find 2 acquisitionActivity elements"
 
         datasets = xml_doc.findall(f"{nx_ns}acquisitionActivity/{nx_ns}dataset")
-        assert len(datasets) == 13, (
-            "Expected to find 13 dataset elements (including Tescan image)"
+        assert len(datasets) == 15, f"Expected 15 datasets, got {len(datasets)}"
+        extensions = Counter(
+            Path(dataset.findtext(f"{nx_ns}name")).suffix.lower()
+            for dataset in datasets
         )
+        assert extensions == {".dm3": 8, ".ser": 2, ".tif": 3, ".ibw": 2}
 
     def _verify_upload_logs(self):
         """Verify upload_log table entries and return record IDs/URLs."""
@@ -288,24 +293,6 @@ class TestEndToEndWorkflow:
 
         return elabftw_experiment_id
 
-    def _cleanup_exports(self, elabftw_client, elabftw_experiment_id, cdcs_record_id):
-        """Clean up exported records from both destinations."""
-        from nexusLIMS.utils import cdcs
-
-        print("\n[*] Cleaning up test records...")
-
-        # Delete from eLabFTW
-        elabftw_client.delete_experiment(elabftw_experiment_id)
-        print(f"[+] Deleted eLabFTW experiment {elabftw_experiment_id}")
-
-        # Delete from CDCS
-        cdcs.delete_record(cdcs_record_id)
-        with pytest.raises(
-            ValueError, match=f"Record with id {cdcs_record_id} not found"
-        ):
-            cdcs.download_record(cdcs_record_id)
-        print(f"[+] Deleted CDCS record {cdcs_record_id}")
-
     def test_complete_record_building_workflow(
         self,
         test_environment_setup,
@@ -333,7 +320,7 @@ class TestEndToEndWorkflow:
 
         **Test Record Composition:**
         The example record contains files from multiple instruments (currently
-        Titan TEM and Orion HIM), which are clustered into separate
+        Titan TEM, Orion HIM, and Asylum AFM), which are clustered into separate
         acquisitionActivity elements based on temporal analysis. This test does
         NOT validate instrument-specific metadata parsing; it focuses on the
         end-to-end workflow and proper XML generation/upload. Instrument-specific
@@ -396,6 +383,7 @@ class TestEndToEndWorkflow:
 
         # Verify CDCS export
         downloaded_doc = self._verify_cdcs_export(upload_info["cdcs_record_id"], schema)
+        self._verify_xml_structure(downloaded_doc, nx_ns)
 
         # Verify record ownership was assigned to the NEMO session user
         self._verify_cdcs_record_ownership(
@@ -427,10 +415,8 @@ class TestEndToEndWorkflow:
             record_title,
         )
 
-        # Clean up both destinations
-        self._cleanup_exports(
-            elabftw_client, elabftw_experiment_id, upload_info["cdcs_record_id"]
-        )
+        # CDCS records are registered for cleanup by test_environment_setup.
+        elabftw_client.delete_experiment(elabftw_experiment_id)
 
     # ========================================================================
     # Clustering sensitivity end to end tests
@@ -828,9 +814,7 @@ class TestEndToEndWorkflow:
         # Cleanup
         elabftw_client.delete_experiment(int(elabftw_result.record_id))
 
-        from nexusLIMS.utils import cdcs
-
-        cdcs.delete_record(cdcs_result.record_id)
+        test_environment_setup["cdcs_client"]["register_record"](cdcs_result.record_id)
 
     @pytest.mark.integration
     @pytest.mark.filterwarnings(

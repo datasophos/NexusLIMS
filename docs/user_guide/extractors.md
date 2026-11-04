@@ -18,6 +18,7 @@ each format.
 | [EDAX (Genesis, TEAM)](#edax-eds-files-spc-msa) | .spc | ✅ Full | EDS Spectrum | Detector angles, energy calibration, element identification |
 | [EDAX & others (standard)](#edax-eds-files-spc-msa) | .msa | ✅ Full | EDS Spectrum | EMSA/MAS standard format, vendor extensions supported |
 | [Tofwerk fibTOF pFIB-ToF-SIMS](#tofwerk-fibtof-pfib-tof-sims-files-h5) | .h5 | ✅ Full | pFIB-ToF-SIMS Spectrum Image | FIB parameters, mass range, TIC map, ion depth profiles, composite preview |
+| [Asylum Research AFM](#asylum-research-afm-ibw-files) | .ibw | ✅ Full | AFM images and force curves | Acquisition settings, channel metadata, image and curve previews |
 | [Various (exported images)](#image-formats) | .png, .jpg, .tiff, .bmp, .gif | ⚠️ Preview | Unknown | Basic metadata, square thumbnail generation |
 | [Various (logs, notes)](#text-files-txt) | .txt | ⚠️ Preview | Unknown | Basic metadata, text-to-image preview |
 | [Unknown Files](#unknown-files) | *others* | ❌ Minimal | Unknown | Timestamp only, placeholder preview |
@@ -47,6 +48,25 @@ Extraction is performed automatically during record building. Each file is proce
 ## Fully Supported Formats
 
 These formats have dedicated extractors that parse comprehensive metadata specific to their structure.
+
+(asylum-research-afm-ibw-files)=
+### Asylum Research AFM IBW files
+
+**Extractor Module**: {py:mod}`nexusLIMS.extractors.plugins.asylum_ibw`
+
+Asylum Research image and force-curve Igor binary waves (`.ibw`) are recognized
+by their wave dimensions, channel labels, and instrument metadata. The extractor
+preserves the instrument note and exposes selected acquisition settings in the
+record, with physical units for supported scan and probe parameters. Image
+previews subtract a first-order fit from each horizontal scan line to make
+smaller features easier to see; force-curve previews show the recorded channels
+against time. This processing does not modify the source file. File modification
+time is used for the NexusLIMS creation time; the acquisition date and time
+remain in the instrument metadata. Scan dimensions are expressed in micrometers.
+
+Support is currently limited to labeled height images and amplitude/Z-sensor
+force curves. Other Igor waves fall back to basic file metadata. Preview plots
+are intended for identification, not calibrated quantitative analysis.
 
 (digital-micrograph-files-dm3-dm4)=  
 ### Digital Micrograph Files (.dm3, .dm4)
@@ -722,20 +742,17 @@ ImageMetadata.model_validate(bad_meta)  # Raises pydantic.ValidationError
 
 **Unit Handling:**
 
-NexusLIMS automatically normalizes physical quantities to preferred units:
+Extractors can convert physical quantities to preferred units, for example:
 
 - Voltages → kilovolts (kV)
 - Distances → nanometers (nm) or millimeters (mm) depending on scale
 - Times → seconds (s)
 - Energies → electron volts (eV)
 
-You can provide quantities in any compatible unit, and validation will convert them automatically:
+Pint quantities can be converted explicitly before validation or serialization:
 
 ```python
-# These are all equivalent after validation:
-{"acceleration_voltage": Quantity(200, "kV")}
-{"acceleration_voltage": Quantity(200000, "V")}
-{"acceleration_voltage": Quantity(0.2, "MV")}
+voltage = Quantity(200000, "V").to("kV")  # 200 kV
 ```
 
 See {doc}`../dev_guide/nexuslims_internal_schema` for complete unit handling details.

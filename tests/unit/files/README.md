@@ -144,3 +144,11 @@ Original structure removed: 2025-11-18
 - `TEST_FILE_REQUIREMENTS.md` - Original file requirements analysis
 - `tests/conftest.py` - Test fixtures and database setup
 - `tests/test_instrument_factory.py` - Instrument factory for tests
+
+## Asylum AFM fixtures
+
+`Image0037.ibw.gz` and `NS10013.ibw.gz` contain a force curve and an AFM
+image respectively. Original save and offline directory paths have been replaced
+with same-length placeholders. The measurement arrays and other instrument
+metadata, including acquisition timestamps, are retained. Tests decompress the
+files into a temporary directory.

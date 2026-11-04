@@ -9,7 +9,7 @@ This document describes the metadata schema system introduced in NexusLIMS v2.2.
 The schema system provides:
 
 1. **Type-specific validation** - Different schemas for Image, Spectrum, SpectrumImage, and Diffraction datasets
-2. **Physical units with Pint** - Machine-actionable quantities with automatic unit conversion
+2. **Physical units with Pint** - Machine-actionable quantities with explicit unit conversion
 3. **EM Glossary alignment** - Standardized field names from the Electron Microscopy community
 4. **Clean XML serialization** - Separate value and unit attributes in XML output
 5. **Flexible extensions** - Support for instrument-specific metadata without polluting core fields
@@ -40,7 +40,7 @@ nx_meta = {
 
 **Benefits:**
 - Type safety: Invalid units caught at creation time
-- Automatic conversion: Units normalized during serialization
+- Explicit conversion: Pint converts quantities to chosen units in code
 - Machine-readable: Units separated from values in XML
 - Programmatic: Can convert between units in code
 
@@ -368,7 +368,7 @@ The core common metadata parameters used throughout NexusLIMS are defined in the
 **Notes:**
 - Fields with "-" in EMG ID column have display names but no EM Glossary v2.0.0 equivalent
 - See [EM Glossary Reference](em_glossary_reference.md) for complete list of all fields
-- Preferred units and conversion to the human-friendly display alias are automatically applied during XML serialization
+- Extractors must explicitly convert quantities to preferred units; XML serialization preserves the quantity's unit and formats its symbol
 - Use `emg_field()` helper to automatically populate EMG metadata
 
 ## Using the schema values
@@ -388,8 +388,9 @@ from nexusLIMS.schemas.units import ureg
 nx_meta["Voltage (kV)"] = float(voltage_v) / 1000
 
 # New approach (v2.2.0)
-nx_meta["acceleration_voltage"] = ureg.Quantity(Decimal(str(voltage_v)), "volt")
-# Pint handles the conversion automatically
+nx_meta["acceleration_voltage"] = ureg.Quantity(
+    Decimal(str(voltage_v)), "volt"
+).to("kilovolt")
 ```
 
 **Step 3: Use NexusLIMS field names**
@@ -489,9 +490,10 @@ NexusLIMS defines preferred units for each field to ensure consistency across in
 | `acquisition_time` | second (s) | Spectrum collection times (1-1000 s) |
 | `detector_energy_resolution` | electronvolt (eV) | EDS resolution spec (130-150 eV) |
 
-**Automatic Normalization:**
+**Explicit Normalization:**
 
-When you create a Quantity in any unit, it will be automatically converted to the preferred unit during XML serialization:
+Convert a quantity explicitly before XML serialization. The serializer preserves
+the quantity's unit and formats it as a compact symbol:
 
 ```python
 from nexusLIMS.schemas.units import ureg, normalize_quantity
@@ -506,7 +508,9 @@ print(normalized)  # Output: 15.0 kilovolt
 # XML output will be: <meta name="Voltage" unit="kV">15.0</meta>
 ```
 
-This ensures all metadata uses consistent units in the final XML records, regardless of the units used in the source file or during extraction.
+This produces consistent units when extractors apply the same preferred unit.
+The preferred-unit table does not automatically normalize metadata, including
+values in `extensions`.
 
 ## Validation Behavior
 
@@ -630,7 +634,7 @@ Use a descriptive name and place it in the `extensions` section. We encourage co
 
 ### Q: How do I know what units to use?
 
-Use the preferred units defined in `nexusLIMS.schemas.units.PREFERRED_UNITS`. Pint will automatically convert to the preferred unit during XML serialization.
+Use the preferred units defined in `nexusLIMS.schemas.units.PREFERRED_UNITS` where applicable, and convert explicitly with Pint or `normalize_quantity()` before serialization. For extension fields without a preferred unit, choose and document a suitable unit in the extractor.
 
 ## Implementation Details
 
