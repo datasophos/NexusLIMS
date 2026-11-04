@@ -14,6 +14,38 @@ up to version 1.4.3. The datasophos fork begins at version 2.0.
 
 <!-- towncrier release notes start -->
 
+## 2.9.0 (2026-11-03)
+
+### New features
+
+- NexusLIMS now uses a persistent file (`~/.config/nexuslims/config.toml` or `/etc/nexuslims/config.toml`) to configure the application's behavior, independent of the working directory. Existing `.env` files are no longer loaded automatically, but remain supported when selected explicitly with `NX_CONFIG_FILE`.
+
+  **Upgrade action:** As of this version, NexusLIMS no longer automatically reads `.env` from the working directory.
+  To migrate an existing `.env`, run the following from the directory containing the `.env` file, after upgrading to 2.9.0:
+
+  ```bash
+  backup=$(mktemp "${TMPDIR:-/tmp}/nexuslims-config.XXXXXX")
+  NX_CONFIG_FILE="$PWD/.env" nexuslims config dump --output "$backup" &&
+  env -u NX_CONFIG_FILE nexuslims config load "$backup" \
+    --config-path "$HOME/.config/nexuslims/config.toml"
+  ```
+
+  The temporary JSON backup file contains credentials; you should protect it or remove it after checking the new configuration. The export process requires valid settings and includes any environment variable overrides active when running. See the [configuration guide](../user_guide/configuration.md) for details.
+
+  CLI commands report the selected configuration file, and `nexuslims config status` explains file selection and environment overrides without displaying secrets. The configuration editor shows the file being edited and warns when an explicitly chosen file is inactive. ([#131](https://github.com/datasophos/NexusLIMS/issues/131))
+- Add metadata extraction and preview generation for Asylum Research AFM image and force-curve IBW files, with line-by-line flattening of image previews. ([#133](https://github.com/datasophos/NexusLIMS/issues/133))
+
+### Enhancements
+
+- Configuration commands accept `--config-path` to select a TOML or dotenv file; the existing `--env-path` option remains supported for backwards compatibility. ([#131](https://github.com/datasophos/NexusLIMS/issues/131))
+
+### Documentation improvements
+
+- Move individual configuration settings to a dedicated reference page and link it from the configuration guide. ([#131](https://github.com/datasophos/NexusLIMS/issues/131))
+- Pull request documentation previews are now hosted on Cloudflare for easier review. ([#132](https://github.com/datasophos/NexusLIMS/issues/132))
+- The [NexusLIMS-CDCS frontend guide](https://datasophos.github.io/NexusLIMS-CDCS/stable/) now lives with the CDCS project; existing frontend documentation links redirect to the new site. ([#138](https://github.com/datasophos/NexusLIMS/issues/138))
+
+
 ## 2.8.0 (2026-07-28)
 
 ### New features
