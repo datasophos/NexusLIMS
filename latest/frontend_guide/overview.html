@@ -7,6 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta content="0; url=https://datasophos.github.io/NexusLIMS-CDCS/stable/frontend_guide/overview.html" http-equiv="refresh" />
 
     <title>Overview &#8212; NexusLIMS dev documentation</title>
   
@@ -192,7 +193,7 @@
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../frontend_guide.html">
-    Frontend Guide
+    Frontend guide
   </a>
 </li>
 
@@ -314,7 +315,7 @@
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../frontend_guide.html">
-    Frontend Guide
+    Frontend guide
   </a>
 </li>
 
@@ -387,7 +388,7 @@
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshots and Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Screenshot Gallery</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="production.html">Production Deployment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development Setup</a></li>
@@ -438,7 +439,7 @@
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="../frontend_guide.html" class="nav-link">Frontend Guide</a></li>
+    <li class="breadcrumb-item"><a href="../frontend_guide.html" class="nav-link">Frontend guide</a></li>
     
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Overview</span></li>
   </ul>
@@ -459,158 +460,7 @@
                   
   <section id="overview">
 <span id="cdcs-overview"></span><h1>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h1>
-<p>NexusLIMS-CDCS is a customized deployment of the NIST Materials Data Curation System (MDCS) designed for managing and sharing microscopy and materials characterization data. It provides a web-based platform for capturing, organizing, searching, and visualizing experimental data using structured XML schemas.</p>
-<section id="what-is-cdcs">
-<h2>What is CDCS?<a class="headerlink" href="#what-is-cdcs" title="Link to this heading">#</a></h2>
-<p>CDCS (Configurable Data Curation System) is an open-source web application developed by NIST for curating scientific data. NexusLIMS-CDCS extends this base system with:</p>
-<ul class="simple">
-<li><p>Custom XML schemas for microscopy experiment records</p></li>
-<li><p>XSLT stylesheets for rich HTML rendering of records</p></li>
-<li><p>Pre-configured deployment with Docker Compose</p></li>
-<li><p>Integration with the NexusLIMS backend for automated record generation</p></li>
-<li><p>File server for instrument data and preview images</p></li>
-<li><p>Dataset-level descriptions, ratings, and featured status for curation</p></li>
-<li><p>A public, full-screen gallery for showcasing preview images</p></li>
-</ul>
-</section>
-<section id="key-capabilities">
-<h2>Key Capabilities<a class="headerlink" href="#key-capabilities" title="Link to this heading">#</a></h2>
-<section id="structured-data-capture">
-<h3>Structured Data Capture<a class="headerlink" href="#structured-data-capture" title="Link to this heading">#</a></h3>
-<p>NexusLIMS-CDCS uses XML schemas to define the structure of experimental records:</p>
-<ul class="simple">
-<li><p><strong>Templates</strong> define what data can be stored (based on <code class="docutils literal notranslate"><span class="pre">nexus-experiment.xsd</span></code>)</p></li>
-<li><p><strong>Web forms</strong> guide users through data entry with validation</p></li>
-<li><p><strong>API endpoints</strong> allow programmatic record submission</p></li>
-</ul>
-</section>
-<section id="powerful-search">
-<h3>Powerful Search<a class="headerlink" href="#powerful-search" title="Link to this heading">#</a></h3>
-<p>Find records across your entire dataset:</p>
-<ul class="simple">
-<li><p><strong>Full-text search</strong> across all record content</p></li>
-<li><p><strong>Date range filtering</strong> for temporal searches</p></li>
-<li><p><strong>User and instrument filters</strong> for attribution queries</p></li>
-</ul>
-</section>
-<section id="data-visualization">
-<h3>Data Visualization<a class="headerlink" href="#data-visualization" title="Link to this heading">#</a></h3>
-<p>XSLT stylesheets transform raw XML into human-readable HTML:</p>
-<ul class="simple">
-<li><p><strong>Detail view</strong> shows complete record with all metadata</p></li>
-<li><p><strong>List view</strong> provides summary cards for search results</p></li>
-<li><p><strong>Preview images</strong> display inline from the file server</p></li>
-<li><p><strong>Links to raw data</strong> for downloading original instrument files</p></li>
-</ul>
-</section>
-<section id="dataset-curation">
-<h3>Dataset Curation<a class="headerlink" href="#dataset-curation" title="Link to this heading">#</a></h3>
-<p>Authenticated users with write access can curate individual datasets within a record:</p>
-<ul class="simple">
-<li><p><strong>Annotate Record</strong> button on the detail page opens a slide-in panel</p></li>
-<li><p>Datasets are grouped by acquisition activity with preview thumbnails</p></li>
-<li><p>Add plain-language descriptions, assign a rating from 1 to 5, or mark datasets as featured</p></li>
-<li><p>Curation values are stored directly in the XML record</p></li>
-<li><p>Rating and featured controls are also available from dataset tables on the detail page</p></li>
-<li><p>Controlled by the <code class="docutils literal notranslate"><span class="pre">NX_ENABLE_ANNOTATOR</span></code> feature flag (enabled by default)</p></li>
-</ul>
-</section>
-<section id="public-gallery">
-<h3>Public Gallery<a class="headerlink" href="#public-gallery" title="Link to this heading">#</a></h3>
-<p>The public gallery at <code class="docutils literal notranslate"><span class="pre">/gallery/</span></code> presents preview images from NexusLIMS records in a
-full-screen, automatically rotating display:</p>
-<ul class="simple">
-<li><p>Shows the record title, dataset description, experimenter, instrument, and date</p></li>
-<li><p>Prioritizes featured datasets, then the highest-rated preview in each selected record</p></li>
-<li><p>Provides previous/next controls, keyboard navigation, and a full-screen mode</p></li>
-<li><p>Links every slide to the corresponding public record</p></li>
-<li><p>Can be branded and configured with <code class="docutils literal notranslate"><span class="pre">NX_GALLERY_*</span></code> environment variables</p></li>
-</ul>
-</section>
-<section id="restful-api">
-<h3>RESTful API<a class="headerlink" href="#restful-api" title="Link to this heading">#</a></h3>
-<p>Full programmatic access to CDCS functionality:</p>
-<ul class="simple">
-<li><p>Create, read, update, delete records</p></li>
-<li><p>Upload templates and stylesheets</p></li>
-<li><p>Manage users and permissions</p></li>
-<li><p>Export data in multiple formats</p></li>
-</ul>
-</section>
-</section>
-<section id="system-requirements">
-<h2>System Requirements<a class="headerlink" href="#system-requirements" title="Link to this heading">#</a></h2>
-<section id="development">
-<h3>Development<a class="headerlink" href="#development" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p>Docker Desktop or Docker Engine with Compose</p></li>
-<li><p>4GB RAM minimum</p></li>
-<li><p>10GB disk space</p></li>
-</ul>
-</section>
-<section id="production">
-<h3>Production<a class="headerlink" href="#production" title="Link to this heading">#</a></h3>
-<ul class="simple">
-<li><p><strong>CPU</strong>: 4+ cores (8 recommended)</p></li>
-<li><p><strong>RAM</strong>: 8GB minimum (16GB recommended)</p></li>
-<li><p><strong>Disk</strong>: 50GB+ SSD (excluding data files)</p></li>
-<li><p><strong>Network</strong>: Ports 80 and 443 accessible</p></li>
-<li><p><strong>OS</strong>: Ubuntu 22.04 LTS or RHEL 8+ recommended</p></li>
-</ul>
-<p>See the <a class="reference internal" href="production.html"><span class="doc">Production Deployment</span></a> guide for detailed requirements.</p>
-</section>
-</section>
-<section id="repository-structure">
-<h2>Repository Structure<a class="headerlink" href="#repository-structure" title="Link to this heading">#</a></h2>
-<p>The NexusLIMS-CDCS repository is organized as follows:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>NexusLIMS-CDCS/
-├── deployment/                    # Docker deployment configuration
-│   ├── docker-compose.base.yml   # Shared service definitions
-│   ├── docker-compose.dev.yml    # Development overrides
-│   ├── docker-compose.prod.yml   # Production overrides
-│   ├── Dockerfile                # Application image
-│   ├── .env.dev                  # Development defaults
-│   ├── .env.prod.example         # Production template
-│   ├── caddy/                    # Reverse proxy configuration
-│   └── scripts/                  # Initialization and admin scripts
-│
-├── config/                       # Django settings
-│   └── settings/
-│       ├── dev_settings.py      # Development settings
-│       └── prod_settings.py     # Production settings
-│
-├── xslt/                         # XSLT stylesheets
-│   ├── detail_stylesheet.xsl    # Full record view
-│   └── list_stylesheet.xsl      # Search result cards
-│
-├── static/                       # Static assets (CSS, images)
-├── templates/                    # Custom Django templates
-└── nexuslims_overrides/          # NexusLIMS-specific customizations
-</pre></div>
-</div>
-</section>
-<section id="version-compatibility">
-<h2>Version Compatibility<a class="headerlink" href="#version-compatibility" title="Link to this heading">#</a></h2>
-<p>NexusLIMS-CDCS and the NexusLIMS backend must be kept in sync. See the
-<a class="reference internal" href="../reference/compatibility.html#compatibility"><span class="std std-ref">Version Compatibility</span></a> reference for the full matrix of which
-NexusLIMS-CDCS versions are compatible with each NexusLIMS backend release.</p>
-</section>
-<section id="related-resources">
-<h2>Related Resources<a class="headerlink" href="#related-resources" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p><strong>Repository</strong>: <a class="github reference external" href="https://github.com/datasophos/NexusLIMS-CDCS">datasophos/NexusLIMS-CDCS</a></p></li>
-<li><p><strong>MDCS Documentation</strong>: <a class="github reference external" href="https://github.com/usnistgov/MDCS">usnistgov/MDCS</a></p></li>
-<li><p><strong>NexusLIMS Backend</strong>: <a class="github reference external" href="https://github.com/datasophos/NexusLIMS">datasophos/NexusLIMS</a></p></li>
-</ul>
-</section>
-<section id="next-steps">
-<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="development.html"><span class="doc">Development Setup</span></a> - Set up a local development environment</p></li>
-<li><p><a class="reference internal" href="production.html"><span class="doc">Production Deployment</span></a> - Deploy to production</p></li>
-<li><p><a class="reference internal" href="configuration.html"><span class="doc">Configuration</span></a> - Configure environment variables</p></li>
-</ul>
-</section>
+<p>This page has moved to the <a class="reference external" href="https://datasophos.github.io/NexusLIMS-CDCS/stable/frontend_guide/overview.html">NexusLIMS-CDCS documentation</a>.</p>
 </section>
 
 
@@ -651,36 +501,6 @@ NexusLIMS-CDCS versions are compatible with each NexusLIMS backend release.</p>
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-
-  <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-cdcs">What is CDCS?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#key-capabilities">Key Capabilities</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#structured-data-capture">Structured Data Capture</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#powerful-search">Powerful Search</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-visualization">Data Visualization</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset-curation">Dataset Curation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#public-gallery">Public Gallery</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#restful-api">RESTful API</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-requirements">System Requirements</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#development">Development</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#production">Production</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#repository-structure">Repository Structure</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#version-compatibility">Version Compatibility</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#related-resources">Related Resources</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
-</ul>
-  </nav></div>
 
   <div class="sidebar-secondary-item">
   <div role="note" aria-label="source link">
