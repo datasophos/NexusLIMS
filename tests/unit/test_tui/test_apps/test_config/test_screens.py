@@ -158,6 +158,30 @@ class TestConfigScreenPrePopulation:
 class TestConfigScreenSaveFlow:
     """Tests for the save workflow (validation and .env writing)."""
 
+    async def test_edit_and_save_toml_configuration(self, tmp_path):
+        """The editor loads and saves persistent TOML configuration."""
+        from nexusLIMS.config import read_config_file
+
+        path = tmp_path / "config.toml"
+        path.write_text(
+            '[core]\nNX_INSTRUMENT_DATA_PATH = "/data/instr"\n'
+            'NX_DATA_PATH = "/data/nx"\nNX_DB_PATH = "/data/nx.db"\n'
+            '[integrations]\nNX_CDCS_URL = "https://cdcs.example.com"\n'
+            'NX_CDCS_TOKEN = "original"\n'
+        )
+        app = ConfiguratorApp(env_path=path)
+        async with app.run_test(size=(120, 50)) as pilot:
+            await pilot.pause(0.1)
+            token = app.screen.query_one("#nx-cdcs-token", Input)
+            assert token.value == "original"
+            token.value = "updated"
+            await pilot.press("ctrl+s")
+            await pilot.pause(0.2)
+
+        values = read_config_file(path)
+        assert values["NX_CDCS_TOKEN"] == "updated"
+        assert values["NX_INSTRUMENT_DATA_PATH"] == "/data/instr"
+
     async def test_save_with_required_fields_writes_env(self, tmp_path):
         """Save writes a .env file when all required fields are filled."""
         env_file = tmp_path / "output.env"
@@ -785,7 +809,7 @@ class TestActionSaveErrorPaths:
 
             with (
                 patch(
-                    "nexusLIMS.tui.apps.config.screens._write_env_file",
+                    "nexusLIMS.tui.apps.config.screens._write_config_file",
                     side_effect=OSError("disk full"),
                 ),
                 patch.object(

@@ -163,12 +163,12 @@ of the NexusLIMS package. How you invoke it depends on your installation type:
   and prefix each command with `uv run` (e.g. `uv run nexuslims config edit`)
 ```
 
-NexusLIMS requires configuration through environment variables, which are typically stored in a `.env` file.
+NexusLIMS reads configuration from a persistent TOML file and process environment variables. See {ref}`configuration` for file selection and migration details.
 
 ### Quick Start
 
 1. Launch the interactive configuration editor, which provides an interactive
-   way to customize your configuration, and will automatically save a `.env` file
+   way to customize your configuration, and will save the selected TOML file
    with your selected values:
    ```bash
    nexuslims config edit
@@ -176,7 +176,7 @@ NexusLIMS requires configuration through environment variables, which are typica
 
    ```{tip}
    For development installs from source, you can also copy the example file directly:
-   `cp .env.example .env` and then edit it manually.
+   `cp .env.example .env`, edit it manually, and set `NX_CONFIG_FILE="$PWD/.env"` when running NexusLIMS.
    ```
 
 2. At minimum, you'll need to set:
@@ -186,17 +186,17 @@ NexusLIMS requires configuration through environment variables, which are typica
    - `NX_CDCS_URL`, `NX_CDCS_TOKEN` - CDCS API credentials
    - `NX_NEMO_ADDRESS_N`, `NX_NEMO_TOKEN_N` - NEMO integration
 
-3. *(Optional)* Verify your configuration was loaded correctly:
+3. *(Optional)* Check which file NexusLIMS selects:
    ```bash
-   # Dump current config to see what NexusLIMS sees
-   # WARNING: Output contains live credentials - don't share publicly
-   nexuslims config dump
+   nexuslims config status
    ```
 
-```{seealso}
-For complete configuration documentation including all available settings, validation rules, and troubleshooting, see the {ref}`configuration` guide.
+   This shows the selected file and its source, but does not validate its settings.
 
-For config management tools (dump/load) and debugging configuration issues, see {ref}`configuration-management`.
+```{seealso}
+See the {ref}`configuration guide <configuration>` for file selection and migration,
+the {ref}`settings reference <configuration-settings>` for individual settings,
+and the {ref}`TOML example <configuration-example>` for a complete file.
 ```
 
 ## Database Setup
@@ -220,7 +220,7 @@ structure.
 ````{admonition} Using a custom database path
 :class: tip
 If for some reason you would like to use a different database file than specified
-in your .env, you can do so by setting the `NX_DB_PATH` environment variable
+in your configuration, you can do so by setting the `NX_DB_PATH` environment variable
 directly on the command line:
 
 ```bash

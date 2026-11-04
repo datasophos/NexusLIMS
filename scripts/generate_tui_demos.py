@@ -77,32 +77,37 @@ def setup_demo_database() -> Path:
     return db_path
 
 
-def create_demo_env_file(env_path: Path) -> None:
-    """Create a demo .env file for config TUI testing.
+def create_demo_config_file(env_path: Path) -> None:
+    """Create a demo TOML file for config TUI testing.
 
     Parameters
     ----------
     env_path : Path
-        Path where to create the demo .env file.
+        Path where to create the demo TOML file.
     """
-    demo_env_content = """# Demo .env file for config TUI testing
-NX_INSTRUMENT_DATA_PATH=/mnt/instrument_data
-NX_DATA_PATH=/var/nexuslims/data
-NX_DB_PATH=/var/nexuslims/data/nexuslims.db
-NX_CDCS_URL=https://nexuslims.example.com
-NX_CDCS_TOKEN=demo-token-123
-NX_FILE_STRATEGY=inclusive
-NX_EXPORT_STRATEGY=best_effort
-NX_FILE_DELAY_DAYS=2.5
-NX_CLUSTERING_SENSITIVITY=1.0
-NX_ELABFTW_URL=https://elabftw.example.com
-NX_ELABFTW_API_KEY=1-abcdef1234567890
-NX_EMAIL_SMTP_HOST=smtp.example.com
-NX_EMAIL_SMTP_PORT=587
-NX_EMAIL_SENDER=nexuslims@example.com
-NX_EMAIL_RECIPIENTS=admin@example.com
+    demo_config_content = """# Demo configuration for config TUI testing
+[core]
+NX_INSTRUMENT_DATA_PATH = "/mnt/instrument_data"
+NX_DATA_PATH = "/var/nexuslims/data"
+NX_DB_PATH = "/var/nexuslims/data/nexuslims.db"
+NX_FILE_STRATEGY = "inclusive"
+NX_EXPORT_STRATEGY = "best_effort"
+NX_FILE_DELAY_DAYS = 2.5
+NX_CLUSTERING_SENSITIVITY = 1.0
+
+[integrations]
+NX_CDCS_URL = "https://nexuslims.example.com"
+NX_CDCS_TOKEN = "demo-token-123"
+NX_ELABFTW_URL = "https://elabftw.example.com"
+NX_ELABFTW_API_KEY = "1-abcdef1234567890"
+
+[email_config]
+smtp_host = "smtp.example.com"
+smtp_port = 587
+sender = "nexuslims@example.com"
+recipients = ["admin@example.com"]
 """
-    env_path.write_text(demo_env_content)
+    env_path.write_text(demo_config_content)
 
 
 def generate_vhs_recordings(demo_db_path: Path) -> None:
@@ -150,12 +155,12 @@ def generate_vhs_recordings(demo_db_path: Path) -> None:
             env = os.environ.copy()
             env["NX_DB_PATH"] = str(demo_db_path)
 
-            # For config TUI tapes, also set up the demo .env file path
+            # For config TUI tapes, also set up the demo TOML file path
             if "config" in tape_file.name:
-                demo_env_path = repo_root / "demo.env"
-                # Create demo .env file if it doesn't exist
-                if not demo_env_path.exists():
-                    create_demo_env_file(demo_env_path)
+                demo_config_path = repo_root / "demo.config.toml"
+                # Create demo TOML file if it doesn't exist
+                if not demo_config_path.exists():
+                    create_demo_config_file(demo_config_path)
                 # Some config tapes might need the env path in a different way
                 # The tape scripts themselves handle the specific command line
 
@@ -317,11 +322,11 @@ def generate_config_svg_screenshots() -> None:
         screenshots_dir = repo_root / "docs" / "images" / "tui" / "screenshots"
         screenshots_dir.mkdir(parents=True, exist_ok=True)
 
-        # Use the demo .env file we created
-        demo_env_path = repo_root / "demo.env"
+        # Use the demo TOML file we created
+        demo_config_path = repo_root / "demo.config.toml"
 
         # Generate screenshots using run_test
-        app = ConfiguratorApp(env_path=demo_env_path)
+        app = ConfiguratorApp(env_path=demo_config_path)
 
         async def capture_config_screenshots():
             """Async function to capture config screenshots."""
@@ -407,8 +412,8 @@ def main() -> int:
     if db_path is None:
         return 1
 
-    # Set up demo .env file for config TUI
-    if not _setup_demo_env_file():
+    # Set up demo TOML file for config TUI
+    if not setup_demo_config_file():
         return 1
 
     # Generate VHS recordings (warns if VHS not installed, doesn't fail)
@@ -444,22 +449,21 @@ def _setup_demo_database() -> Path | None:
     return db_path
 
 
-def _setup_demo_env_file() -> bool:
-    """Set up demo .env file and return True on success, False on failure."""
-    print("Setting up demo .env file for config TUI...")
+def setup_demo_config_file() -> bool:
+    """Set up demo TOML file and return True on success, False on failure."""
+    print("Setting up demo TOML file for config TUI...")
     try:
         repo_root = Path(__file__).parent.parent
-        demo_env_path = repo_root / "demo.env"
-        if not demo_env_path.exists():
-            create_demo_env_file(demo_env_path)
-
-        if demo_env_path.exists():
-            print(f"✓ Demo .env file created at {demo_env_path}")
-        else:
-            print(f"✓ Using existing demo .env file at {demo_env_path}")
+        demo_config_path = repo_root / "demo.config.toml"
+        if demo_config_path.exists():
+            print("✗ Demo config already exists; leaving it unchanged:")
+            print(f"  {demo_config_path}")
+            return False
+        create_demo_config_file(demo_config_path)
+        print(f"✓ Demo TOML file created at {demo_config_path}")
         print()
     except Exception as e:
-        print(f"✗ Failed to create demo .env file: {e}")
+        print(f"✗ Failed to create demo TOML file: {e}")
         return False
 
     return True
@@ -516,15 +520,15 @@ def _generate_config_screenshots_with_warnings() -> None:
         traceback.print_exc()
         print()
 
-    # Cleanup: Remove demo.env file if it was created
+    # Cleanup: Remove demo.config.toml file if it was created
     try:
         repo_root = Path(__file__).parent.parent
-        demo_env_path = repo_root / "demo.env"
-        if demo_env_path.exists():
-            demo_env_path.unlink()
-            print("✓ Cleaned up demo .env file")
+        demo_config_path = repo_root / "demo.config.toml"
+        if demo_config_path.exists():
+            demo_config_path.unlink()
+            print("✓ Cleaned up demo TOML file")
     except Exception as e:
-        print(f"! Warning: Failed to clean up demo .env file: {e}")
+        print(f"! Warning: Failed to clean up demo TOML file: {e}")
 
     return 0
 

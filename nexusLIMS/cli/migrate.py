@@ -63,6 +63,8 @@ via pip, uv, or run from source.
 from importlib.resources import files
 from pathlib import Path
 
+from nexusLIMS.config import get_config_value
+
 
 def _get_migrations_dir() -> Path:
     """Locate the migrations directory inside the installed package.
@@ -136,11 +138,9 @@ def _get_current_revision() -> str:
         Current revision ID, "none" if not stamped, or "unknown" if database
         doesn't exist
     """
-    import os
-
     from alembic.runtime.migration import MigrationContext
 
-    db_path = os.getenv("NX_DB_PATH")
+    db_path = get_config_value("NX_DB_PATH")
     if not db_path:
         return "unknown"
 
@@ -179,11 +179,6 @@ def _cli():  # noqa: PLR0915
         For advanced usage, use 'nexuslims db alembic [COMMAND]' to
         access the full Alembic CLI.
         """
-        # Load .env file if it exists (before any commands run)
-        from dotenv import find_dotenv, load_dotenv
-
-        load_dotenv(find_dotenv(usecwd=True))
-
         if version:
             from nexusLIMS import __version__
 
@@ -208,12 +203,11 @@ def _cli():  # noqa: PLR0915
         This creates the database file and applies all migrations
         (equivalent to 'nexuslims db upgrade head' on a new DB).
         """
-        import os
         import sys
 
-        # Get DB path from environment variable directly (not from settings)
+        # Get the database path without validating unrelated settings
         # because settings validation requires the file to exist
-        db_path_str = os.getenv("NX_DB_PATH")
+        db_path_str = get_config_value("NX_DB_PATH")
         if not db_path_str:
             click.secho(
                 "Error: NX_DB_PATH environment variable is not set.", fg="red", err=True
@@ -271,12 +265,11 @@ def _cli():  # noqa: PLR0915
           nexuslims db upgrade +1       # Upgrade one version
           nexuslims db upgrade abc123   # Upgrade to specific revision
         """
-        import os
         import sys
 
         # Check database exists (unless in SQL mode where we just generate SQL)
         if not sql:
-            db_path = os.getenv("NX_DB_PATH")
+            db_path = get_config_value("NX_DB_PATH")
             if not db_path or not Path(db_path).exists():
                 click.secho(
                     "Error: Database does not exist. Run 'nexuslims db init' first.",
@@ -315,12 +308,11 @@ def _cli():  # noqa: PLR0915
           nexuslims db downgrade -2     # Downgrade two versions
           nexuslims db downgrade abc123 # Downgrade to specific revision
         """
-        import os
         import sys
 
         # Check database exists (unless in SQL mode where we just generate SQL)
         if not sql:
-            db_path = os.getenv("NX_DB_PATH")
+            db_path = get_config_value("NX_DB_PATH")
             if not db_path or not Path(db_path).exists():
                 click.secho(
                     "Error: Database does not exist.",
@@ -350,11 +342,10 @@ def _cli():  # noqa: PLR0915
 
         Displays the revision ID that the database is currently at.
         """
-        import os
         import sys
 
         # Check database exists
-        db_path = os.getenv("NX_DB_PATH")
+        db_path = get_config_value("NX_DB_PATH")
         if not db_path or not Path(db_path).exists():
             click.secho(
                 "Error: Database does not exist. Run 'nexuslims db init' first.",
@@ -376,13 +367,12 @@ def _cli():  # noqa: PLR0915
         Exits with code 0 if database is up-to-date, code 1 if migrations
         are pending, or code 2 on error.
         """
-        import os
         import sys
 
         from alembic.script import ScriptDirectory
 
         # Check database exists
-        db_path = os.getenv("NX_DB_PATH")
+        db_path = get_config_value("NX_DB_PATH")
         if not db_path or not Path(db_path).exists():
             click.secho(
                 "Error: Database does not exist. Run 'nexuslims db init' first.",
@@ -566,11 +556,10 @@ def _cli():  # noqa: PLR0915
           - Enter             Select / confirm
           - q / Ctrl+Q        Quit
         """  # noqa: D301
-        import os
         import sys
         from argparse import Namespace
 
-        db_path_str = os.getenv("NX_DB_PATH")
+        db_path_str = get_config_value("NX_DB_PATH")
         if not db_path_str:
             click.secho(
                 "Error: NX_DB_PATH environment variable is not set.", fg="red", err=True

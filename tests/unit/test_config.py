@@ -350,6 +350,7 @@ def test_email_config_loads_from_dotenv_file(
         }
     )
     monkeypatch.setattr("nexusLIMS.config.dotenv_values", mock_dotenv_values)
+    monkeypatch.setenv("NX_CONFIG_FILE", "/tmp/.env")
 
     # Refresh settings to pick up changes
     refresh_settings()
@@ -399,6 +400,7 @@ def test_nemo_harvesters_loads_from_dotenv_file(
         }
     )
     monkeypatch.setattr("nexusLIMS.config.dotenv_values", mock_dotenv_values)
+    monkeypatch.setenv("NX_CONFIG_FILE", "/tmp/.env")
 
     # Refresh settings to pick up changes
     refresh_settings()

@@ -20,7 +20,7 @@ Usage
 
     # Load a previously dumped config into .env
     nexuslims config load nexuslims_config.json
-    nexuslims config load nexuslims_config.json --env-path /path/to/.env
+    nexuslims config load nexuslims_config.json --config-path /path/to/config.toml
     nexuslims config load nexuslims_config.json --force
 
 Security
@@ -33,6 +33,7 @@ back up any pre-existing ``.env`` file before overwriting.
 
 import json
 import logging
+import re
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
@@ -253,6 +254,50 @@ def _flatten_email_config(email: dict) -> dict[str, str]:
 # ---------------------------------------------------------------------------
 
 
+def _write_config_file(env_vars: dict[str, str], path: Path) -> None:
+    """Write configuration in TOML or dotenv format based on its suffix."""
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    path.touch(mode=0o600, exist_ok=True)
+    if path.suffix.lower() != ".toml":
+        _write_env_file(env_vars, path)
+        return
+    sections: dict[str, dict[str, object]] = {"core": {}}
+    for key, value in env_vars.items():
+        email_field = next(
+            (field for field, name in _EMAIL_KEY_TO_ENV.items() if name == key), None
+        )
+        if email_field:
+            sections.setdefault("email_config", {})[email_field] = (
+                value.split(",") if email_field == "recipients" else value
+            )
+            continue
+        found = False
+        for field, prefix in _NEMO_KEY_TO_SUFFIX.items():
+            match = re.fullmatch(re.escape(prefix) + r"(\d+)", key)
+            if match:
+                sections.setdefault(f"nemo_harvesters.{match.group(1)}", {})[field] = (
+                    value
+                )
+                found = True
+                break
+        if not found:
+            section = (
+                "integrations"
+                if key.startswith(("NX_LABARCHIVES_", "NX_CDCS_", "NX_ELABFTW_"))
+                else "core"
+            )
+            sections.setdefault(section, {})[key] = value
+    lines = []
+    for section, values in sections.items():
+        lines.append(f"[{section}]")
+        lines.extend(
+            f"{key} = {json.dumps(value, ensure_ascii=False)}"
+            for key, value in values.items()
+        )
+        lines.append("")
+    path.write_text("\n".join(lines))
+
+
 def _write_env_file(env_vars: dict[str, str], path: Path) -> None:
     """
     Write *env_vars* to *path* as a ``.env`` file.
@@ -283,6 +328,57 @@ def main() -> None:
 
 
 @main.command()
+def status() -> None:
+    """Explain configuration selection without validating settings."""
+    import getpass  # noqa: PLC0415
+    import os  # noqa: PLC0415
+
+    from nexusLIMS.config import (  # noqa: PLC0415
+        SYSTEM_CONFIG_PATH,
+        config_override_names,
+        config_selection,
+    )
+
+    user = Path.home() / ".config" / "nexuslims" / "config.toml"
+    click.echo("Active configuration:")
+    try:
+        selected, source, user, system = config_selection()
+        click.echo(f"  Selected file:   {selected} ({source})")
+        click.echo(f"  File status:     {'exists' if selected.exists() else 'missing'}")
+    except (ValueError, OSError) as exc:
+        selected, system = None, SYSTEM_CONFIG_PATH
+        click.echo(f"  Selected file:   invalid ({exc})")
+        click.echo("  File status:     unavailable (NX_CONFIG_FILE)")
+
+    click.echo("\nCandidate files:")
+    for label, path in (("User", user), ("System", system)):
+        state = "exists" if path.exists() else "missing"
+        if path == selected:
+            state += ", selected"
+        elif os.environ.get("NX_CONFIG_FILE"):
+            state += ", ignored: NX_CONFIG_FILE takes precedence"
+        elif label == "System" and user.exists():
+            state += ", ignored: user file takes precedence"
+        click.echo(f"  {label + ':':<17}{path}  ({state})")
+    try:
+        import pwd  # noqa: PLC0415
+
+        username = pwd.getpwuid(os.geteuid()).pw_name
+    except (ImportError, KeyError):
+        username = getpass.getuser()
+    click.echo(f"\nRunning as user: {username}")
+    names = config_override_names()
+    click.echo("Overrides:       " + (", ".join(names) if names else "none"))
+
+
+def _interactive_terminal() -> bool:
+    """Return whether the editor can interact with a terminal."""
+    import sys  # noqa: PLC0415
+
+    return sys.stdin.isatty() and sys.stdout.isatty()
+
+
+@main.command()
 @click.option(
     "--output",
     "-o",
@@ -301,6 +397,10 @@ def dump(output: str | None) -> None:
     """
     from nexusLIMS.cli import handle_config_error  # noqa: PLC0415
 
+    if click.get_current_context().find_root().command is main:
+        from nexusLIMS.config import get_config_path  # noqa: PLC0415
+
+        click.echo(f"Configuration file: {get_config_path()}", err=True)
     with handle_config_error():
         from nexusLIMS.config import settings  # noqa: PLC0415
 
@@ -328,22 +428,42 @@ def dump(output: str | None) -> None:
 
 @main.command()
 @click.option(
+    "--config-path",
     "--env-path",
+    "env_path",
     type=click.Path(dir_okay=False, writable=True),
-    default=".env",
-    show_default=True,
-    help="Path to the .env file to edit (created if absent).",
+    default=None,
+    help="Configuration file to edit (defaults to the selected file).",
 )
-def edit(env_path: str) -> None:
+def edit(env_path: str | None) -> None:
     """Interactively edit the NexusLIMS configuration in a terminal UI.
 
-    Opens a tabbed form pre-populated from the existing .env file (if any).
-    Press Ctrl+S to save and write the .env file, or Escape to cancel without
+    Opens a tabbed form pre-populated from the selected file (if any).
+    Press Ctrl+S to save and write the configuration file, or Escape to cancel without
     saving.
     """
+    from nexusLIMS.config import config_selection, get_config_path  # noqa: PLC0415
     from nexusLIMS.tui.apps.config.app import ConfiguratorApp  # noqa: PLC0415
 
-    ConfiguratorApp(env_path=Path(env_path)).run()
+    if not _interactive_terminal():
+        message = "Config editor requires an interactive terminal."
+        raise click.ClickException(message)
+    try:
+        active_path, source, _, _ = config_selection()
+    except (ValueError, OSError):
+        if env_path is None:
+            raise
+        active_path, source = None, "command line"
+    path = Path(env_path) if env_path else get_config_path()
+    if env_path:
+        source = "command line"
+    click.echo(f"Editing configuration: {path} ({source})", err=True)
+    if env_path and (active_path is None or path.absolute() != active_path.absolute()):
+        click.echo("Warning: this file is not the active configuration.", err=True)
+    click.echo("Press Enter to open the editor...", nl=False, err=True)
+    if not click.get_text_stream("stdin").readline():
+        raise click.Abort
+    ConfiguratorApp(env_path=path).run()
 
 
 @main.command("labarchives-get-uid")
@@ -362,11 +482,12 @@ def edit(env_path: str) -> None:
     ),
 )
 @click.option(
+    "--config-path",
     "--env-path",
+    "env_path",
     type=click.Path(dir_okay=False),
-    default=".env",
-    show_default=True,
-    help="Path to the .env file to read LabArchives credentials from.",
+    default=None,
+    help="Configuration file to read LabArchives credentials from.",
 )
 @click.option(
     "--verbose",
@@ -376,7 +497,7 @@ def edit(env_path: str) -> None:
     help="Enable debug logging to see full HTTP request/response details.",
 )
 def labarchives_get_uid(
-    email: str, la_password: str, env_path: str, *, verbose: bool
+    email: str, la_password: str, env_path: str | None, *, verbose: bool
 ) -> None:
     """Look up your LabArchives user ID (UID) using your login credentials.
 
@@ -397,7 +518,7 @@ def labarchives_get_uid(
     """  # noqa: D301
     import logging  # noqa: PLC0415
 
-    from nexusLIMS.config import read_labarchives_env  # noqa: PLC0415
+    from nexusLIMS.config import get_config_path, read_labarchives_env  # noqa: PLC0415
     from nexusLIMS.utils.labarchives import (  # noqa: PLC0415
         LabArchivesClient,
         LabArchivesError,
@@ -407,6 +528,8 @@ def labarchives_get_uid(
         logging.basicConfig(level=logging.DEBUG)
         logging.getLogger("nexusLIMS.utils.labarchives").setLevel(logging.DEBUG)
 
+    path = Path(env_path) if env_path else get_config_path()
+    click.echo(f"Configuration file: {path}", err=True)
     la = read_labarchives_env(env_path)
 
     if not la["NX_LABARCHIVES_ACCESS_KEY_ID"]:
@@ -460,35 +583,39 @@ def labarchives_get_uid(
 @main.command()
 @click.argument("input", type=click.Path(exists=True, dir_okay=False, readable=True))
 @click.option(
+    "--config-path",
     "--env-path",
+    "env_path",
     type=click.Path(dir_okay=False, writable=True),
-    default=".env",
-    show_default=True,
-    help="Path to write the .env file.",
+    default=None,
+    help="Configuration file to write (defaults to the selected file).",
 )
 @click.option(
     "--force",
     is_flag=True,
     default=False,
-    help="Skip confirmation prompt when overwriting an existing .env file.",
+    help="Skip confirmation prompt when overwriting an existing file.",
 )
-def load(input: str, env_path: str, *, force: bool) -> None:  # noqa: A002
-    """Load a previously dumped JSON config into a .env file.
+def load(input: str, env_path: str | None, *, force: bool) -> None:  # noqa: A002
+    """Load a previously dumped JSON config into the selected file.
 
     INPUT is the path to the JSON file produced by ``dump``.
 
-    If a .env file already exists at ENV_PATH a timestamped backup is created
+    If a file already exists at the destination a timestamped backup is created
     before it is overwritten.
     """
     input_path = Path(input)
-    env_file = Path(env_path)
+    from nexusLIMS.config import get_config_path  # noqa: PLC0415
+
+    env_file = Path(env_path) if env_path else get_config_path()
+    click.echo(f"Configuration file: {env_file}")
 
     config_dict = json.loads(input_path.read_text())
 
     # --- back up existing .env if present ----------------------------------
     if env_file.exists():
         click.echo(
-            f"WARNING: A .env file already exists at {env_file}.  "
+            f"WARNING: A configuration file already exists at {env_file}.  "
             "It will be overwritten.",
             err=True,
         )
@@ -498,9 +625,9 @@ def load(input: str, env_path: str, *, force: bool) -> None:  # noqa: A002
         timestamp = datetime.now().astimezone().strftime("%Y%m%d-%H%M%S")
         backup_path = env_file.with_name(f"{env_file.name}.bak.{timestamp}")
         env_file.rename(backup_path)
-        click.echo(f"Existing .env backed up to {backup_path}")
+        click.echo(f"Existing configuration backed up to {backup_path}")
 
     # --- flatten and write -------------------------------------------------
     env_vars = _flatten_to_env(config_dict)
-    _write_env_file(env_vars, env_file)
+    _write_config_file(env_vars, env_file)
     click.echo(f"Configuration loaded into {env_file}")

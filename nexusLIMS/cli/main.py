@@ -40,6 +40,13 @@ class LazyGroup(click.Group):
         super().__init__(*args, **kwargs)
         self._lazy_commands = lazy_commands
 
+    def parse_args(self, ctx: click.Context, args: list[str]) -> list[str]:
+        """Suppress diagnostics for help and version at any command level."""
+        ctx.meta["quiet_config"] = any(
+            arg in ("--help", "--version") for arg in args
+        ) or args[:2] in (["config", "status"], ["config", "edit"])
+        return super().parse_args(ctx, args)
+
     def list_commands(self, ctx: click.Context) -> list[str]:
         """List all commands, including lazy ones."""
         base = super().list_commands(ctx)
@@ -160,6 +167,19 @@ def main() -> None:
 
     Manage records, configuration, database migrations, and instruments.
     """
+    ctx = click.get_current_context()
+    if not ctx.meta.get("quiet_config"):
+        from nexusLIMS.config import config_selection  # noqa: PLC0415
+
+        try:
+            path, source, _, _ = config_selection()
+            if path.exists():
+                message = f"Using configuration: {path} ({source})"
+            else:
+                message = f"Selected configuration does not exist: {path} ({source})"
+            click.echo(message, err=True)
+        except (ValueError, OSError) as exc:
+            click.echo(f"Configuration: {exc}", err=True)
 
 
 @click.command()

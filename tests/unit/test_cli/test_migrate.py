@@ -2,10 +2,31 @@
 
 from pathlib import Path
 
+import pytest
 from click.testing import CliRunner
 
 
-def test_init_reads_db_path_from_dotenv_in_cwd(tmp_path, monkeypatch):
+def test_view_uses_database_path_from_selected_file(tmp_path, monkeypatch):
+    """The database browser uses the selected persistent configuration."""
+    from unittest.mock import patch
+
+    from nexusLIMS.cli.migrate import _cli
+
+    db_path = tmp_path / "test.db"
+    db_path.touch()
+    selected = tmp_path / "config.toml"
+    selected.write_text(f'[core]\nNX_DB_PATH = "{db_path}"\n')
+    monkeypatch.setenv("NX_CONFIG_FILE", str(selected))
+    monkeypatch.delenv("NX_DB_PATH", raising=False)
+    monkeypatch.setattr("nexusLIMS.config.TEST_MODE", False)
+    with patch("nexusLIMS.tui.apps.db_browser.NexusLIMSDBApp") as app:
+        result = CliRunner().invoke(_cli(), ["view"])
+    assert result.exit_code == 0, result.output
+    assert app.call_args.args[0].filepath == str(db_path)
+    app.return_value.run.assert_called_once_with()
+
+
+def test_init_reads_db_path_from_selected_file(tmp_path, monkeypatch):
     """Test that 'nexuslims db init' finds .env in the user's cwd.
 
     When NexusLIMS is installed as a package the calling file lives
@@ -23,8 +44,9 @@ def test_init_reads_db_path_from_dotenv_in_cwd(tmp_path, monkeypatch):
 
     # Clear NX_DB_PATH from the real environment
     monkeypatch.delenv("NX_DB_PATH", raising=False)
-    # Run from the temp directory so find_dotenv(usecwd=True) finds .env
-    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("NX_CONFIG_FILE", str(env_file))
+    monkeypatch.setattr("nexusLIMS.config.TEST_MODE", False)
+    monkeypatch.chdir(tmp_path.parent)
 
     runner = CliRunner()
     # Mock Alembic so we don't actually run migrations
@@ -217,3 +239,20 @@ def test_alembic_passthrough_help():
 
     # Should show Alembic's help, not an error
     assert "Run Alembic commands directly" in result.output or "usage:" in result.output
+
+
+@pytest.mark.parametrize("command", ["upgrade", "downgrade", "current", "check"])
+def test_db_commands_read_missing_database_path_from_selected_file(
+    command, tmp_path, monkeypatch
+):
+    """Database commands check the path from the selected configuration file."""
+    from nexusLIMS.cli.migrate import _cli
+
+    config_file = tmp_path / "config.toml"
+    config_file.write_text(f'[core]\nNX_DB_PATH = "{tmp_path / "missing.db"}"\n')
+    monkeypatch.setenv("NX_CONFIG_FILE", str(config_file))
+    monkeypatch.delenv("NX_DB_PATH", raising=False)
+    monkeypatch.setattr("nexusLIMS.config.TEST_MODE", False)
+    result = CliRunner().invoke(_cli(), [command])
+    assert result.exit_code != 0
+    assert "Database does not exist" in result.output

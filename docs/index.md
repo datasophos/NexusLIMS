@@ -4,7 +4,6 @@
 
 Home <self>
 user_guide
-migration_guide
 dev_guide
 frontend_guide
 reference

@@ -6,6 +6,8 @@ import tempfile
 import warnings
 from pathlib import Path
 
+import pytest
+
 # Suppress SyntaxWarning from hyperspy.roi raised at module-compile time,
 # before pytest's filterwarnings machinery is active. The module filter is
 # omitted because compile-time SyntaxWarnings are issued before the module
@@ -147,6 +149,12 @@ try:
 except ImportError:
     # dotenv not installed, continue without it
     print("[DEBUG] dotenv library not available, skipping environment variable loading")
+
+
+@pytest.fixture(autouse=True)
+def isolate_selected_config_file(monkeypatch, tmp_path):
+    """Keep config commands pointed at a per-test path unless explicitly changed."""
+    monkeypatch.setenv("NX_CONFIG_FILE", str(tmp_path / "nexuslims-test-config.toml"))
 
 
 # ============================================================================

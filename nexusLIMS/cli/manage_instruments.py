@@ -34,10 +34,11 @@ Features
 
 import json
 import logging
-import os
 from pathlib import Path
 
 import click
+
+from nexusLIMS.config import get_config_value
 
 # Heavy imports are lazy-loaded inside the main function to keep
 # --help / --version fast (same pattern as other CLI tools).
@@ -52,13 +53,8 @@ def _ensure_database_initialized() -> None:
     If NX_DB_PATH is not set or the database file doesn't exist,
     automatically initializes it using the migration system.
     """
-    # Load .env file if it exists (before checking environment variables)
-    from dotenv import find_dotenv, load_dotenv  # noqa: PLC0415
-
-    load_dotenv(find_dotenv(usecwd=True))
-
     # Get DB path from environment variable
-    db_path_str = os.getenv("NX_DB_PATH")
+    db_path_str = get_config_value("NX_DB_PATH")
     if not db_path_str:
         click.secho(
             "Error: NX_DB_PATH environment variable is not set.",
@@ -246,7 +242,7 @@ def _run_instrument_manager() -> None:
 
     # Pass db_path explicitly so the TUI app doesn't need to access
     # config.settings (which would require all settings to be valid)
-    db_path = Path(os.getenv("NX_DB_PATH"))
+    db_path = Path(get_config_value("NX_DB_PATH"))
 
     # Launch the TUI app
     try:

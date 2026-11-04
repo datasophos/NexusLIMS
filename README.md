@@ -76,7 +76,7 @@ Run `nexuslims config edit` to interactively configure your installation. You'll
 - NEMO API credentials (if using)
 - Database path
 
-> **Note:** For development installs from source, you can also `cp .env.example .env` and edit it manually.
+> **Note:** For development installs from source, you can also copy `.env.example` to `.env`, edit it manually, and set `NX_CONFIG_FILE="$PWD/.env"` when running NexusLIMS.
 
 See [Configuration Documentation](https://datasophos.github.io/NexusLIMS/stable/user_guide/configuration.html) for details.
 

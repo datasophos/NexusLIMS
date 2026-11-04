@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import ClassVar
 from unittest.mock import MagicMock, Mock, patch
 
+import pytest
 from click.testing import CliRunner
 
 from nexusLIMS.cli.config import (
@@ -450,6 +451,7 @@ class TestDumpCommand:
         data = json.loads(result.stdout)
         assert data["NX_CDCS_TOKEN"] == "secret-cdcs-token"
         assert data["NX_FILE_STRATEGY"] == "exclusive"
+        assert "Configuration file:" in result.stderr
 
     def test_dump_writes_to_file_with_output_flag(self, tmp_path, monkeypatch):
         """When --output is specified, writes to that file instead of stdout."""
@@ -480,16 +482,15 @@ class TestLoadCommand:
         config = _build_config_dict(_mock_settings())
         path.write_text(json.dumps(config))
 
-    def test_load_no_preexisting_env(self, tmp_path):
+    @pytest.mark.parametrize("option", ["--config-path", "--env-path"])
+    def test_load_no_preexisting_env(self, tmp_path, option):
         """Load writes .env cleanly when none exists — no prompt."""
         input_file = tmp_path / "nexuslims_config.json"
         self._write_config_json(input_file)
         env_path = tmp_path / ".env"
 
         runner = CliRunner()
-        result = runner.invoke(
-            main, ["load", str(input_file), "--env-path", str(env_path)]
-        )
+        result = runner.invoke(main, ["load", str(input_file), option, str(env_path)])
 
         assert result.exit_code == 0, result.output
         assert env_path.exists()
@@ -580,35 +581,56 @@ class TestLoadCommand:
 class TestEditCommand:
     """Unit tests for ``nexuslims config edit``."""
 
-    def test_edit_launches_configurator_app(self, tmp_path, monkeypatch):
+    @pytest.mark.parametrize("option", ["--config-path", "--env-path"])
+    def test_edit_launches_configurator_app(self, tmp_path, monkeypatch, option):
         """Edit instantiates ConfiguratorApp with the given env path and calls run()."""
         env_path = tmp_path / ".env"
         mock_app = MagicMock()
+        monkeypatch.setattr("nexusLIMS.cli.config._interactive_terminal", lambda: True)
 
         with patch(
             "nexusLIMS.tui.apps.config.app.ConfiguratorApp",
             return_value=mock_app,
         ) as mock_cls:
             runner = CliRunner()
-            result = runner.invoke(main, ["edit", "--env-path", str(env_path)])
+            result = runner.invoke(main, ["edit", option, str(env_path)], input="\n")
 
         assert result.exit_code == 0, result.output
         mock_cls.assert_called_once_with(env_path=Path(str(env_path)))
         mock_app.run.assert_called_once()
 
-    def test_edit_default_env_path(self, monkeypatch):
-        """Edit defaults to '.env' when --env-path is not specified."""
+    def test_edit_waits_for_acknowledgement(self, tmp_path, monkeypatch):
+        """The actual path is shown and the editor does not open on EOF."""
+        monkeypatch.setattr("nexusLIMS.cli.config._interactive_terminal", lambda: True)
+        path = tmp_path / "chosen.toml"
+        with patch("nexusLIMS.tui.apps.config.app.ConfiguratorApp") as app:
+            result = CliRunner().invoke(main, ["edit", "--config-path", str(path)])
+        assert result.exit_code != 0
+        assert str(path) in result.output
+        assert "Press Enter" in result.output
+        app.assert_not_called()
+
+    def test_edit_default_env_path(self, monkeypatch, tmp_path):
+        """Edit selects the default config path when no override is set."""
+        monkeypatch.delenv("NX_CONFIG_FILE", raising=False)
+        monkeypatch.setenv("HOME", str(tmp_path))
+        monkeypatch.setattr(
+            "nexusLIMS.config.SYSTEM_CONFIG_PATH", tmp_path / "missing-system.toml"
+        )
         mock_app = MagicMock()
+        monkeypatch.setattr("nexusLIMS.cli.config._interactive_terminal", lambda: True)
 
         with patch(
             "nexusLIMS.tui.apps.config.app.ConfiguratorApp",
             return_value=mock_app,
         ) as mock_cls:
             runner = CliRunner()
-            result = runner.invoke(main, ["edit"])
+            result = runner.invoke(main, ["edit"], input="\n")
 
         assert result.exit_code == 0, result.output
-        mock_cls.assert_called_once_with(env_path=Path(".env"))
+        mock_cls.assert_called_once_with(
+            env_path=tmp_path / ".config/nexuslims/config.toml"
+        )
         mock_app.run.assert_called_once()
 
 
@@ -760,3 +782,49 @@ class TestLabArchivesGetUidCommand:
         assert result.exit_code == 0, result.output
         assert "Connecting to" in result.stderr
         assert "labarchives.com" in result.stderr
+
+
+def test_dump_reports_selected_file_before_validation_error(monkeypatch, tmp_path):
+    """A failed dump still identifies the file it checked."""
+    from pydantic import ValidationError
+
+    selected = tmp_path / "selected.toml"
+    monkeypatch.setenv("NX_CONFIG_FILE", str(selected))
+    error = ValidationError.from_exception_data(
+        "Settings", [{"type": "missing", "loc": ("NX_DB_PATH",), "input": {}}]
+    )
+    monkeypatch.setattr(
+        "nexusLIMS.cli.config._build_config_dict", Mock(side_effect=error)
+    )
+    result = CliRunner(mix_stderr=False).invoke(main, ["dump"])
+    assert result.exit_code != 0
+    assert str(selected) in result.stderr
+    assert result.stdout == ""
+
+
+@pytest.mark.parametrize("option", ["--config-path", "--env-path"])
+def test_labarchives_reports_explicit_config_file_on_error(
+    tmp_path, monkeypatch, option
+):
+    """The UID helper reports its explicit file even if credentials are absent."""
+    selected = tmp_path / "selected.toml"
+    for key in (
+        "NX_LABARCHIVES_ACCESS_KEY_ID",
+        "NX_LABARCHIVES_ACCESS_PASSWORD",
+        "NX_LABARCHIVES_URL",
+    ):
+        monkeypatch.delenv(key, raising=False)
+    result = CliRunner(mix_stderr=False).invoke(
+        main,
+        [
+            "labarchives-get-uid",
+            "--email",
+            "a@example.com",
+            "--la-password",
+            "pw",
+            option,
+            str(selected),
+        ],
+    )
+    assert result.exit_code != 0
+    assert str(selected) in result.stderr

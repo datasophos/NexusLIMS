@@ -4,7 +4,7 @@ These tests run against a real LabArchives server and are **skipped by default**
 They are meant to be run manually when you need to verify end-to-end connectivity
 or diagnose API issues.
 
-Required environment variables (or .env file entries)
+Required environment variables (or tests/.env.test entries)
 ------------------------------------------------------
 NX_LABARCHIVES_URL
     API base URL including the /api path, e.g. ``https://api.labarchives.com/api``
@@ -66,7 +66,6 @@ from nexusLIMS.utils.labarchives import (
 # Values are resolved in this priority order (highest first):
 #   1. Real environment variables
 #   2. tests/.env.test        (tests directory — gitignored, for local dev)
-#   3. .env                   (standard NexusLIMS config file)
 #
 # Copy tests/.env.test.example to tests/.env.test and fill in
 # your credentials.  The example file lists all supported keys.
@@ -75,7 +74,7 @@ from nexusLIMS.utils.labarchives import (
 _TEST_ENV_FILE = Path(__file__).parents[1] / ".env.test"
 _DATA_DIR = Path(__file__).parent / "data"
 
-# Start from standard NexusLIMS LA vars (env > .env)
+# Test mode reads standard NexusLIMS LA vars from the process environment.
 _LA: dict[str, str | None] = read_labarchives_env()
 
 # Overlay with tests/.env.test when present, then re-apply real env vars

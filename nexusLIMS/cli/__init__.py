@@ -64,7 +64,7 @@ def handle_config_error() -> Iterator[None]:
             "",
             "       nexuslims config edit",
             "",
-            "  2. Create a .env file manually (see documentation):",
+            "  2. Configure the selected TOML file or environment variables:",
             "",
             f"       https://datasophos.github.io/NexusLIMS/{doc_version}"
             "/user_guide/configuration.html",

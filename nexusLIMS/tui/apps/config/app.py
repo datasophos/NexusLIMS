@@ -61,12 +61,12 @@ class ConfiguratorApp(BaseNexusApp):
         return "NexusLIMS Configurator"
 
     _HELP_DESCRIPTION = (
-        "The NexusLIMS Configurator reads and writes a `.env` file that controls "
-        "all NexusLIMS settings. On launch it loads the existing file (if present) "
-        "and pre-populates every field. Pressing **Save (Ctrl+S)** writes a new "
-        "`.env` at the same path, overwriting the previous contents. Pressing "
-        "**Cancel (Esc)** exits without saving — you will be warned if there are "
-        "unsaved changes.\n\n"
+        "The NexusLIMS Configurator reads and writes a configuration file that "
+        "controls all NexusLIMS settings. On launch it loads the existing file "
+        "(if present) and pre-populates every field. Pressing **Save (Ctrl+S)** "
+        "writes a new file at the same path, overwriting the previous contents. "
+        "Pressing **Cancel (Esc)** exits without saving — you will be warned if "
+        "there are unsaved changes.\n\n"
         "Settings are grouped into tabs: **Core Paths**, **CDCS**, "
         "**File Processing**, **NEMO Harvesters**, **eLabFTW**, **Email**, and "
         "**SSL / Certs**. Focus any input field and press **F1** to read extended "
