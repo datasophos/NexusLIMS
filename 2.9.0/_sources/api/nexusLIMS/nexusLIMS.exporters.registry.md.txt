@@ -1,0 +1,105 @@
+# {py:mod}`nexusLIMS.exporters.registry`
+
+```{py:module} nexusLIMS.exporters.registry
+```
+
+```{autodoc2-docstring} nexusLIMS.exporters.registry
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`ExporterRegistry <nexusLIMS.exporters.registry.ExporterRegistry>`
+  - ```{autodoc2-docstring} nexusLIMS.exporters.registry.ExporterRegistry
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`get_registry <nexusLIMS.exporters.registry.get_registry>`
+  - ```{autodoc2-docstring} nexusLIMS.exporters.registry.get_registry
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`ExportStrategy <nexusLIMS.exporters.registry.ExportStrategy>`
+  - ```{autodoc2-docstring} nexusLIMS.exporters.registry.ExportStrategy
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} ExportStrategy
+:canonical: nexusLIMS.exporters.registry.ExportStrategy
+
+```{autodoc2-docstring} nexusLIMS.exporters.registry.ExportStrategy
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````{py:class} ExporterRegistry()
+:canonical: nexusLIMS.exporters.registry.ExporterRegistry
+
+```{autodoc2-docstring} nexusLIMS.exporters.registry.ExporterRegistry
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:method} discover_plugins() -> None
+:canonical: nexusLIMS.exporters.registry.ExporterRegistry.discover_plugins
+
+```{autodoc2-docstring} nexusLIMS.exporters.registry.ExporterRegistry.discover_plugins
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} get_enabled_destinations() -> list[nexusLIMS.exporters.base.ExportDestination]
+:canonical: nexusLIMS.exporters.registry.ExporterRegistry.get_enabled_destinations
+
+```{autodoc2-docstring} nexusLIMS.exporters.registry.ExporterRegistry.get_enabled_destinations
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} export_to_all(context: nexusLIMS.exporters.base.ExportContext, *, strategy: nexusLIMS.exporters.registry.ExportStrategy = 'all') -> list[nexusLIMS.exporters.base.ExportResult]
+:canonical: nexusLIMS.exporters.registry.ExporterRegistry.export_to_all
+
+```{autodoc2-docstring} nexusLIMS.exporters.registry.ExporterRegistry.export_to_all
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
+
+````{py:function} get_registry() -> nexusLIMS.exporters.registry.ExporterRegistry
+:canonical: nexusLIMS.exporters.registry.get_registry
+
+```{autodoc2-docstring} nexusLIMS.exporters.registry.get_registry
+:parser: autodoc2_docstrings_parser
+```
+````

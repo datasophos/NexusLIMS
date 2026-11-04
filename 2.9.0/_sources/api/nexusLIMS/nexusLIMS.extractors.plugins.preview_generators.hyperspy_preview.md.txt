@@ -1,0 +1,142 @@
+# {py:mod}`nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview`
+
+```{py:module} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`HyperSpyPreviewGenerator <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`add_annotation_markers <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`sig_to_thumbnail <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.sig_to_thumbnail>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.sig_to_thumbnail
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`SPECTRUM_IMAGE_LOGO <nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} SPECTRUM_IMAGE_LOGO
+:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.SPECTRUM_IMAGE_LOGO
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:function} add_annotation_markers(s)
+:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.add_annotation_markers
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} sig_to_thumbnail(s, out_path: pathlib.Path, dpi: int = 92)
+:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.sig_to_thumbnail
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.sig_to_thumbnail
+:parser: autodoc2_docstrings_parser
+```
+````
+
+`````{py:class} HyperSpyPreviewGenerator
+:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.name
+:value: >
+   'hyperspy_preview'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.name
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.priority
+:value: >
+   100
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.priority
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supported_extensions
+
+**Type:** typing.ClassVar
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supported_extensions
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.supports
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} generate(context: nexusLIMS.extractors.base.ExtractionContext, output_path: pathlib.Path) -> bool
+:canonical: nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.generate
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.hyperspy_preview.HyperSpyPreviewGenerator.generate
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````

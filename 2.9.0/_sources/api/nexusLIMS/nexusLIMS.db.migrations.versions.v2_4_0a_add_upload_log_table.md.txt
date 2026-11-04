@@ -1,0 +1,123 @@
+# {py:mod}`nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table`
+
+```{py:module} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table
+```
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`upgrade <nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.upgrade>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.upgrade
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`downgrade <nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.downgrade>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.downgrade
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Data
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`revision <nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.revision>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.revision
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`down_revision <nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.down_revision>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.down_revision
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`branch_labels <nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.branch_labels>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.branch_labels
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`depends_on <nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.depends_on>`
+  - ```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.depends_on
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:data} revision
+:canonical: nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.revision
+:value: >
+   'v2_4_0a'
+
+**Type:** str
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.revision
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} down_revision
+:canonical: nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.down_revision
+:value: >
+   'v1_4_3'
+
+**Type:** typing.Union[str, typing.Sequence[str], None]
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.down_revision
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} branch_labels
+:canonical: nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.branch_labels
+
+**Type:** typing.Union[str, typing.Sequence[str], None]
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.branch_labels
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:data} depends_on
+:canonical: nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.depends_on
+
+**Type:** typing.Union[str, typing.Sequence[str], None]
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.depends_on
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:function} upgrade() -> None
+:canonical: nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.upgrade
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.upgrade
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} downgrade() -> None
+:canonical: nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.downgrade
+
+```{autodoc2-docstring} nexusLIMS.db.migrations.versions.v2_4_0a_add_upload_log_table.downgrade
+:parser: autodoc2_docstrings_parser
+```
+````

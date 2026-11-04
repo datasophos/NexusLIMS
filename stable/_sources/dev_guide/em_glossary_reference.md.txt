@@ -281,7 +281,7 @@ If you need a term that doesn't exist in EM Glossary v2.0.0:
 | Energy | electronvolt | `"electron_volt"` or `"eV"` | X-ray energies and detector resolution |
 | Angle | degree | `"degree"` or `"deg"` | Stage tilt, detector angles |
 
-Pint automatically converts to the preferred unit during XML serialization, ensuring consistency across instruments and vendors.
+Extractors should explicitly convert quantities to their preferred units. XML serialization preserves each quantity's unit and formats it as a compact symbol; it does not apply the preferred-unit table automatically.
 
 ## Resources
 

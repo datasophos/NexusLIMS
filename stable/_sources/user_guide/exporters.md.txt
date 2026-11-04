@@ -346,4 +346,4 @@ The export framework provides:
 - Complete tracking and logging
 - Plugin-based extensibility
 
-Export destinations are configured via environment variables and automatically activated when credentials are provided. No additional setup required beyond configuration.
+Configure export destinations in the selected configuration file or through environment variables. Destinations are activated when their required credentials are provided.

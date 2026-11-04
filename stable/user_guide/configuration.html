@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Configuration &#8212; NexusLIMS 2.8.0 documentation</title>
+    <title>Configuration &#8212; NexusLIMS 2.9.0 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=69ff2ef9"></script>
+    <script src="../_static/documentation_options.js?v=182a64a0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.9.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,12 +61,12 @@
     <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Command-Line Interface Reference" href="cli_reference.html" />
+    <link rel="next" title="Configuration Settings" href="configuration_settings.html" />
     <link rel="prev" title="Getting Started" href="getting_started.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.8.0" />
-    <meta name="docbuild:last-update" content="Jul, 29, 2026"/>
+  <meta name="docsearch:version" content="2.9.0" />
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.8.0 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.8.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.9.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.9.0 documentation - Home"/>
   
   
 </a></div>
@@ -183,13 +183,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
   </a>
@@ -198,27 +191,17 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../frontend_guide.html">
-    Frontend Guide
+    Frontend guide
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -322,13 +305,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
   </a>
@@ -337,7 +313,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../frontend_guide.html">
-    Frontend Guide
+    Frontend guide
   </a>
 </li>
 
@@ -412,6 +388,9 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_settings.html">Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_example.html">Configuration TOML Reference Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration_guide.html">Migration Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cli_reference.html">Command-Line Interface Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument_manager.html">Instrument Management</a></li>
@@ -483,28 +462,86 @@
                   
   <section id="configuration">
 <span id="id1"></span><h1>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h1>
-<p>This guide provides comprehensive information about configuring NexusLIMS through environment variables. All configuration is managed through the centralized <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code> module, which uses <a class="reference external" href="https://docs.pydantic.dev/latest/concepts/pydantic_settings/">Pydantic Settings</a> for validation and type safety.</p>
+<p>This guide provides comprehensive information about configuring NexusLIMS. Configuration is possible through a few methods.
+The easiest is to use a <a class="reference internal" href="#configuration-files">configuration file</a>, though you can also use process-level environment variables.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.9.0: </span>Prior to 2.9.0, NexusLIMS relied on a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file for configuration that was required to be present in the working directory
+of the process running the <code class="docutils literal notranslate"><span class="pre">nexuslims</span></code> command. In versions 2.9.0 and later, a persistent configuration file is used instead,
+so the settings used are consistent regardless of where the command is invoked.</p>
+</div>
 <section id="configuration-files">
-<h2>Configuration Files<a class="headerlink" href="#configuration-files" title="Link to this heading">#</a></h2>
-<p>NexusLIMS loads configuration from environment variables and optionally from a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file in the same folder from which you run any NexusLIMS commands.</p>
+<span id="id2"></span><h2>Configuration Files<a class="headerlink" href="#configuration-files" title="Link to this heading">#</a></h2>
+<p>NexusLIMS looks for its configuration file first at <code class="docutils literal notranslate"><span class="pre">~/.config/nexuslims/config.toml</span></code> (user-level), followed by <code class="docutils literal notranslate"><span class="pre">/etc/nexuslims/config.toml</span></code> (system-level), where <code class="docutils literal notranslate"><span class="pre">~</span></code> represents the home directory of the user account used to run NexusLIMS. You can set the <code class="docutils literal notranslate"><span class="pre">NX_CONFIG_FILE</span></code> environment variable to select another TOML file or an older style <code class="docutils literal notranslate"><span class="pre">.env</span></code> file (if you have a configuration from a version before 2.9.0). Environment variables set for the process will override values provided in the config file. If the selected file does not exist, NexusLIMS will use environment variables and built-in defaults where possible, though the required variables still need to be supplied.</p>
+<p>NexusLIMS selects one configuration file in this order:</p>
+<ol class="arabic simple">
+<li><p>The absolute path in <code class="docutils literal notranslate"><span class="pre">NX_CONFIG_FILE</span></code>, if set, even if that file does not exist.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">~/.config/nexuslims/config.toml</span></code>, if it exists.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/nexuslims/config.toml</span></code>, if it exists.</p></li>
+</ol>
+<p>If neither default file exists and <code class="docutils literal notranslate"><span class="pre">NX_CONFIG_FILE</span></code> is unset, NexusLIMS uses the user path <code class="docutils literal notranslate"><span class="pre">~/.config/nexuslims/config.toml</span></code> as the location for a new configuration file. You can use <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">edit</span></code> to create a new configuration file or edit an existing one.</p>
+<p>See the <a class="reference internal" href="configuration_example.html#configuration-example"><span class="std std-ref">complete TOML reference example</span></a> for a copyable configuration showing all supported settings.</p>
+<p>The data directories and database file must exist before settings are validated. You should use absolute paths for all path settings so they resolve consistently. For a service or scheduled job (which often run from cron as a different user), you should explicitly set <code class="docutils literal notranslate"><span class="pre">NX_CONFIG_FILE</span></code> to the absolute path of the config file and ensure the service account can read it.</p>
+<section id="migrating-older-configuration-files">
+<h3>Migrating older configuration files<a class="headerlink" href="#migrating-older-configuration-files" title="Link to this heading">#</a></h3>
+<p>To migrate an existing working-directory <code class="docutils literal notranslate"><span class="pre">.env</span></code> (from versions of NexusLIMS prior to 2.9.0), export it using the <code class="docutils literal notranslate"><span class="pre">NX_CONFIG_FILE</span></code>
+environment variable, then import the resulting JSON into the default TOML location. Assuming you have already upgraded to 2.9.0
+(or later), you can run the following from the directory containing your <code class="docutils literal notranslate"><span class="pre">.env</span></code> to do this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">backup</span><span class="o">=</span><span class="k">$(</span>mktemp<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">TMPDIR</span><span class="k">:-</span><span class="p">/tmp</span><span class="si">}</span><span class="s2">/nexuslims-config.XXXXXX&quot;</span><span class="k">)</span>
+<span class="nv">NX_CONFIG_FILE</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PWD</span><span class="s2">/.env&quot;</span><span class="w"> </span>nexuslims<span class="w"> </span>config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$backup</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">&amp;&amp;</span>
+env<span class="w"> </span>-u<span class="w"> </span>NX_CONFIG_FILE<span class="w"> </span>nexuslims<span class="w"> </span>config<span class="w"> </span>load<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$backup</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--config-path<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$HOME</span><span class="s2">/.config/nexuslims/config.toml&quot;</span>
+</pre></div>
+</div>
+<p>This example writes to the user configuration path. If you would like to use a system config instead, copy the resulting file to <code class="docutils literal notranslate"><span class="pre">/etc/nexuslims/config.toml</span></code>. Please double check the resulting TOML matches what you expect and backup the original <code class="docutils literal notranslate"><span class="pre">.env</span></code> until you have verified the migration.</p>
+<p>Alternatively, you can keep using the old <code class="docutils literal notranslate"><span class="pre">.env</span></code> file by setting <code class="docutils literal notranslate"><span class="pre">NX_CONFIG_FILE</span></code> to its absolute path for every process, but it is recommended to upgrade to the new config format going forward. As of version 2.9.0, NexusLIMS will no longer automatically read the working directory for <code class="docutils literal notranslate"><span class="pre">.env</span></code>.</p>
+</section>
 </section>
 <section id="configuration-management">
-<span id="id2"></span><h2>Configuration Management<a class="headerlink" href="#configuration-management" title="Link to this heading">#</a></h2>
+<span id="id3"></span><h2>Configuration Management<a class="headerlink" href="#configuration-management" title="Link to this heading">#</a></h2>
 <p>NexusLIMS provides both CLI tools and an interactive terminal UI to help you manage, debug, and migrate your configurations between environments.</p>
+<section id="inspecting-configuration-selection">
+<h3>Inspecting configuration selection<a class="headerlink" href="#inspecting-configuration-selection" title="Link to this heading">#</a></h3>
+<p>Most NexusLIMS CLI commands will print what configuration file is active. For more context, you can use the
+<code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">status</span></code> command to print a complete report, including the path to the active configuration file, what user and system candidates configuration files are present on your system, what user the <code class="docutils literal notranslate"><span class="pre">nexuslims</span></code> process is running as, and the names of any environment variables that are currently overriding configuration file settings. As an example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>config<span class="w"> </span>status
+</pre></div>
+</div>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Active configuration:
+  Selected file:   /etc/nexuslims/config.toml (system)
+  File status:     exists
+
+Candidate files:
+  User:            /home/alex/.config/nexuslims/config.toml  (missing)
+  System:          /etc/nexuslims/config.toml  (exists, selected)
+
+Running as user: alex
+Overrides:       none
+</pre></div>
+</div>
+<p>If you set <code class="docutils literal notranslate"><span class="pre">NX_CONFIG_FILE</span></code>, NexusLIMS uses that path even if the file is
+missing. It will not fall back to the user or system file.</p>
+<p>Depending on your configuration, NexusLIMS may run as a service under a different user account and
+have different settings from your terminal. To check what the service sees, run the <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">status</span></code> command as the
+service user with the same environment variables. The <em>Overrides</em> section lists the
+names of settings provided through environment variables, without their values.</p>
+</section>
 <section id="interactive-configuration-editor-tui">
 <h3>Interactive Configuration Editor (TUI)<a class="headerlink" href="#interactive-configuration-editor-tui" title="Link to this heading">#</a></h3>
-<p>The <strong>NexusLIMS Configuration Editor</strong> provides a user-friendly terminal interface for editing your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file:</p>
+<p>The <strong>NexusLIMS Configuration Editor</strong> provides a user-friendly terminal interface for editing your configuration file:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Launch the interactive configurator</span>
 nexuslims<span class="w"> </span>config<span class="w"> </span>edit
 
-<span class="c1"># Edit a specific .env file</span>
-nexuslims<span class="w"> </span>config<span class="w"> </span>edit<span class="w"> </span>--env-path<span class="w"> </span>/path/to/.env
+<span class="c1"># Edit a specific configuration file</span>
+nexuslims<span class="w"> </span>config<span class="w"> </span>edit<span class="w"> </span>--config-path<span class="w"> </span>/path/to/config.toml
 </pre></div>
 </div>
+<p>The editor shows the selected configuration file and waits for Enter before opening.
+<code class="docutils literal notranslate"><span class="pre">--config-path</span></code> (or its alias <code class="docutils literal notranslate"><span class="pre">--env-path</span></code>) opens a specific file and warns if it is not active.
+The editor requires an interactive terminal.</p>
 <p>The configurator features:</p>
 <ul class="simple">
 <li><p><strong>Tabbed Interface</strong>: Organized into logical sections (Core Paths, CDCS, File Processing, etc.)</p></li>
-<li><p><strong>Pre-populated Fields</strong>: Loads existing <code class="docutils literal notranslate"><span class="pre">.env</span></code> values automatically</p></li>
+<li><p><strong>Pre-populated Fields</strong>: Loads existing configuration values automatically</p></li>
 <li><p><strong>Real-time Validation</strong>: Catches errors before saving</p></li>
 <li><p><strong>Context-sensitive Help</strong>: Press <strong>F1</strong> on any field for detailed documentation</p></li>
 <li><p><strong>Dynamic NEMO Management</strong>: Add/remove multiple NEMO harvester instances</p></li>
@@ -567,99 +604,44 @@ and fill out each harvester’s configuration in a logical grouping:</p>
 </section>
 <section id="dumping-configuration">
 <h3>Dumping Configuration<a class="headerlink" href="#dumping-configuration" title="Link to this heading">#</a></h3>
-<p>Use <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">dump</span></code> to export your current configuration to a JSON file:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dump to default file (nexuslims_config.json)</span>
-nexuslims<span class="w"> </span>config<span class="w"> </span>dump
-
-<span class="c1"># Dump to specific file</span>
-nexuslims<span class="w"> </span>config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>/path/to/my-config.json
-</pre></div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.9.0: </span>With the changes to configuration management in 2.9.0, the dump/load functionality is
+less relevant, and it is recommended to instead just copy your <code class="docutils literal notranslate"><span class="pre">config.toml</span></code> file if you
+want to migrate configurations. These legacy commands are documented here, and may be
+removed in a future version.</p>
 </div>
-<p>The dumped configuration includes:</p>
-<ul class="simple">
-<li><p>All environment variables (from both environment and <code class="docutils literal notranslate"><span class="pre">.env</span></code> file)</p></li>
-<li><p>Parsed NEMO harvester configurations</p></li>
-<li><p>Email configuration (if configured)</p></li>
-<li><p>Computed defaults for optional settings</p></li>
-</ul>
-<div class="admonition danger">
-<p class="admonition-title">Danger</p>
-<p><strong>Security Warning</strong>: The dumped JSON file contains <strong>live credentials</strong> (API tokens, passwords, certificates). Handle it with the same care as your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file. Never commit it to version control or share it publicly.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">dump</span></code> command can be used to export the current settings as
+JSON, which can be useful for importing/exporting configs from one machine to another.
+You can use the <code class="docutils literal notranslate"><span class="pre">--output</span></code> argument to send the output to a file rather than printing
+to the console.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The output contains credentials, so you should keep it private. An existing output file will
+overwritten without prompting.</p>
 </div>
-<p>Example output:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;NX_DATA_PATH&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/var/nexuslims/data&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_INSTRUMENT_DATA_PATH&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/mnt/nexus_instruments&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_DB_PATH&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/var/nexuslims/data/nexuslims.db&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_CDCS_URL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://nexuslims.example.com&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_CDCS_TOKEN&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;live-secret-token-here&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;nemo_harvesters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;address&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://nemo.example.com/api/&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;live-secret-token-here&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;tz&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;email_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;smtp_host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;smtp.gmail.com&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;smtp_port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">587</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;smtp_password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;live-password-here&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;sender&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nexuslims@example.com&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;recipients&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;admin@example.com&quot;</span><span class="p">]</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p><strong>Use cases for config dumps:</strong></p>
-<ul class="simple">
-<li><p><strong>Backup</strong>: Create a complete snapshot of a working configuration</p></li>
-<li><p><strong>Migration</strong>: Transfer configuration to a new server (see Loading Configuration below)</p></li>
-<li><p><strong>Comparison</strong>: Diff configs between environments to identify differences</p></li>
-<li><p><strong>Disaster recovery</strong>: Quick restoration of configuration after system failure</p></li>
-</ul>
 </section>
 <section id="loading-configuration">
 <h3>Loading Configuration<a class="headerlink" href="#loading-configuration" title="Link to this heading">#</a></h3>
-<p>Use <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">load</span></code> to convert a dumped JSON config back into a <code class="docutils literal notranslate"><span class="pre">.env</span></code> file:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load config (creates/overwrites .env in current directory)</span>
-nexuslims<span class="w"> </span>config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json
-
-<span class="c1"># Load to specific .env file</span>
-nexuslims<span class="w"> </span>config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json<span class="w"> </span>--env-path<span class="w"> </span>/path/to/.env
-
-<span class="c1"># Skip confirmation prompt (useful for automation)</span>
-nexuslims<span class="w"> </span>config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json<span class="w"> </span>--force
-</pre></div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 2.9.0: </span>With the changes to configuration management in 2.9.0, the dump/load functionality is
+less relevant, and it is recommended to instead just copy your <code class="docutils literal notranslate"><span class="pre">config.toml</span></code> file if you
+want to migrate configurations. These legacy commands are documented here, and may be
+removed in a future version.</p>
 </div>
-<p><strong>Safety features:</strong></p>
-<ul class="simple">
-<li><p><strong>Backup</strong>: If <code class="docutils literal notranslate"><span class="pre">.env</span></code> exists, it’s automatically backed up to <code class="docutils literal notranslate"><span class="pre">.env.bak.YYYYMMDD-HHMMSS</span></code> before overwriting</p></li>
-<li><p><strong>Confirmation</strong>: Prompts for confirmation before overwriting (unless <code class="docutils literal notranslate"><span class="pre">--force</span></code> is used)</p></li>
-<li><p><strong>Flattening</strong>: Structured config (nested harvesters, email config) is converted back to flat environment variables</p></li>
-</ul>
-<p><strong>Migration workflow example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># On source server</span>
-nexuslims<span class="w"> </span>config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>production-config.json
-
-<span class="c1"># Securely transfer the file to new server (contains live credentials!)</span>
-scp<span class="w"> </span>production-config.json<span class="w"> </span>user@newserver:/path/to/
-
-<span class="c1"># On destination server</span>
-nexuslims<span class="w"> </span>config<span class="w"> </span>load<span class="w"> </span>production-config.json
-
-<span class="c1"># Clean up the dump file (it contains secrets)</span>
-rm<span class="w"> </span>production-config.json
-</pre></div>
-</div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">load</span> <span class="pre">/path/to/config.json</span></code> to write a dumped configuration
+to the selected file. If the file already exists, NexusLIMS asks for confirmation
+and creates a backup before replacing it. Use <code class="docutils literal notranslate"><span class="pre">--config-path</span></code> to choose another
+file, or <code class="docutils literal notranslate"><span class="pre">--force</span></code> to skip confirmation.</p>
 </section>
 <section id="configuration-in-logs">
 <h3>Configuration in Logs<a class="headerlink" href="#configuration-in-logs" title="Link to this heading">#</a></h3>
 <p>When <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code> starts with a verbosity of <code class="docutils literal notranslate"><span class="pre">-v</span></code> or higher,
 it logs a sanitized view of the loaded configuration to help with debugging.
-The log output is sanitized, ensuring no sensitive environment variables
-are exposed in logs.</p>
+Known secrets such as tokens, passwords, and certificate contents are redacted.
+Other settings, including identifiers and paths, can still be present; handle logs
+accordingly.</p>
 <p>Example log output:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">INFO</span> <span class="o">-</span> <span class="n">Loaded</span> <span class="n">configuration</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">INFO</span> <span class="o">-</span> <span class="n">Effective</span> <span class="n">configuration</span><span class="p">:</span>
 <span class="n">INFO</span> <span class="o">-</span> <span class="p">{</span>
 <span class="n">INFO</span> <span class="o">-</span>   <span class="s2">&quot;NX_DATA_PATH&quot;</span><span class="p">:</span> <span class="s2">&quot;/var/nexuslims/data&quot;</span><span class="p">,</span>
 <span class="n">INFO</span> <span class="o">-</span>   <span class="s2">&quot;NX_CDCS_TOKEN&quot;</span><span class="p">:</span> <span class="s2">&quot;***&quot;</span><span class="p">,</span>
@@ -672,801 +654,18 @@ are exposed in logs.</p>
 <p>This is particularly useful when:</p>
 <ul class="simple">
 <li><p>Troubleshooting why a specific setting isn’t taking effect</p></li>
-<li><p>Verifying that <code class="docutils literal notranslate"><span class="pre">.env</span></code> changes were picked up</p></li>
+<li><p>Verifying that configuration changes were picked up</p></li>
 <li><p>Confirming which NEMO instances are configured</p></li>
 <li><p>Checking computed defaults for optional settings</p></li>
 </ul>
 </section>
 </section>
-<section id="required-configuration">
-<h2>Required Configuration<a class="headerlink" href="#required-configuration" title="Link to this heading">#</a></h2>
-<p>These variables <strong>must</strong> be configured for NexusLIMS to function.</p>
-<section id="file-system-paths">
-<h3>File System Paths<a class="headerlink" href="#file-system-paths" title="Link to this heading">#</a></h3>
-<section id="nx-instrument-data-path">
-<span id="config-instrument-data-path"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code><a class="headerlink" href="#nx-instrument-data-path" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> typing.Annotated[pathlib.Path, PathType(path_type=’dir’)]</p>
-<p class="config-field-info"><strong>Required:</strong> <span class="config-required">Yes</span></p>
-<p>The root path to the centralized instrument data file store — typically a network share or mounted volume containing subdirectories for each instrument.</p>
-<p>IMPORTANT: This path should be mounted read-only to ensure data preservation. NexusLIMS will never write to this location.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">filestore_path</span></code> column in the NexusLIMS instruments database stores paths relative to this root. For example, if an instrument has <code class="docutils literal notranslate"><span class="pre">filestore_path='FEI_Titan/data'</span></code> and this value is <code class="docutils literal notranslate"><span class="pre">/mnt/instrument_data</span></code>, NexusLIMS searches under <code class="docutils literal notranslate"><span class="pre">/mnt/instrument_data/FEI_Titan/data</span></code>.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_INSTRUMENT_DATA_PATH</span><span class="o">=</span>/mnt/nexus_instruments
-</pre></div>
-</div>
-</section>
-<section id="nx-data-path">
-<span id="config-data-path"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code><a class="headerlink" href="#nx-data-path" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> typing.Annotated[pathlib.Path, PathType(path_type=’dir’)]</p>
-<p class="config-field-info"><strong>Required:</strong> <span class="config-required">Yes</span></p>
-<p>A writable path that mirrors the directory structure of <code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code>. NexusLIMS writes extracted metadata files and generated preview images here, alongside the original data.</p>
-<p>This path must be accessible to the NexusLIMS CDCS frontend instance so it can serve preview images and metadata files to users browsing records. Configure your CDCS deployment to mount or serve files from this location.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_DATA_PATH</span><span class="o">=</span>/var/nexuslims/data
-</pre></div>
-</div>
-</section>
-<section id="nx-db-path">
-<span id="config-db-path"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code><a class="headerlink" href="#nx-db-path" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> typing.Annotated[pathlib.Path, PathType(path_type=’file’)]</p>
-<p class="config-field-info"><strong>Required:</strong> <span class="config-required">Yes</span></p>
-<p>The full filesystem path to the NexusLIMS SQLite database file.</p>
-<p>Must be writable by the NexusLIMS process. The database is created automatically on first run of <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span> <span class="pre">init</span></code>. Recommended location: within <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code> for co-location with other data.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_DB_PATH</span><span class="o">=</span>/var/nexuslims/data/nexuslims.db
-</pre></div>
-</div>
-</section>
-</section>
-<section id="cdcs-integration">
-<h3>CDCS Integration<a class="headerlink" href="#cdcs-integration" title="Link to this heading">#</a></h3>
-<section id="nx-cdcs-url">
-<span id="config-cdcs-url"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code><a class="headerlink" href="#nx-cdcs-url" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">AnyHttpUrl</span></code></p>
-<p class="config-field-info"><strong>Required:</strong> <span class="config-required">Yes</span></p>
-<p>The root URL of the NexusLIMS CDCS frontend instance. All record uploads are sent here using <code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code>.</p>
-<p>Include the trailing slash: <code class="docutils literal notranslate"><span class="pre">https://nexuslims.example.com/</span></code></p>
-<p>This is the same URL users visit to browse experiment records. NexusLIMS POSTs new XML records to the CDCS REST API at this address.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CDCS_URL</span><span class="o">=</span>https://nexuslims.example.com
-</pre></div>
-</div>
-</section>
-<section id="nx-cdcs-token">
-<span id="config-cdcs-token"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code><a class="headerlink" href="#nx-cdcs-token" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code></p>
-<p class="config-field-info"><strong>Required:</strong> <span class="config-required">Yes</span></p>
-<p>The API authentication token for the NexusLIMS CDCS frontend. Used for all record upload requests.</p>
-<p>To obtain: log in to your CDCS instance as an administrator, navigate to the admin panel, and find or create an API token for the NexusLIMS service account. Alternatively, use the CDCS REST API token endpoint.</p>
-<p>Keep this value secret — anyone with this token can upload records to your CDCS instance.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CDCS_TOKEN</span><span class="o">=</span>your-api-token-here
-</pre></div>
-</div>
-</section>
-<section id="nx-cdcs-user-owned-records">
-<span id="config-cdcs-user-owned-records"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS</span></code><a class="headerlink" href="#nx-cdcs-user-owned-records" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-<p>When enabled, NexusLIMS will:</p>
-<p>1. Fetch the session user’s details (username, email) from the NEMO reservation or usage event.</p>
-<p>2. Search the CDCS user list for a matching account (by username first, then email).</p>
-<p>3. If no account exists, create one with a random password — the account is intended for SSO/LDAP login only; the generated password is never shared.</p>
-<p>4. Assign ownership of the uploaded record to that CDCS user.</p>
-<p><strong>Requirements:</strong> <code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code> must belong to a superuser account. If user lookup or creation fails for any reason, the record is still uploaded as admin-owned and a warning is logged — the export is never blocked by a user management failure.</p>
-<p>Default: <code class="docutils literal notranslate"><span class="pre">false</span></code> (records are owned by the service account).</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CDCS_USER_OWNED_RECORDS</span><span class="o">=</span><span class="nb">true</span>
-</pre></div>
-</div>
-</section>
-<section id="nx-cdcs-assign-to-public-workspace">
-<span id="config-cdcs-assign-workspace"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE</span></code><a class="headerlink" href="#nx-cdcs-assign-to-public-workspace" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">true</span></code></p>
-<p>Controls whether uploaded records are assigned to the CDCS global public workspace after upload.</p>
-<p>When <code class="docutils literal notranslate"><span class="pre">true</span></code> (default), NexusLIMS calls <code class="docutils literal notranslate"><span class="pre">rest/data/{id}/assign/{workspace_id}/</span></code> after each upload.</p>
-<p>Set to <code class="docutils literal notranslate"><span class="pre">false</span></code> to leave records in the uploading user’s private workspace. This is only useful in combination with <code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS=true</span></code>; without user ownership enabled, disabling workspace assignment would make records inaccessible to most users.</p>
-<p>Both this setting and <code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS</span></code> are applied independently — a record can be user-owned AND in the public workspace at the same time.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE</span><span class="o">=</span><span class="nb">true</span>
-</pre></div>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Store API tokens securely. Use environment variables or a secure secrets management system rather than committing tokens to version control.</p>
-</div>
-</section>
-</section>
-<section id="nemo-integration">
-<h3>NEMO Integration<a class="headerlink" href="#nemo-integration" title="Link to this heading">#</a></h3>
-<p>NexusLIMS supports multiple NEMO instances by using numbered environment variable pairs. Each NEMO instance requires an address and token.</p>
-<section id="nx-nemo-address-n">
-<span id="config-nemo-address"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_NEMO_ADDRESS_N</span></code><a class="headerlink" href="#nx-nemo-address-n" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">AnyHttpUrl</span></code></p>
-<p class="config-field-info"><strong>Required:</strong> <span class="config-required">Yes</span></p>
-<p>The full URL to the NEMO API root endpoint, including the trailing slash. For example: <code class="docutils literal notranslate"><span class="pre">https://nemo.yourinstitution.edu/api/</span></code>. This must point to the API root, not the NEMO web interface itself.</p>
-<p>You can verify the address is correct by navigating to it in a browser — a valid NEMO API root returns a JSON object listing available endpoints.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_NEMO_ADDRESS_1</span><span class="o">=</span>https://nemo1.example.com/api/
-<span class="nv">NX_NEMO_ADDRESS_2</span><span class="o">=</span>https://nemo2.example.com/api/
-</pre></div>
-</div>
-</section>
-<section id="nx-nemo-token-n">
-<span id="config-nemo-token"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_NEMO_TOKEN_N</span></code><a class="headerlink" href="#nx-nemo-token-n" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code></p>
-<p class="config-field-info"><strong>Required:</strong> <span class="config-required">Yes</span></p>
-<p>The API authentication token for this NEMO server instance. To obtain: log in to NEMO as an administrator, navigate to the ‘Detailed administration’ page (typically at <code class="docutils literal notranslate"><span class="pre">/admin/authtoken/token/</span></code>), and locate or create a token for the NexusLIMS service account. The token is a 40-character hex string.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_NEMO_TOKEN_1</span><span class="o">=</span>abc123def456...
-<span class="nv">NX_NEMO_TOKEN_2</span><span class="o">=</span>xyz789uvw012...
-</pre></div>
-</div>
-</section>
-</section>
-</section>
-<section id="optional-configuration">
-<h2>Optional Configuration<a class="headerlink" href="#optional-configuration" title="Link to this heading">#</a></h2>
-<section id="elabftw-integration">
-<h3>eLabFTW Integration<a class="headerlink" href="#elabftw-integration" title="Link to this heading">#</a></h3>
-<p id="config-elabftw">NexusLIMS can optionally export records to <a class="reference external" href="https://www.elabftw.net/">eLabFTW</a>, an open-source electronic lab notebook. Each NexusLIMS session creates one eLabFTW experiment with a structured summary and the full XML record attached.</p>
-<section id="nx-elabftw-url">
-<span id="config-elabftw-url"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_URL</span></code><a class="headerlink" href="#nx-elabftw-url" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">AnyHttpUrl</span></code> | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>The root URL of your eLabFTW instance. If not configured, eLabFTW export will be disabled.</p>
-<p>Should NOT include <code class="docutils literal notranslate"><span class="pre">/api/</span></code> or any path — just the domain:
-<code class="docutils literal notranslate"><span class="pre">https://elabftw.example.com</span></code>
-<code class="docutils literal notranslate"><span class="pre">http://localhost:3148</span></code></p>
-<p>NexusLIMS appends the appropriate API paths automatically.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_ELABFTW_URL</span><span class="o">=</span>https://elabftw.example.com
-</pre></div>
-</div>
-</section>
-<section id="nx-elabftw-api-key">
-<span id="config-elabftw-api-key"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_API_KEY</span></code><a class="headerlink" href="#nx-elabftw-api-key" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>API key for authenticating to the eLabFTW API. If not configured, eLabFTW export will be disabled.</p>
-<p>To obtain: log in to your eLabFTW instance, go to user settings, and find the ‘API keys’ section. Create a new key for NexusLIMS.</p>
-<p>Format: <code class="docutils literal notranslate"><span class="pre">{id}-{key}</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">1-abc123...</span></code>). The key is typically a long alphanumeric string.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_ELABFTW_API_KEY</span><span class="o">=</span><span class="m">1</span>-abcdef0123456789...
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>eLabFTW API keys have the format <code class="docutils literal notranslate"><span class="pre">{id}-{key}</span></code> where the key portion is 84 hexadecimal characters.</p>
-</div>
-</section>
-<section id="nx-elabftw-experiment-category">
-<span id="config-elabftw-experiment-category"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_EXPERIMENT_CATEGORY</span></code><a class="headerlink" href="#nx-elabftw-experiment-category" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">int</span></code> | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>The default category ID for experiments created in eLabFTW. If not specified, eLabFTW uses its default category.</p>
-<p>To find category IDs: log in to eLabFTW as an administrator, navigate to the admin panel, and look under ‘Experiment categories’. The ID is shown next to each category name.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_ELABFTW_EXPERIMENT_CATEGORY</span><span class="o">=</span><span class="m">1</span>
-</pre></div>
-</div>
-</section>
-<section id="nx-elabftw-experiment-status">
-<span id="config-elabftw-experiment-status"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_EXPERIMENT_STATUS</span></code><a class="headerlink" href="#nx-elabftw-experiment-status" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">int</span></code> | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>The default status ID for experiments created in eLabFTW. If not specified, eLabFTW uses its default status.</p>
-<p>To find status IDs: log in to eLabFTW as an administrator, navigate to the admin panel, and look under ‘Experiment statuses’. The ID is shown next to each status name.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_ELABFTW_EXPERIMENT_STATUS</span><span class="o">=</span><span class="m">2</span>
-</pre></div>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>When eLabFTW export is enabled, experiments are created with:</p>
+<section id="configuration-reference">
+<h2>Configuration Reference<a class="headerlink" href="#configuration-reference" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><strong>Title:</strong> “NexusLIMS Experiment - {session_id}”</p></li>
-<li><p><strong>Body:</strong> HTML summary with session details and link to CDCS record (if available)</p></li>
-<li><p><strong>Tags:</strong> NexusLIMS, instrument name, username</p></li>
-<li><p><strong>Metadata:</strong> Structured extra_fields including session times, instrument, user, and CDCS cross-link</p></li>
-<li><p><strong>Attachment:</strong> Full XML record file</p></li>
+<li><p><a class="reference internal" href="configuration_example.html#configuration-example"><span class="std std-ref">Example configuration</span></a>: a complete TOML file to copy and adapt.</p></li>
+<li><p><a class="reference internal" href="configuration_settings.html#configuration-settings"><span class="std std-ref">Configuration settings</span></a>: descriptions, defaults, and requirements for individual settings.</p></li>
 </ul>
-</div>
-</section>
-</section>
-<section id="labarchives-integration">
-<span id="config-labarchives"></span><h3>LabArchives Integration<a class="headerlink" href="#labarchives-integration" title="Link to this heading">#</a></h3>
-<p>NexusLIMS can optionally export records to <a class="reference external" href="https://www.labarchives.com/">LabArchives</a>, a
-commercial electronic lab notebook system. Each NexusLIMS session creates one notebook page
-with an HTML session summary and the full XML record attached as a file.</p>
-<p>LabArchives authentication uses HMAC-SHA-512 signed requests. You need four credentials:
-an Access Key ID (provided by LabArchives), an Access Password (provided by LabArchives),
-a User ID (uid), and the instance URL (most likely can stay as the default unless you are
-in a different region).</p>
-<section id="nx-labarchives-url">
-<span id="config-labarchives-url"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_URL</span></code><a class="headerlink" href="#nx-labarchives-url" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">AnyHttpUrl</span></code> | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">'https://api.labarchives.com/api'</span></code></p>
-<p>The base URL for LabArchives API calls, including the <code class="docutils literal notranslate"><span class="pre">/api</span></code> path segment. For the standard cloud service this is <code class="docutils literal notranslate"><span class="pre">https://api.labarchives.com/api</span></code>. For self-hosted instances use <code class="docutils literal notranslate"><span class="pre">https://your-instance.example.com/api</span></code>.</p>
-<p>All API requests are sent to <code class="docutils literal notranslate"><span class="pre">{NX_LABARCHIVES_URL}/{class}/{method}</span></code>, so the <code class="docutils literal notranslate"><span class="pre">/api</span></code> suffix must be included here.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_LABARCHIVES_URL</span><span class="o">=</span>https://api.labarchives.com/api
-</pre></div>
-</div>
-</section>
-<section id="nx-labarchives-access-key-id">
-<span id="config-labarchives-access-key-id"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_KEY_ID</span></code><a class="headerlink" href="#nx-labarchives-access-key-id" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>The Access Key ID (akid) provided by LabArchives for your API integration. This is the public identifier used alongside <code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_PASSWORD</span></code> to sign API requests with HMAC-SHA-512.</p>
-<p>Obtain this from your LabArchives account under API settings. Both the Access Key ID and Access Password are required for LabArchives export to be enabled.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_LABARCHIVES_ACCESS_KEY_ID</span><span class="o">=</span>your-access-key-id-here
-</pre></div>
-</div>
-</section>
-<section id="nx-labarchives-access-password">
-<span id="config-labarchives-access-password"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_PASSWORD</span></code><a class="headerlink" href="#nx-labarchives-access-password" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>The access password provided by LabArchives for your API integration. This secret is used to generate HMAC-SHA-512 signatures that authenticate all API requests.</p>
-<p>Keep this value secret — it is equivalent to a password and allows full API access to the configured LabArchives account. Used together with <code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_KEY_ID</span></code>.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_LABARCHIVES_ACCESS_PASSWORD</span><span class="o">=</span>your-access-password-here
-</pre></div>
-</div>
-</section>
-<section id="nx-labarchives-user-id">
-<span id="config-labarchives-user-id"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_USER_ID</span></code><a class="headerlink" href="#nx-labarchives-user-id" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>The persistent user ID (uid) for the LabArchives account that will own uploaded notebook entries. This is obtained once via the LabArchives <code class="docutils literal notranslate"><span class="pre">user_access_info</span></code> API call.</p>
-<p>To get the uid: call the LabArchives API endpoint <code class="docutils literal notranslate"><span class="pre">users/user_access_info</span></code> with your login and token. The returned <code class="docutils literal notranslate"><span class="pre">uid</span></code> value is what you need here.</p>
-<p>This uid is stable and does not change, so you only need to retrieve it once.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_LABARCHIVES_USER_ID</span><span class="o">=</span>your-uid-here
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To obtain your UID, use the <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">labarchives-get-uid</span></code> command, or use
-the button on the LabArchives page of the <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span> <span class="pre">edit</span></code> application. You will need to sign in
-manually via the LabArchives web interface and generate a fresh <strong>Password Token for
-External Applications</strong> (valid for 1 hour only), which will be exchanged for your
-stable UID. This only has to be done once, as the
-returned <code class="docutils literal notranslate"><span class="pre">uid</span></code> value is stable and does not change over time.</p>
-</div>
-</section>
-<section id="nx-labarchives-notebook-id">
-<span id="config-labarchives-notebook-id"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_NOTEBOOK_ID</span></code><a class="headerlink" href="#nx-labarchives-notebook-id" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>The notebook ID (nbid) of the target LabArchives notebook where NexusLIMS records will be stored. When configured, NexusLIMS automatically creates a <code class="docutils literal notranslate"><span class="pre">NexusLIMS</span> <span class="pre">Records/{instrument}/</span></code> folder hierarchy within this notebook.</p>
-<p>If not set, records are uploaded to the user’s default Inbox.</p>
-<p>To find the nbid: open the notebook in LabArchives and check the URL — it typically appears as a parameter in the notebook URL.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_LABARCHIVES_NOTEBOOK_ID</span><span class="o">=</span><span class="m">12345</span><span class="w">  </span><span class="c1"># optional</span>
-</pre></div>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>When LabArchives export is enabled, the following structure is created automatically:</p>
-<ul class="simple">
-<li><p><strong>Notebook:</strong> The notebook specified by <code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_NOTEBOOK_ID</span></code> (or Inbox if unset)</p></li>
-<li><p><strong>Folder hierarchy:</strong> <code class="docutils literal notranslate"><span class="pre">NexusLIMS</span> <span class="pre">Records/{instrument_pid}/</span></code> (created automatically if missing)</p></li>
-<li><p><strong>Page:</strong> <code class="docutils literal notranslate"><span class="pre">{YYYY-MM-DD}</span> <span class="pre">—</span> <span class="pre">{session_id}</span></code> (one page per session)</p></li>
-<li><p><strong>Entry:</strong> HTML session summary with optional CDCS cross-link</p></li>
-<li><p><strong>Attachment:</strong> Full XML record file</p></li>
-</ul>
-</div>
-</section>
-</section>
-<section id="export-configuration">
-<h3>Export Configuration<a class="headerlink" href="#export-configuration" title="Link to this heading">#</a></h3>
-<section id="nx-export-strategy">
-<span id="config-export-strategy"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_EXPORT_STRATEGY</span></code><a class="headerlink" href="#nx-export-strategy" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> (one of <code class="docutils literal notranslate"><span class="pre">'all'</span></code>, <code class="docutils literal notranslate"><span class="pre">'first_success'</span></code>, <code class="docutils literal notranslate"><span class="pre">'best_effort'</span></code>)</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">'all'</span></code></p>
-<p>Controls behavior when exporting records to multiple destinations (e.g., both CDCS and eLabFTW are configured):</p>
-<p><code class="docutils literal notranslate"><span class="pre">all</span></code> (default, recommended): Every configured destination must accept the record. If any destination fails after the record is built, the session is marked <code class="docutils literal notranslate"><span class="pre">BUILT_NOT_EXPORTED</span></code>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">first_success</span></code>: Stop after the first destination that accepts the record. Useful if destinations are fallbacks for each other.</p>
-<p><code class="docutils literal notranslate"><span class="pre">best_effort</span></code>: Attempt all destinations; mark <code class="docutils literal notranslate"><span class="pre">COMPLETED</span></code> if at least one succeeds. Failed destinations are logged but do not trigger a retry.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_EXPORT_STRATEGY</span><span class="o">=</span>best_effort
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>See the <a class="reference internal" href="exporters.html#exporters"><span class="std std-ref">Export Destinations</span></a> page for a full description of how strategies interact with destination priorities and inter-destination dependencies (e.g. eLabFTW cross-linking to a CDCS record).</p>
-</div>
-</section>
-</section>
-<section id="file-handling">
-<h3>File Handling<a class="headerlink" href="#file-handling" title="Link to this heading">#</a></h3>
-<section id="nx-file-strategy">
-<span id="config-file-strategy"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_FILE_STRATEGY</span></code><a class="headerlink" href="#nx-file-strategy" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> (one of <code class="docutils literal notranslate"><span class="pre">'exclusive'</span></code>, <code class="docutils literal notranslate"><span class="pre">'inclusive'</span></code>)</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">'exclusive'</span></code></p>
-<p>Controls which files are included when searching for experiment data.</p>
-<p><code class="docutils literal notranslate"><span class="pre">exclusive</span></code> (default): Only files for which NexusLIMS has an explicit metadata extractor are included. This produces cleaner records but may miss ancillary files.</p>
-<p><code class="docutils literal notranslate"><span class="pre">inclusive</span></code>: All files within the session window are included. Files without a known extractor receive basic filesystem metadata only. Useful when you want a complete audit trail of every file created during an instrument session.</p>
-<p>See https://datasophos.github.io/NexusLIMS/stable/user_guide/extractors.html for the list of supported file formats and their extractors.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_FILE_STRATEGY</span><span class="o">=</span>inclusive
-</pre></div>
-</div>
-</section>
-<section id="nx-ignore-patterns">
-<span id="config-ignore-patterns"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_IGNORE_PATTERNS</span></code><a class="headerlink" href="#nx-ignore-patterns" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> list[<code class="docutils literal notranslate"><span class="pre">str</span></code>]</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">['*.mib',</span> <span class="pre">'*.db',</span> <span class="pre">'*.emi',</span> <span class="pre">'*.hdr']</span></code></p>
-<p>Filename glob patterns to exclude when scanning for experiment files. Patterns follow the same syntax as the ‘-name’ argument to GNU find (see https://manpages.org/find).</p>
-<p>This is stored in the config file as a JSON array string:
-<code class="docutils literal notranslate"><span class="pre">NX_IGNORE_PATTERNS='[&quot;*.mib&quot;,&quot;*.db&quot;,&quot;*.emi&quot;,&quot;*.hdr&quot;]'</span></code></p>
-<p>In the config editor, enter patterns as a comma-separated list.</p>
-<p>Common patterns to ignore:
-<code class="docutils literal notranslate"><span class="pre">*.mib</span></code>  — Merlin detector raw frames (very large)
-<code class="docutils literal notranslate"><span class="pre">*.db</span></code>   — SQLite lock/temp files
-<code class="docutils literal notranslate"><span class="pre">*.emi</span></code>  — FEI TIA sidecar files (paired with .ser via FEI EMI extractor)
-<code class="docutils literal notranslate"><span class="pre">*.hdr</span></code>  — header files paired with other data formats</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_IGNORE_PATTERNS</span><span class="o">=[</span><span class="s2">&quot;*.mib&quot;</span>,<span class="w"> </span><span class="s2">&quot;*.db&quot;</span>,<span class="w"> </span><span class="s2">&quot;*.emi&quot;</span>,<span class="w"> </span><span class="s2">&quot;*.tmp&quot;</span>,<span class="w"> </span><span class="s2">&quot;*~&quot;</span><span class="o">]</span>
-</pre></div>
-</div>
-</section>
-<section id="nx-file-delay-days">
-<span id="config-file-delay-days"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_FILE_DELAY_DAYS</span></code><a class="headerlink" href="#nx-file-delay-days" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">float</span></code></p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">2.0</span></code></p>
-<p>The maximum time (in days) to wait for instrument files to appear after a session ends before giving up.</p>
-<p>Background: On some systems, instrument data files are not immediately available on the network share after an experiment ends — they may be synced or transferred with a delay.</p>
-<p>When a session ends and no files are found, the record builder marks it <code class="docutils literal notranslate"><span class="pre">NO_FILES_FOUND</span></code> and retries on subsequent runs until this window expires.</p>
-<p>Example: With a value of 2, if a session ended Monday at 5 PM, the builder keeps retrying until Wednesday at 5 PM.</p>
-<p>Can be a fractional value (e.g., 0.5 for 12 hours). Must be &gt; 0.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_FILE_DELAY_DAYS</span><span class="o">=</span><span class="m">2</span>.5
-</pre></div>
-</div>
-</section>
-<section id="nx-clustering-sensitivity">
-<span id="config-clustering-sensitivity"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_CLUSTERING_SENSITIVITY</span></code><a class="headerlink" href="#nx-clustering-sensitivity" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">float</span></code></p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">1.0</span></code></p>
-<p>Controls how aggressively files are grouped into separate Acquisition Activities within a session record.</p>
-<p>NexusLIMS uses kernel density estimation (KDE) on file modification times to detect natural gaps in activity. This multiplier scales the KDE bandwidth.</p>
-<p>Higher values (e.g., <code class="docutils literal notranslate"><span class="pre">2.0</span></code>): more sensitive — smaller time gaps cause a split, producing more (smaller) activities.</p>
-<p>Lower values (e.g., <code class="docutils literal notranslate"><span class="pre">0.5</span></code>): less sensitive — only large gaps cause a split, producing fewer (larger) activities.</p>
-<p>Set to <code class="docutils literal notranslate"><span class="pre">0</span></code> to disable clustering and place all files into a single Acquisition Activity. Default is <code class="docutils literal notranslate"><span class="pre">1.0</span></code> (unmodified KDE bandwidth).</p>
-<p><strong>Examples:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># More sensitive - detects smaller time gaps as activity boundaries</span>
-<span class="nv">NX_CLUSTERING_SENSITIVITY</span><span class="o">=</span><span class="m">2</span>.0
-
-<span class="c1"># Less sensitive - only large time gaps create new activities</span>
-<span class="nv">NX_CLUSTERING_SENSITIVITY</span><span class="o">=</span><span class="m">0</span>.5
-
-<span class="c1"># Disable clustering - all files in one activity</span>
-<span class="nv">NX_CLUSTERING_SENSITIVITY</span><span class="o">=</span><span class="m">0</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="directory-paths">
-<h3>Directory Paths<a class="headerlink" href="#directory-paths" title="Link to this heading">#</a></h3>
-<section id="nx-log-path">
-<span id="config-log-path"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_LOG_PATH</span></code><a class="headerlink" href="#nx-log-path" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> typing.Annotated[pathlib.Path, PathType(path_type=’dir’)] | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>Directory for NexusLIMS application logs. If not specified, logs are written to <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH/logs/</span></code> by default.</p>
-<p>Within this directory, logs are organized by date:
-<code class="docutils literal notranslate"><span class="pre">YYYY/MM/DD/YYYYMMDD-HHMM.log</span></code></p>
-<p>The directory must be writable by the NexusLIMS process. Leave blank to use the default location within <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code>.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_LOG_PATH</span><span class="o">=</span>/var/log/nexuslims
-</pre></div>
-</div>
-</section>
-<section id="nx-records-path">
-<span id="config-records-path"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_RECORDS_PATH</span></code><a class="headerlink" href="#nx-records-path" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> typing.Annotated[pathlib.Path, PathType(path_type=’dir’)] | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>Directory where generated XML record files are stored before and after upload. If not specified, defaults to <code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH/records/</span></code>.</p>
-<p>After a record is successfully uploaded, the XML file is moved to an <code class="docutils literal notranslate"><span class="pre">'uploaded'</span></code> subdirectory within this path for archival.</p>
-<p>Failed records remain in the main directory for inspection. The directory must be writable by the NexusLIMS process.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_RECORDS_PATH</span><span class="o">=</span>/var/nexuslims/records
-</pre></div>
-</div>
-</section>
-<section id="nx-local-profiles-path">
-<span id="config-local-profiles-path"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_LOCAL_PROFILES_PATH</span></code><a class="headerlink" href="#nx-local-profiles-path" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> typing.Annotated[pathlib.Path, PathType(path_type=’dir’)] | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>Directory containing site-specific instrument profile Python modules. Profiles customize metadata extraction for instruments unique to your deployment without modifying the core NexusLIMS codebase.</p>
-<p>Each Python file in this directory should define one or more <code class="docutils literal notranslate"><span class="pre">InstrumentProfile</span></code> subclasses that are auto-discovered and loaded alongside built-in profiles.</p>
-<p>Use cases: adding static metadata fields, transforming extracted values, adding instrument-specific warnings, or overriding which extractor handles a particular instrument’s files.</p>
-<p>Leave blank if you only need the built-in profiles.</p>
-<p>See <a class="reference internal" href="../dev_guide/instrument_profiles.html#instrument-profiles"><span class="std std-ref">Instrument Profiles</span></a> for details on writing profile modules.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_LOCAL_PROFILES_PATH</span><span class="o">=</span>/etc/nexuslims/profiles
-</pre></div>
-</div>
-</section>
-</section>
-<section id="nemo-advanced-options">
-<h3>NEMO Advanced Options<a class="headerlink" href="#nemo-advanced-options" title="Link to this heading">#</a></h3>
-<section id="nx-nemo-strftime-fmt-n">
-<span id="config-nemo-strftime-fmt"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_NEMO_STRFTIME_FMT_N</span></code><a class="headerlink" href="#nx-nemo-strftime-fmt-n" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code></p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">'%Y-%m-%dT%H:%M:%S%z'</span></code></p>
-<p>The Python strftime format string used when sending datetime values to this NEMO API instance. The default <code class="docutils literal notranslate"><span class="pre">%Y-%m-%dT%H:%M:%S%z</span></code> is ISO 8601 and works with all standard NEMO installations.</p>
-<p>Only change this if your NEMO server has a non-standard date format configuration. See https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes for format codes.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_NEMO_STRFTIME_FMT_1</span><span class="o">=</span>%Y-%m-%d<span class="w"> </span>%H:%M:%S
-</pre></div>
-</div>
-</section>
-<section id="nx-nemo-strptime-fmt-n">
-<span id="config-nemo-strptime-fmt"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_NEMO_STRPTIME_FMT_N</span></code><a class="headerlink" href="#nx-nemo-strptime-fmt-n" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code></p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">'%Y-%m-%dT%H:%M:%S%z'</span></code></p>
-<p>The Python strptime format string used when parsing datetime values returned by this NEMO API instance. The default <code class="docutils literal notranslate"><span class="pre">%Y-%m-%dT%H:%M:%S%z</span></code> is ISO 8601 and works with all standard NEMO installations.</p>
-<p>Only change this if your NEMO server returns dates in a non-standard format. See https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes for format codes.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_NEMO_STRPTIME_FMT_1</span><span class="o">=</span>%Y-%m-%d<span class="w"> </span>%H:%M:%S
-</pre></div>
-</div>
-</section>
-<section id="nx-nemo-tz-n">
-<span id="config-nemo-tz"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_NEMO_TZ_N</span></code><a class="headerlink" href="#nx-nemo-tz-n" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>An IANA tz database timezone name (e.g., <code class="docutils literal notranslate"><span class="pre">America/Denver</span></code>, <code class="docutils literal notranslate"><span class="pre">Europe/Berlin</span></code>) to force onto datetime values received from this NEMO server. Only needed when your NEMO server returns reservation/usage event times without timezone information.</p>
-<p>Leave blank for NEMO servers that include timezone info in their API responses. See https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for valid timezone names.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_NEMO_TZ_1</span><span class="o">=</span>America/Denver
-<span class="nv">NX_NEMO_TZ_2</span><span class="o">=</span>America/New_York
-</pre></div>
-</div>
-</section>
-</section>
-<section id="ssl-tls-configuration">
-<h3>SSL/TLS Configuration<a class="headerlink" href="#ssl-tls-configuration" title="Link to this heading">#</a></h3>
-<section id="nx-cert-bundle-file">
-<span id="config-cert-bundle-file"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code><a class="headerlink" href="#nx-cert-bundle-file" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> typing.Annotated[pathlib.Path, PathType(path_type=’file’)] | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>Path to a custom SSL/TLS CA bundle file in PEM format. Use this when your CDCS or NEMO servers use certificates signed by a private or institutional CA not in the system trust store.</p>
-<p>Any certificates in this bundle are appended to the existing system CA certificates — they do not replace them. Provide the full absolute path to the <code class="docutils literal notranslate"><span class="pre">.pem</span></code> or <code class="docutils literal notranslate"><span class="pre">.crt</span></code> file.</p>
-<p>If both <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE</span></code> and <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code> are set, <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE</span></code> takes precedence.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CERT_BUNDLE_FILE</span><span class="o">=</span>/etc/ssl/certs/custom-ca-bundle.crt
-</pre></div>
-</div>
-</section>
-<section id="nx-cert-bundle">
-<span id="config-cert-bundle"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE</span></code><a class="headerlink" href="#nx-cert-bundle" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>The full text of a PEM-format CA certificate bundle, provided directly as a string rather than a file path. Certificate lines should be separated by ‘\n’ in the .env file, or just pasted into the config editor field.</p>
-<p>This is primarily useful in CI/CD pipelines or containerized deployments where injecting a certificate file is impractical but environment variables are easy to set as secrets.</p>
-<p>When defined, this value takes precedence over <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code>.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_CERT_BUNDLE</span><span class="o">=</span><span class="s2">&quot;-----BEGIN CERTIFICATE-----\nMIID...\n-----END CERTIFICATE-----&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="nx-disable-ssl-verify">
-<span id="config-disable-ssl-verify"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_DISABLE_SSL_VERIFY</span></code><a class="headerlink" href="#nx-disable-ssl-verify" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-<p>WARNING: Disables SSL certificate verification for ALL outgoing HTTPS requests, including connections to CDCS, NEMO, and eLabFTW.</p>
-<p>NEVER enable this in production. An attacker could intercept all communications including API tokens and uploaded records.</p>
-<p>Only appropriate for local development or testing with self-signed certificates when setting up a CA via <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code> is impractical. If you need this in production, configure <code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code> instead.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_DISABLE_SSL_VERIFY</span><span class="o">=</span><span class="nb">true</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="email-notifications">
-<h3>Email Notifications<a class="headerlink" href="#email-notifications" title="Link to this heading">#</a></h3>
-<p>Email notifications are optional but recommended for production deployments. They alert administrators when record building fails.</p>
-<section id="nx-email-smtp-host">
-<span id="config-email-smtp-host"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SMTP_HOST</span></code><a class="headerlink" href="#nx-email-smtp-host" title="Link to this heading">#</a></h4>
-<p><strong>Required for email:</strong> Yes</p>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code></p>
-<p class="config-field-info"><strong>Required:</strong> <span class="config-required">Yes</span></p>
-<p>The hostname or IP address of the SMTP server used to send error notification emails. For Gmail use <code class="docutils literal notranslate"><span class="pre">smtp.gmail.com</span></code>, for Outlook/Office365 use <code class="docutils literal notranslate"><span class="pre">smtp.office365.com</span></code>. For an on-premises mail relay this is typically a local hostname or IP address.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_EMAIL_SMTP_HOST</span><span class="o">=</span>smtp.gmail.com
-</pre></div>
-</div>
-</section>
-<section id="nx-email-smtp-port">
-<span id="config-email-smtp-port"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SMTP_PORT</span></code><a class="headerlink" href="#nx-email-smtp-port" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">int</span></code></p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">587</span></code></p>
-<p>The TCP port for the SMTP connection. Common values:
-<code class="docutils literal notranslate"><span class="pre">587</span></code> — STARTTLS (recommended, default)
-<code class="docutils literal notranslate"><span class="pre">465</span></code> — SMTPS / implicit TLS
-<code class="docutils literal notranslate"><span class="pre">25</span></code>  — unencrypted (not recommended)</p>
-<p>The default <code class="docutils literal notranslate"><span class="pre">587</span></code> works with most modern mail servers when Use TLS is enabled.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_EMAIL_SMTP_PORT</span><span class="o">=</span><span class="m">587</span>
-</pre></div>
-</div>
-</section>
-<section id="nx-email-smtp-username">
-<span id="config-email-smtp-username"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SMTP_USERNAME</span></code><a class="headerlink" href="#nx-email-smtp-username" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>The username for SMTP authentication. For Gmail this is your full email address. Leave blank if your SMTP relay does not require authentication (e.g., an internal relay that accepts connections from trusted hosts without credentials).</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_EMAIL_SMTP_USERNAME</span><span class="o">=</span>nexuslims@example.com
-</pre></div>
-</div>
-</section>
-<section id="nx-email-smtp-password">
-<span id="config-email-smtp-password"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SMTP_PASSWORD</span></code><a class="headerlink" href="#nx-email-smtp-password" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">str</span></code> | None</p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-<p>The password for SMTP authentication. For Gmail, use an App Password (not your account password) if 2-factor authentication is enabled. Leave blank if your SMTP relay does not require authentication.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_EMAIL_SMTP_PASSWORD</span><span class="o">=</span>app_specific_password
-</pre></div>
-</div>
-</section>
-<section id="nx-email-use-tls">
-<span id="config-email-use-tls"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_USE_TLS</span></code><a class="headerlink" href="#nx-email-use-tls" title="Link to this heading">#</a></h4>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
-<p class="config-field-info"><strong>Default:</strong> <code class="docutils literal notranslate"><span class="pre">true</span></code></p>
-<p>Whether to use TLS encryption for the SMTP connection. When enabled (the default), NexusLIMS uses STARTTLS on the configured port (typically 587). Disable only when connecting to a plaintext SMTP relay on port 25.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_EMAIL_USE_TLS</span><span class="o">=</span><span class="nb">true</span>
-</pre></div>
-</div>
-</section>
-<section id="nx-email-sender">
-<span id="config-email-sender"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SENDER</span></code><a class="headerlink" href="#nx-email-sender" title="Link to this heading">#</a></h4>
-<p><strong>Required for email:</strong> Yes</p>
-<p class="config-field-info"><strong>Type:</strong> <code class="docutils literal notranslate"><span class="pre">EmailStr</span></code></p>
-<p class="config-field-info"><strong>Required:</strong> <span class="config-required">Yes</span></p>
-<p>The ‘From’ email address for notification messages. This must be an address that your SMTP server is authorized to send from. If using Gmail or similar services, this must match the authenticated account’s address.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_EMAIL_SENDER</span><span class="o">=</span>nexuslims@example.com
-</pre></div>
-</div>
-</section>
-<section id="nx-email-recipients">
-<span id="config-email-recipients"></span><h4><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_RECIPIENTS</span></code><a class="headerlink" href="#nx-email-recipients" title="Link to this heading">#</a></h4>
-<p><strong>Required for email:</strong> Yes</p>
-<p class="config-field-info"><strong>Type:</strong> list[<code class="docutils literal notranslate"><span class="pre">EmailStr</span></code>]</p>
-<p class="config-field-info"><strong>Required:</strong> <span class="config-required">Yes</span></p>
-<p>One or more email addresses that will receive error notification messages when the record builder encounters problems. Provide as a comma-separated string, e.g.:
-<code class="docutils literal notranslate"><span class="pre">NX_EMAIL_RECIPIENTS='admin&#64;example.com,team&#64;example.com'</span></code></p>
-<p>Notifications are sent when <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">build-records</span></code> detects ERROR-level log entries.</p>
-<p><strong>Example:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">NX_EMAIL_RECIPIENTS</span><span class="o">=</span>admin@example.com,team@example.com
-</pre></div>
-</div>
-</section>
-</section>
-</section>
-<section id="configuration-in-code-for-developers">
-<h2>Configuration in Code (for developers)<a class="headerlink" href="#configuration-in-code-for-developers" title="Link to this heading">#</a></h2>
-<section id="accessing-configuration">
-<h3>Accessing Configuration<a class="headerlink" href="#accessing-configuration" title="Link to this heading">#</a></h3>
-<p>Always access configuration through the <code class="docutils literal notranslate"><span class="pre">settings</span></code> object from the <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code> module:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
-
-<span class="c1"># Access configuration values</span>
-<span class="n">data_path</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_DATA_PATH</span>
-<span class="n">file_strategy</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_FILE_STRATEGY</span>
-<span class="n">db_path</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_DB_PATH</span>
-
-<span class="c1"># Access NEMO harvesters (returns dict of configurations)</span>
-<span class="n">nemo_harvesters</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">nemo_harvesters</span><span class="p">()</span>
-
-<span class="c1"># Access email configuration (returns EmailConfig or None)</span>
-<span class="n">email_config</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">email_config</span><span class="p">()</span>
-</pre></div>
-</div>
-<div class="admonition danger">
-<p class="admonition-title">Danger</p>
-<p><strong>Never use <code class="docutils literal notranslate"><span class="pre">os.getenv()</span></code> or <code class="docutils literal notranslate"><span class="pre">os.environ</span></code> directly for NexusLIMS configuration.</strong></p>
-<p>Always access configuration through the <code class="docutils literal notranslate"><span class="pre">settings</span></code> object from <code class="docutils literal notranslate"><span class="pre">nexusLIMS.config</span></code>. This ensures:</p>
-<ul class="simple">
-<li><p>Type safety and validation</p></li>
-<li><p>Consistent behavior across the codebase</p></li>
-<li><p>Proper defaults and error handling</p></li>
-<li><p>Easier testing (can mock the settings object)</p></li>
-</ul>
-</div>
-</section>
-<section id="testing-with-configuration">
-<h3>Testing with Configuration<a class="headerlink" href="#testing-with-configuration" title="Link to this heading">#</a></h3>
-<p>In tests, use <code class="docutils literal notranslate"><span class="pre">refresh_settings()</span></code> after modifying environment variables:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">nexusLIMS.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span><span class="p">,</span> <span class="n">refresh_settings</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">test_with_custom_config</span><span class="p">():</span>
-    <span class="c1"># Modify environment</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;NX_FILE_STRATEGY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;inclusive&quot;</span>
-
-    <span class="c1"># Refresh to pick up changes</span>
-    <span class="n">refresh_settings</span><span class="p">()</span>
-
-    <span class="c1"># Now settings reflects the new value</span>
-    <span class="k">assert</span> <span class="n">settings</span><span class="o">.</span><span class="n">NX_FILE_STRATEGY</span> <span class="o">==</span> <span class="s2">&quot;inclusive&quot;</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="configuration-validation">
-<h2>Configuration Validation<a class="headerlink" href="#configuration-validation" title="Link to this heading">#</a></h2>
-<p>Pydantic validates all configuration on startup. If validation fails, NexusLIMS will raise a <code class="docutils literal notranslate"><span class="pre">ValidationError</span></code> with details about what’s wrong.</p>
-<p>Common validation errors:</p>
-<ul class="simple">
-<li><p><strong>Missing required fields</strong>: Set all required environment variables</p></li>
-<li><p><strong>Invalid paths</strong>: Ensure directories/files exist and are accessible</p></li>
-<li><p><strong>Invalid URLs</strong>: Check URL format and trailing slashes</p></li>
-<li><p><strong>Invalid types</strong>: Check value types (numbers, booleans, etc.)</p></li>
-</ul>
-</section>
-<section id="example-configurations">
-<h2>Example Configurations<a class="headerlink" href="#example-configurations" title="Link to this heading">#</a></h2>
-<section id="minimal-production-configuration">
-<h3>Minimal Production Configuration<a class="headerlink" href="#minimal-production-configuration" title="Link to this heading">#</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># File paths</span>
-<span class="nv">NX_INSTRUMENT_DATA_PATH</span><span class="o">=</span>/mnt/nexus_instruments
-<span class="nv">NX_DATA_PATH</span><span class="o">=</span>/var/nexuslims/data
-<span class="nv">NX_DB_PATH</span><span class="o">=</span>/var/nexuslims/data/nexuslims.db
-
-<span class="c1"># CDCS</span>
-<span class="nv">NX_CDCS_URL</span><span class="o">=</span>https://nexuslims.example.com
-<span class="nv">NX_CDCS_TOKEN</span><span class="o">=</span>your-api-token-here
-
-<span class="c1"># NEMO</span>
-<span class="nv">NX_NEMO_ADDRESS_1</span><span class="o">=</span>https://nemo.example.com/api/
-<span class="nv">NX_NEMO_TOKEN_1</span><span class="o">=</span>token_here
-</pre></div>
-</div>
-</section>
-<section id="full-example-production-configuration">
-<h3>Full Example Production Configuration<a class="headerlink" href="#full-example-production-configuration" title="Link to this heading">#</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># ============================================================================</span>
-<span class="c1"># File paths</span>
-<span class="c1"># ============================================================================</span>
-<span class="nv">NX_INSTRUMENT_DATA_PATH</span><span class="o">=</span>/mnt/nexus_instruments
-<span class="nv">NX_DATA_PATH</span><span class="o">=</span>/var/nexuslims/data
-<span class="nv">NX_DB_PATH</span><span class="o">=</span>/var/nexuslims/data/nexuslims.db
-<span class="nv">NX_LOG_PATH</span><span class="o">=</span>/var/log/nexuslims
-<span class="nv">NX_RECORDS_PATH</span><span class="o">=</span>/var/nexuslims/records
-
-<span class="c1"># Local profiles</span>
-<span class="nv">NX_LOCAL_PROFILES_PATH</span><span class="o">=</span>/etc/nexuslims/profiles
-
-<span class="c1"># ============================================================================</span>
-<span class="c1"># CDCS Integration</span>
-<span class="c1"># ============================================================================</span>
-<span class="nv">NX_CDCS_URL</span><span class="o">=</span>https://nexuslims.example.com
-<span class="nv">NX_CDCS_TOKEN</span><span class="o">=</span>your-api-token-here
-
-<span class="c1"># ============================================================================</span>
-<span class="c1"># Export Configuration</span>
-<span class="c1"># ============================================================================</span>
-<span class="c1"># Strategy for exporting to multiple destinations (&#39;all&#39;, &#39;first_success&#39;, &#39;best_effort&#39;)</span>
-<span class="nv">NX_EXPORT_STRATEGY</span><span class="o">=</span>all
-
-<span class="c1"># ============================================================================</span>
-<span class="c1"># eLabFTW Integration (optional)</span>
-<span class="c1"># ============================================================================</span>
-<span class="nv">NX_ELABFTW_URL</span><span class="o">=</span>https://elabftw.example.com
-<span class="nv">NX_ELABFTW_API_KEY</span><span class="o">=</span>your-elabftw-api-key
-<span class="nv">NX_ELABFTW_EXPERIMENT_CATEGORY</span><span class="o">=</span><span class="m">1</span>
-<span class="nv">NX_ELABFTW_EXPERIMENT_STATUS</span><span class="o">=</span><span class="m">1</span>
-
-<span class="c1"># ============================================================================</span>
-<span class="c1"># File Handling</span>
-<span class="c1"># ============================================================================</span>
-<span class="nv">NX_FILE_STRATEGY</span><span class="o">=</span>inclusive
-<span class="nv">NX_FILE_DELAY_DAYS</span><span class="o">=</span><span class="m">2</span>.5
-<span class="nv">NX_CLUSTERING_SENSITIVITY</span><span class="o">=</span><span class="m">1</span>.0
-<span class="nv">NX_IGNORE_PATTERNS</span><span class="o">=</span><span class="s1">&#39;[&quot;*.mib&quot;,&quot;*.db&quot;,&quot;*.emi&quot;,&quot;*.hdr&quot;]&#39;</span>
-
-<span class="c1"># ============================================================================</span>
-<span class="c1"># NEMO Harvesters</span>
-<span class="c1"># ============================================================================</span>
-<span class="c1"># First NEMO instance</span>
-<span class="nv">NX_NEMO_ADDRESS_1</span><span class="o">=</span>https://nemo1.example.com/api/
-<span class="nv">NX_NEMO_TOKEN_1</span><span class="o">=</span>token1_here
-<span class="nv">NX_NEMO_TZ_1</span><span class="o">=</span>America/Denver
-<span class="nv">NX_NEMO_STRFTIME_FMT_1</span><span class="o">=</span>%Y-%m-%dT%H:%M:%S%z
-<span class="nv">NX_NEMO_STRPTIME_FMT_1</span><span class="o">=</span>%Y-%m-%dT%H:%M:%S%z
-
-<span class="c1"># Second NEMO instance (optional)</span>
-<span class="nv">NX_NEMO_ADDRESS_2</span><span class="o">=</span>https://nemo2.example.com/api/
-<span class="nv">NX_NEMO_TOKEN_2</span><span class="o">=</span>token2_here
-<span class="nv">NX_NEMO_TZ_2</span><span class="o">=</span>America/New_York
-
-<span class="c1"># ============================================================================</span>
-<span class="c1"># Email Notifications (optional)</span>
-<span class="c1"># ============================================================================</span>
-<span class="nv">NX_EMAIL_SMTP_HOST</span><span class="o">=</span>smtp.gmail.com
-<span class="nv">NX_EMAIL_SMTP_PORT</span><span class="o">=</span><span class="m">587</span>
-<span class="nv">NX_EMAIL_SMTP_USERNAME</span><span class="o">=</span>nexuslims@example.com
-<span class="nv">NX_EMAIL_SMTP_PASSWORD</span><span class="o">=</span>app_password
-<span class="nv">NX_EMAIL_USE_TLS</span><span class="o">=</span><span class="nb">true</span>
-<span class="nv">NX_EMAIL_SENDER</span><span class="o">=</span>nexuslims@example.com
-<span class="nv">NX_EMAIL_RECIPIENTS</span><span class="o">=</span>admin@example.com,team@example.com
-
-<span class="c1"># ============================================================================</span>
-<span class="c1"># SSL Certificate Configuration (optional)</span>
-<span class="c1"># ============================================================================</span>
-<span class="c1"># Option 1: Path to certificate bundle file</span>
-<span class="nv">NX_CERT_BUNDLE_FILE</span><span class="o">=</span>/etc/ssl/certs/custom-ca.crt
-
-<span class="c1"># Option 2: Certificate bundle as string (alternative to NX_CERT_BUNDLE_FILE)</span>
-<span class="c1"># NX_CERT_BUNDLE=&quot;-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----&quot;</span>
-
-<span class="c1"># Option 3: Disable SSL verification (NEVER use in production!)</span>
-<span class="c1"># NX_DISABLE_SSL_VERIFY=false</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="troubleshooting">
-<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h2>
-<section id="configuration-not-loading">
-<h3>Configuration Not Loading<a class="headerlink" href="#configuration-not-loading" title="Link to this heading">#</a></h3>
-<p>If configuration changes aren’t taking effect:</p>
-<ol class="arabic simple">
-<li><p><strong>Check .env file location</strong>: Must be in project root</p></li>
-<li><p><strong>Check environment variables</strong>: <code class="docutils literal notranslate"><span class="pre">os.environ</span></code> takes precedence over <code class="docutils literal notranslate"><span class="pre">.env</span></code></p></li>
-<li><p><strong>Restart application</strong>: Configuration is loaded on startup</p></li>
-<li><p><strong>Check for typos</strong>: Variable names are case-sensitive</p></li>
-</ol>
-</section>
-<section id="path-validation-errors">
-<h3>Path Validation Errors<a class="headerlink" href="#path-validation-errors" title="Link to this heading">#</a></h3>
-<p>If you get path validation errors:</p>
-<ol class="arabic simple">
-<li><p><strong>Ensure directories exist</strong>: Create them before starting NexusLIMS</p></li>
-<li><p><strong>Check permissions</strong>: Ensure the user running NexusLIMS has read/write access</p></li>
-<li><p><strong>Use absolute paths</strong>: Avoid relative paths</p></li>
-<li><p><strong>Check for typos</strong>: Verify path spelling</p></li>
-</ol>
-</section>
-<section id="nemo-configuration-issues">
-<h3>NEMO Configuration Issues<a class="headerlink" href="#nemo-configuration-issues" title="Link to this heading">#</a></h3>
-<p>If NEMO harvesters aren’t working:</p>
-<ol class="arabic simple">
-<li><p><strong>Check trailing slash</strong>: <code class="docutils literal notranslate"><span class="pre">NX_NEMO_ADDRESS_N</span></code> must end with <code class="docutils literal notranslate"><span class="pre">/</span></code></p></li>
-<li><p><strong>Match suffixes</strong>: <code class="docutils literal notranslate"><span class="pre">NX_NEMO_ADDRESS_1</span></code> must pair with <code class="docutils literal notranslate"><span class="pre">NX_NEMO_TOKEN_1</span></code></p></li>
-<li><p><strong>Verify tokens</strong>: Test tokens in the NEMO admin interface</p></li>
-<li><p><strong>Check timezone format</strong>: Use IANA timezone names (e.g., <code class="docutils literal notranslate"><span class="pre">America/Denver</span></code>)</p></li>
-</ol>
-</section>
-<section id="email-not-working">
-<h3>Email Not Working<a class="headerlink" href="#email-not-working" title="Link to this heading">#</a></h3>
-<p>If email notifications aren’t sending:</p>
-<ol class="arabic simple">
-<li><p><strong>Check required fields</strong>: <code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SMTP_HOST</span></code>, <code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SENDER</span></code>, and <code class="docutils literal notranslate"><span class="pre">NX_EMAIL_RECIPIENTS</span></code> are required</p></li>
-<li><p><strong>Verify SMTP credentials</strong>: Test SMTP access independently</p></li>
-<li><p><strong>Check firewall</strong>: Ensure SMTP port (usually 587) isn’t blocked</p></li>
-<li><p><strong>Use app passwords</strong>: Some providers (Gmail) require app-specific passwords</p></li>
-</ol>
-</section>
-<section id="instrument-profile-issues">
-<h3>Instrument Profile Issues<a class="headerlink" href="#instrument-profile-issues" title="Link to this heading">#</a></h3>
-<p>If instrument profiles aren’t loading or working:</p>
-<ol class="arabic simple">
-<li><p><strong>Verify <code class="docutils literal notranslate"><span class="pre">NX_LOCAL_PROFILES_PATH</span></code></strong>: Ensure the environment variable points to a valid directory</p></li>
-<li><p><strong>Check profile structure</strong>: Profiles must create an <code class="docutils literal notranslate"><span class="pre">InstrumentProfile</span></code> instance and register it via <code class="docutils literal notranslate"><span class="pre">get_profile_registry().register()</span></code></p></li>
-<li><p><strong>Match <code class="docutils literal notranslate"><span class="pre">instrument_id</span></code> to database</strong>: The <code class="docutils literal notranslate"><span class="pre">instrument_id</span></code> parameter in <code class="docutils literal notranslate"><span class="pre">InstrumentProfile()</span></code> must match the instrument’s <code class="docutils literal notranslate"><span class="pre">name</span></code> field in the database (filename doesn’t matter)</p></li>
-<li><p><strong>Import errors</strong>: Check that all dependencies are available in the environment</p></li>
-</ol>
-</section>
 </section>
 <section id="see-also">
 <h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading">#</a></h2>
@@ -1474,6 +673,7 @@ returned <code class="docutils literal notranslate"><span class="pre">uid</span>
 <li><p><a class="reference internal" href="getting_started.html#getting-started"><span class="std std-ref">Getting Started</span></a> - Initial setup guide</p></li>
 <li><p><a class="reference internal" href="../dev_guide/instrument_profiles.html#instrument-profiles"><span class="std std-ref">Instrument Profiles</span></a> - Customizing metadata extraction</p></li>
 <li><p><a class="reference internal" href="record_building.html#record-building"><span class="std std-ref">Record building workflow</span></a> - Understanding the record building process</p></li>
+<li><p><a class="reference internal" href="../dev_guide.html#developer-configuration"><span class="std std-ref">Configuration in Code</span></a> - Accessing and testing configuration in code</p></li>
 <li><p><a class="reference external" href="https://docs.pydantic.dev/latest/concepts/pydantic_settings/">Pydantic Settings Documentation</a></p></li>
 </ul>
 </section>
@@ -1499,11 +699,11 @@ returned <code class="docutils literal notranslate"><span class="pre">uid</span>
       </div>
     </a>
     <a class="right-next"
-       href="cli_reference.html"
+       href="configuration_settings.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Command-Line Interface Reference</p>
+        <p class="prev-next-title">Configuration Settings</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -1526,8 +726,12 @@ returned <code class="docutils literal notranslate"><span class="pre">uid</span>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-files">Configuration Files</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-files">Configuration Files</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#migrating-older-configuration-files">Migrating older configuration files</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-management">Configuration Management</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#inspecting-configuration-selection">Inspecting configuration selection</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interactive-configuration-editor-tui">Interactive Configuration Editor (TUI)</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#video-demonstrations">Video Demonstrations</a></li>
 </ul>
@@ -1537,103 +741,7 @@ returned <code class="docutils literal notranslate"><span class="pre">uid</span>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-in-logs">Configuration in Logs</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#required-configuration">Required Configuration</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#file-system-paths">File System Paths</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-instrument-data-path"><code class="docutils literal notranslate"><span class="pre">NX_INSTRUMENT_DATA_PATH</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-data-path"><code class="docutils literal notranslate"><span class="pre">NX_DATA_PATH</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-db-path"><code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cdcs-integration">CDCS Integration</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-cdcs-url"><code class="docutils literal notranslate"><span class="pre">NX_CDCS_URL</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-cdcs-token"><code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-cdcs-user-owned-records"><code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER_OWNED_RECORDS</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-cdcs-assign-to-public-workspace"><code class="docutils literal notranslate"><span class="pre">NX_CDCS_ASSIGN_TO_PUBLIC_WORKSPACE</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nemo-integration">NEMO Integration</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-nemo-address-n"><code class="docutils literal notranslate"><span class="pre">NX_NEMO_ADDRESS_N</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-nemo-token-n"><code class="docutils literal notranslate"><span class="pre">NX_NEMO_TOKEN_N</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-configuration">Optional Configuration</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#elabftw-integration">eLabFTW Integration</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-elabftw-url"><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_URL</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-elabftw-api-key"><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_API_KEY</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-elabftw-experiment-category"><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_EXPERIMENT_CATEGORY</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-elabftw-experiment-status"><code class="docutils literal notranslate"><span class="pre">NX_ELABFTW_EXPERIMENT_STATUS</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#labarchives-integration">LabArchives Integration</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-labarchives-url"><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_URL</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-labarchives-access-key-id"><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_KEY_ID</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-labarchives-access-password"><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_ACCESS_PASSWORD</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-labarchives-user-id"><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_USER_ID</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-labarchives-notebook-id"><code class="docutils literal notranslate"><span class="pre">NX_LABARCHIVES_NOTEBOOK_ID</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#export-configuration">Export Configuration</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-export-strategy"><code class="docutils literal notranslate"><span class="pre">NX_EXPORT_STRATEGY</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#file-handling">File Handling</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-file-strategy"><code class="docutils literal notranslate"><span class="pre">NX_FILE_STRATEGY</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-ignore-patterns"><code class="docutils literal notranslate"><span class="pre">NX_IGNORE_PATTERNS</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-file-delay-days"><code class="docutils literal notranslate"><span class="pre">NX_FILE_DELAY_DAYS</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-clustering-sensitivity"><code class="docutils literal notranslate"><span class="pre">NX_CLUSTERING_SENSITIVITY</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directory-paths">Directory Paths</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-log-path"><code class="docutils literal notranslate"><span class="pre">NX_LOG_PATH</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-records-path"><code class="docutils literal notranslate"><span class="pre">NX_RECORDS_PATH</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-local-profiles-path"><code class="docutils literal notranslate"><span class="pre">NX_LOCAL_PROFILES_PATH</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nemo-advanced-options">NEMO Advanced Options</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-nemo-strftime-fmt-n"><code class="docutils literal notranslate"><span class="pre">NX_NEMO_STRFTIME_FMT_N</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-nemo-strptime-fmt-n"><code class="docutils literal notranslate"><span class="pre">NX_NEMO_STRPTIME_FMT_N</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-nemo-tz-n"><code class="docutils literal notranslate"><span class="pre">NX_NEMO_TZ_N</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ssl-tls-configuration">SSL/TLS Configuration</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-cert-bundle-file"><code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE_FILE</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-cert-bundle"><code class="docutils literal notranslate"><span class="pre">NX_CERT_BUNDLE</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-disable-ssl-verify"><code class="docutils literal notranslate"><span class="pre">NX_DISABLE_SSL_VERIFY</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#email-notifications">Email Notifications</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-email-smtp-host"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SMTP_HOST</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-email-smtp-port"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SMTP_PORT</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-email-smtp-username"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SMTP_USERNAME</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-email-smtp-password"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SMTP_PASSWORD</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-email-use-tls"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_USE_TLS</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-email-sender"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_SENDER</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#nx-email-recipients"><code class="docutils literal notranslate"><span class="pre">NX_EMAIL_RECIPIENTS</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-in-code-for-developers">Configuration in Code (for developers)</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#accessing-configuration">Accessing Configuration</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-with-configuration">Testing with Configuration</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-validation">Configuration Validation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-configurations">Example Configurations</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#minimal-production-configuration">Minimal Production Configuration</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#full-example-production-configuration">Full Example Production Configuration</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-not-loading">Configuration Not Loading</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#path-validation-errors">Path Validation Errors</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nemo-configuration-issues">NEMO Configuration Issues</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#email-not-working">Email Not Working</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#instrument-profile-issues">Instrument Profile Issues</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-reference">Configuration Reference</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#see-also">See Also</a></li>
 </ul>
   </nav></div>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Command-Line Interface Reference &#8212; NexusLIMS 2.8.0 documentation</title>
+    <title>Command-Line Interface Reference &#8212; NexusLIMS 2.9.0 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=69ff2ef9"></script>
+    <script src="../_static/documentation_options.js?v=182a64a0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.9.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -62,11 +62,11 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Record building workflow" href="record_building.html" />
-    <link rel="prev" title="Configuration" href="configuration.html" />
+    <link rel="prev" title="Migration Guide" href="../migration_guide.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.8.0" />
-    <meta name="docbuild:last-update" content="Jul, 29, 2026"/>
+  <meta name="docsearch:version" content="2.9.0" />
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.8.0 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.8.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.9.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.9.0 documentation - Home"/>
   
   
 </a></div>
@@ -183,13 +183,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
   </a>
@@ -198,27 +191,17 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../frontend_guide.html">
-    Frontend Guide
+    Frontend guide
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -322,13 +305,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
   </a>
@@ -337,7 +313,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../frontend_guide.html">
-    Frontend Guide
+    Frontend guide
   </a>
 </li>
 
@@ -412,6 +388,9 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_settings.html">Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration_example.html">Configuration TOML Reference Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../migration_guide.html">Migration Guide</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Command-Line Interface Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="record_building.html">Record building workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="instrument_manager.html">Instrument Management</a></li>
@@ -793,7 +772,7 @@ nexuslims<span class="w"> </span>build-records<span class="w"> </span>-vv
 <section id="logging">
 <h3>Logging<a class="headerlink" href="#logging" title="Link to this heading">#</a></h3>
 <p>The command creates timestamped log files in the configured log directory
-(<a class="reference internal" href="configuration.html#config-log-path"><span class="std std-ref">NX_LOG_PATH</span></a> or <code class="docutils literal notranslate"><span class="pre">{NX_DATA_PATH}/logs/</span></code> by default
+(<a class="reference internal" href="configuration_settings.html#config-log-path"><span class="std std-ref">NX_LOG_PATH</span></a> or <code class="docutils literal notranslate"><span class="pre">{NX_DATA_PATH}/logs/</span></code> by default
 if that config variable is not set):</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>logs/
 └── YYYY/
@@ -1223,90 +1202,24 @@ database. To add, edit, or delete instruments, use
 <hr class="docutils" />
 <section id="nexuslims-config">
 <h2><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span></code><a class="headerlink" href="#nexuslims-config" title="Link to this heading">#</a></h2>
-<p>Configuration management utility for viewing and exporting NexusLIMS configuration.</p>
-<p>See the <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.cli.config.html#module-nexusLIMS.cli.config" title="nexusLIMS.cli.config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nexusLIMS.cli.config</span></code></a> module documentation for details.</p>
-<section id="id12">
-<h3>Basic Usage<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>config<span class="w"> </span>--help
-</pre></div>
-</div>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Usage: nexuslims config [OPTIONS] COMMAND [ARGS]...
+<p>Manage the selected configuration file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Show the selected file and where it came from</span>
+nexuslims<span class="w"> </span>config<span class="w"> </span>status
 
-  Manage NexusLIMS configuration files.
+<span class="c1"># Edit the selected file</span>
+nexuslims<span class="w"> </span>config<span class="w"> </span>edit
 
-Options:
-  --version  Show the version and exit.
-  --help     Show this message and exit.
-
-Commands:
-  dump  Dump the current effective configuration to JSON.
-  edit  Interactively edit the NexusLIMS configuration in a terminal UI.
-  load  Load a previously dumped JSON config into a .env file.
-</pre></div>
-</div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># View current configuration (prints to stdout)</span>
-nexuslims<span class="w"> </span>config<span class="w"> </span>dump
-
-<span class="c1"># Save configuration to a JSON file</span>
+<span class="c1"># Export effective settings or load a previous export</span>
 nexuslims<span class="w"> </span>config<span class="w"> </span>dump<span class="w"> </span>--output<span class="w"> </span>nexuslims_config.json
-
-<span class="c1"># Load configuration from JSON file (if .env already exists,</span>
-<span class="c1"># this command will detect it and create a backup of the current file)</span>
 nexuslims<span class="w"> </span>config<span class="w"> </span>load<span class="w"> </span>nexuslims_config.json
 </pre></div>
 </div>
-<p><strong>Note:</strong> The <code class="docutils literal notranslate"><span class="pre">dump</span></code> command prints to stdout by default. Use <code class="docutils literal notranslate"><span class="pre">--output</span></code> to write to a file instead.</p>
-<p>Example output of the dump command:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;NX_FILE_STRATEGY&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;exclusive&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_IGNORE_PATTERNS&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">&quot;*.mib&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;*.db&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">&quot;*.emi&quot;</span>
-<span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;NX_INSTRUMENT_DATA_PATH&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/tmp/nexuslims-test-instrument-data&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_DATA_PATH&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/tmp/nexuslims-test-data&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_DB_PATH&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/tmp/nexuslims-test-data/integration_test.db&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_CDCS_TOKEN&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nexuslims-dev-token-not-for-production&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_CDCS_URL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://cdcs.localhost:40080/&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_EXPORT_STRATEGY&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;all&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_CERT_BUNDLE_FILE&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_CERT_BUNDLE&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_DISABLE_SSL_VERIFY&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_FILE_DELAY_DAYS&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_CLUSTERING_SENSITIVITY&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_LOG_PATH&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_RECORDS_PATH&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_LOCAL_PROFILES_PATH&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_ELABFTW_API_KEY&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1-aaaaaaaaaaaaaaaaaaaa&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_ELABFTW_URL&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://elabftw.example.com/&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_ELABFTW_EXPERIMENT_CATEGORY&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;NX_ELABFTW_EXPERIMENT_STATUS&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;nemo_harvesters&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;1&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;address&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://nemo.localhost:40080/api/&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;test-api-token_captain&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;strftime_fmt&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%Y-%m-%dT%H:%M:%S%z&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;strptime_fmt&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;%Y-%m-%dT%H:%M:%S%z&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;tz&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="nt">&quot;email_config&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;smtp_host&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;smtp.example.com&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;smtp_port&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;smtp_username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your-email@gmail.com&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;smtp_password&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;your-app-password&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;use_tls&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;sender&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;nexuslims@yourdomain.com&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;recipients&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">      </span><span class="s2">&quot;admin@yourdomain.com&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s2">&quot;team@yourdomain.com&quot;</span>
-<span class="w">    </span><span class="p">]</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
+<p><code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">status</span></code> does not validate application settings. The editor shows the
+file it will edit and waits for Enter before opening. Use <code class="docutils literal notranslate"><span class="pre">--config-path</span></code> to
+edit or load another file; <code class="docutils literal notranslate"><span class="pre">--env-path</span></code> is an alias.</p>
+<p>A configuration dump contains live credentials. Keep it private. For routine
+backup or transfer, securely copy the TOML file instead. See the
+<a class="reference internal" href="configuration.html#configuration"><span class="std std-ref">configuration guide</span></a> for selection and migration details.</p>
 </section>
 <hr class="docutils" />
 <section id="nexuslims-db">
@@ -1319,7 +1232,7 @@ provides simple commands for common database operations while allowing
 advanced access to <a class="reference external" href="https://alembic.sqlalchemy.org/">Alembic</a> functionality
 for developers.</p>
 <p>The migration command will automatically read the value of <code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code>
-set in your <code class="docutils literal notranslate"><span class="pre">.env</span></code> file and apply any changes required to that database.
+set in your selected configuration file and apply any changes required to that database.
 Backups of your database file will be made automatically during the upgrade
 process.</p>
 <div class="admonition note">
@@ -1334,8 +1247,8 @@ version upgrade.</p>
 version numbers. For example, revision <code class="docutils literal notranslate"><span class="pre">v2_4_0b</span></code> corresponds to the database
 schema required for NexusLIMS v2.4.0. This makes it easy to identify which
 database version matches your installed NexusLIMS version.</p>
-<section id="id13">
-<h3>Basic Usage<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id12">
+<h3>Basic Usage<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>--help
 </pre></div>
 </div>
@@ -1586,7 +1499,7 @@ indexes.</p></li>
 </div>
 <p><strong>Prerequisites:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> must be set (via <code class="docutils literal notranslate"><span class="pre">.env</span></code> or environment)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NX_DB_PATH</span></code> must be set (via configuration file or environment)</p></li>
 <li><p>The database file must already exist (run <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span> <span class="pre">init</span></code> first)</p></li>
 </ul>
 <p><strong>Examples:</strong></p>
@@ -1685,8 +1598,8 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
 </section>
 <section id="global-options">
 <h3>Global Options<a class="headerlink" href="#global-options" title="Link to this heading">#</a></h3>
-<section id="id14">
-<h4><code class="docutils literal notranslate"><span class="pre">--version</span></code><a class="headerlink" href="#id14" title="Link to this heading">#</a></h4>
+<section id="id13">
+<h4><code class="docutils literal notranslate"><span class="pre">--version</span></code><a class="headerlink" href="#id13" title="Link to this heading">#</a></h4>
 <p>Display the NexusLIMS version and exit.</p>
 <p><strong>Example:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nexuslims<span class="w"> </span>db<span class="w"> </span>--version
@@ -1699,8 +1612,8 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
 <h3>Common Workflows<a class="headerlink" href="#common-workflows" title="Link to this heading">#</a></h3>
 <section id="setting-up-a-new-installation">
 <h4>Setting Up a New Installation<a class="headerlink" href="#setting-up-a-new-installation" title="Link to this heading">#</a></h4>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Set database path in .env</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;NX_DB_PATH=/var/nexuslims/database.db&quot;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>.env
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Set the database path in the configuration editor</span>
+nexuslims<span class="w"> </span>config<span class="w"> </span>edit
 
 <span class="c1"># 2. Initialize database</span>
 nexuslims<span class="w"> </span>db<span class="w"> </span>init
@@ -1744,7 +1657,7 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
 <h3>Configuration<a class="headerlink" href="#configuration" title="Link to this heading">#</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span></code> command automatically:</p>
 <ul class="simple">
-<li><p>Reads database path from <a class="reference internal" href="configuration.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a> environment variable</p></li>
+<li><p>Reads <a class="reference internal" href="configuration_settings.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a> from the selected configuration or environment</p></li>
 <li><p>Locates migrations directory inside the installed package (works with pip/uv installations)</p></li>
 <li><p>Creates temporary Alembic configuration as needed</p></li>
 </ul>
@@ -1774,12 +1687,12 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="configuration.html"
+       href="../migration_guide.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Configuration</p>
+        <p class="prev-next-title">Migration Guide</p>
       </div>
     </a>
     <a class="right-next"
@@ -1882,12 +1795,9 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">Examples</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-config"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Basic Usage</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-config"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">config</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nexuslims-db"><code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">Basic Usage</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Basic Usage</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#commands">Commands</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#init"><code class="docutils literal notranslate"><span class="pre">init</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#upgrade"><code class="docutils literal notranslate"><span class="pre">upgrade</span></code></a></li>
@@ -1901,7 +1811,7 @@ nexuslims<span class="w"> </span>db<span class="w"> </span>alembic<span class="w
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#global-options">Global Options</a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id14"><code class="docutils literal notranslate"><span class="pre">--version</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id13"><code class="docutils literal notranslate"><span class="pre">--version</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-workflows">Common Workflows</a><ul class="nav section-nav flex-column">

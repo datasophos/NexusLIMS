@@ -47,6 +47,15 @@ Bases: {py:obj}`click.Group`
 :parser: autodoc2_docstrings_parser
 ```
 
+````{py:method} parse_args(ctx: click.Context, args: list[str]) -> list[str]
+:canonical: nexusLIMS.cli.main.LazyGroup.parse_args
+
+```{autodoc2-docstring} nexusLIMS.cli.main.LazyGroup.parse_args
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
 ````{py:method} list_commands(ctx: click.Context) -> list[str]
 :canonical: nexusLIMS.cli.main.LazyGroup.list_commands
 

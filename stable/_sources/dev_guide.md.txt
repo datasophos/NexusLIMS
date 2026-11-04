@@ -36,7 +36,7 @@ NexusLIMS is an **automated Laboratory Information Management System** for elect
 
 3. **Formal Unit Integration**
    - All physical quantities use Pint with QUDT ontology
-   - Automatic unit conversion and validation
+   - Explicit unit conversion and unit validation
    - Machine-readable unit information in XML output
    - Type-safe quantity handling
 
@@ -141,6 +141,58 @@ flowchart TD
 ```
 
 ---
+
+(developer-configuration)=
+## Configuration in Code
+
+### Accessing Configuration
+
+Always access configuration through the `settings` object from the `nexusLIMS.config` module:
+
+```python
+from nexusLIMS.config import settings
+
+# Access configuration values
+data_path = settings.NX_DATA_PATH
+file_strategy = settings.NX_FILE_STRATEGY
+db_path = settings.NX_DB_PATH
+
+# Access NEMO harvesters (returns dict of configurations)
+nemo_harvesters = settings.nemo_harvesters()
+
+# Access email configuration (returns EmailConfig or None)
+email_config = settings.email_config()
+```
+
+```{danger}
+**Do not use `os.getenv()` or `os.environ` directly for application configuration outside `nexusLIMS.config`.**
+
+Always access configuration through the `settings` object from `nexusLIMS.config`. This ensures:
+- Type safety and validation
+- Consistent behavior across the codebase
+- Proper defaults and error handling
+- Easier testing (can mock the settings object)
+```
+
+### Testing with Configuration
+
+The pytest suite enables `NX_TEST_MODE`, which prevents `Settings` from automatically reading the selected configuration file, supplies test defaults, and relaxes some validation. A fixture selects a temporary configuration path for each test. Functions that explicitly read or write a file still use the path provided. To test loading a file through `Settings`, disable `config.TEST_MODE` for that test.
+
+In tests, use `refresh_settings()` after modifying environment variables:
+
+```python
+from nexusLIMS.config import settings, refresh_settings
+
+def test_with_custom_config(monkeypatch):
+    # Set the value for this test; pytest restores it afterward
+    monkeypatch.setenv("NX_FILE_STRATEGY", "inclusive")
+
+    # Refresh to pick up changes
+    refresh_settings()
+
+    # Now settings reflects the new value
+    assert settings.NX_FILE_STRATEGY == "inclusive"
+```
 
 ## Common Development Tasks
 
@@ -400,11 +452,13 @@ We welcome contributions! Here's how to get started:
    uv sync  # Installs all dependencies including dev tools
    ```
 
-3. **Configure environment:**
+3. **Configure NexusLIMS:**
    ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
+   uv run nexuslims config edit
    ```
+
+   The editor writes the selected configuration file. For file selection and
+   other options, see the {ref}`configuration guide <configuration>`.
 
 4. **Run tests:**
    ```bash
@@ -498,6 +552,7 @@ dev_guide/em_glossary_reference
 dev_guide/examples
 dev_guide/uv_migration
 dev_guide/database
+dev_guide/cloudflare_previews
 dev_guide/schema_documentation
 dev_guide/testing/integration-tests
 reference/textual_testing_reference

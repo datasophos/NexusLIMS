@@ -16,12 +16,12 @@
 
 nexusLIMS.utils
 nexusLIMS.schemas
+nexusLIMS.extractors
 nexusLIMS.exporters
-nexusLIMS.cli
 nexusLIMS.builder
 nexusLIMS.tui
 nexusLIMS.db
-nexusLIMS.extractors
+nexusLIMS.cli
 nexusLIMS.harvesters
 ```
 

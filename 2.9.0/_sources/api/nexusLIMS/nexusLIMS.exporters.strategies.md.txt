@@ -1,0 +1,34 @@
+# {py:mod}`nexusLIMS.exporters.strategies`
+
+```{py:module} nexusLIMS.exporters.strategies
+```
+
+```{autodoc2-docstring} nexusLIMS.exporters.strategies
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`execute_strategy <nexusLIMS.exporters.strategies.execute_strategy>`
+  - ```{autodoc2-docstring} nexusLIMS.exporters.strategies.execute_strategy
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} execute_strategy(strategy: nexusLIMS.exporters.registry.ExportStrategy, destinations: list[nexusLIMS.exporters.base.ExportDestination], context: nexusLIMS.exporters.base.ExportContext) -> list[nexusLIMS.exporters.base.ExportResult]
+:canonical: nexusLIMS.exporters.strategies.execute_strategy
+
+```{autodoc2-docstring} nexusLIMS.exporters.strategies.execute_strategy
+:parser: autodoc2_docstrings_parser
+```
+````

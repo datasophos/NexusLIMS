@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>NexusLIMS &#8212; NexusLIMS 2.8.0 documentation</title>
+    <title>NexusLIMS &#8212; NexusLIMS 2.9.0 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=69ff2ef9"></script>
+    <script src="_static/documentation_options.js?v=182a64a0"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.9.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -64,8 +64,8 @@
     <link rel="next" title="User Guide" href="user_guide.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.8.0" />
-    <meta name="docbuild:last-update" content="Jul, 29, 2026"/>
+  <meta name="docsearch:version" content="2.9.0" />
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -131,8 +131,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.8.0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.8.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.9.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.9.0 documentation - Home"/>
   
   
 </a></div>
@@ -182,13 +182,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="dev_guide.html">
     Dev Guide
   </a>
@@ -197,27 +190,17 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="frontend_guide.html">
-    Frontend Guide
+    Frontend guide
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -323,13 +306,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="dev_guide.html">
     Dev Guide
   </a>
@@ -338,7 +314,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="frontend_guide.html">
-    Frontend Guide
+    Frontend guide
   </a>
 </li>
 
@@ -456,12 +432,12 @@ with the
 system for harvesting of experimental sessions and
 instrument information.</p></li>
 <li><p><strong>Multi-Destination Export Framework</strong> - Configurable plugin-based export system supporting multiple data repositories, including <a class="reference internal" href="frontend_guide.html#frontend-guide"><span class="std std-ref">NexusLIMS CDCS</span></a> as the primary destination and the <a class="reference internal" href="user_guide/exporters.html#elabftw-exporter"><span class="std std-ref">eLabFTW electronic lab notebook</span></a>. NexusLIMS can easily be extended for support of custom destinations.</p></li>
-<li><p><strong>Comprehensive support for common Electron Microscopy file formats</strong> - NexusLIMS extracts detailed metadata from DigitalMicrograph DM3/DM4 files, FEI/Thermo TIF images, Tescan TIF images, Zeiss TIF images, FEI TIA (.ser/.emi), EDAX (.spc/.msa) EDS spectra, and more</p></li>
+<li><p><strong>Comprehensive support for common microscopy file formats</strong> - NexusLIMS extracts detailed metadata from DigitalMicrograph DM3/DM4 files, FEI/Thermo TIF images, Tescan TIF images, Zeiss TIF images, FEI TIA (.ser/.emi), EDAX (.spc/.msa) EDS spectra, Asylum Research AFM (.ibw) files, and more</p></li>
 <li><p><strong>Temporal File Clustering</strong> - Intelligent grouping of files into Acquisition Activities based on temporal analysis (with customizable sensitivity)</p></li>
 <li><p><strong>Extensible Architecture</strong> - Plugin-based extractor system and instrument profiles for easy customization</p></li>
 <li><p><strong>Structured XML Records</strong> - Standards-compliant records with comprehensive session and technical metadata</p></li>
 <li><p><strong>Metadata Standardization</strong> - Emerging standardization using <a class="reference external" href="https://emglossary.helmholtz-metadaten.de/">EM Glossary</a> terms and Pydantic validation (work in progress)</p></li>
-<li><p><strong>Physical Unit Management</strong> - Automatic normalization of physical quantities (voltages, distances, times) to preferred units via Pint</p></li>
+<li><p><strong>Physical Unit Management</strong> - Pint quantities support explicit conversion of physical measurements to preferred units</p></li>
 </ul>
 <div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
 <div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-3 sd-g-xs-3 sd-g-sm-3 sd-g-md-3 sd-g-lg-3 docutils">
@@ -535,7 +511,7 @@ instrument information.</p></li>
 🖥️ Frontend Web Interface</div>
 <p class="sd-card-text">Documentation about deployment and management of the CDCS web frontend for searching and visualizing records.</p>
 </div>
-<a class="sd-stretched-link sd-hide-link-text reference internal" href="frontend_guide.html"><span class="doc">Frontend Guide</span></a></div>
+<a class="sd-stretched-link sd-hide-link-text reference internal" href="frontend_guide.html"><span class="doc">Frontend guide</span></a></div>
 </div>
 </div>
 </div>
@@ -578,8 +554,8 @@ please visit the <a class="reference external" href="https://github.com/usnistgo
 <hr class="docutils" />
 <div class="note admonition">
 <p class="admonition-title">Documentation Metadata</p>
-<p><strong>Package version:</strong> 2.8.0<br />
-<strong>Documentation built:</strong> July 29, 2026 at 05:07 AM </p>
+<p><strong>Package version:</strong> 2.9.0<br />
+<strong>Documentation built:</strong> November 04, 2026 at 05:17 AM </p>
 </div>
 </section>
 </section>

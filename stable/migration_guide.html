@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Migration Guide &#8212; NexusLIMS 2.8.0 documentation</title>
+    <title>Migration Guide &#8212; NexusLIMS 2.9.0 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=69ff2ef9"></script>
+    <script src="_static/documentation_options.js?v=182a64a0"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.9.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,12 +61,12 @@
     <link rel="icon" href="_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Dev Guide" href="dev_guide.html" />
-    <link rel="prev" title="NexusLIMS Taxonomy" href="user_guide/taxonomy.html" />
+    <link rel="next" title="Command-Line Interface Reference" href="user_guide/cli_reference.html" />
+    <link rel="prev" title="Configuration TOML Reference Example" href="user_guide/configuration_example.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.8.0" />
-    <meta name="docbuild:last-update" content="Jul, 29, 2026"/>
+  <meta name="docsearch:version" content="2.9.0" />
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.8.0 documentation - Home"/>
-    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.8.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.9.0 documentation - Home"/>
+    <img src="_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.9.0 documentation - Home"/>
   
   
 </a></div>
@@ -175,16 +175,9 @@
 </li>
 
 
-<li class="nav-item ">
+<li class="nav-item current active">
   <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
-  </a>
-</li>
-
-
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
-    Migration Guide
   </a>
 </li>
 
@@ -198,27 +191,17 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="frontend_guide.html">
-    Frontend Guide
+    Frontend guide
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -314,16 +297,9 @@
 </li>
 
 
-<li class="nav-item ">
+<li class="nav-item current active">
   <a class="nav-link nav-internal" href="user_guide.html">
     User Guide
-  </a>
-</li>
-
-
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
-    Migration Guide
   </a>
 </li>
 
@@ -337,7 +313,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="frontend_guide.html">
-    Frontend Guide
+    Frontend guide
   </a>
 </li>
 
@@ -409,7 +385,23 @@
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"></div>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="user_guide/getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/configuration_settings.html">Configuration Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/configuration_example.html">Configuration TOML Reference Example</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Migration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/cli_reference.html">Command-Line Interface Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/record_building.html">Record building workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/instrument_manager.html">Instrument Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/migrations.html">Database Migrations</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="user_guide/extractors.html">Extractors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/standalone_extractor_usage.html">Standalone Extractor Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/exporters.html">Export Destinations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/taxonomy.html">NexusLIMS Taxonomy</a></li>
+</ul>
+</div>
 </nav></div>
     </div>
   
@@ -448,6 +440,9 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
+    
+    <li class="breadcrumb-item"><a href="user_guide.html" class="nav-link">User Guide</a></li>
+    
     <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Migration Guide</span></li>
   </ul>
 </nav>
@@ -468,6 +463,8 @@
   <section id="migration-guide">
 <span id="migration"></span><h1>Migration Guide<a class="headerlink" href="#migration-guide" title="Link to this heading">#</a></h1>
 <p>This guide is for system administrators, and will help you migrate your NexusLIMS installation from v1.4.3 to v2.5.0.</p>
+<p>For migration to the persistent configuration introduced in 2.9.0, see
+the <a class="reference internal" href="user_guide/configuration.html#configuration"><span class="std std-ref">configuration guide</span></a>.</p>
 <section id="what-changed">
 <h2>What Changed<a class="headerlink" href="#what-changed" title="Link to this heading">#</a></h2>
 <p>The major changes you need to know about:</p>
@@ -583,7 +580,7 @@ powershell<span class="w"> </span>-c<span class="w"> </span><span class="s2">&qu
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><strong>v2.3.0+ Authentication Change</strong>: CDCS authentication has changed from username/password (<code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER</span></code> and <code class="docutils literal notranslate"><span class="pre">NX_CDCS_PASS</span></code>) to token-based authentication (<code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code>). Replace your username and password with an API token obtained from the CDCS admin panel. See <a class="reference internal" href="user_guide/configuration.html#config-cdcs-token"><span class="std std-ref">NX_CDCS_TOKEN</span></a> for details.</p>
+<p><strong>v2.3.0+ Authentication Change</strong>: CDCS authentication has changed from username/password (<code class="docutils literal notranslate"><span class="pre">NX_CDCS_USER</span></code> and <code class="docutils literal notranslate"><span class="pre">NX_CDCS_PASS</span></code>) to token-based authentication (<code class="docutils literal notranslate"><span class="pre">NX_CDCS_TOKEN</span></code>). Replace your username and password with an API token obtained from the CDCS admin panel. See <a class="reference internal" href="user_guide/configuration_settings.html#config-cdcs-token"><span class="std std-ref">NX_CDCS_TOKEN</span></a> for details.</p>
 </div>
 </section>
 <section id="new-variables">
@@ -1094,20 +1091,20 @@ mkdir<span class="w"> </span>-p<span class="w"> </span>/path/to/nexuslims/logs
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="user_guide/taxonomy.html"
+       href="user_guide/configuration_example.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">NexusLIMS Taxonomy</p>
+        <p class="prev-next-title">Configuration TOML Reference Example</p>
       </div>
     </a>
     <a class="right-next"
-       href="dev_guide.html"
+       href="user_guide/cli_reference.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Dev Guide</p>
+        <p class="prev-next-title">Command-Line Interface Reference</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

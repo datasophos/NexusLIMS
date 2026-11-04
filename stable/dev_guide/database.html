@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>NexusLIMS Database &#8212; NexusLIMS 2.8.0 documentation</title>
+    <title>NexusLIMS Database &#8212; NexusLIMS 2.9.0 documentation</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="../_static/documentation_options.js?v=69ff2ef9"></script>
+    <script src="../_static/documentation_options.js?v=182a64a0"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -53,7 +53,7 @@
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = '_static/switcher.json';
-        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.8.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_version_match = '2.9.0';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
         </script>
@@ -61,12 +61,12 @@
     <link rel="icon" href="../_static/nexusLIMS_bare_logo.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="XML Schema Reference" href="schema_documentation.html" />
+    <link rel="next" title="Documentation Previews" href="cloudflare_previews.html" />
     <link rel="prev" title="Migration from Poetry to uv" href="uv_migration.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2.8.0" />
-    <meta name="docbuild:last-update" content="Jul, 29, 2026"/>
+  <meta name="docsearch:version" content="2.9.0" />
+    <meta name="docbuild:last-update" content="Nov, 04, 2026"/>
   </head>
   
   
@@ -132,8 +132,8 @@
       
     
     
-    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.8.0 documentation - Home"/>
-    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.8.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_light.png" class="logo__image only-light" alt="NexusLIMS 2.9.0 documentation - Home"/>
+    <img src="../_static/logo_horizontal_dark.png" class="logo__image only-dark pst-js-only" alt="NexusLIMS 2.9.0 documentation - Home"/>
   
   
 </a></div>
@@ -182,13 +182,6 @@
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
@@ -198,27 +191,17 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../frontend_guide.html">
-    Frontend Guide
+    Frontend guide
   </a>
 </li>
 
-            <li class="nav-item dropdown">
-                <button class="btn dropdown-toggle nav-item" type="button"
-                data-bs-toggle="dropdown" aria-expanded="false"
-                aria-controls="pst-nav-more-links">
-                    More
-                </button>
-                <ul id="pst-nav-more-links" class="dropdown-menu">
-                    
-<li class=" ">
-  <a class="nav-link dropdown-item nav-internal" href="../reference.html">
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../reference.html">
     Reference
   </a>
 </li>
 
-                </ul>
-            </li>
-            
   </ul>
 </nav></div>
       
@@ -321,13 +304,6 @@
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../migration_guide.html">
-    Migration Guide
-  </a>
-</li>
-
-
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../dev_guide.html">
     Dev Guide
@@ -337,7 +313,7 @@
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../frontend_guide.html">
-    Frontend Guide
+    Frontend guide
   </a>
 </li>
 
@@ -419,6 +395,7 @@
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uv_migration.html">Migration from Poetry to uv</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">NexusLIMS Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudflare_previews.html">Documentation Previews</a></li>
 <li class="toctree-l1"><a class="reference internal" href="schema_documentation.html">XML Schema Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing/integration-tests.html">Integration Testing Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/textual_testing_reference.html">Textual Testing Reference</a></li>
@@ -486,7 +463,7 @@
 <h1>NexusLIMS Database<a class="headerlink" href="#nexuslims-database" title="Link to this heading">#</a></h1>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
-<p>NexusLIMS uses a <a class="reference external" href="https://sqlite.org/index.html">SQLite</a> database to track experimental sessions and instrument configuration. The database file location is specified by <a class="reference internal" href="../user_guide/configuration.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a>.</p>
+<p>NexusLIMS uses a <a class="reference external" href="https://sqlite.org/index.html">SQLite</a> database to track experimental sessions and instrument configuration. The database file location is specified by <a class="reference internal" href="../user_guide/configuration_settings.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a>.</p>
 <p><strong>Key features:</strong></p>
 <ul class="simple">
 <li><p>Single-file database for easy backup (just copy the file)</p></li>
@@ -680,10 +657,10 @@ docs/changes/48.feature.md
 <p>Alembic configuration is stored in:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> under <code class="docutils literal notranslate"><span class="pre">[tool.alembic]</span></code> - Source code configuration (migration paths, etc.)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">nexusLIMS/migrations/env.py</span></code> - Migration environment setup (automatically reads <a class="reference internal" href="../user_guide/configuration.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">nexusLIMS/migrations/env.py</span></code> - Migration environment setup (automatically reads <a class="reference internal" href="../user_guide/configuration_settings.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">nexusLIMS/migrations/versions/</span></code> - Migration scripts directory (shipped in the package)</p></li>
 </ul>
-<p>The database URL is automatically set from the <a class="reference internal" href="../user_guide/configuration.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a> environment variable in <code class="docutils literal notranslate"><span class="pre">env.py</span></code>, so you don’t need to configure it separately. All Alembic configuration lives in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>, eliminating the need for a separate <code class="docutils literal notranslate"><span class="pre">alembic.ini</span></code> file.</p>
+<p>The database URL is automatically set from the <a class="reference internal" href="../user_guide/configuration_settings.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a> environment variable in <code class="docutils literal notranslate"><span class="pre">env.py</span></code>, so you don’t need to configure it separately. All Alembic configuration lives in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>, eliminating the need for a separate <code class="docutils literal notranslate"><span class="pre">alembic.ini</span></code> file.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">nexuslims</span> <span class="pre">db</span></code> CLI command automatically locates the migrations directory using <code class="docutils literal notranslate"><span class="pre">importlib.resources</span></code>, so migrations work correctly whether NexusLIMS is installed via pip, uv, or run from source.</p>
 </section>
 <section id="important-notes">
@@ -831,7 +808,7 @@ the <code class="docutils literal notranslate"><span class="pre">instruments</sp
 <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.Instrument" title="nexusLIMS.db.models.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> objects. These objects are
 stored in a dictionary attribute named <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.instruments.html#nexusLIMS.instruments.instrument_db" title="nexusLIMS.instruments.instrument_db"><code class="xref py py-data docutils literal notranslate"><span class="pre">nexusLIMS.instruments.instrument_db</span></code></a>.
 This is done by querying the database specified in the environment variable
-<a class="reference internal" href="../user_guide/configuration.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a> and creating a dictionary of
+<a class="reference internal" href="../user_guide/configuration_settings.html#config-db-path"><span class="std std-ref">NX_DB_PATH</span></a> and creating a dictionary of
 <a class="reference internal" href="../api/nexusLIMS/nexusLIMS.db.models.html#nexusLIMS.db.models.Instrument" title="nexusLIMS.db.models.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a> objects that contain information
 about all of the instruments specified in the database. These objects are used
 widely throughout the code so that the database is only queried once at initial
@@ -870,7 +847,7 @@ import, rather than every time information is needed.</p>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">filestore_path</span></code></p></td>
 <td><p>TEXT</p></td>
-<td><p>The path (relative to central storage location specified in <a class="reference internal" href="../user_guide/configuration.html#config-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a>) where this instrument stores its data (e.g. <code class="docutils literal notranslate"><span class="pre">./instrument_name</span></code>)</p></td>
+<td><p>The path (relative to central storage location specified in <a class="reference internal" href="../user_guide/configuration_settings.html#config-instrument-data-path"><span class="std std-ref">NX_INSTRUMENT_DATA_PATH</span></a>) where this instrument stores its data (e.g. <code class="docutils literal notranslate"><span class="pre">./instrument_name</span></code>)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">harvester</span></code></p></td>
 <td><p>TEXT</p></td>
@@ -1055,11 +1032,11 @@ import, rather than every time information is needed.</p>
       </div>
     </a>
     <a class="right-next"
-       href="schema_documentation.html"
+       href="cloudflare_previews.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">XML Schema Reference</p>
+        <p class="prev-next-title">Documentation Previews</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

@@ -1,0 +1,120 @@
+# {py:mod}`nexusLIMS.extractors.plugins.preview_generators.image_preview`
+
+```{py:module} nexusLIMS.extractors.plugins.preview_generators.image_preview
+```
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview
+:parser: autodoc2_docstrings_parser
+:allowtitles:
+```
+
+## Module Contents
+
+### Classes
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`ImagePreviewGenerator <nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### Functions
+
+````{list-table}
+:class: autosummary longtable
+:align: left
+
+* - {py:obj}`image_to_square_thumbnail <nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+* - {py:obj}`down_sample_image <nexusLIMS.extractors.plugins.preview_generators.image_preview.down_sample_image>`
+  - ```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.down_sample_image
+    :parser: autodoc2_docstrings_parser
+    :summary:
+    ```
+````
+
+### API
+
+````{py:function} image_to_square_thumbnail(f: pathlib.Path, out_path: pathlib.Path, output_size: int) -> bool
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.image_to_square_thumbnail
+:parser: autodoc2_docstrings_parser
+```
+````
+
+````{py:function} down_sample_image(fname: pathlib.Path, out_path: pathlib.Path, output_size: typing.Tuple[int, int] | None = None, factor: int | None = None)
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.down_sample_image
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.down_sample_image
+:parser: autodoc2_docstrings_parser
+```
+````
+
+`````{py:class} ImagePreviewGenerator
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator
+:parser: autodoc2_docstrings_parser
+```
+
+````{py:attribute} name
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.name
+:value: >
+   'image_preview'
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.name
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} priority
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.priority
+:value: >
+   100
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.priority
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:attribute} supported_extensions
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supported_extensions
+
+**Type:** typing.ClassVar
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supported_extensions
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} supports(context: nexusLIMS.extractors.base.ExtractionContext) -> bool
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supports
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.supports
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+````{py:method} generate(context: nexusLIMS.extractors.base.ExtractionContext, output_path: pathlib.Path) -> bool
+:canonical: nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.generate
+
+```{autodoc2-docstring} nexusLIMS.extractors.plugins.preview_generators.image_preview.ImagePreviewGenerator.generate
+:parser: autodoc2_docstrings_parser
+```
+
+````
+
+`````
